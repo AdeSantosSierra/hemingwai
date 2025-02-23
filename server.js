@@ -1,58 +1,65 @@
-// Importamos las dependencias
-const express = require('express');
-const mongoose = require('mongoose');
+// Cargar las variables de entorno
 require('dotenv').config();
 
-// Creamos la aplicación Express
+const express = require('express');
+const mongoose = require('mongoose');
+const Noticia = require('./models/Articles'); 
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Usamos JSON para las peticiones
+// Conexión a MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}).then(() => {
+    console.log('Conectado a MongoDB Atlas');
+}).catch((err) => {
+    console.error('Error de conexión a MongoDB Atlas:', err);
+});
+
+// Middleware para que Express maneje los JSON
 app.use(express.json());
 
-// Configuramos la conexión a MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Conectado a MongoDB Atlas'))
-  .catch((err) => console.log('Error al conectar a MongoDB: ', err));
-
-// Definir un modelo de Item
-const Item = mongoose.model('Item', new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
-  createdAt: { type: Date, default: Date.now }
-}));
-
-// Rutas
+// Ruta de ejemplo
 app.get('/', (req, res) => {
-  res.send('Servidor funcionando');
-});
+    res.send('¡Hola desde el backend de Node.js!');
+}); 
 
-// Ruta para obtener todos los ítems
-app.get('/items', async (req, res) => {
+
+// Endpoint GET para obtener artículos con filtros opcionales
+app.get('/articles', async (req, res) => {
+  const Id_noticia = parseInt(req.query.Id_noticia)
+
+  console.log(req.query)
+  console.log(req.query.Id_noticia)
+  console.log(Id_noticia)
+
   try {
-    const items = await Item.find();
-    res.json(items);
+    // Construir los criterios de búsqueda
+    let query = {};
+
+    // Filtrar por título usando regex (sin importar mayúsculas/minúsculas)
+    query = {Id_noticia}
+
+    console.log('por aquí pasa')
+    console.log(query)
+    console.log(query)
+
+    // Obtener los artículos de la base de datos
+    const articles = await Noticia.findOne(query);
+
+    console.log(articles)
+
+    console.log('por aquí pasa 1')
+
+    // Enviar los artículos como respuesta
+    res.status(200).json(articles);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    res.status(500).json({ message: 'Error obteniendo los artículos', error: err});
   }
 });
 
-// Ruta para agregar un nuevo ítem
-app.post('/items', async (req, res) => {
-  const newItem = new Item({
-    name: req.body.name,
-    description: req.body.description
-  });
-
-  try {
-    const savedItem = await newItem.save();
-    res.status(201).json(savedItem);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Iniciar el servidor
-const port = process.env.PORT || 5000;
+// Iniciar el servidor en el puerto especificado
 app.listen(port, () => {
-  console.log(`Servidor corriendo en el puerto ${port}`);
+  console.log(`Servidor escuchando en http://localhost:${port}`);
 });
