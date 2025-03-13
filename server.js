@@ -101,19 +101,21 @@ app.get('/url', async (req, res) => {
 
 // Endpoint GET para obtener artículos con filtros opcionales
 app.get('/ident', async (req, res) => {
-  const ident = req.query.ident
+  const identificador = req.query.identificador
 
   console.log('req.query')
   console.log(req.query)
-  console.log(req.query.ident)
-  console.log(ident)
+  console.log(req.query.identificador)
+  console.log(identificador)
+
+
 
   try {
     // Construir los criterios de búsqueda
     let query = {};
 
     // Filtrar por título usando regex (sin importar mayúsculas/minúsculas)
-    query = {ident}
+    query = {identificador}
 
     console.log('por aquí pasa')
     console.log(query)
