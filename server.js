@@ -99,6 +99,40 @@ app.get('/url', async (req, res) => {
   }
 });
 
+// Endpoint GET para obtener artículos con filtros opcionales
+app.get('/ident', async (req, res) => {
+  const ident = req.query.ident
+
+  console.log('req.query')
+  console.log(req.query)
+  console.log(req.query.ident)
+  console.log(ident)
+
+  try {
+    // Construir los criterios de búsqueda
+    let query = {};
+
+    // Filtrar por título usando regex (sin importar mayúsculas/minúsculas)
+    query = {ident}
+
+    console.log('por aquí pasa')
+    console.log(query)
+    console.log(query)
+
+    // Obtener los artículos de la base de datos
+    const articles = await Noticias.findOne(query);
+
+    console.log(articles)
+
+    console.log('por aquí pasa 1')
+
+    // Enviar los artículos como respuesta
+    res.status(200).json(articles);
+  } catch (err) {
+    res.status(500).json({ message: 'Error obteniendo los artículos', error: err});
+  }
+});
+
 // Iniciar el servidor en el puerto especificado
 app.listen(port, () => {
   console.log(`Servidor escuchando en http://localhost:${port}`);
