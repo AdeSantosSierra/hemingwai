@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const Noticia = require('./models/Articles'); 
+const Noticias = require('./models/Noticia'); 
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -17,6 +18,9 @@ mongoose.connect(process.env.MONGO_URI, {
 }).catch((err) => {
     console.error('Error de conexión a MongoDB Atlas:', err);
 });
+
+
+
 
 // Middleware para que Express maneje los JSON
 app.use(express.json());
@@ -49,6 +53,40 @@ app.get('/articles', async (req, res) => {
 
     // Obtener los artículos de la base de datos
     const articles = await Noticia.findOne(query);
+
+    console.log(articles)
+
+    console.log('por aquí pasa 1')
+
+    // Enviar los artículos como respuesta
+    res.status(200).json(articles);
+  } catch (err) {
+    res.status(500).json({ message: 'Error obteniendo los artículos', error: err});
+  }
+});
+
+// Endpoint GET para obtener artículos con filtros opcionales
+app.get('/url', async (req, res) => {
+  const url = req.query.url
+
+  console.log('req.query')
+  console.log(req.query)
+  console.log(req.query.url)
+  console.log(url)
+
+  try {
+    // Construir los criterios de búsqueda
+    let query = {};
+
+    // Filtrar por título usando regex (sin importar mayúsculas/minúsculas)
+    query = {url}
+
+    console.log('por aquí pasa')
+    console.log(query)
+    console.log(query)
+
+    // Obtener los artículos de la base de datos
+    const articles = await Noticias.findOne(query);
 
     console.log(articles)
 
