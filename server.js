@@ -53,7 +53,7 @@ app.use(cors());
 
 // Ruta de ejemplo
 app.get('/', (req, res) => {
-    res.send('¡Hola desde el backend de Node.js!');
+    res.send('¡Hola desde el backend de Node.js por partida doble!');
 }); 
 
 
