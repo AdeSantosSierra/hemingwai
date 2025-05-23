@@ -493,5 +493,3 @@ CRITERIO_ANALISIS_END
             "raw_gpt_output": gpt_raw_output # Para debugging o referencia
         }
         return final_results
-
-```
