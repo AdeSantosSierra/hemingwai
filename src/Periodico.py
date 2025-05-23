@@ -9,6 +9,7 @@ import hashlib
 import os
 from dotenv import load_dotenv
 from MongoDB import *
+from Utils import *
 
 
 
@@ -19,20 +20,6 @@ class Periodico:
         self.url = url
         mongodb_uri = os.getenv('MONGODB_URI')
         self.db = MongoDBService(uri=mongodb_uri, db_name='Base_de_datos_noticias')
-
-    def extraer_enlaces(self):
-        try:
-            response = requests.get(self.url, timeout=10)
-            response.raise_for_status()
-            soup = BeautifulSoup(response.content, 'html.parser')
-            for a_tag in soup.find_all('a', href=True):
-                enlace = urljoin(self.url, a_tag['href'])
-                if enlace.startswith("http"):
-                    self.enlaces.add(enlace)
-            print(f"Se encontraron {len(self.enlaces)} enlaces en la página principal.")
-        except Exception as e:
-            print(f"Error al procesar la página principal: {self.url} - {e}")
-
 
     def extraer_noticia(self, url) -> dict:
         """
@@ -50,7 +37,14 @@ class Periodico:
                 "cuerpo": articulo.text.strip() if articulo.text else "Sin contenido",
                 "fecha_publicacion": articulo.publish_date.isoformat() if articulo.publish_date else None,
                 "autor": articulo.authors,
-                "identificador": codificar_url_sha256(url)  # Se añade el hash de la URL
+                "identificador": Utils.codificar_url_sha256(url),  # Se añade el hash de la URL
+                "fuente": self.nombre,
+                "fecha_extraccion": Utils.obtener_fecha_hora_actual_iso(),
+                'tags': list(articulo.tags) if articulo.tags else [],
+                'keywords': list(articulo.meta_keywords) if articulo.meta_keywords else [],
+                'top_image': articulo.top_image if articulo.top_image else None,
+                'images': list(articulo.images) if articulo.images else [],
+                'is_media_news': articulo.is_media_news(),
             }
             return noticia
         except Exception as e:
@@ -63,15 +57,16 @@ class Periodico:
         Guarda una noticia en la base de datos MongoDB.
         :param noticia: Un diccionario con la noticia a guardar.
         """
+        collection = self.db.get_collection('Noticias')
         try:
             if noticia and noticia['cuerpo']:
                 if not collection.find_one({"url": noticia['url']}):  # Evitar duplicados
                     collection.insert_one(noticia)
-                    print(f"Noticia guardada con éxito: {noticia['titulo']}")
-                else:
-                    print(f"La noticia ya existe en la base de datos: {noticia['url']}")
-            else:
-                print("Noticia vacía o incompleta. No se guarda.")
+                    # print(f"Noticia guardada con éxito: {noticia['titulo']}")
+                # else:
+                    # print(f"La noticia ya existe en la base de datos: {noticia['url']}")
+            # else:
+                # print("Noticia vacía o incompleta. No se guarda.")
         except Exception as e:
             print(f"Error al guardar la noticia en MongoDB: {e}")
 
@@ -84,6 +79,9 @@ class Periodico:
         """
         patrones_noticias = [
             r'/noticia/',  # patrón simple
+            r'/noticias/',  # patrón simple
+            r'/espana/',  # patrón simple
+            r'/internacional/',  # patrón simple
             r'/news/',  # patrón simple
             r'\d{4}/\d{2}/\d{2}/',  # fechas tipo 2024/04/08/
             r'\d{4}-\d{2}-\d{2}/',  # fechas tipo 2024-04-08/
@@ -91,6 +89,7 @@ class Periodico:
             r'\d{2}-\d{2}-\d{4}/',  # fechas tipo 20-04-2024
             r'/\d{4}/[a-z]{3}/\d{2}/[\w\-]+',     # tipo /2025/abr/18/titulo-noticia
             r'/articulo/',  # patrón simple
+            r'/articulos/',  # patrón simple
             r'/article/',  # patrón simple
             r'/[\w\-]*news[\w\-]*/\d{4}/\d{2}/\d{2}/[\w\-]+',   # con "news" en el path antes de la fecha
             r'/[\w\-]*noticia[\w\-]*/\d{4}/\d{2}/\d{2}/[\w\-]+', # con "noticia" y fecha
@@ -106,11 +105,10 @@ class Periodico:
             if any(re.search(patron, enlace) for patron in patrones_noticias) and not any(
                     re.search(patron, enlace) for patron in patrones_descartar):
                 enlaces_filtrados.add(enlace)
-        print(f"Se filtraron {len(enlaces_filtrados)} enlaces que parecen ser noticias.")
         return enlaces_filtrados
     
     # Función para extraer todas las URLs de una página principal con límite opcional
-    def extraer_enlaces(self, url, limite=None) -> set:
+    def extraer_enlaces(self, limite=None) -> set:
         """
         Extrae todos los enlaces de una página principal.
         :param url: URL de la página principal.
@@ -118,70 +116,89 @@ class Periodico:
         :return: Un conjunto de enlaces extraídos.
         """
         try:
-            response = requests.get(url, timeout=10)
+            response = requests.get(self.url, timeout=10)
             response.raise_for_status()
             soup = BeautifulSoup(response.content, 'html.parser')
             enlaces = set()
             for a_tag in soup.find_all('a', href=True):
-                enlace = urljoin(url, a_tag['href'])
+                enlace = urljoin(self.url, a_tag['href'])
                 if enlace.startswith("http"):
                     enlaces.add(enlace)
                 if limite and len(enlaces) >= limite:
                     break
-            print(f"Se encontraron {len(enlaces)} enlaces en la página principal (límite: {limite}).")
+            # print(f"Se encontraron {len(enlaces)} enlaces en la página principal (límite: {limite}).")
             return enlaces
         except Exception as e:
-            print(f"Error al procesar la página principal: {url} - {e}")
+            print(f"Error al procesar la página principal: {self.url} - {e}")
             return set()
 
     # Función principal para procesar todas las noticias de un periódico
-    def procesar_periodico(self, url_periodico, limite_enlaces=None) -> None:
+    def procesar_periodico(self, limite_enlaces=None) -> None:
         """
         Procesa todas las noticias de un periódico a partir de su URL.
         :param url_periodico: URL del periódico.
         :param limite_enlaces: Límite opcional de enlaces a extraer.
         """
         
-        enlaces = extraer_enlaces(url_periodico, limite=limite_enlaces)
-        enlaces_noticias = filtrar_enlaces_noticias(enlaces)
+        enlaces = self.extraer_enlaces(limite=limite_enlaces)
+        
+        enlaces_noticias = self.filtrar_enlaces_noticias(enlaces)
         for enlace in enlaces_noticias:
-            noticia = extraer_noticia(enlace)
-            guardar_noticia(noticia)
-
-
-
-
-
-
-# db = client['Base_de_datos_noticias']
-# collection = db['Noticias']
-
-# Función para extraer una noticia de una URL
-
+            noticia = self.extraer_noticia(enlace)
+            self.guardar_noticia(noticia)
 
 
 
 
 # Menú interactivo
 def menu_principal():
-    print("Seleccione una opción:")
-    print("1. Extraer una noticia")
-    print("2. Extraer noticias de un sitio web")
-    opcion = input("Ingrese el número de la opción elegida: ")
-    if opcion == "1":
-        url = input("Ingrese la URL de la noticia: ")
-        noticia = extraer_noticia(url)
-        if noticia:
-            guardar_noticia(noticia)
-    elif opcion == "2":
-        url_periodico = input("Ingrese la URL del sitio web: ")
-        limitar = input("¿Desea establecer un límite de noticias? (s/n): ").strip().lower()
-        limite = None
-        if limitar == "s":
-            limite = int(input("Ingrese el número máximo de noticias a extraer: "))
-        procesar_periodico(url_periodico, limite_enlaces=limite)
-    else:
-        print("Opción no válida. Intente nuevamente.")
+
+
+    periodico = Periodico('BBC', 'https://www.bbc.com/')
+    periodico = Periodico('ElMundo', 'https://www.elmundo.es/')
+    periodico = Periodico('ElPais', 'https://elpais.com/')
+    # periodico = Periodico('LaVanguardia', 'https://www.lavanguardia.com/')
+    # periodico = Periodico('ElConfidencial', 'https://www.elconfidencial.com/')
+    # periodico = Periodico('ElDiario', 'https://www.eldiario.es/')
+    # periodico = Periodico('LaRazon', 'https://www.larazon.es/')
+    # periodico = Periodico('ABC', 'https://www.abc.es/')
+
+    # Pon todos los periódicos anteriores en un diccionario
+    periodicos = {
+        # 'BBC': 'https://www.bbc.com/',
+        'ElMundo': 'https://www.elmundo.es/',
+        'ElPais': 'https://elpais.com/',
+        'LaVanguardia': 'https://www.lavanguardia.com/',
+        # 'ElConfidencial': 'https://www.elconfidencial.com/',
+        'ElDiario': 'https://www.eldiario.es/',
+        'LaRazon': 'https://www.larazon.es/',
+        'ABC': 'https://www.abc.es/'
+    }
+
+    for nombre, url in periodicos.items():
+        print(f"Procesando periódico: {nombre}")
+        periodico = Periodico(nombre, url)
+        periodico.procesar_periodico(limite_enlaces=200)
+
+    # print("Seleccione una opción:")
+    # print("1. Extraer una noticia")
+    # print("2. Extraer noticias de un sitio web")
+    # opcion = input("Ingrese el número de la opción elegida: ")
+    # if opcion == "1":
+    #     url = input("Ingrese la URL de la noticia: ")
+    #     noticia = periodico.extraer_noticia(url)
+    #     print(noticia)
+    #     if noticia:
+    #         periodico.guardar_noticia(noticia)
+    # elif opcion == "2":
+    #     url_periodico = input("Ingrese la URL del sitio web: ")
+    #     limitar = input("¿Desea establecer un límite de noticias? (s/n): ").strip().lower()
+    #     limite = None
+    #     if limitar == "s":
+    #         limite = int(input("Ingrese el número máximo de noticias a extraer: "))
+    #     periodico.procesar_periodico(url_periodico, limite_enlaces=limite)
+    # else:
+    #     print("Opción no válida. Intente nuevamente.")
 # Ejecutar menú principal
 if __name__ == "__main__":
     menu_principal()
