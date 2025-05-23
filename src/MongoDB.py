@@ -19,7 +19,7 @@ class MongoDBService:
         return cls._instance
 
     def _setup(self, uri, db_name):
-        self.client = MongoClient(mongodb_uri)
+        self.client = MongoClient(uri)
         self.db = self.client[db_name]
 
     def get_collection(self, name):
