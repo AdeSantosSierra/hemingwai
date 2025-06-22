@@ -1,0 +1,151 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{times}
+\usepackage{hyperref} % Re-enable hyperref
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{array}
+\usepackage{sectsty}
+\usepackage{ragged2e}
+
+% Hyperlink setup - re-enabled
+\hypersetup{
+   colorlinks=false,
+   pdfborder={0 0 0},
+   breaklinks=true % Allows links to break across lines
+}
+
+\sectionfont{\large\bfseries}
+\subsectionfont{\normalsize\bfseries}
+
+\begin{document}
+
+% --- Title and Puntuacion ---
+\begin{center}
+    {\Huge\bfseries {{ news_item.titulo | escape_tex_inline | default('Título no disponible') }}\par}
+    \vspace{0.5em}
+    {\large\bfseries Puntuación: {{ news_item.puntuacion if news_item.puntuacion is not none else 'N/A' }}\par}
+\end{center}
+\vspace{1em}
+
+% --- Autor, Fuente, Fecha ---
+\noindent\textbf{Autor:} {{ news_item.autor | join(', ') | escape_tex_special_chars if news_item.autor else 'N/A' }} \hfill \textbf{Fuente:} {{ news_item.fuente | escape_tex_special_chars if news_item.fuente else 'Fuente no identificada' }} \hfill \textbf{Fecha:} {{ news_item.fecha_publicacion | format_date if news_item.fecha_publicacion else 'N/A' }}\par
+\vspace{1em}
+
+% --- Cuerpo de la Noticia ---
+\section*{Cuerpo de la Noticia}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0em}
+{{ news_item.cuerpo | escape_tex_special_chars | default('Cuerpo no disponible.') }}
+\vspace{1em}
+
+% --- URL (Re-enabled and moved) ---
+\section*{URL}
+\url{ {{ news_item.url | replace_tex_special_chars if news_item.url else 'N/A' }} }
+\vspace{1em}
+
+% --- Valoración (Original String) ---
+\section*{Valoración}
+{% if news_item.valoracion %}
+    {{ news_item.valoracion | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Texto Referencia (Consolidated) ---
+\section*{Texto de Referencia}
+{% if news_item.texto_referencia_direct_dict_data and news_item.texto_referencia_direct_dict_data is mapping and news_item.texto_referencia_direct_dict_data | length > 0 %}
+    \textit{(Mostrando desde el campo de diccionario directo: texto\_referencia\_diccionario)}
+    \begin{itemize}[leftmargin=*]
+        {% for key, value in news_item.texto_referencia_direct_dict_data.items() %}
+            \item \textbf{Referencia {{ key | escape_tex_inline }}:} {{ value | escape_tex_special_chars }}
+        {% endfor %}
+    \end{itemize}
+{% elif news_item.texto_referencia_parsed_content %}
+    \textit{(Mostrando contenido original del campo de string: texto\_referencia)}
+    {{ news_item.texto_referencia_parsed_content | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Valoracion General (String Summary) ---
+\section*{Valoración General}
+{% if news_item.valoracion_general %}
+    {{ news_item.valoracion_general | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Valoración del Titular ---
+\section*{Valoración del Titular}
+{% if news_item.valoracion_titular and news_item.valoracion_titular is mapping %}
+    \begin{itemize}[leftmargin=*]
+    {% for key, value in news_item.valoracion_titular.items() %}
+        \item \textbf{ {{ key | escape_tex_inline | title }} :}
+            {% if value is string %}
+                {{ value | escape_tex_special_chars }}
+            {% elif value is sequence and not value is string %} {# Check if it's a list/tuple #}
+                \begin{itemize}[leftmargin=*, nosep]
+                {% for item in value %}
+                    \item {% if item is mapping %}
+                                {% for sub_key, sub_val in item.items() %}
+                                    \textbf{ {{ sub_key | escape_tex_inline | title }} :} {{ sub_val | escape_tex_special_chars }} \\
+                                {% endfor %}
+                          {% else %}
+                                {{ item | escape_tex_special_chars }}
+                          {% endif %}
+                {% endfor %}
+                \end{itemize}
+            {% elif value is mapping %} {# It's a dictionary #}
+                \begin{itemize}[leftmargin=*, nosep]
+                {% for sub_key, sub_val in value.items() %}
+                    \item \textbf{ {{ sub_key | escape_tex_inline | title }} :} {{ sub_val | escape_tex_special_chars }}
+                {% endfor %}
+                \end{itemize}
+            {% else %}
+                 {{ value | escape_tex_special_chars }} {# Fallback for other types #}
+            {% endif %}
+    {% endfor %}
+    \end{itemize}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Valoraciones (Dictionary of AI interpretations) ---
+\section*{Valoraciones (Interpretaciones IA)}
+{% if news_item.valoraciones and news_item.valoraciones is mapping %}
+    {% for key, value in news_item.valoraciones.items() %}
+        \subsection*{Interpretación IA {{ key | escape_tex_special_chars }}}
+        {% if value is string %}
+            {{ value | escape_tex_special_chars }}
+        {% elif value is mapping and value.html %}
+            {{ value.html | escape_tex_special_chars }}
+        {% elif value is mapping %}
+             \begin{itemize}[leftmargin=*]
+            {% for sub_key, sub_value in value.items() %}
+                \item \textbf{ {{ sub_key | escape_tex_special_chars | title }} :} {{ sub_value | escape_tex_special_chars }}
+            {% endfor %}
+            \end{itemize}
+        {% else %}
+            {{ value | escape_tex_special_chars }}
+        {% endif %}
+        \vspace{0.5em}
+    {% endfor %}
+{% elif news_item.valoraciones %}
+    {{ news_item.valoraciones | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+\end{document}
