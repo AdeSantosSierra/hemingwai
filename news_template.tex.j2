@@ -4,6 +4,8 @@
 \usepackage{times}
 \usepackage{hyperref} % Re-enable hyperref
 \usepackage{enumitem}
+\usepackage{tikz}       % For graphics (might still be useful for other things, or can remove if only for pgf-radar)
+% \usepackage{pgf-radar}  % No longer using pgf-radar, using Matplotlib image
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -50,14 +52,14 @@
 \url{ {{ news_item.url | replace_tex_special_chars if news_item.url else 'N/A' }} }
 \vspace{1em}
 
-% --- Valoración (Original String) ---
-\section*{Valoración}
-{% if news_item.valoracion %}
-    {{ news_item.valoracion | escape_tex_special_chars }}
-{% else %}
-    No disponible.
-{% endif %}
-\vspace{1em}
+% --- Valoración (Original String) --- REMOVED as per user request for this article
+% \section*{Valoración}
+% {% if news_item.valoracion %}
+%    {{ news_item.valoracion | escape_tex_special_chars }}
+% {% else %}
+%    No disponible.
+% {% endif %}
+% \vspace{1em}
 
 % --- Texto Referencia (Consolidated) ---
 \section*{Texto de Referencia}
@@ -122,30 +124,29 @@
 \vspace{1em}
 
 % --- Valoraciones (Dictionary of AI interpretations) ---
-\section*{Valoraciones (Interpretaciones IA)}
-{% if news_item.valoraciones and news_item.valoraciones is mapping %}
-    {% for key, value in news_item.valoraciones.items() %}
-        \subsection*{Interpretación IA {{ key | escape_tex_special_chars }}}
-        {% if value is string %}
-            {{ value | escape_tex_special_chars }}
-        {% elif value is mapping and value.html %}
-            {{ value.html | escape_tex_special_chars }}
-        {% elif value is mapping %}
-             \begin{itemize}[leftmargin=*]
-            {% for sub_key, sub_value in value.items() %}
-                \item \textbf{ {{ sub_key | escape_tex_special_chars | title }} :} {{ sub_value | escape_tex_special_chars }}
-            {% endfor %}
-            \end{itemize}
-        {% else %}
-            {{ value | escape_tex_special_chars }}
-        {% endif %}
-        \vspace{0.5em}
-    {% endfor %}
-{% elif news_item.valoraciones %}
-    {{ news_item.valoraciones | escape_tex_special_chars }}
-{% else %}
-    No disponible.
-{% endif %}
-\vspace{1em}
+% This section is to be removed as per user request.
+% \section*{Valoraciones (Interpretaciones IA)}
+% {% if news_item.valoraciones and news_item.valoraciones is mapping %}
+%    ... (content previously here) ...
+% {% else %}
+%    No disponible.
+% {% endif %}
+% \vspace{1em}
+
+% --- Spider Chart for Puntuacion Individual (from Matplotlib image) ---
+% {% if news_item.spider_chart_filename %}
+% \section*{Gráfico de Puntuaciones Individuales}
+% \begin{figure}[h!] % [h!] tries to place it "here"
+%    \centering
+%    \includegraphics[width=0.8\textwidth, keepaspectratio]{{ news_item.spider_chart_filename }}
+%    % \caption{Gráfico de Puntuaciones Individuales.} % Optional caption
+% \end{figure}
+% \clearpage % Add a page break after the figure, if desired, to ensure it doesn't overlap
+% {% else %}
+% % Optionally, indicate if no data for chart:
+% % \section*{Gráfico de Puntuaciones Individuales}
+% % \textit{No hay datos de puntuaciones individuales para mostrar en el gráfico.}
+% % \vspace{1em}
+% {% endif %}
 
 \end{document}

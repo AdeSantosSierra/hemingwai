@@ -4,6 +4,14 @@ import re
 import ast
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from datetime import datetime
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, RegularPolygon
+from matplotlib.path import Path
+from matplotlib.projections.polar import PolarAxes
+from matplotlib.projections import register_projection
+from matplotlib.spines import Spine
+from matplotlib.transforms import Affine2D
 
 # --- Unicode Character Handling ---
 def strip_or_replace_problematic_unicode(text):
@@ -118,6 +126,95 @@ def format_date_for_latex(date_str):
         return dt_object.strftime("%d de %B de %Y")
     except ValueError: return date_str
 
+# --- Matplotlib Spider Chart ---
+def radar_factory(num_vars, frame='circle'):
+    """
+    Create a radar chart projectiion.
+    (Source: Matplotlib official examples)
+    """
+    theta = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
+
+    class RadarAxes(PolarAxes):
+        name = 'radar'
+        RESOLUTION = 1
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.set_theta_zero_location('N')
+        def fill(self, *args, closed=True, **kwargs):
+            return super().fill(theta, *args, closed=closed, **kwargs)
+        def plot(self, *args, **kwargs):
+            lines = super().plot(theta, *args, **kwargs)
+            for line in lines:
+                self._close_line(line)
+        def _close_line(self, line):
+            x, y = line.get_data()
+            # FIXME: Markers are not drawn correctly when first and last points are the same
+            if x[0] != x[-1]:
+                x = np.append(x, x[0])
+                y = np.append(y, y[0])
+                line.set_data(x, y)
+        def set_varlabels(self, labels):
+            self.set_thetagrids(np.degrees(theta), labels)
+        def _gen_axes_patch(self):
+            if frame == 'circle':
+                return Circle((0.5, 0.5), 0.5)
+            elif frame == 'polygon':
+                return RegularPolygon((0.5, 0.5), num_vars,
+                                      radius=.5, edgecolor="k")
+            else:
+                raise ValueError("unknown frame: %s" % frame)
+        def _gen_axes_spines(self):
+            if frame == 'circle':
+                return super()._gen_axes_spines()
+            elif frame == 'polygon':
+                spine = Spine(axes=self, spine_type='circle',
+                              path=Path.unit_regular_polygon(num_vars))
+                spine.set_transform(Affine2D().scale(.5).translate(.5, .5)
+                                    + self.transAxes)
+                return {'polar': spine}
+            else:
+                raise ValueError("unknown frame: %s" % frame)
+    register_projection(RadarAxes)
+    return theta
+
+def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
+    if not data_dict or not isinstance(data_dict, dict):
+        print("No valid data provided for spider chart.")
+        return None
+
+    labels = list(data_dict.keys())
+    values = [float(v) for v in data_dict.values()] # Ensure values are numeric
+    num_vars = len(labels)
+
+    if num_vars < 3: # Radar chart needs at least 3 axes
+        print(f"Not enough data points ({num_vars}) for a spider chart. Min 3 required.")
+        return None
+
+    theta = radar_factory(num_vars, frame='polygon')
+
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection='radar'))
+    fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.85, bottom=0.05)
+
+    ax.set_rgrids([20, 40, 60, 80, 100]) # Assuming max value is 100
+    ax.set_title("Puntuaciones Individuales", weight='bold', size='medium', position=(0.5, 1.1),
+                 horizontalalignment='center', verticalalignment='center')
+
+    ax.plot(theta, values, color='b', marker='o')
+    ax.fill(values, 'b', alpha=0.25) # Use fill with theta implicitly handled by custom projection
+
+    ax.set_varlabels(labels)
+
+    try:
+        plt.savefig(output_image_filename, dpi=150, bbox_inches='tight')
+        print(f"Spider chart saved to {output_image_filename}")
+        plt.close(fig) # Close the figure to free memory
+        return output_image_filename
+    except Exception as e:
+        print(f"Error saving spider chart: {e}")
+        plt.close(fig)
+        return None
+
+# --- Jinja Environment Setup ---
 env = Environment(
     loader=FileSystemLoader("."),
     autoescape=select_autoescape(['html', 'xml']),
@@ -175,6 +272,36 @@ if __name__ == "__main__":
 
     if "fuente" not in news_item_data:
         news_item_data["fuente"] = None
+
+    # Generate spider chart image if data exists - Skipping for now
+    # puntuacion_individual_data = news_item_data.get("puntuacion_individual")
+    # spider_chart_filename = None
+    # if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
+    #     # Sort keys for consistent plotting order (important for radar charts)
+    #     # Try to sort numerically if keys are string digits, otherwise alphabetically
+    #     try:
+    #         chart_labels = sorted(puntuacion_individual_data.keys(), key=lambda k: int(k))
+    #     except ValueError:
+    #         chart_labels = sorted(puntuacion_individual_data.keys())
+    #
+    #     chart_values = [puntuacion_individual_data[k] for k in chart_labels]
+    #
+    #     # Re-package for the generate_spider_chart function if its input format is just the dict
+    #     # Or pass labels and values directly if the function is adapted
+    #     # For now, assuming generate_spider_chart can take the original dict and handle sorting
+    #
+    #     spider_chart_filename = generate_spider_chart(puntuacion_individual_data, "spider_chart.png")
+    #     if spider_chart_filename:
+    #         news_item_data["spider_chart_filename"] = spider_chart_filename
+    #         print(f"Spider chart image generated: {spider_chart_filename}")
+    #     else:
+    #         news_item_data["spider_chart_filename"] = None
+    #         print("Spider chart generation failed or no data.")
+    # else:
+    #     news_item_data["spider_chart_filename"] = None
+    #     print("No 'puntuacion_individual' data for spider chart.")
+    news_item_data["spider_chart_filename"] = None # Ensure it's None so template doesn't try to include it
+
 
     context = {"news_item": news_item_data}
     try:
