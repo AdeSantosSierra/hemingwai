@@ -5,6 +5,8 @@ from pymongo import MongoClient, errors as pymongo_errors
 from bson import ObjectId
 from dotenv import load_dotenv
 import json
+import random
+import sys
 
 OUTPUT_FILENAME = "retrieved_news_item.txt"
 
@@ -96,8 +98,11 @@ def get_news_item_with_score(exclude_ids_str_list=None, collection_names_to_try=
         for name in collection_names_to_try:
             collection_to_use = db.get_collection(name) # Simplified collection access
             if collection_to_use is not None : print(f"Using collection: {name}") # Check if collection exists
-            news_item = collection_to_use.find_one(query)
-            if news_item: print(f"Found news item with ID: {news_item.get('_id')}"); break
+            # Obtener todos los documentos que cumplen el criterio
+            docs = list(collection_to_use.find(query))
+            if docs:
+                news_item = random.choice(docs)
+                print(f"Found news item with ID: {news_item.get('_id')}"); break
 
         if collection_to_use is None: print(f"Error: None of the specified collections were found."); client.close(); return None # Should not happen if list_collection_names was checked before
 
@@ -113,11 +118,13 @@ def get_news_item_with_score(exclude_ids_str_list=None, collection_names_to_try=
 # Main execution block reverted to a generic example
 if __name__ == "__main__":
     print("Running fetch_news_item.py directly as a standalone script.")
-    print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to {OUTPUT_FILENAME}.")
-
-    # Example: Fetch one item, no exclusions, puntuacion must exist
-    # To include the 'fuente' requirement, call: get_news_item_with_score(require_fuente=True)
-    retrieved_item = get_news_item_with_score()
+    if len(sys.argv) > 1:
+        article_id = sys.argv[1]
+        print(f"Fetching by id: {article_id}")
+        retrieved_item = get_specific_news_item(article_id)
+    else:
+        print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to {OUTPUT_FILENAME}.")
+        retrieved_item = get_news_item_with_score()
 
     if retrieved_item:
         print("\nSample fetched item data:")

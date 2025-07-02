@@ -18,6 +18,7 @@ def strip_or_replace_problematic_unicode(text):
     if not isinstance(text, str):
         return text
 
+    # Reemplazos específicos de algunos emojis comunes
     replacements = {
         '\u26A0': '[Atención]',  # ⚠ Warning sign
         '\u2B50': '[Estrella]',  # ⭐ Star
@@ -26,12 +27,21 @@ def strip_or_replace_problematic_unicode(text):
     for char_unicode, replacement_text in replacements.items():
         text = text.replace(char_unicode, replacement_text)
 
-    try:
-        text_latin1_safe = text.encode('latin-1', 'replace').decode('latin-1')
-        text = text_latin1_safe.replace('\ufffd', '[?]')
-    except Exception:
-        text = re.sub(r'[^\x00-\x7F\xC0-\xFF]', '[?]', text)
-    return text
+    # Eliminar solo emojis y símbolos fuera de los rangos de texto común (mantener letras acentuadas, ñ, etc.)
+    # Unicode ranges: https://unicode-table.com/en/
+    # Español: U+0020-U+007E (ASCII), U+00A1-U+00FF (acentos, ñ, ü, ¿, ¡), U+0100-U+017F (letras latinas extendidas)
+    # Eliminar solo si es un símbolo, pictograma, o caracter de control
+    def is_allowed(char):
+        code = ord(char)
+        # Caracteres imprimibles comunes y letras latinas extendidas
+        if (0x20 <= code <= 0x7E) or (0xA1 <= code <= 0xFF) or (0x100 <= code <= 0x17F):
+            return True
+        # Saltar caracteres de control
+        if code in (0x0A, 0x0D, 0x09):  # \, \r, \t
+            return True
+        return False
+    # Reemplazar solo los no permitidos
+    return ''.join(c if is_allowed(c) else '' for c in text)
 
 # --- LaTeX Special Character Escaping ---
 CORE_TEX_SPECIAL_CHARS_NO_BS = {
@@ -183,7 +193,7 @@ def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
         return None
 
     labels = list(data_dict.keys())
-    values = [float(v) for v in data_dict.values()] # Ensure values are numeric
+    values = list(data_dict.values())
     num_vars = len(labels)
 
     if num_vars < 3: # Radar chart needs at least 3 axes
@@ -195,7 +205,8 @@ def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
     fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection='radar'))
     fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.85, bottom=0.05)
 
-    ax.set_rgrids([20, 40, 60, 80, 100]) # Assuming max value is 100
+    ax.set_rgrids([2, 4, 6, 8, 10]) # Escala 1-10
+    ax.set_ylim(1, 10)
     ax.set_title("Puntuaciones Individuales", weight='bold', size='medium', position=(0.5, 1.1),
                  horizontalalignment='center', verticalalignment='center')
 
@@ -216,7 +227,7 @@ def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
 
 # --- Jinja Environment Setup ---
 env = Environment(
-    loader=FileSystemLoader("."),
+    loader=FileSystemLoader("hemingwai"),
     autoescape=select_autoescape(['html', 'xml']),
     trim_blocks=True, lstrip_blocks=True
 )
@@ -236,6 +247,35 @@ def render_template(template_name, output_filename, context):
         print(f"Error rendering template {template_name}: {e}")
         raise
 
+def clean_dict_recursive(obj):
+    if isinstance(obj, dict):
+        return {k: clean_dict_recursive(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [clean_dict_recursive(v) for v in obj]
+    elif isinstance(obj, str):
+        return strip_or_replace_problematic_unicode(obj)
+    else:
+        return obj
+
+def generar_grafico_arania(valores, etiquetas, nombre_archivo):
+    N = len(etiquetas)
+    valores_escalados = [v / 10 for v in valores]
+    valores_escalados += valores_escalados[:1]
+    angulos = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
+    angulos += angulos[:1]
+    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
+    ax.plot(angulos, valores_escalados, color='blue', linewidth=2)
+    ax.fill(angulos, valores_escalados, color='skyblue', alpha=0.4)
+    ax.set_xticks(angulos[:-1])
+    ax.set_xticklabels(etiquetas, fontsize=10)
+    ax.set_ylim(0, 10)
+    ax.set_yticks([0, 2, 4, 6, 8, 10])
+    ax.set_yticklabels(['0', '2', '4', '6', '8', '10'])
+    ax.set_title("Puntuaciones Individuales", size=15, pad=20)
+    plt.tight_layout()
+    plt.savefig(nombre_archivo)
+    plt.close()
+
 if __name__ == "__main__":
     news_data_file = "retrieved_news_item.txt"
     latex_template_file = "news_template.tex.j2"
@@ -248,6 +288,23 @@ if __name__ == "__main__":
         print(f"Error: News data file '{news_data_file}' not found."); exit(1)
     except json.JSONDecodeError:
         print(f"Error: Could not decode JSON from '{news_data_file}'."); exit(1)
+
+    # Limpiar recursivamente todos los campos del diccionario
+    news_item_data = clean_dict_recursive(news_item_data)
+
+    # --- ARREGLO: extraer solo el texto de resumen_valoracion_titular si viene como objeto tipo TextBlock ---
+    rvt = news_item_data.get("resumen_valoracion_titular")
+    if isinstance(rvt, str):
+        pass  # ya es string
+    elif isinstance(rvt, dict) and "text" in rvt:
+        news_item_data["resumen_valoracion_titular"] = rvt["text"]
+    elif isinstance(rvt, str) and rvt.startswith("TextBlock("):
+        # Extraer el texto usando regex
+        import re
+        match = re.search(r"text=['\"](.+?)['\"]", rvt)
+        if match:
+            news_item_data["resumen_valoracion_titular"] = match.group(1)
+    # Si no, dejarlo tal cual
 
     tr_direct_dict = news_item_data.get("texto_referencia_diccionario")
     if isinstance(tr_direct_dict, dict):
@@ -273,35 +330,19 @@ if __name__ == "__main__":
     if "fuente" not in news_item_data:
         news_item_data["fuente"] = None
 
-    # Generate spider chart image if data exists - Skipping for now
-    # puntuacion_individual_data = news_item_data.get("puntuacion_individual")
-    # spider_chart_filename = None
-    # if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
-    #     # Sort keys for consistent plotting order (important for radar charts)
-    #     # Try to sort numerically if keys are string digits, otherwise alphabetically
-    #     try:
-    #         chart_labels = sorted(puntuacion_individual_data.keys(), key=lambda k: int(k))
-    #     except ValueError:
-    #         chart_labels = sorted(puntuacion_individual_data.keys())
-    #
-    #     chart_values = [puntuacion_individual_data[k] for k in chart_labels]
-    #
-    #     # Re-package for the generate_spider_chart function if its input format is just the dict
-    #     # Or pass labels and values directly if the function is adapted
-    #     # For now, assuming generate_spider_chart can take the original dict and handle sorting
-    #
-    #     spider_chart_filename = generate_spider_chart(puntuacion_individual_data, "spider_chart.png")
-    #     if spider_chart_filename:
-    #         news_item_data["spider_chart_filename"] = spider_chart_filename
-    #         print(f"Spider chart image generated: {spider_chart_filename}")
-    #     else:
-    #         news_item_data["spider_chart_filename"] = None
-    #         print("Spider chart generation failed or no data.")
-    # else:
-    #     news_item_data["spider_chart_filename"] = None
-    #     print("No 'puntuacion_individual' data for spider chart.")
-    news_item_data["spider_chart_filename"] = None # Ensure it's None so template doesn't try to include it
-
+    # Generate spider chart image if data exists
+    puntuacion_individual_data = news_item_data.get("puntuacion_individual")
+    spider_chart_filename = None
+    if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
+        CAMPOS_FIJOS = [
+            "Interpretación del periodista", "Opiniones", "Cita de fuentes", "Confiabilidad de las fuentes", "Trascendencia",
+            "Relevancia de los datos", "Precisión y claridad", "Enfoque", "Contexto", "Ética"
+        ]
+        valores = [float(puntuacion_individual_data.get(str(i), 0)) for i in range(1, 11)]
+        generar_grafico_arania(valores, CAMPOS_FIJOS, "spider_chart.png")
+        print(f"Gráfico generado correctamente: spider_chart.png")
+    else:
+        print("No 'puntuacion_individual' data for spider chart.")
 
     context = {"news_item": news_item_data}
     try:

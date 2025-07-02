@@ -52,14 +52,58 @@
 \url{ {{ news_item.url | replace_tex_special_chars if news_item.url else 'N/A' }} }
 \vspace{1em}
 
-% --- Valoración (Original String) --- REMOVED as per user request for this article
-% \section*{Valoración}
-% {% if news_item.valoracion %}
-%    {{ news_item.valoracion | escape_tex_special_chars }}
-% {% else %}
-%    No disponible.
-% {% endif %}
-% \vspace{1em}
+% --- Resumen de la Valoración ---
+\section*{Resumen de la Valoración}
+{% if news_item.resumen_valoracion %}
+    {{ news_item.resumen_valoracion | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Resumen de la Valoración del Titular ---
+\section*{Resumen de la Valoración del Titular}
+{% if news_item.resumen_valoracion_titular %}
+    {{ news_item.resumen_valoracion_titular | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Spider Chart for Puntuacion Individual (from Matplotlib image) ---
+\clearpage
+\section*{Gráfico de Puntuaciones Individuales}
+\begin{figure}[h!] % [h!] tries to place it "here"
+   \centering
+   \includegraphics[width=0.8\textwidth, keepaspectratio]{spider_chart.png}
+   % \caption{Gráfico de Puntuaciones Individuales.} % Optional caption
+\end{figure}
+\clearpage % Add a page break after the figure, if desired, to ensure it doesn't overlap
+
+% --- Valoracion General (String Summary) ---
+\section*{Valoración General}
+{% if news_item.valoracion_general %}
+    {{ news_item.valoracion_general | escape_tex_special_chars }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Valoración del Titular ---
+\section*{Valoración del Titular}
+{% if news_item.valoracion_titular %}
+    {% if news_item.valoracion_titular.titular %}
+        \textbf{Análisis del titular:} \\ 
+        {{ news_item.valoracion_titular.titular | escape_tex_special_chars }}
+        \vspace{1em}
+    {% endif %}
+    {% if news_item.valoracion_titular.titular_reformulado %}
+        % Titular reformulado eliminado según petición del usuario
+    {% endif %}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
 
 % --- Texto Referencia (Consolidated) ---
 \section*{Texto de Referencia}
@@ -78,51 +122,6 @@
 {% endif %}
 \vspace{1em}
 
-% --- Valoracion General (String Summary) ---
-\section*{Valoración General}
-{% if news_item.valoracion_general %}
-    {{ news_item.valoracion_general | escape_tex_special_chars }}
-{% else %}
-    No disponible.
-{% endif %}
-\vspace{1em}
-
-% --- Valoración del Titular ---
-\section*{Valoración del Titular}
-{% if news_item.valoracion_titular and news_item.valoracion_titular is mapping %}
-    \begin{itemize}[leftmargin=*]
-    {% for key, value in news_item.valoracion_titular.items() %}
-        \item \textbf{ {{ key | escape_tex_inline | title }} :}
-            {% if value is string %}
-                {{ value | escape_tex_special_chars }}
-            {% elif value is sequence and not value is string %} {# Check if it's a list/tuple #}
-                \begin{itemize}[leftmargin=*, nosep]
-                {% for item in value %}
-                    \item {% if item is mapping %}
-                                {% for sub_key, sub_val in item.items() %}
-                                    \textbf{ {{ sub_key | escape_tex_inline | title }} :} {{ sub_val | escape_tex_special_chars }} \\
-                                {% endfor %}
-                          {% else %}
-                                {{ item | escape_tex_special_chars }}
-                          {% endif %}
-                {% endfor %}
-                \end{itemize}
-            {% elif value is mapping %} {# It's a dictionary #}
-                \begin{itemize}[leftmargin=*, nosep]
-                {% for sub_key, sub_val in value.items() %}
-                    \item \textbf{ {{ sub_key | escape_tex_inline | title }} :} {{ sub_val | escape_tex_special_chars }}
-                {% endfor %}
-                \end{itemize}
-            {% else %}
-                 {{ value | escape_tex_special_chars }} {# Fallback for other types #}
-            {% endif %}
-    {% endfor %}
-    \end{itemize}
-{% else %}
-    No disponible.
-{% endif %}
-\vspace{1em}
-
 % --- Valoraciones (Dictionary of AI interpretations) ---
 % This section is to be removed as per user request.
 % \section*{Valoraciones (Interpretaciones IA)}
@@ -132,21 +131,5 @@
 %    No disponible.
 % {% endif %}
 % \vspace{1em}
-
-% --- Spider Chart for Puntuacion Individual (from Matplotlib image) ---
-% {% if news_item.spider_chart_filename %}
-% \section*{Gráfico de Puntuaciones Individuales}
-% \begin{figure}[h!] % [h!] tries to place it "here"
-%    \centering
-%    \includegraphics[width=0.8\textwidth, keepaspectratio]{{ news_item.spider_chart_filename }}
-%    % \caption{Gráfico de Puntuaciones Individuales.} % Optional caption
-% \end{figure}
-% \clearpage % Add a page break after the figure, if desired, to ensure it doesn't overlap
-% {% else %}
-% % Optionally, indicate if no data for chart:
-% % \section*{Gráfico de Puntuaciones Individuales}
-% % \textit{No hay datos de puntuaciones individuales para mostrar en el gráfico.}
-% % \vspace{1em}
-% {% endif %}
 
 \end{document}
