@@ -75,16 +75,16 @@ class Utils:
         INDICACIONES DE ESTILO Y ENFOQUE PARA LA SALIDA O OUTPUT DE RESPUESTA AL ANÁLISIS 
         Para mostrar la expresión de tu salida tras el análisis de la noticia evita: 
         1. Argumentar con el cumplimiento de estándares éticos y profesionales del periodismo. Nuestro análisis es fundamentalmente epistemológico y huye en gran medida, aunque lo tiene en cuenta, de argumentar sobre cumplimientos de estándares éticos y profesionales, muy discutibles por otro lado. 
-        2. La conclusión debe citar, al menos, la afirmación o informaciones más relevantemente incorrectas más relevante de las que aparecen en la noticia y la más dañina de todas y no lanzar adjetivos calificativos para mostrar sus errores o aciertos. La fórmula de respuesta sobre la redacción sería: “incorrectas como por ejemplo” 
+        2. La conclusión debe citar, al menos, la afirmación o informaciones más relevantemente incorrectas más relevante de las que aparecen en la noticia y la más dañina de todas y no lanzar adjetivos calificativos para mostrar sus errores o aciertos. La fórmula de respuesta sobre la redacción sería: "incorrectas como por ejemplo" 
         3. El outpout o respuesta de salida debe evitar hacer juicios morales sobre el trabajo del periodista o redactor. Se señala el error, cómo hacerlo adecuadamente o se sugieren mejoras. Y para ello, la conclusión debe argumentarse sobre hechos y datos y dar ejemplos respecto de lo que critica. 
         4. La noticia es desinformativa porque ofrece datos y/o declaraciones falsas, contiene interpretaciones explícitas sin fundamento en la realidad, datos insuficientes, irrelevantes y descontextualizadores que deforman la realidad y desinforman al público. 
         Para responder, evitar utilizar expresiones cómo: 
         La veracidad o imparcialidad, nunca neutralidad porque la verdad no es neutral. 
         Evitar hablar de lenguaje neutral. Solo se habla de lenguaje imparcial, ecuánime o adecuado. 
-        Evitar expresiones como “noticias objetivas”. Mejor utilizar relatos veraces y noticias verdaderas.  
-        Usar expresiones como “fundadas en hechos o datos que “factual” 
-        Evita el uso de expresiones como: “hechos verficables”. Eso es una redundancia. Utilizar solo la expresión o palabra “Hechos” o “datos” es suficiente. 
-        ¡MUY IMPORTANTE! Evita las expresiones “hecho objetivo”, “dato objetivo” “interpretación subjetiva”, “verdad objetiva”, “neutral”. Utilizar, en cambio solo “hecho”, “dato”, “interpretación”, “verdad”, “imparcial”, “ecuánime”, “adecuado”. 
+        Evitar expresiones como "noticias objetivas". Mejor utilizar relatos veraces y noticias verdaderas.  
+        Usar expresiones como "fundadas en hechos o datos que "factual" 
+        Evita el uso de expresiones como: "hechos verficables". Eso es una redundancia. Utilizar solo la expresión o palabra "Hechos" o "datos" es suficiente. 
+        ¡MUY IMPORTANTE! Evita las expresiones "hecho objetivo", "dato objetivo" "interpretación subjetiva", "verdad objetiva", "neutral". Utilizar, en cambio solo "hecho", "dato", "interpretación", "verdad", "imparcial", "ecuánime", "adecuado". 
 
         Ejemplos de salida pueden ser:
         1º La noticia es sobresaliente porque ofrece un relato ordenado y veraz en el que las afirmaciones del periodista
@@ -123,16 +123,16 @@ class Utils:
         INDICACIONES DE ESTILO Y ENFOQUE PARA LA SALIDA O OUTPUT DE RESPUESTA AL ANÁLISIS 
         Para mostrar la expresión de tu salida tras el análisis de la noticia evita: 
         1. Argumentar con el cumplimiento de estándares éticos y profesionales del periodismo. Nuestro análisis es fundamentalmente epistemológico y huye en gran medida, aunque lo tiene en cuenta, de argumentar sobre cumplimientos de estándares éticos y profesionales, muy discutibles por otro lado. 
-        2. La conclusión debe citar, al menos, la afirmación o informaciones más relevantemente incorrectas más relevante de las que aparecen en la noticia y la más dañina de todas y no lanzar adjetivos calificativos para mostrar sus errores o aciertos. La fórmula de respuesta sobre la redacción sería: “incorrectas como por ejemplo” 
+        2. La conclusión debe citar, al menos, la afirmación o informaciones más relevantemente incorrectas más relevante de las que aparecen en la noticia y la más dañina de todas y no lanzar adjetivos calificativos para mostrar sus errores o aciertos. La fórmula de respuesta sobre la redacción sería: "incorrectas como por ejemplo" 
         3. El outpout o respuesta de salida debe evitar hacer juicios morales sobre el trabajo del periodista o redactor. Se señala el error, cómo hacerlo adecuadamente o se sugieren mejoras. Y para ello, la conclusión debe argumentarse sobre hechos y datos y dar ejemplos respecto de lo que critica. 
         4. La noticia es desinformativa porque ofrece datos y/o declaraciones falsas, contiene interpretaciones explícitas sin fundamento en la realidad, datos insuficientes, irrelevantes y descontextualizadores que deforman la realidad y desinforman al público. 
         Para responder, evitar utilizar expresiones cómo: 
         La veracidad o imparcialidad, nunca neutralidad porque la verdad no es neutral. 
         Evitar hablar de lenguaje neutral. Solo se habla de lenguaje imparcial, ecuánime o adecuado. 
-        Evitar expresiones como “noticias objetivas”. Mejor utilizar relatos veraces y noticias verdaderas.  
-        Usar expresiones como “fundadas en hechos o datos que “factual” 
-        Evita el uso de expresiones como: “hechos verficables”. Eso es una redundancia. Utilizar solo la expresión o palabra “Hechos” o “datos” es suficiente. 
-        ¡MUY IMPORTANTE! Evita las expresiones “hecho objetivo”, “dato objetivo” “interpretación subjetiva”, “verdad objetiva”, “neutral”. Utilizar, en cambio solo “hecho”, “dato”, “interpretación”, “verdad”, “imparcial”, “ecuánime”, “adecuado”. 
+        Evitar expresiones como "noticias objetivas". Mejor utilizar relatos veraces y noticias verdaderas.  
+        Usar expresiones como "fundadas en hechos o datos que "factual" 
+        Evita el uso de expresiones como: "hechos verficables". Eso es una redundancia. Utilizar solo la expresión o palabra "Hechos" o "datos" es suficiente. 
+        ¡MUY IMPORTANTE! Evita las expresiones "hecho objetivo", "dato objetivo" "interpretación subjetiva", "verdad objetiva", "neutral". Utilizar, en cambio solo "hecho", "dato", "interpretación", "verdad", "imparcial", "ecuánime", "adecuado". 
 
         Ejemplos de salida pueden ser:
         1º La noticia es sobresaliente porque ofrece un relato ordenado y veraz en el que las afirmaciones del periodista
@@ -325,7 +325,7 @@ class Utils:
         Extrae cada fragmento y lo asocia a la valoración correspondiente en un diccionario.
 
         Ejemplo de entrada:
-        "La noticia presenta interpretaciones subjetivas... objetiva. | [\"Fragmento 1\"], [\"Fragmento 2\"]"
+        "La noticia presenta interpretaciones subjetivas... objetiva. | ["Fragmento 1"], ["Fragmento 2"]"
 
         Devuelve:
         {
@@ -656,7 +656,12 @@ class Utils:
                     match = re.search(r'TITULO PROPUESTO:\s*(.+)', salida_gpt_mejorada)
 
                 if match:
-                    titular_reformulado = match.group(1).strip()
+                    tr = match.group(1)
+                    if isinstance(tr, list):
+                        tr = " ".join(str(x) for x in tr)
+                    elif not isinstance(tr, str):
+                        tr = str(tr)
+                    titular_reformulado = tr.strip()
 
             if isinstance(evaluacion_claude, str) and re.search(r'\bAprobada\b', evaluacion_claude, flags=re.IGNORECASE):
                 consenso = True
@@ -672,6 +677,112 @@ class Utils:
             resultados["mensaje"] = "No se alcanzó consenso tras múltiples iteraciones."
 
         return resultados
+    
+    @staticmethod
+    def obtener_resumen_valoracion(openai_client, valoracion_general):
+        criterios = [
+            "Interpretación del periodista",
+            "Opiniones",
+            "Cita de fuentes",
+            "Confiabilidad de las fuentes",
+            "Trascendencia",
+            "Relevancia de los datos",
+            "Precisión y claridad",
+            "Enfoque",
+            "Contexto",
+            "Ética"
+        ]
+        prompt = (
+            "Genera un resumen del siguiente campo valoracion_general de menos de veinte palabras en el que se recoja de manera profesional, aséptica y sin emoticonos los puntos más importantes de los diez criterios de evaluación: "
+            + ", ".join(criterios) + ". "
+            "No tiene que ser un resumen de la noticia ni de su contenido, sino de la calidad periodística de la misma. "
+            "Campo valoracion_general: " + str(valoracion_general)
+        )
+        response = openai_client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "Eres un analista experto en calidad periodística."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=60,
+            temperature=0.3
+        )
+        return response.choices[0].message.content.strip()
+    
+    @staticmethod
+    def extraer_texto_llano(obj):
+        """
+        Extrae texto plano de posibles formatos de respuesta de Anthropic (string, dict, lista, TextBlock, etc).
+        """
+        if obj is None:
+            return ""
+        if isinstance(obj, list):
+            # Procesar cada elemento y concatenar los textos extraídos
+            textos = [Utils.extraer_texto_llano(x) for x in obj]
+            resultado = " ".join(textos).strip()
+            # Si tras unir sigue quedando TextBlock(...), limpiar de nuevo
+            match = re.search(r"text=([\"'])(.*?)\1", resultado, re.DOTALL)
+            if match:
+                texto = match.group(2).strip()
+                texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+                return texto
+            resultado = re.sub(r'^Resumen de valoración del titular:\s*', '', resultado, flags=re.IGNORECASE)
+            return resultado
+        if isinstance(obj, str):
+            # Si es un string tipo TextBlock(..., text='...', ...)
+            match = re.search(r"text=([\"'])(.*?)\1", obj, re.DOTALL)
+            if match:
+                texto = match.group(2).strip()
+                texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+                return texto
+            # Si es string plano
+            texto = obj.strip()
+            texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+            return texto
+        if isinstance(obj, dict):
+            if "text" in obj:
+                texto = str(obj["text"]).strip()
+                texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+                return texto
+            # Si es dict con un solo valor
+            if len(obj) == 1:
+                texto = str(list(obj.values())[0]).strip()
+                texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+                return texto
+            return str(obj)
+        # Si es otro tipo, convertir a string
+        texto = str(obj).strip()
+        texto = re.sub(r'^Resumen de valoración del titular:\s*', '', texto, flags=re.IGNORECASE)
+        return texto
+
+    @staticmethod
+    def obtener_resumen_valoracion_titular(anthropic_client, valoracion_titular):
+        criterios_titular = [
+            "Veracidad",
+            "Claridad",
+            "Relevancia",
+            "Grado de clickbait"
+        ]
+        # Convertir el diccionario valoracion_titular a un string legible
+        if isinstance(valoracion_titular, dict):
+            valoracion_titular_str = "\n".join(f"{k}: {v}" for k, v in valoracion_titular.items() if k != "historial")
+        else:
+            valoracion_titular_str = str(valoracion_titular)
+        prompt = (
+            "Genera un resumen del siguiente campo valoracion_titular de menos de veinte palabras en el que se recoja de manera profesional, aséptica y sin emoticonos los puntos más importantes de los criterios de evaluación del titular: "
+            + ", ".join(criterios_titular) + ". "
+            "No tiene que ser un resumen del titular ni de su contenido, sino de la calidad periodística del mismo. "
+            "Campo valoracion_titular: " + valoracion_titular_str + "\n"
+            "\nIMPORTANTE: Devuelve únicamente el resumen solicitado, sin ningún tipo de explicación, cita, formato, prefijo, ni información adicional. Solo el texto del resumen, en una sola frase."
+        )
+        response = anthropic_client.messages.create(
+            model="claude-3-5-haiku-20241022",
+            max_tokens=60,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        # Usar la función de limpieza robusta
+        texto_limpio = Utils.extraer_texto_llano(response.content)
+        return texto_limpio, response.content
     
 
 

@@ -21,8 +21,28 @@ def procesar_noticias():
         collection = client['Base_de_datos_noticias']['Noticias']
         query = {"$or": [{"puntuacion": {"$exists": False}, 'fuente':{"$exists": True}}]}
         for doc in collection.find(query):
+            print(f"ID de la noticia a analizar: {doc['_id']}")
             titulo = doc.get("titulo")
+            if isinstance(titulo, list):
+                titulo = ", ".join(titulo)
+            elif titulo is None:
+                titulo = ""
+            else:
+                titulo = str(titulo)
             noticia = doc.get("cuerpo")
+            if isinstance(noticia, list):
+                noticia = " ".join(noticia)
+            elif noticia is None:
+                noticia = ""
+            else:
+                noticia = str(noticia)
+            autor = doc.get("autor")
+            if isinstance(autor, list):
+                autor = ", ".join(autor)
+            elif autor is None:
+                autor = ""
+            else:
+                autor = str(autor)
             if not titulo or not noticia:
                 continue
             print(f"Procesando noticia: {titulo}")
@@ -45,6 +65,7 @@ def procesar_noticias():
             texto_referencia = Utils.generar_texto_referencia(openai, titulo, noticia, valoraciones_texto)
             texto_referencia_diccionario = Utils.crear_diccionario_citas(texto_referencia)
             valoracion_general = Utils.obtener_valoracion_general(openai, titulo, noticia, valoraciones_texto)
+            resumen_valoracion = Utils.obtener_resumen_valoracion(openai, valoracion_general)
             valoraciones_html = {}
             for key, md in valoraciones_texto.items():
                 valoraciones_html[key] = Utils.convertir_markdown_a_html(md)
@@ -52,6 +73,7 @@ def procesar_noticias():
             resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)
             titular_reformulado = resultados_titular.get("titular_reformulado")
             es_clickbait = bool(titular_reformulado)
+            resumen_valoracion_titular, _ = Utils.obtener_resumen_valoracion_titular(anthropic_client, resultados_titular)
             update_fields = {
                 "valoraciones": valoraciones_texto,
                 "puntuacion_individual": puntuacion_individual,
@@ -59,6 +81,8 @@ def procesar_noticias():
                 "texto_referencia_diccionario": texto_referencia_diccionario,
                 "valoracion_titular": resultados_titular,
                 "valoracion_general": valoracion_general,
+                "resumen_valoracion": resumen_valoracion,
+                "resumen_valoracion_titular": resumen_valoracion_titular,
                 "valoraciones_html": valoraciones_html,
                 "es_clickbait": es_clickbait
             }
@@ -76,6 +100,7 @@ def procesar_noticias():
                 f"Es clickbait: {es_clickbait}\n"
                 f"Título reformulado: {titular_reformulado}\n"
             )
+            break
     except pymongo.errors.ConnectionFailure as e:
         print(f"Error de conexión a MongoDB: {e}")
     except anthropic.APIError as e:
@@ -84,5 +109,6 @@ def procesar_noticias():
         print(f"Error de API OpenAI: {e}")
     except Exception as e:
         print(f"Error inesperado: {e}")
+
 if __name__ == "__main__":
     procesar_noticias()
