@@ -780,9 +780,14 @@ class Utils:
             max_tokens=60,
             messages=[{"role": "user", "content": prompt}]
         )
-        # Usar la función de limpieza robusta
-        texto_limpio = Utils.extraer_texto_llano(response.content)
-        return texto_limpio, response.content
+        # Accede solo al texto puro de la respuesta de Anthropic
+        if response.content and hasattr(response.content[0], 'text'):
+            texto_puro = response.content[0].text
+        elif response.content:
+            texto_puro = str(response.content[0])
+        else:
+            texto_puro = ""
+        return texto_puro
     
 
 
