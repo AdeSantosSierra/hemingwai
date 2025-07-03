@@ -73,7 +73,7 @@ def procesar_noticias():
             resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)
             titular_reformulado = resultados_titular.get("titular_reformulado")
             es_clickbait = bool(titular_reformulado)
-            resumen_valoracion_titular, _ = Utils.obtener_resumen_valoracion_titular(anthropic_client, resultados_titular)
+            resumen_valoracion_titular = Utils.obtener_resumen_valoracion_titular(anthropic_client, resultados_titular)
             update_fields = {
                 "valoraciones": valoraciones_texto,
                 "puntuacion_individual": puntuacion_individual,

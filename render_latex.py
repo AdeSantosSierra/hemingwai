@@ -227,7 +227,7 @@ def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
 
 # --- Jinja Environment Setup ---
 env = Environment(
-    loader=FileSystemLoader("hemingwai"),
+    loader=FileSystemLoader("."),
     autoescape=select_autoescape(['html', 'xml']),
     trim_blocks=True, lstrip_blocks=True
 )
@@ -294,16 +294,16 @@ if __name__ == "__main__":
 
     # --- ARREGLO: extraer solo el texto de resumen_valoracion_titular si viene como objeto tipo TextBlock ---
     rvt = news_item_data.get("resumen_valoracion_titular")
-    if isinstance(rvt, str):
-        pass  # ya es string
-    elif isinstance(rvt, dict) and "text" in rvt:
-        news_item_data["resumen_valoracion_titular"] = rvt["text"]
-    elif isinstance(rvt, str) and rvt.startswith("TextBlock("):
-        # Extraer el texto usando regex
-        import re
-        match = re.search(r"text=['\"](.+?)['\"]", rvt)
-        if match:
-            news_item_data["resumen_valoracion_titular"] = match.group(1)
+    # Ya no es necesario limpiar, siempre es string puro
+    # if isinstance(rvt, str):
+    #     pass  # ya es string
+    # elif isinstance(rvt, dict) and "text" in rvt:
+    #     news_item_data["resumen_valoracion_titular"] = rvt["text"]
+    # elif isinstance(rvt, str) and rvt.startswith("TextBlock("):
+    #     import re
+    #     match = re.search(r"text=['\"](.+?)['\"]", rvt)
+    #     if match:
+    #         news_item_data["resumen_valoracion_titular"] = match.group(1)
     # Si no, dejarlo tal cual
 
     tr_direct_dict = news_item_data.get("texto_referencia_diccionario")
