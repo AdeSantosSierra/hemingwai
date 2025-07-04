@@ -12,6 +12,8 @@ from matplotlib.projections.polar import PolarAxes
 from matplotlib.projections import register_projection
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
+from mega import Mega
+from dotenv import load_dotenv
 
 # --- Unicode Character Handling ---
 def strip_or_replace_problematic_unicode(text):
@@ -23,6 +25,11 @@ def strip_or_replace_problematic_unicode(text):
         '\u26A0': '[Atención]',  # ⚠ Warning sign
         '\u2B50': '[Estrella]',  # ⭐ Star
         '\u1F6A9': '[Bandera]', # 🚩 Triangular Flag
+        # Comillas tipográficas y angulares a comillas rectas
+        '“': '"', '”': '"', '„': '"', '‟': '"',
+        '‘': "'", '’': "'", '‚': "'", '‛': "'",
+        '«': '"', '»': '"',
+        '‹': "'", '›': "'",
     }
     for char_unicode, replacement_text in replacements.items():
         text = text.replace(char_unicode, replacement_text)
@@ -37,7 +44,7 @@ def strip_or_replace_problematic_unicode(text):
         if (0x20 <= code <= 0x7E) or (0xA1 <= code <= 0xFF) or (0x100 <= code <= 0x17F):
             return True
         # Saltar caracteres de control
-        if code in (0x0A, 0x0D, 0x09):  # \, \r, \t
+        if code in (0x0A, 0x0D, 0x09):  # \n, \r, \t
             return True
         return False
     # Reemplazar solo los no permitidos
@@ -70,8 +77,15 @@ def escape_tex_chars_in_plain_text_segment(text_segment):
 
 def escape_tex_inline(text_content):
     r"""For content *inside* LaTeX commands like \textbf{...} or item labels."""
-    if not isinstance(text_content, str): text_content = str(text_content)
+    if not isinstance(text_content, str):
+        text_content = str(text_content)
     text_content = strip_or_replace_problematic_unicode(text_content)
+    # Reemplazo de comillas dobles rectas por comillas tipográficas de LaTeX
+    # Solo reemplazar pares de comillas, no comillas sueltas
+    def replace_double_quotes_latex(s):
+        # Reemplaza "texto" por ``texto''
+        return re.sub(r'"([^"]+)"', r"``\1''", s)
+    text_content = replace_double_quotes_latex(text_content)
     processed_content = re.sub(r"\s*\n\s*", " ", text_content).strip()
     return escape_tex_chars_in_plain_text_segment(processed_content)
 
@@ -136,94 +150,9 @@ def format_date_for_latex(date_str):
         return dt_object.strftime("%d de %B de %Y")
     except ValueError: return date_str
 
-# --- Matplotlib Spider Chart ---
-def radar_factory(num_vars, frame='circle'):
-    """
-    Create a radar chart projectiion.
-    (Source: Matplotlib official examples)
-    """
-    theta = np.linspace(0, 2*np.pi, num_vars, endpoint=False)
-
-    class RadarAxes(PolarAxes):
-        name = 'radar'
-        RESOLUTION = 1
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.set_theta_zero_location('N')
-        def fill(self, *args, closed=True, **kwargs):
-            return super().fill(theta, *args, closed=closed, **kwargs)
-        def plot(self, *args, **kwargs):
-            lines = super().plot(theta, *args, **kwargs)
-            for line in lines:
-                self._close_line(line)
-        def _close_line(self, line):
-            x, y = line.get_data()
-            # FIXME: Markers are not drawn correctly when first and last points are the same
-            if x[0] != x[-1]:
-                x = np.append(x, x[0])
-                y = np.append(y, y[0])
-                line.set_data(x, y)
-        def set_varlabels(self, labels):
-            self.set_thetagrids(np.degrees(theta), labels)
-        def _gen_axes_patch(self):
-            if frame == 'circle':
-                return Circle((0.5, 0.5), 0.5)
-            elif frame == 'polygon':
-                return RegularPolygon((0.5, 0.5), num_vars,
-                                      radius=.5, edgecolor="k")
-            else:
-                raise ValueError("unknown frame: %s" % frame)
-        def _gen_axes_spines(self):
-            if frame == 'circle':
-                return super()._gen_axes_spines()
-            elif frame == 'polygon':
-                spine = Spine(axes=self, spine_type='circle',
-                              path=Path.unit_regular_polygon(num_vars))
-                spine.set_transform(Affine2D().scale(.5).translate(.5, .5)
-                                    + self.transAxes)
-                return {'polar': spine}
-            else:
-                raise ValueError("unknown frame: %s" % frame)
-    register_projection(RadarAxes)
-    return theta
-
-def generate_spider_chart(data_dict, output_image_filename="spider_chart.png"):
-    if not data_dict or not isinstance(data_dict, dict):
-        print("No valid data provided for spider chart.")
-        return None
-
-    labels = list(data_dict.keys())
-    values = list(data_dict.values())
-    num_vars = len(labels)
-
-    if num_vars < 3: # Radar chart needs at least 3 axes
-        print(f"Not enough data points ({num_vars}) for a spider chart. Min 3 required.")
-        return None
-
-    theta = radar_factory(num_vars, frame='polygon')
-
-    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection='radar'))
-    fig.subplots_adjust(wspace=0.25, hspace=0.20, top=0.85, bottom=0.05)
-
-    ax.set_rgrids([2, 4, 6, 8, 10]) # Escala 1-10
-    ax.set_ylim(1, 10)
-    ax.set_title("Puntuaciones Individuales", weight='bold', size='medium', position=(0.5, 1.1),
-                 horizontalalignment='center', verticalalignment='center')
-
-    ax.plot(theta, values, color='b', marker='o')
-    ax.fill(values, 'b', alpha=0.25) # Use fill with theta implicitly handled by custom projection
-
-    ax.set_varlabels(labels)
-
-    try:
-        plt.savefig(output_image_filename, dpi=150, bbox_inches='tight')
-        print(f"Spider chart saved to {output_image_filename}")
-        plt.close(fig) # Close the figure to free memory
-        return output_image_filename
-    except Exception as e:
-        print(f"Error saving spider chart: {e}")
-        plt.close(fig)
-        return None
+# --- Spider Chart recomendado ---
+# Usar solo la función generar_grafico_arania para gráficos de araña (radar).
+# La función avanzada generate_spider_chart y la proyección personalizada han sido eliminadas para evitar confusiones.
 
 # --- Jinja Environment Setup ---
 env = Environment(
@@ -277,9 +206,9 @@ def generar_grafico_arania(valores, etiquetas, nombre_archivo):
     plt.close()
 
 if __name__ == "__main__":
+    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
     news_data_file = "retrieved_news_item.txt"
     latex_template_file = "news_template.tex.j2"
-    output_tex_file = "news_report.tex"
 
     try:
         with open(news_data_file, "r", encoding="utf-8") as f:
@@ -330,24 +259,81 @@ if __name__ == "__main__":
     if "fuente" not in news_item_data:
         news_item_data["fuente"] = None
 
+    # --- Manejo de carpeta temporal ---
+    output_dir = "output_temporal"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    # Vaciar la carpeta antes de generar nuevos archivos, incluyendo el PDF anterior
+    for f in os.listdir(output_dir):
+        try:
+            os.remove(os.path.join(output_dir, f))
+        except Exception as e:
+            print(f"No se pudo eliminar {f}: {e}")
+
+    # Obtener el titular y generar un nombre de archivo seguro
+    def safe_filename(s, maxlen=60):
+        import re
+        s = re.sub(r'[^\w\- ]', '', s)
+        s = s.replace(' ', '_')
+        return s[:maxlen]
+
+    titulo = news_item_data.get('titulo', 'noticia')
+    filename_base = safe_filename(titulo)
+    output_tex_file = os.path.join(output_dir, f"{filename_base}.tex")
+    output_pdf_file = os.path.join(output_dir, f"{filename_base}.pdf")
+    spider_chart_file = os.path.join(output_dir, "spider_chart.png")
+
     # Generate spider chart image if data exists
     puntuacion_individual_data = news_item_data.get("puntuacion_individual")
-    spider_chart_filename = None
     if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
         CAMPOS_FIJOS = [
             "Interpretación del periodista", "Opiniones", "Cita de fuentes", "Confiabilidad de las fuentes", "Trascendencia",
             "Relevancia de los datos", "Precisión y claridad", "Enfoque", "Contexto", "Ética"
         ]
         valores = [float(puntuacion_individual_data.get(str(i), 0)) for i in range(1, 11)]
-        generar_grafico_arania(valores, CAMPOS_FIJOS, "spider_chart.png")
-        print(f"Gráfico generado correctamente: spider_chart.png")
+        spider_chart_file = os.path.join(output_dir, "spider_chart.png")
+        generar_grafico_arania(valores, CAMPOS_FIJOS, spider_chart_file)
+        print(f"Gráfico generado correctamente: {spider_chart_file}")
     else:
         print("No 'puntuacion_individual' data for spider chart.")
 
-    context = {"news_item": news_item_data}
+    context = {"news_item": news_item_data, "spider_chart_file": spider_chart_file}
     try:
         render_template(latex_template_file, output_tex_file, context)
     except Exception:
         exit(1)
 
     print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
+
+    # Compilar el PDF automáticamente
+    try:
+        import subprocess
+        subprocess.run([
+            "pdflatex",
+            "-output-directory", output_dir,
+            output_tex_file
+        ], check=True)
+        print(f"PDF generado: {output_pdf_file}")
+    except Exception as e:
+        print(f"Error al compilar el PDF: {e}")
+
+    # Subir el PDF a Mega.nz automáticamente
+    MEGA_EMAIL = os.getenv("MEGA_EMAIL")
+    MEGA_PASSWORD = os.getenv("MEGA_PASSWORD")
+    MEGA_FOLDER_PATH = "HemingwAI/PDF hemingwAI"
+    if MEGA_EMAIL and MEGA_PASSWORD:
+        try:
+            mega = Mega()
+            m = mega.login(MEGA_EMAIL, MEGA_PASSWORD)
+            # Buscar la carpeta destino (no crearla si no existe)
+            folder = m.find(MEGA_FOLDER_PATH)
+            if not folder:
+                raise Exception(f"La carpeta destino '{MEGA_FOLDER_PATH}' no existe en tu cuenta de Mega.nz. Por favor, créala manualmente.")
+            # Subir el PDF a la carpeta
+            file = m.upload(output_pdf_file, folder[0])
+            link = m.get_upload_link(file)
+            print(f"PDF subido a Mega.nz en {MEGA_FOLDER_PATH}. Link: {link}")
+        except Exception as e:
+            print(f"Error al subir el PDF a Mega.nz: {e}")
+    else:
+        print("Credenciales de Mega.nz no encontradas en el .env. No se subió el PDF.")
