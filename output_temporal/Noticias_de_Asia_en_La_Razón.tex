@@ -1,0 +1,118 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{times}
+\usepackage{hyperref} % Re-enable hyperref
+\usepackage{enumitem}
+\usepackage{tikz}       % For graphics (might still be useful for other things, or can remove if only for pgf-radar)
+% \usepackage{pgf-radar}  % No longer using pgf-radar, using Matplotlib image
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{array}
+\usepackage{sectsty}
+\usepackage{ragged2e}
+
+% Hyperlink setup - re-enabled
+\hypersetup{
+   colorlinks=false,
+   pdfborder={0 0 0},
+   breaklinks=true % Allows links to break across lines
+}
+
+\sectionfont{\large\bfseries}
+\subsectionfont{\normalsize\bfseries}
+
+\begin{document}
+
+% --- Title and Puntuacion ---
+\begin{center}
+    {\Huge\bfseries Noticias de Asia en La Raz\'{o}n\par}
+    \vspace{0.5em}
+    {\large\bfseries Puntuación: 49\par}
+\end{center}
+\vspace{1em}
+
+% --- Autor, Fuente, Fecha ---
+\noindent\textbf{Autor:} La Raz\'{o}n, Vasif Huseynov \hfill \textbf{Fuente:} LaRazon \hfill \textbf{Fecha:} N/A\par
+\vspace{1em}
+
+% --- Cuerpo de la Noticia ---
+\section*{Cuerpo de la Noticia}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0em}
+El alto comisionado de la ONU para los Derechos Humanos califica el escenario actual como el momento "m\'{a}s oscuro" de la guerra en la Franja, con el ej\'{e}rcito israel\'{i} sometiendo a toda una poblaci\'{o}n a bombardeos, asedio y el riesgo de hambruna
+\vspace{1em}
+
+% --- URL (Re-enabled and moved) ---
+\section*{URL}
+\url{ https://www.larazon.es/internacional/asia/ }
+\vspace{1em}
+
+% --- Resumen de la Valoración ---
+\section*{Resumen de la Valoración}
+    La noticia carece de contexto hist\'{o}rico, diversidad de fuentes y precisi\'{o}n, empleando lenguaje sensacionalista y enfoque limitado.
+\vspace{1em}
+
+% --- Resumen de la Valoración del Titular ---
+\section*{Resumen de la Valoración del Titular}
+    Titular evaluado objetivamente: veraz, claro y relevante, con bajo riesgo de clickbait, mantiene est\'{a}ndares period\'{i}sticos profesionales.
+\vspace{1em}
+
+% --- Spider Chart for Puntuacion Individual (from Matplotlib image) ---
+\clearpage
+\section*{Gráfico de Puntuaciones Individuales}
+\begin{figure}[h!] % [h!] tries to place it "here"
+   \centering
+   \includegraphics[width=0.8\textwidth, keepaspectratio]{spider_chart.png}
+   % \caption{Gráfico de Puntuaciones Individuales.} % Optional caption
+\end{figure}
+\clearpage % Add a page break after the figure, if desired, to ensure it doesn't overlap
+
+% --- Valoracion General (String Summary) ---
+\section*{Valoración General}
+    La noticia titulada "Noticias de Asia en La Raz\'{o}n", que aborda el conflicto en la Franja de Gaza, presenta varios desaf\'{i}os informativos significativos. En primer lugar, carece de un contexto hist\'{o}rico y geopol\'{i}tico adecuado, impidiendo a los lectores entender la complejidad y las ra\'{i}ces del conflicto. Adem\'{a}s, la cobertura se basa principalmente en una declaraci\'{o}n del alto comisionado de la ONU, sin proporcionar suficientes datos verificables o cifras concretas para respaldar afirmaciones sobre bombardeos, asedios y el riesgo de hambruna. La noticia utiliza un lenguaje emocional y sensacionalista, como calificar la situaci\'{o}n como el "momento m\'{a}s oscuro", sin contexto o an\'{a}lisis detallado que sustente tal afirmaci\'{o}n. Asimismo, hay una falta de diversidad de fuentes y perspectivas, limitando la comprensi\'{o}n completa y equilibrada del conflicto. En resumen, la noticia podr\'{i}a beneficiarse significativamente de mayor profundidad informativa, inclusi\'{o}n de m\'{u}ltiples voces y un enfoque m\'{a}s neutral basado en hechos. Al implementar estas mejoras, la cobertura ser\'{i}a m\'{a}s exacta e informativa, ayudando a los lectores a formarse una opini\'{o}n m\'{a}s completa y fundamentada sobre el conflicto en la Franja de Gaza.
+\vspace{1em}
+
+% --- Valoración del Titular ---
+\section*{Valoración del Titular}
+        \textbf{Análisis del titular:} \\ 
+        La respuesta anterior sobre el titular "Noticias de Asia en La Raz\'{o}n" se mantiene adecuada, cumpliendo con los criterios de veracidad, claridad y relevancia. No se ha identificado ning\'{u}n uso de clickbait, ya que el titular es simple y directo. Claude ha aprobado la evaluaci\'{o}n, indicando que no hay problemas significativos, por lo que no se requiere una modificaci\'{o}n al an\'{a}lisis ni la sugerencia de un t\'{i}tulo alternativo.
+\par\medskip
+No obstante, para robustecer la evaluaci\'{o}n, se puede a\~{n}adir un comentario sobre la posible mejora en la relevancia y atraer a un p\'{u}blico espec\'{i}fico interesado en noticias m\'{a}s detalladas o espec\'{i}ficas. A continuaci\'{o}n, se presenta una versi\'{o}n mejorada del an\'{a}lisis del titular:
+\par\medskip
+\textbf{Veracidad:} - El titular es veraz, indicando que La Raz\'{o}n publica noticias relacionadas con Asia. No presenta informaci\'{o}n enga\~{n}osa. - Puntuaci\'{o}n: +2/3
+\par\medskip
+\textbf{Claridad:} - El titular es claro y preciso. Comunica de forma directa y accesible lo que ofrece: noticias de Asia, publicadas en La Raz\'{o}n. - Puntuaci\'{o}n: +3/3
+\par\medskip
+\textbf{Relevancia:} - Aunque el titular es gen\'{e}rico y puede no captar inmediatamente la atenci\'{o}n de un p\'{u}blico que busque detalles espec\'{i}ficos, proporciona una puerta de entrada a una amplia cobertura de temas en Asia. - Puntuaci\'{o}n: +1/3
+\par\medskip
+\textbf{Grado de Clickbait:} - El an\'{a}lisis confirma que no utiliza elementos sensacionalistas o enga\~{n}osos. - Mantiene un tono informativo sin exageraciones ni promesas incumplibles. - Puntuaci\'{o}n: +2/3
+\par\medskip
+\textbf{Puntuaci\'{o}n global: 8/12}
+\par\medskip
+\textbf{Conclusi\'{o}n:} El titular cumple con ser informativo y directo, siendo adecuado para aquellos interesados en una perspectiva amplia sobre Asia en La Raz\'{o}n. Para mejorar su atractivo, podr\'{i}a beneficiarse de una mayor especificidad en funci\'{o}n de los contenidos destacados.
+\par\medskip
+Dado que Claude no ha sugerido cambios al titular original debido a un supuesto clickbait, no se requiere proponer una versi\'{o}n alternativa.
+        \vspace{1em}
+\vspace{1em}
+
+% --- Texto Referencia (Consolidated) ---
+\section*{Texto de Referencia}
+    \textit{(Mostrando desde el campo de diccionario directo: texto\_referencia\_diccionario)}
+    \begin{itemize}[leftmargin=*]
+            \item \textbf{Referencia El alto comisionado de la ONU para los Derechos Humanos califica el escenario actual como el momento ``m\'{a}s oscuro'' de la guerra en la Franja:} 9
+            \item \textbf{Referencia con el ej\'{e}rcito israel\'{i} sometiendo a toda una poblaci\'{o}n a bombardeos, asedio y el riesgo de hambruna:} 10
+    \end{itemize}
+\vspace{1em}
+
+% --- Valoraciones (Dictionary of AI interpretations) ---
+% This section is to be removed as per user request.
+% \section*{Valoraciones (Interpretaciones IA)}
+% %    ... (content previously here) ...
+% % \vspace{1em}
+
+\end{document}
