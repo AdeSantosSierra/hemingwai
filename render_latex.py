@@ -16,6 +16,7 @@ from mega import Mega
 from dotenv import load_dotenv
 import glob
 import subprocess
+import sys
 
 # --- Unicode Character Handling ---
 def strip_or_replace_problematic_unicode(text):
@@ -273,9 +274,8 @@ if __name__ == "__main__":
     print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
 
     # Generar el gráfico de araña siempre antes de compilar el PDF
-    import subprocess
     subprocess.run([
-        "python3",
+        sys.executable,
         os.path.join(script_dir, "generar_grafico_arania.py")
     ], check=True)
 

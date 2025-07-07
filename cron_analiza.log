@@ -1,0 +1,31 @@
+Ejecutando análisis de noticia con Hemingwai.py...
+ID de la noticia a analizar: 68227effea8a5d886b18248b
+Procesando noticia: Putin desoye el clamor mundial de un alto el fuego en Ucrania
+Error de API Anthropic: Error code: 529 - {'type': 'error', 'error': {'type': 'overloaded_error', 'message': 'Overloaded'}}
+
+ID de la noticia procesada: 68227effea8a5d886b18248b
+Extrayendo noticia procesada...
+Running fetch_news_item.py directly as a standalone script.
+Fetching by id: 68227effea8a5d886b18248b
+Attempting to fetch by ID: 68227effea8a5d886b18248b
+Using collection: Noticias
+Found: 68227effea8a5d886b18248b
+Saved to /home/ravila/hemingwai/retrieved_news_item.txt
+
+Sample fetched item data:
+  _id: 68227effea8a5d886b18248b
+  url: https://www.larazon.es/internacional/putin-desoye-clamor-mundial-alto-fuego-ucrania_2025051268223d92...
+  titulo: Putin desoye el clamor mundial de un alto el fuego en Ucrania
+  cuerpo: Rusia ha desestimado la solicitud conjunta de Ucrania y Europa para un alto el fuego incondicional d...
+  fecha_publicacion: 2025-05-12T20:27:30+02:00
+  autor: [complex type - not showing full content]
+  identificador: 59454b03e54ff3177de5cf235d352f07529d59e7cd85c5d9fc856b9beb6b27da
+  fuente: LaRazon
+  fecha_extraccion: 2025-05-12T23:06:39.399919
+  tags: [complex type - not showing full content]
+  keywords: [complex type - not showing full content]
+  top_image: https://fotografias.larazon.es/clipping/cmsimages01/2025/05/11/66479FC9-9E6D-4AA2-8C4F-9D30ECDE56F6/...
+  images: [complex type - not showing full content]
+  is_media_news: False
+
+El campo 'puntuacion' no está presente o está vacío en el archivo de la noticia. Abortando.
