@@ -1,0 +1,25 @@
+# =============================================
+# IMPORTANTE PARA PYTHON 3.11+
+#
+# mega.py y tenacity 5.1.5 NO son compatibles con Python 3.11+ de forma nativa.
+# Para que funcione la subida a Mega.nz:
+# 1. Instala las dependencias con este requirements.txt
+# 2. Parchea manualmente el archivo mega.py en tu entorno virtual:
+#    - Comenta la línea:
+#        from tenacity import retry, wait_exponential, retry_if_exception_type
+#    - Elimina o comenta el decorador @retry en la función _api_request
+# 3. Así evitarás el error de 'asyncio.coroutine' y el pipeline funcionará.
+# =============================================
+
+openai
+anthropic
+pymongo
+Jinja2
+matplotlib
+numpy
+python-dotenv
+mega.py==1.0.8
+tenacity==5.1.5
+requests
+pycryptodome
+pathlib==1.0.1

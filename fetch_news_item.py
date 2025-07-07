@@ -7,8 +7,14 @@ from dotenv import load_dotenv
 import json
 import random
 import sys
+import re
 
 OUTPUT_FILENAME = "retrieved_news_item.txt"
+
+def safe_filename(s, maxlen=60):
+    s = re.sub(r'[^\w\- ]', '', s)
+    s = s.replace(' ', '_')
+    return s[:maxlen]
 
 def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", "Noticias"]):
     """
@@ -37,8 +43,11 @@ def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", 
                 if news_item: print(f"Found: {news_item.get('_id')}"); break
         if not news_item: print(f"ID {article_id_str} not found."); client.close(); return None
         if '_id' in news_item and isinstance(news_item['_id'], ObjectId): news_item['_id'] = str(news_item['_id'])
-        with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f: json.dump(news_item, f, ensure_ascii=False, indent=4)
-        print(f"Saved to {OUTPUT_FILENAME}"); return news_item
+        # Guardar en hemingwai/retrieved_news_item.txt
+        output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'retrieved_news_item.txt')
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(news_item, f, ensure_ascii=False, indent=4)
+        print(f"Saved to {output_path}"); return news_item
     except Exception as e: print(f"Error in get_specific_news_item: {e}"); return None
     finally:
         if 'client' in locals() and client: client.close()
@@ -123,7 +132,7 @@ if __name__ == "__main__":
         print(f"Fetching by id: {article_id}")
         retrieved_item = get_specific_news_item(article_id)
     else:
-        print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to {OUTPUT_FILENAME}.")
+        print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to output_temporal.")
         retrieved_item = get_news_item_with_score()
 
     if retrieved_item:

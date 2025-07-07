@@ -5,7 +5,7 @@ import sys
 import json
 
 VENV_PYTHON = os.path.abspath(os.path.join('venv', 'bin', 'python'))
-HEMINGWAI_DIR = os.path.abspath('hemingwai')
+HEMINGWAI_DIR = os.path.dirname(os.path.abspath(__file__))
 RETRIEVED_FILE = os.path.join(HEMINGWAI_DIR, 'retrieved_news_item.txt')
 
 # 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada
