@@ -14,6 +14,8 @@ from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
 from mega import Mega
 from dotenv import load_dotenv
+import glob
+import subprocess
 
 # --- Unicode Character Handling ---
 def strip_or_replace_problematic_unicode(text):
@@ -156,7 +158,7 @@ def format_date_for_latex(date_str):
 
 # --- Jinja Environment Setup ---
 env = Environment(
-    loader=FileSystemLoader("."),
+    loader=FileSystemLoader(os.path.dirname(__file__)),
     autoescape=select_autoescape(['html', 'xml']),
     trim_blocks=True, lstrip_blocks=True
 )
@@ -206,61 +208,11 @@ def generar_grafico_arania(valores, etiquetas, nombre_archivo):
     plt.close()
 
 if __name__ == "__main__":
-    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
-    news_data_file = "retrieved_news_item.txt"
+    script_dir = os.path.dirname(__file__)
+    load_dotenv(os.path.join(script_dir, ".env"))
+    news_data_file = os.path.join(script_dir, "retrieved_news_item.txt")
     latex_template_file = "news_template.tex.j2"
-
-    try:
-        with open(news_data_file, "r", encoding="utf-8") as f:
-            news_item_data = json.load(f)
-    except FileNotFoundError:
-        print(f"Error: News data file '{news_data_file}' not found."); exit(1)
-    except json.JSONDecodeError:
-        print(f"Error: Could not decode JSON from '{news_data_file}'."); exit(1)
-
-    # Limpiar recursivamente todos los campos del diccionario
-    news_item_data = clean_dict_recursive(news_item_data)
-
-    # --- ARREGLO: extraer solo el texto de resumen_valoracion_titular si viene como objeto tipo TextBlock ---
-    rvt = news_item_data.get("resumen_valoracion_titular")
-    # Ya no es necesario limpiar, siempre es string puro
-    # if isinstance(rvt, str):
-    #     pass  # ya es string
-    # elif isinstance(rvt, dict) and "text" in rvt:
-    #     news_item_data["resumen_valoracion_titular"] = rvt["text"]
-    # elif isinstance(rvt, str) and rvt.startswith("TextBlock("):
-    #     import re
-    #     match = re.search(r"text=['\"](.+?)['\"]", rvt)
-    #     if match:
-    #         news_item_data["resumen_valoracion_titular"] = match.group(1)
-    # Si no, dejarlo tal cual
-
-    tr_direct_dict = news_item_data.get("texto_referencia_diccionario")
-    if isinstance(tr_direct_dict, dict):
-        news_item_data["texto_referencia_direct_dict_data"] = tr_direct_dict
-        print("Using 'texto_referencia_diccionario' for 'texto_referencia_direct_dict_data'.")
-    else:
-        news_item_data["texto_referencia_direct_dict_data"] = None
-        print("'texto_referencia_diccionario' not found or not a dictionary for direct use.")
-
-    texto_ref_str = news_item_data.get("texto_referencia")
-    if isinstance(texto_ref_str, str):
-        try:
-            ast.literal_eval(texto_ref_str)
-            news_item_data["texto_referencia_parsed_content"] = texto_ref_str
-            print(f"'texto_referencia' string is parsable (but will be shown as string).")
-        except (ValueError, SyntaxError):
-            news_item_data["texto_referencia_parsed_content"] = texto_ref_str
-            print(f"Warning: 'texto_referencia' string is not parsable as dict. Will display as raw string.")
-    else:
-        news_item_data["texto_referencia_parsed_content"] = "Campo 'texto_referencia' no es un string o no disponible."
-        print("'texto_referencia' (string for parsing) not found or not a string.")
-
-    if "fuente" not in news_item_data:
-        news_item_data["fuente"] = None
-
-    # --- Manejo de carpeta temporal ---
-    output_dir = "output_temporal"
+    output_dir = os.path.join(script_dir, "output_temporal")
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     # Vaciar la carpeta antes de generar nuevos archivos, incluyendo el PDF anterior
@@ -269,6 +221,22 @@ if __name__ == "__main__":
             os.remove(os.path.join(output_dir, f))
         except Exception as e:
             print(f"No se pudo eliminar {f}: {e}")
+    # Cargar y limpiar news_item_data antes de usarla
+    try:
+        with open(news_data_file, "r", encoding="utf-8") as f:
+            news_item_data = json.load(f)
+    except FileNotFoundError:
+        print(f"Error: News data file '{news_data_file}' not found."); exit(1)
+    except json.JSONDecodeError:
+        print(f"Error: Could not decode JSON from '{news_data_file}'."); exit(1)
+    news_item_data = clean_dict_recursive(news_item_data)
+
+    # --- FIX: Mapear campos para la plantilla LaTeX ---
+    if "texto_referencia_diccionario" in news_item_data:
+        news_item_data["texto_referencia_direct_dict_data"] = news_item_data["texto_referencia_diccionario"]
+    if "texto_referencia" in news_item_data:
+        news_item_data["texto_referencia_parsed_content"] = news_item_data["texto_referencia"]
+    # --- FIN FIX ---
 
     # Obtener el titular y generar un nombre de archivo seguro
     def safe_filename(s, maxlen=60):
@@ -276,7 +244,6 @@ if __name__ == "__main__":
         s = re.sub(r'[^\w\- ]', '', s)
         s = s.replace(' ', '_')
         return s[:maxlen]
-
     titulo = news_item_data.get('titulo', 'noticia')
     filename_base = safe_filename(titulo)
     output_tex_file = os.path.join(output_dir, f"{filename_base}.tex")
@@ -305,9 +272,15 @@ if __name__ == "__main__":
 
     print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
 
+    # Generar el gráfico de araña siempre antes de compilar el PDF
+    import subprocess
+    subprocess.run([
+        "python3",
+        os.path.join(script_dir, "generar_grafico_arania.py")
+    ], check=True)
+
     # Compilar el PDF automáticamente
     try:
-        import subprocess
         subprocess.run([
             "pdflatex",
             "-output-directory", output_dir,
