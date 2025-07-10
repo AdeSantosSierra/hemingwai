@@ -1,5 +1,9 @@
+
 .env
 /node_modules
 
 *.pyc
 src/nohup.out
+
+venv/
+
