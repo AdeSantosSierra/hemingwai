@@ -789,5 +789,74 @@ class Utils:
             texto_puro = ""
         return texto_puro
     
+    @staticmethod
+    def analizar_noticia_deepseek(model, tokenizer, titulo, noticia):
+        import re
+        import torch
+        
+        valoraciones_deepseek = {}
+        puntuacion_individual_deepseek = {}
+        puntuaciones = []
+        device = next(model.parameters()).device
+
+        for key, criterio in Utils.criterios.items():
+            nombre_criterio = criterio["nombre"]
+            instruccion_criterio = criterio["instruccion"]
+            prompt = f"""
+Para esta noticia:
+
+{noticia}
+
+Clasifícala cualitativamente (Óptima, Positiva, Regular, Negativa, Desinformativa) en base a la siguiente instrucción y justifica tu decisión escribiendo en qué partes del texto te basas para tomar estas conclusiones. Si no se señalan las partes del texto en que se basan las conclusiones la respuesta no es válida. Menciona las áreas a mejorar y justifica detalladamente tu respuesta:
+
+{instruccion_criterio}
+
+Se requiere que la respuesta que se proporcione sea sin valoraciones interpretativas, sin instrucciones de cómo debe de ser una noticia. Siempre que se emita un juicio este no será moral en ningún caso e irá acompañado de una justificación. Se centrará solamente en el carácter informativo de la noticia. Las palabras seleccionadas se harán rigurosa y meticulosamente para evitar el mal uso del lenguaje como pueda ser la redundancia o el empleo de un término inapropiado como pueda ser la palabra "neutralidad" para referirse a la verdad, ya que la verdad no puede ser neutra, en todo caso sería imparcial. La conclusión debería citar, al menos, la afirmación incorrecta más relevante de las que aparecen en la noticia y la más dañina de todas y no solo lanzar adjetivos descalificativos. La redacción sería: “incorrectas como..." y "dañiñas como por ejemplo...".
+
+Ejemplos de salida pueden ser:
+
+1º La noticia es sobresaliente porque ofrece un relato ordenado y veraz en el que las afirmaciones del periodista están sustentadas en datos y/o declaraciones relevantes y suficientes para la comprensión del acontecimiento.
+
+2º La noticia es aceptable porque ofrece datos y declaraciones ciertas pero insuficientes para una contextualización y comprensión adecuada del acontecimiento.
+
+3º La noticia es deficiente porque ofrece interpretaciones explícitas y afirmaciones sesgadas del periodista sin fundamento en los datos de la realidad, ofrece datos y declaraciones irrelevantes que descontextualizan la relevancia y comprensión del acontecimiento.
+
+4º La noticia es desinformativa porque ofrece datos y/o declaraciones falsas, contiene interpretaciones explícitas sin fundamento en la realidad, datos insuficientes, irrelevantes y descontextualizadores que deforman la realidad y desinforman al público.
+"""
+            inputs = tokenizer(prompt, return_tensors="pt").to(device)
+            outputs = model.generate(**inputs, max_new_tokens=300)
+            respuesta = tokenizer.decode(outputs[0], skip_special_tokens=True)
+            valoraciones_deepseek[nombre_criterio] = respuesta
+
+            # Segunda llamada: obtener puntuación individual
+            prompt_puntuacion = f"""
+Considera la siguiente noticia:
+Título: {titulo}
+Noticia: {noticia}
+
+Y la valoración final:
+{respuesta}
+
+Asigna una puntuación numérica entre 1 y 100 a la calidad informativa de la noticia según este criterio, donde 1 es la más baja y 100 la más alta.
+Responde únicamente con el número.
+"""
+            inputs_punt = tokenizer(prompt_puntuacion, return_tensors="pt").to(device)
+            outputs_punt = model.generate(**inputs_punt, max_new_tokens=10)
+            respuesta_punt = tokenizer.decode(outputs_punt[0], skip_special_tokens=True)
+            match = re.search(r"\b(\d{1,3})\b", respuesta_punt)
+            if match and 1 <= int(match.group(1)) <= 100:
+                punt = int(match.group(1))
+            else:
+                punt = None
+            puntuacion_individual_deepseek[nombre_criterio] = punt
+            if punt is not None:
+                puntuaciones.append(punt)
+        puntuacion_global_deepseek = int(sum(puntuaciones) / len(puntuaciones)) if puntuaciones else None
+        return {
+            "valoraciones": valoraciones_deepseek,
+            "puntuacion_individual": puntuacion_individual_deepseek,
+            "puntuacion_global": puntuacion_global_deepseek
+        }
+
 
 
