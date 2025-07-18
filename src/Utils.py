@@ -3,6 +3,7 @@ from datetime import datetime
 import re
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import numpy as np  # Asegúrate de tener numpy instalado: pip install numpy
 
 
 class Utils:
@@ -857,6 +858,169 @@ Responde únicamente con el número.
             "puntuacion_individual": puntuacion_individual_deepseek,
             "puntuacion_global": puntuacion_global_deepseek
         }
+
+    @staticmethod
+    def normalizar_embedding(embedding):
+        arr = np.array(embedding, dtype=np.float32)
+        norm = np.linalg.norm(arr)
+        if norm == 0:
+            return arr
+        return arr / norm
+
+    @staticmethod
+    def similitud_coseno(embedding1, embedding2):
+        v1 = Utils.normalizar_embedding(embedding1)
+        v2 = Utils.normalizar_embedding(embedding2)
+        return float(np.dot(v1, v2))
+
+    @staticmethod
+    def pipeline_fake_news_por_id(
+        noticia_id,
+        openai_client,
+        read_mongo_uri,
+        write_mongo_uri,
+        db_name='Base_de_datos_noticias',
+        collection_name='Noticias',
+        similitud_umbral=0.92,
+        max_similares=3,
+        fake_news_por_noticia=3,
+        dias_ventana=7
+    ):
+        import time
+        from bson import ObjectId
+        from pymongo import MongoClient
+        from datetime import datetime, timedelta
+        read_client = MongoClient(read_mongo_uri)
+        read_col = read_client[db_name][collection_name]
+        noticia = read_col.find_one({'_id': ObjectId(noticia_id)})
+        if not noticia or 'embedding' not in noticia:
+            print('Noticia no encontrada o sin embedding.')
+            return
+        emb_original = Utils.normalizar_embedding(noticia['embedding'])
+        fecha_ref = noticia.get('fecha_publicacion')
+        if not fecha_ref:
+            print('Noticia sin campo fecha_publicacion, se omite filtro temporal.')
+        else:
+            try:
+                fecha_ref_dt = datetime.fromisoformat(str(fecha_ref))
+            except Exception:
+                print('Campo fecha_publicacion no es válido, se omite filtro temporal.')
+                fecha_ref_dt = None
+        # 1. Buscar las noticias más similares (incluyendo la propia)
+        grupo = []
+        for doc in read_col.find({'embedding': {'$exists': True}}):
+            # Filtro temporal
+            if fecha_ref and 'fecha_publicacion' in doc:
+                try:
+                    fecha_doc = datetime.fromisoformat(str(doc['fecha_publicacion']))
+                    if fecha_ref_dt and abs((fecha_doc - fecha_ref_dt).days) > dias_ventana:
+                        continue
+                except Exception:
+                    continue
+            emb = Utils.normalizar_embedding(doc['embedding'])
+            sim = Utils.similitud_coseno(emb_original, emb)
+            if sim >= similitud_umbral:
+                grupo.append(doc)
+        grupo = sorted(grupo, key=lambda d: d['_id'])[:max_similares]
+        if not grupo:
+            print('No se encontraron noticias suficientemente similares para agrupar.')
+            return
+        print(f"\nAgrupación de noticias originales (IDs): {[str(doc['_id']) for doc in grupo]}")
+        # 2. Generar fake news para cada noticia del grupo
+        fake_news_docs = []
+        fake_news_texts = []
+        fake_news_meta = []  # Para asociar cada texto a su noticia original y título
+        write_client = MongoClient(write_mongo_uri)
+        write_col = write_client[db_name][collection_name]
+        for doc in grupo:
+            cuerpo = doc.get('cuerpo', '')
+            titulo = doc.get('titulo', '')
+            for i in range(fake_news_por_noticia):
+                prompt = (
+                    f"A partir de la siguiente noticia, genera una fake news plausible de tamaño similar. "
+                    f"Manipula la información siguiendo estas instrucciones:\n"
+                    f"- Cambia cifras clave.\n- Atribuye declaraciones a otras fuentes.\n- Introduce teorías conspirativas creíbles.\n- Exagera consecuencias.\n"
+                    f"No hagas la noticia absurda, debe ser creíble.\n\n"
+                    f"TÍTULO: {titulo}\nCUERPO: {cuerpo}\n\n"
+                    f"Devuelve solo el texto de la noticia falsa, sin explicaciones ni formato especial."
+                )
+                try:
+                    response = openai_client.chat.completions.create(
+                        model="gpt-4o",
+                        messages=[
+                            {"role": "system", "content": "Eres un generador de fake news plausibles para experimentos de IA."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.9,
+                        max_tokens=1024
+                    )
+                    fake_text = response.choices[0].message.content.strip()
+                    fake_news_texts.append(fake_text)
+                    fake_news_meta.append({
+                        'titulo': titulo,
+                        'id_original': doc['_id'],
+                        'timestamp': time.time()
+                    })
+                except Exception as e:
+                    print(f"[ERROR] Generando fake news para noticia {doc['_id']}: {e}")
+        # Llamada batch a la API de embeddings
+        fake_news_embeddings = []
+        if fake_news_texts:
+            try:
+                emb_resp = openai_client.embeddings.create(
+                    input=fake_news_texts,
+                    model="text-embedding-3-small"
+                )
+                fake_news_embeddings = [item.embedding for item in emb_resp.data]
+            except Exception as e:
+                print(f"[CRITICAL] Error en batch de embeddings para fake news del grupo: {e}")
+                fake_news_embeddings = [None] * len(fake_news_texts)
+        # Asociar embeddings y guardar fake news
+        for i, meta in enumerate(fake_news_meta):
+            fake_emb = fake_news_embeddings[i] if i < len(fake_news_embeddings) else None
+            if fake_emb is None:
+                print(f"[WARNING] No se pudo generar embedding batch para una fake news de la noticia {meta['id_original']} (fake #{i+1})")
+            fake_doc = {
+                'titulo': f"FAKE: {meta['titulo']}",
+                'cuerpo': fake_news_texts[i],
+                'embedding': fake_emb,
+                'id_original': meta['id_original'],
+                'tipo': 'fake_news',
+                'timestamp': meta['timestamp']
+            }
+            write_col.insert_one(fake_doc)
+            fake_news_docs.append(fake_doc)
+        # Si todas las fake news de una noticia original fallan en embedding, marcar la noticia
+        for doc in grupo:
+            count_total = sum(1 for meta in fake_news_meta if meta['id_original'] == doc['_id'])
+            count_failed = sum(1 for idx, meta in enumerate(fake_news_meta) if meta['id_original'] == doc['_id'] and (fake_news_embeddings[idx] is None))
+            if count_total > 0 and count_failed == count_total:
+                print(f"[CRITICAL] Todas las fake news de la noticia {doc['_id']} fallaron en embedding batch. Marcando para revisión manual.")
+                write_col.update_one({'_id': doc['_id']}, {'$set': {'embedding_fake_news_failed': True}}, upsert=True)
+
+# Helper para mostrar ObjectId como string
+
+def _id_str(doc):
+    return str(doc['_id']) if '_id' in doc else str(doc.get('id_original','?'))
+
+    @staticmethod
+    def copy_basic_fields_to_new_db(doc, old_collection, new_collection):
+        # Lista de campos básicos a copiar
+        basic_fields = [
+            'titulo', 'cuerpo', 'url', 'autor', 'fecha_publicacion', 'fuente',
+            'fecha_extraccion', 'tags', 'keywords', 'top_image', 'images', 'is_media_news'
+        ]
+        # Buscar el documento en la base nueva
+        existing = new_collection.find_one({'_id': doc['_id']})
+        update_fields = {}
+        for field in basic_fields:
+            value = doc.get(field)
+            if value is not None and value != '':
+                # Si el campo no existe o está vacío en la nueva, lo copiamos
+                if not existing or field not in existing or existing[field] in (None, '', []):
+                    update_fields[field] = value
+        if update_fields:
+            new_collection.update_one({'_id': doc['_id']}, {'$set': update_fields}, upsert=True)
 
 
 
