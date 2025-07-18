@@ -3,7 +3,15 @@
 /node_modules
 
 *.pyc
+<<<<<<< HEAD
 src/nohup.out
 
 venv/
 
+=======
+src/nohup.out.cursor-server/
+.cursor-server/
+>>>>>>> 142a38e (Commit de todos los cambios pendientes antes de pull --rebase y push final)
+
+# Entornos virtuales de Python
+venv/
