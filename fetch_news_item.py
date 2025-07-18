@@ -9,12 +9,40 @@ import random
 import sys
 import re
 
+load_dotenv()
+
 OUTPUT_FILENAME = "retrieved_news_item.txt"
 
 def safe_filename(s, maxlen=60):
     s = re.sub(r'[^\w\- ]', '', s)
     s = s.replace(' ', '_')
     return s[:maxlen]
+
+def convert_objectids_to_str(obj):
+    if isinstance(obj, dict):
+        return {k: convert_objectids_to_str(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_objectids_to_str(v) for v in obj]
+    elif isinstance(obj, ObjectId):
+        return str(obj)
+    else:
+        return obj
+
+def fetch_news_item(noticia_id):
+    mongodb_uri = os.getenv("NEW_MONGODB_URI")
+    if not mongodb_uri:
+        print("Error: NEW_MONGODB_URI not found in .env file.")
+        return None
+    client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+    db = client['Base_de_datos_noticias']
+    col = db['Noticias']
+    noticia = col.find_one({'_id': ObjectId(noticia_id)})
+    if noticia:
+        noticia = convert_objectids_to_str(noticia)
+        return noticia
+    else:
+        print("No news item was fetched with the default criteria.")
+        return None
 
 def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", "Noticias"]):
     """
@@ -130,7 +158,12 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         article_id = sys.argv[1]
         print(f"Fetching by id: {article_id}")
-        retrieved_item = get_specific_news_item(article_id)
+        retrieved_item = fetch_news_item(article_id)
+        if retrieved_item:
+            output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'retrieved_news_item.txt')
+            with open(output_path, "w", encoding="utf-8") as f:
+                json.dump(retrieved_item, f, ensure_ascii=False, indent=4)
+            print(f"Saved to {output_path}")
     else:
         print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to output_temporal.")
         retrieved_item = get_news_item_with_score()
