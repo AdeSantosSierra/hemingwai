@@ -138,7 +138,7 @@ def format_date_for_latex(date_str):
 
 # --- Jinja Environment Setup ---
 env = Environment(
-    loader=FileSystemLoader(os.path.dirname(__file__)),
+    loader=FileSystemLoader(os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))),
     autoescape=select_autoescape(['html', 'xml']),
     trim_blocks=True, lstrip_blocks=True
 )
@@ -336,21 +336,19 @@ def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/
                 return None
 
 if __name__ == "__main__":
-    script_dir = os.path.dirname(__file__)
-    load_dotenv(os.path.join(script_dir, ".env"))
-    news_data_file = os.path.join(script_dir, "../output_temporal/retrieved_news_item.txt")
-    latex_template_file = "../news_template.tex.j2"
-    output_dir = os.path.join(script_dir, "../output_temporal")
+    # Definir el directorio raíz del proyecto (un nivel arriba de 'src')
+    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    
+    # Cargar variables de entorno desde el .env en el directorio raíz
+    load_dotenv(os.path.join(ROOT_DIR, ".env"))
+    
+    # Construir rutas basadas en ROOT_DIR
+    output_dir = os.path.join(ROOT_DIR, "output_temporal")
+    news_data_file = os.path.join(output_dir, "retrieved_news_item.txt")
+    latex_template_file = "news_template.tex.j2"
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    
-    # Vaciar la carpeta antes de generar nuevos archivos
-    for f in os.listdir(output_dir):
-        try:
-            os.remove(os.path.join(output_dir, f))
-        except Exception as e:
-            print(f"No se pudo eliminar {f}: {e}")
     
     # Cargar y limpiar news_item_data
     try:
@@ -409,7 +407,7 @@ if __name__ == "__main__":
     # Generar el gráfico de araña siempre antes de compilar el PDF
     subprocess.run([
         sys.executable,
-        os.path.join(script_dir, "generar_grafico_arania.py")
+        os.path.join(ROOT_DIR, "src", "generar_grafico_arania.py")
     ], check=True)
 
     # Compilar el PDF automáticamente

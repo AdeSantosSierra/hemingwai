@@ -5,10 +5,27 @@ import sys
 import json
 
 
-HEMINGWAI_DIR = os.path.dirname(os.path.abspath(__file__))
-RETRIEVED_FILE = os.path.join(HEMINGWAI_DIR, '../output_temporal/retrieved_news_item.txt')
-VENV_DIR = os.path.join(HEMINGWAI_DIR, "../.venv")
+# Definir directorios base para que el script sea robusto
+SRC_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(SRC_DIR)
+
+# Construir rutas basadas en los directorios base
+RETRIEVED_FILE = os.path.join(ROOT_DIR, 'output_temporal', 'retrieved_news_item.txt')
+VENV_DIR = os.path.join(ROOT_DIR, ".venv")
 VENV_PYTHON = os.path.join(VENV_DIR, "bin", "python")
+
+# --- Preparar directorio de salida ---
+output_dir = os.path.join(ROOT_DIR, "output_temporal")
+if not os.path.exists(output_dir):
+    os.makedirs(output_dir)
+else:
+    # Limpiar el directorio para asegurar que solo contiene artefactos de esta ejecución
+    print(f"Limpiando directorio: {output_dir}")
+    for f in os.listdir(output_dir):
+        try:
+            os.remove(os.path.join(output_dir, f))
+        except Exception as e:
+            print(f"No se pudo eliminar {f}: {e}")
 
 # 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada
 print("Ejecutando análisis de noticia con Hemingwai.py...")
@@ -17,7 +34,7 @@ env_utf8["LC_ALL"] = "C.UTF-8"
 env_utf8["LANG"] = "C.UTF-8"
 proc = subprocess.run([
     VENV_PYTHON, "Hemingwai.py"
-], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
 output = (proc.stdout or b"") + (proc.stderr or b"")
 try:
     output = output.decode("utf-8", errors="replace")
@@ -37,7 +54,7 @@ print(f"ID de la noticia procesada: {noticia_id}")
 print("Extrayendo noticia procesada...")
 proc2 = subprocess.run([
     VENV_PYTHON, "fetch_news_item.py", noticia_id
-], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
 out2 = (proc2.stdout or b"") + (proc2.stderr or b"")
 try:
     out2 = out2.decode("utf-8", errors="replace")
@@ -63,7 +80,7 @@ print("Todos los campos clave están presentes en la noticia extraída.")
 print("Generando y subiendo PDF...")
 proc3 = subprocess.run([
     VENV_PYTHON, "render_latex.py"
-], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
 out3 = (proc3.stdout or b"") + (proc3.stderr or b"")
 try:
     out3 = out3.decode("utf-8", errors="replace")
@@ -73,7 +90,7 @@ print(out3)
 
 # Verificar que el PDF se ha generado
 from glob import glob
-output_dir = os.path.join(HEMINGWAI_DIR, "../output_temporal")
+output_dir = os.path.join(ROOT_DIR, "output_temporal")
 pdfs = glob(os.path.join(output_dir, "*.pdf"))
 if not pdfs:
     print("No se generó ningún PDF. Abortando.")

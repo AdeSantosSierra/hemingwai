@@ -11,7 +11,9 @@ import re
 
 load_dotenv()
 
-OUTPUT_FILENAME = "../output_temporal/retrieved_news_item.txt"
+# Definir el directorio raíz del proyecto (un nivel arriba de 'src')
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+OUTPUT_FILENAME = os.path.join(ROOT_DIR, "output_temporal", "retrieved_news_item.txt")
 
 def safe_filename(s, maxlen=60):
     s = re.sub(r'[^\w\- ]', '', s)
@@ -71,11 +73,10 @@ def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", 
                 if news_item: print(f"Found: {news_item.get('_id')}"); break
         if not news_item: print(f"ID {article_id_str} not found."); client.close(); return None
         if '_id' in news_item and isinstance(news_item['_id'], ObjectId): news_item['_id'] = str(news_item['_id'])
-        # Guardar en hemingwai/output_temporal/retrieved_news_item.txt
-        output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../output_temporal/retrieved_news_item.txt')
-        with open(output_path, "w", encoding="utf-8") as f:
+        
+        with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f:
             json.dump(news_item, f, ensure_ascii=False, indent=4)
-        print(f"Saved to {output_path}"); return news_item
+        print(f"Saved to {OUTPUT_FILENAME}"); return news_item
     except Exception as e: print(f"Error in get_specific_news_item: {e}"); return None
     finally:
         if 'client' in locals() and client: client.close()
@@ -160,10 +161,9 @@ if __name__ == "__main__":
         print(f"Fetching by id: {article_id}")
         retrieved_item = fetch_news_item(article_id)
         if retrieved_item:
-            output_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../output_temporal/retrieved_news_item.txt')
-            with open(output_path, "w", encoding="utf-8") as f:
+            with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f:
                 json.dump(retrieved_item, f, ensure_ascii=False, indent=4)
-            print(f"Saved to {output_path}")
+            print(f"Saved to {OUTPUT_FILENAME}")
     else:
         print(f"This will attempt to fetch one news item with 'puntuacion' not null and save it to output_temporal.")
         retrieved_item = get_news_item_with_score()

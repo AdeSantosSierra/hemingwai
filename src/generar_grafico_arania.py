@@ -45,16 +45,17 @@ def generar_grafico_arania(valores, etiquetas, nombre_archivo):
     plt.savefig(nombre_archivo)
     plt.close()
 
-def ensure_output_dir():
-    output_dir = os.path.join(os.path.dirname(__file__), 'output_temporal')
+def main():
+    # Definir el directorio raíz del proyecto (un nivel arriba de 'src')
+    ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    
+    # Construir rutas basadas en ROOT_DIR
+    output_dir = os.path.join(ROOT_DIR, "output_temporal")
+    news_item_path = os.path.join(output_dir, "retrieved_news_item.txt")
+    
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    return output_dir
 
-def main():
-    # Usar la ruta absoluta para retrieved_news_item.txt
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    news_item_path = os.path.join(script_dir, 'retrieved_news_item.txt')
     with open(news_item_path, "r", encoding="utf-8") as f:
         noticia = json.load(f)
 
@@ -70,7 +71,6 @@ def main():
         print("Algunos valores no son numéricos.")
         return
 
-    output_dir = ensure_output_dir()
     output_file = os.path.join(output_dir, "spider_chart.png")
     generar_grafico_arania(valores, CAMPOS_FIJOS, output_file)
     print(f"Gráfico generado correctamente: {output_file}")
