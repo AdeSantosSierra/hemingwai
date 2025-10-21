@@ -4,16 +4,25 @@ import os
 import sys
 import json
 
-VENV_PYTHON = os.path.abspath(os.path.join('venv', 'bin', 'python'))
+
 HEMINGWAI_DIR = os.path.dirname(os.path.abspath(__file__))
 RETRIEVED_FILE = os.path.join(HEMINGWAI_DIR, 'retrieved_news_item.txt')
+VENV_DIR = os.path.join(HEMINGWAI_DIR, ".venv")
+VENV_PYTHON = os.path.join(VENV_DIR, "bin", "python")
 
 # 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada
 print("Ejecutando análisis de noticia con Hemingwai.py...")
+env_utf8 = os.environ.copy()
+env_utf8["LC_ALL"] = "C.UTF-8"
+env_utf8["LANG"] = "C.UTF-8"
 proc = subprocess.run([
     VENV_PYTHON, "src/Hemingwai.py"
-], cwd=HEMINGWAI_DIR, capture_output=True, text=True)
-output = proc.stdout + proc.stderr
+], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+output = (proc.stdout or b"") + (proc.stderr or b"")
+try:
+    output = output.decode("utf-8", errors="replace")
+except Exception:
+    output = output.decode("latin1", errors="replace")
 print(output)
 
 # Buscar el ID de la noticia en el output
@@ -28,8 +37,13 @@ print(f"ID de la noticia procesada: {noticia_id}")
 print("Extrayendo noticia procesada...")
 proc2 = subprocess.run([
     VENV_PYTHON, "fetch_news_item.py", noticia_id
-], cwd=HEMINGWAI_DIR, capture_output=True, text=True)
-print(proc2.stdout + proc2.stderr)
+], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+out2 = (proc2.stdout or b"") + (proc2.stderr or b"")
+try:
+    out2 = out2.decode("utf-8", errors="replace")
+except Exception:
+    out2 = out2.decode("latin1", errors="replace")
+print(out2)
 
 # Verificar que el archivo se ha generado y contiene los campos clave
 if not os.path.exists(RETRIEVED_FILE):
@@ -49,8 +63,13 @@ print("Todos los campos clave están presentes en la noticia extraída.")
 print("Generando y subiendo PDF...")
 proc3 = subprocess.run([
     VENV_PYTHON, "render_latex.py"
-], cwd=HEMINGWAI_DIR, capture_output=True, text=True)
-print(proc3.stdout + proc3.stderr)
+], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
+out3 = (proc3.stdout or b"") + (proc3.stderr or b"")
+try:
+    out3 = out3.decode("utf-8", errors="replace")
+except Exception:
+    out3 = out3.decode("latin1", errors="replace")
+print(out3)
 
 # Verificar que el PDF se ha generado
 from glob import glob
@@ -63,8 +82,11 @@ else:
     print(f"PDF generado: {pdfs[0]}")
 
 # 4. Buscar y mostrar el enlace de Mega si está disponible
-match_link = re.search(r"Link: (https://mega\\.nz/\\S+)", proc3.stdout + proc3.stderr)
+match_link = re.search(r"Link: (https://mega\\.nz/\\S+)", out3)
 if match_link:
     print(f"Enlace de Mega: {match_link.group(1)}")
 else:
-    print("Subida a Mega completada correctamente.") 
+    print("Error: no se obtuvo enlace de Mega en la salida. La subida no se considera correcta.")
+    print("Salida de render_latex.py (recortada):")
+    print(out3[-2000:])
+    sys.exit(1)

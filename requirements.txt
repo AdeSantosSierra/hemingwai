@@ -1,15 +1,36 @@
-# =============================================
-# IMPORTANTE PARA PYTHON 3.11+
+#=============================================
+# REQUISITOS PARA EL PROYECTO
 #
-# mega.py y tenacity 5.1.5 NO son compatibles con Python 3.11+ de forma nativa.
-# Para que funcione la subida a Mega.nz:
-# 1. Instala las dependencias con este requirements.txt
-# 2. Parchea manualmente el archivo mega.py en tu entorno virtual:
-#    - Comenta la línea:
-#        from tenacity import retry, wait_exponential, retry_if_exception_type
-#    - Elimina o comenta el decorador @retry en la función _api_request
-# 3. Así evitarás el error de 'asyncio.coroutine' y el pipeline funcionará.
-# =============================================
+# Este archivo contiene las dependencias Python necesarias para el proyecto.
+# Instálalas con:
+#   pip install -r requirements.txt
+#
+# IMPORTANTE: COMPATIBILIDAD CON PYTHON 3.13
+#
+# - La librería mega.py (1.0.8) y tenacity (<6.0.0) NO son compatibles con Python 3.13
+#   debido a un problema con asyncio.coroutine (eliminado en Python 3.11+).
+# - En lugar de mega.py, se recomienda usar MEGAcmd (instalado vía Snap) para interactuar con MEGA.
+# - Instrucciones para instalar MEGAcmd:
+#     sudo snap install mega-cmd
+#     snap connect mega-cmd:removable-media
+#     snap connect mega-cmd:home
+#   Prueba: snap run mega-cmd.mega-version
+#   Usa comandos como: snap run mega-cmd.mega-login email password
+#
+# Si necesitas usar mega.py con Python 3.10 o inferior:
+# 1. Crea un entorno virtual con Python 3.10:
+#      python3.10 -m venv .venv310
+#      source .venv310/bin/activate
+# 2. Instala mega.py==1.0.8 y tenacity==5.1.5.
+# 3. Parchea mega.py manualmente (ver notas abajo).
+#
+# Notas sobre el parche para mega.py (solo si usas Python 3.11+ con mega.py):
+# - Abre venv/lib/python3.13/site-packages/mega/mega.py
+# - Comenta: from tenacity import retry, wait_exponential, retry_if_exception_type
+# - Comenta o elimina el decorador @retry en la función _api_request
+#
+# NOTA: MEGAcmd es más estable y se recomienda sobre mega.py para Python 3.13.
+#=============================================
 
 openai
 anthropic
@@ -18,8 +39,48 @@ Jinja2
 matplotlib
 numpy
 python-dotenv
-mega.py==1.0.8
-tenacity==5.1.5
 requests
 pycryptodome
 pathlib==1.0.1
+# mega.py==1.0.8  # Comentado: no compatible con Python 3.13, usa mega-cmd
+# tenacity==5.1.5  # Comentado: no compatible con Python 3.13, usa mega-cmd
+
+#=============================================
+# SISTEMA (APT) - DEPENDENCIAS EXTRAS DOCUMENTADAS
+# Estas no se instalan con pip; instálalas con apt (o tu gestor de paquetes)
+# para habilitar la compilación LaTeX (pdflatex) y soporte de idioma español (babel).
+#
+# Python (sistema)
+# - python3 (>= 3.11 recomendado, 3.13 usado actualmente) y python3-venv
+#
+# LaTeX (instalación mínima recomendada)
+# - texlive-latex-base
+# - texlive-latex-recommended
+# - texlive-latex-extra
+# - texlive-fonts-recommended
+# - texlive-pictures
+# - texlive-plain-generic
+# - texlive-lang-european
+# - texlive-lang-spanish   # si está disponible en tu repo
+# - latexmk                # opcional, para compilación conveniente
+#
+# Alternativa (todo en uno, pesado):
+# - texlive-full
+#
+# Alternativa a pdflatex (descarga paquetes automáticamente):
+# - tectonic
+#
+# MEGAcmd (para interactuar con MEGA)
+# - Instala con Snap: sudo snap install mega-cmd
+# - Conecta permisos: snap connect mega-cmd:removable-media snap connect mega-cmd:home
+#
+# Ejemplos de instalación (Ubuntu/Debian):
+# sudo apt-get update
+# sudo apt-get install -y \
+#   texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+#   texlive-fonts-recommended texlive-pictures texlive-plain-generic \
+#   texlive-lang-european texlive-lang-spanish latexmk
+# sudo snap install mega-cmd
+#
+# Si tu mirror devuelve 403, cambia temporalmente de mirror o usa texlive-full.
+#=============================================

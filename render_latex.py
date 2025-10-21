@@ -12,11 +12,12 @@ from matplotlib.projections.polar import PolarAxes
 from matplotlib.projections import register_projection
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
-from mega import Mega
 from dotenv import load_dotenv
 import glob
 import subprocess
 import sys
+import time
+import socket
 
 # --- Unicode Character Handling ---
 def strip_or_replace_problematic_unicode(text):
@@ -29,8 +30,8 @@ def strip_or_replace_problematic_unicode(text):
         '\u2B50': '[Estrella]',  # ⭐ Star
         '\u1F6A9': '[Bandera]', # 🚩 Triangular Flag
         # Comillas tipográficas y angulares a comillas rectas
-        '“': '"', '”': '"', '„': '"', '‟': '"',
-        '‘': "'", '’': "'", '‚': "'", '‛': "'",
+        '"': '"', '"': '"', '„': '"', '‟': '"',
+        ''': "'", ''': "'", '‚': "'", '‛': "'",
         '«': '"', '»': '"',
         '‹': "'", '›': "'",
     }
@@ -38,19 +39,13 @@ def strip_or_replace_problematic_unicode(text):
         text = text.replace(char_unicode, replacement_text)
 
     # Eliminar solo emojis y símbolos fuera de los rangos de texto común (mantener letras acentuadas, ñ, etc.)
-    # Unicode ranges: https://unicode-table.com/en/
-    # Español: U+0020-U+007E (ASCII), U+00A1-U+00FF (acentos, ñ, ü, ¿, ¡), U+0100-U+017F (letras latinas extendidas)
-    # Eliminar solo si es un símbolo, pictograma, o caracter de control
     def is_allowed(char):
         code = ord(char)
-        # Caracteres imprimibles comunes y letras latinas extendidas
         if (0x20 <= code <= 0x7E) or (0xA1 <= code <= 0xFF) or (0x100 <= code <= 0x17F):
             return True
-        # Saltar caracteres de control
         if code in (0x0A, 0x0D, 0x09):  # \n, \r, \t
             return True
         return False
-    # Reemplazar solo los no permitidos
     return ''.join(c if is_allowed(c) else '' for c in text)
 
 # --- LaTeX Special Character Escaping ---
@@ -70,7 +65,7 @@ CORE_TEX_SPECIAL_CHARS_NO_BS = {
     "Ù": r"\`{U}", "Ú": r"\'{U}", "Û": r"\^{U}", "Ü": r"\"{U}",
     "ñ": r"\~{n}", "Ñ": r"\~{N}", "¿": r"?`", "¡": r"!`",
 }
-UNIQUE_PARAGRAPH_BREAK_STRING = "UNIQUEPARABREAKSTRING"  # Changed Placeholder Name
+UNIQUE_PARAGRAPH_BREAK_STRING = "UNIQUEPARABREAKSTRING"
 
 def escape_tex_chars_in_plain_text_segment(text_segment):
     if not text_segment: return ""
@@ -83,10 +78,7 @@ def escape_tex_inline(text_content):
     if not isinstance(text_content, str):
         text_content = str(text_content)
     text_content = strip_or_replace_problematic_unicode(text_content)
-    # Reemplazo de comillas dobles rectas por comillas tipográficas de LaTeX
-    # Solo reemplazar pares de comillas, no comillas sueltas
     def replace_double_quotes_latex(s):
-        # Reemplaza "texto" por ``texto''
         return re.sub(r'"([^"]+)"', r"``\1''", s)
     text_content = replace_double_quotes_latex(text_content)
     processed_content = re.sub(r"\s*\n\s*", " ", text_content).strip()
@@ -97,17 +89,12 @@ def escape_tex_special_chars(text):
     if not isinstance(text, str): return text
 
     text = strip_or_replace_problematic_unicode(text)
-
     text = text.replace("\r\n", "\n")
-    # Use the new placeholder name here
     text_with_placeholders = re.sub(r"\n\s*\n+", UNIQUE_PARAGRAPH_BREAK_STRING, text)
     text_with_spaces = text_with_placeholders.replace("\n", " ")
 
-    # The splitting by PARAGRAPH_PLACEHOLDER previously was problematic.
-    # New strategy: process markdown, then TeX escape, then replace placeholder.
-
     md_regex = re.compile(r'(\*{2}(?:.|\n)+?\*{2})|(\*(?:.|\n)+?\*)|(_(?:.|\n)+?_)')
-    parts = md_regex.split(text_with_spaces) # text_with_spaces still contains UNIQUE_PARAGRAPH_BREAK_STRING
+    parts = md_regex.split(text_with_spaces)
 
     processed_parts = []
     for part in parts:
@@ -125,15 +112,11 @@ def escape_tex_special_chars(text):
         elif is_italic2:
             content = part[1:-1]
             processed_parts.append(r"\textit{" + escape_tex_inline(content) + "}")
-        else: # Plain text segment (could contain UNIQUE_PARAGRAPH_BREAK_STRING)
+        else:
             processed_parts.append(escape_tex_chars_in_plain_text_segment(part))
 
     final_text_segments = "".join(processed_parts)
-
-    # Now replace the placeholder. Since UNIQUE_PARAGRAPH_BREAK_STRING has no TeX special chars,
-    # its escaped form (via escape_tex_chars_in_plain_text_segment) is itself.
     final_text = final_text_segments.replace(UNIQUE_PARAGRAPH_BREAK_STRING, "\n\\par\\medskip\n")
-
     return final_text
 
 def replace_tex_special_chars_for_url(text):
@@ -152,10 +135,6 @@ def format_date_for_latex(date_str):
         dt_object = datetime.fromisoformat(date_str.split("T")[0])
         return dt_object.strftime("%d de %B de %Y")
     except ValueError: return date_str
-
-# --- Spider Chart recomendado ---
-# Usar solo la función generar_grafico_arania para gráficos de araña (radar).
-# La función avanzada generate_spider_chart y la proyección personalizada han sido eliminadas para evitar confusiones.
 
 # --- Jinja Environment Setup ---
 env = Environment(
@@ -208,43 +187,196 @@ def generar_grafico_arania(valores, etiquetas, nombre_archivo):
     plt.savefig(nombre_archivo)
     plt.close()
 
+def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/PDF hemingwAI"):
+    """
+    Sube un archivo a MEGA usando mega-cmd con manejo robusto de errores y verificación.
+    
+    Args:
+        pdf_path: Ruta al archivo PDF a subir
+        email: Email de MEGA
+        password: Contraseña de MEGA
+        carpeta_destino: Ruta de la carpeta en MEGA (formato: "Carpeta/Subcarpeta")
+    
+    Returns:
+        str: Link del archivo subido o None si falla
+    """
+    print("\n" + "="*60)
+    print("INICIANDO SUBIDA A MEGA.NZ")
+    print("="*60)
+
+    # Verificar que el archivo existe
+    if not os.path.exists(pdf_path):
+        print(f"❌ ERROR: El archivo {pdf_path} no existe")
+        return None
+
+    file_size = os.path.getsize(pdf_path)
+    print(f"📄 Archivo: {os.path.basename(pdf_path)}")
+    print(f"📊 Tamaño: {file_size / 1024:.2f} KB")
+
+    # Función para ejecutar comandos de mega-cmd
+    def run_mega_cmd(command, args=None, input_data=None):
+        try:
+            cmd = ['snap', 'run', f'mega-cmd.{command}']
+            if args:
+                cmd.extend(args)
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate(input=input_data)
+            return stdout, stderr, process.returncode
+        except FileNotFoundError:
+            return None, "Comando snap no encontrado. Verifica que snapd esté instalado.", 1
+        except Exception as e:
+            return None, f"Error ejecutando comando: {e}", 1
+
+    for intento in range(3):
+        print(f"\n🔄 Intento {intento + 1}/3")
+        try:
+            # Verifica si mega-cmd está disponible
+            stdout, stderr, rc = run_mega_cmd("mega-version")
+            if rc != 0:
+                print(f"❌ Error: No se pudo ejecutar mega-cmd: {stderr}")
+                return None
+
+            print(f"✅ mega-cmd detectado! Versión: {stdout.strip()}")
+
+            # Verifica si hay una sesión activa
+            stdout, stderr, rc = run_mega_cmd("mega-whoami")
+            if rc != 0 or email not in stdout:
+                # Cierra cualquier sesión existente
+                stdout, stderr, rc_logout = run_mega_cmd("mega-logout")
+                if rc_logout == 0 or "Not logged in" in stderr:
+                    print("Sesión anterior cerrada o no existía.")
+                else:
+                    print(f"❌ Error al cerrar sesión: {stderr}")
+                    return None
+
+                # Intenta login
+                stdout, stderr, rc = run_mega_cmd("mega-login", args=[email, password])
+                if rc != 0:
+                    print(f"❌ Error en login: {stderr}")
+                    return None
+                print("✅ Login exitoso!")
+            else:
+                print(f"✅ Sesión ya activa para {email}")
+
+            # Crear carpeta destino si no existe
+            print(f"\n🔍 Creando/verificando carpeta: {carpeta_destino}")
+            carpeta_parts = carpeta_destino.split("/")
+            current_path = ""
+            for carpeta in carpeta_parts:
+                if not carpeta:
+                    continue
+                current_path = f"{current_path}/{carpeta}" if current_path else carpeta
+                stdout, stderr, rc = run_mega_cmd("mega-ls", args=[current_path])
+                if rc != 0:
+                    print(f"   ⚠️ Carpeta '{current_path}' no existe, creándola...")
+                    stdout, stderr, rc = run_mega_cmd("mega-mkdir", args=[current_path])
+                    if rc != 0:
+                        print(f"   ❌ Error al crear carpeta {current_path}: {stderr}")
+                        return None
+                    print(f"   ✅ Carpeta creada: {current_path}")
+                else:
+                    print(f"   ✅ Carpeta encontrada: {current_path}")
+
+            # Subir el archivo
+            print(f"\n⬆️ Subiendo archivo a MEGA...")
+            print(f"   Destino: {carpeta_destino}")
+            stdout, stderr, rc = run_mega_cmd("mega-put", args=[pdf_path, carpeta_destino])
+            if rc != 0:
+                print(f"❌ Error al subir archivo: {stderr}")
+                return None
+            print("✅ Archivo subido correctamente")
+
+            # Obtener el enlace público
+            print("\n🔗 Generando enlace público...")
+            stdout, stderr, rc = run_mega_cmd("mega-export", args=["-a", f"{carpeta_destino}/{os.path.basename(pdf_path)}"])
+            if rc != 0:
+                print(f"❌ Error al generar enlace: {stderr}")
+                return None
+            
+            # Extraer el enlace real del output (ej: "Exported ...: https://mega.nz/file/...#key")
+            link_match = re.search(r'https://mega\.nz/[^ ]+', stdout.strip())
+            if link_match:
+                link = link_match.group(0)
+            else:
+                print(f"❌ No se pudo extraer el enlace del output: {stdout.strip()}")
+                return None
+            
+            if not link.startswith("https://mega.nz"):
+                print(f"❌ Enlace inválido: {link}")
+                return None
+            
+            print("✅ Enlace generado")
+
+            # Verificación final
+            print("\n🔍 Verificando que el archivo existe en MEGA...")
+            stdout, stderr, rc = run_mega_cmd("mega-ls", args=[f"{carpeta_destino}/{os.path.basename(pdf_path)}"])
+            if rc != 0:
+                print(f"❌ Error: El archivo no aparece en MEGA: {stderr}")
+                return None
+            print(f"✅ Archivo verificado en MEGA: {carpeta_destino}/{os.path.basename(pdf_path)}")
+
+            print("\n" + "="*60)
+            print("✅ SUBIDA COMPLETADA EXITOSAMENTE")
+            print("="*60)
+            print(f"Link: {link}")
+            print("="*60 + "\n")
+            return link
+
+        except Exception as e:
+            print(f"\n❌ ERROR en intento {intento + 1}: {e}")
+            if intento < 2:
+                wait_time = 2 ** intento
+                print(f"⏳ Esperando {wait_time} segundos antes de reintentar...")
+                time.sleep(wait_time)
+            else:
+                print("\n❌ Todos los intentos fallaron")
+                import traceback
+                print("\n📋 Detalles del error:")
+                traceback.print_exc()
+                return None
+
 if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
     load_dotenv(os.path.join(script_dir, ".env"))
     news_data_file = os.path.join(script_dir, "retrieved_news_item.txt")
     latex_template_file = "news_template.tex.j2"
     output_dir = os.path.join(script_dir, "output_temporal")
+    
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    # Vaciar la carpeta antes de generar nuevos archivos, incluyendo el PDF anterior
+    
+    # Vaciar la carpeta antes de generar nuevos archivos
     for f in os.listdir(output_dir):
         try:
             os.remove(os.path.join(output_dir, f))
         except Exception as e:
             print(f"No se pudo eliminar {f}: {e}")
-    # Cargar y limpiar news_item_data antes de usarla
+    
+    # Cargar y limpiar news_item_data
     try:
         with open(news_data_file, "r", encoding="utf-8") as f:
             news_item_data = json.load(f)
     except FileNotFoundError:
-        print(f"Error: News data file '{news_data_file}' not found."); exit(1)
+        print(f"Error: News data file '{news_data_file}' not found.")
+        sys.exit(1)
     except json.JSONDecodeError:
-        print(f"Error: Could not decode JSON from '{news_data_file}'."); exit(1)
+        print(f"Error: Could not decode JSON from '{news_data_file}'.")
+        sys.exit(1)
+    
     news_item_data = clean_dict_recursive(news_item_data)
 
-    # --- FIX: Mapear campos para la plantilla LaTeX ---
+    # Mapear campos para la plantilla LaTeX
     if "texto_referencia_diccionario" in news_item_data:
         news_item_data["texto_referencia_direct_dict_data"] = news_item_data["texto_referencia_diccionario"]
     if "texto_referencia" in news_item_data:
         news_item_data["texto_referencia_parsed_content"] = news_item_data["texto_referencia"]
-    # --- FIN FIX ---
 
     # Obtener el titular y generar un nombre de archivo seguro
     def safe_filename(s, maxlen=60):
-        import re
         s = re.sub(r'[^\w\- ]', '', s)
         s = s.replace(' ', '_')
         return s[:maxlen]
+    
     titulo = news_item_data.get('titulo', 'noticia')
     filename_base = safe_filename(titulo)
     output_tex_file = os.path.join(output_dir, f"{filename_base}.tex")
@@ -255,21 +387,22 @@ if __name__ == "__main__":
     puntuacion_individual_data = news_item_data.get("puntuacion_individual")
     if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
         CAMPOS_FIJOS = [
-            "Interpretación del periodista", "Opiniones", "Cita de fuentes", "Confiabilidad de las fuentes", "Trascendencia",
-            "Relevancia de los datos", "Precisión y claridad", "Enfoque", "Contexto", "Ética"
+            "Interpretación del periodista", "Opiniones", "Cita de fuentes", 
+            "Confiabilidad de las fuentes", "Trascendencia", "Relevancia de los datos", 
+            "Precisión y claridad", "Enfoque", "Contexto", "Ética"
         ]
         valores = [float(puntuacion_individual_data.get(str(i), 0)) for i in range(1, 11)]
-        spider_chart_file = os.path.join(output_dir, "spider_chart.png")
         generar_grafico_arania(valores, CAMPOS_FIJOS, spider_chart_file)
         print(f"Gráfico generado correctamente: {spider_chart_file}")
     else:
         print("No 'puntuacion_individual' data for spider chart.")
 
     context = {"news_item": news_item_data, "spider_chart_file": spider_chart_file}
+    
     try:
         render_template(latex_template_file, output_tex_file, context)
     except Exception:
-        exit(1)
+        sys.exit(1)
 
     print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
 
@@ -289,24 +422,25 @@ if __name__ == "__main__":
         print(f"PDF generado: {output_pdf_file}")
     except Exception as e:
         print(f"Error al compilar el PDF: {e}")
+        sys.exit(1)
 
     # Subir el PDF a Mega.nz automáticamente
     MEGA_EMAIL = os.getenv("MEGA_EMAIL")
     MEGA_PASSWORD = os.getenv("MEGA_PASSWORD")
     MEGA_FOLDER_PATH = "HemingwAI/PDF hemingwAI"
+    
     if MEGA_EMAIL and MEGA_PASSWORD:
-        try:
-            mega = Mega()
-            m = mega.login(MEGA_EMAIL, MEGA_PASSWORD)
-            # Buscar la carpeta destino (no crearla si no existe)
-            folder = m.find(MEGA_FOLDER_PATH)
-            if not folder:
-                raise Exception(f"La carpeta destino '{MEGA_FOLDER_PATH}' no existe en tu cuenta de Mega.nz. Por favor, créala manualmente.")
-            # Subir el PDF a la carpeta
-            file = m.upload(output_pdf_file, folder[0])
-            link = m.get_upload_link(file)
-            print(f"PDF subido a Mega.nz en {MEGA_FOLDER_PATH}. Link: {link}")
-        except Exception as e:
-            print(f"Error al subir el PDF a Mega.nz: {e}")
+        link = subir_a_mega_mejorado(output_pdf_file, MEGA_EMAIL, MEGA_PASSWORD, MEGA_FOLDER_PATH)
+        
+        if link:
+            # IMPORTANTE: Formato específico para que analiza_y_guarda.py pueda capturarlo
+            print(f"\n✅ PDF subido exitosamente a Mega.nz")
+            print(f"Link: {link}")
+            # Salir con código 0 (éxito)
+            sys.exit(0)
+        else:
+            print(f"\n❌ No se pudo subir el PDF a Mega.nz")
+            sys.exit(1)
     else:
-        print("Credenciales de Mega.nz no encontradas en el .env. No se subió el PDF.")
+        print("⚠️ Credenciales de Mega.nz no encontradas en el .env. No se subió el PDF.")
+        sys.exit(1)

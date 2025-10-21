@@ -1,17 +1,21 @@
-
+# Archivos de Entorno
 .env
+
+# Dependencias de Node (si tu proyecto usa JS/TS)
 /node_modules
 
+# Archivos compilados de Python
 *.pyc
-<<<<<<< HEAD
+__pycache__/
+
+# Archivos de Log y Salida
 src/nohup.out
-
-venv/
-
-=======
 src/nohup.out.cursor-server/
-.cursor-server/
->>>>>>> 142a38e (Commit de todos los cambios pendientes antes de pull --rebase y push final)
 
-# Entornos virtuales de Python
+# Directorios de herramientas/IDE
+.cursor-server/
+
+# Entornos virtuales de Python (Crucial)
+# Esto ignora la carpeta que mencionaste en el prompt anterior
 venv/
+.venv/
