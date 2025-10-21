@@ -6,8 +6,8 @@ import json
 
 
 HEMINGWAI_DIR = os.path.dirname(os.path.abspath(__file__))
-RETRIEVED_FILE = os.path.join(HEMINGWAI_DIR, 'retrieved_news_item.txt')
-VENV_DIR = os.path.join(HEMINGWAI_DIR, ".venv")
+RETRIEVED_FILE = os.path.join(HEMINGWAI_DIR, '../output_temporal/retrieved_news_item.txt')
+VENV_DIR = os.path.join(HEMINGWAI_DIR, "../.venv")
 VENV_PYTHON = os.path.join(VENV_DIR, "bin", "python")
 
 # 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada
@@ -16,7 +16,7 @@ env_utf8 = os.environ.copy()
 env_utf8["LC_ALL"] = "C.UTF-8"
 env_utf8["LANG"] = "C.UTF-8"
 proc = subprocess.run([
-    VENV_PYTHON, "src/Hemingwai.py"
+    VENV_PYTHON, "Hemingwai.py"
 ], cwd=HEMINGWAI_DIR, capture_output=True, text=False, env=env_utf8)
 output = (proc.stdout or b"") + (proc.stderr or b"")
 try:
@@ -73,7 +73,7 @@ print(out3)
 
 # Verificar que el PDF se ha generado
 from glob import glob
-output_dir = os.path.join(HEMINGWAI_DIR, "output_temporal")
+output_dir = os.path.join(HEMINGWAI_DIR, "../output_temporal")
 pdfs = glob(os.path.join(output_dir, "*.pdf"))
 if not pdfs:
     print("No se generó ningún PDF. Abortando.")

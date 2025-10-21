@@ -338,9 +338,9 @@ def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/
 if __name__ == "__main__":
     script_dir = os.path.dirname(__file__)
     load_dotenv(os.path.join(script_dir, ".env"))
-    news_data_file = os.path.join(script_dir, "retrieved_news_item.txt")
-    latex_template_file = "news_template.tex.j2"
-    output_dir = os.path.join(script_dir, "output_temporal")
+    news_data_file = os.path.join(script_dir, "../output_temporal/retrieved_news_item.txt")
+    latex_template_file = "../news_template.tex.j2"
+    output_dir = os.path.join(script_dir, "../output_temporal")
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
