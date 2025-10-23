@@ -132,4 +132,13 @@
 % {% endif %}
 % \vspace{1em}
 
+% --- Análisis de Verificación de Hechos ---
+\section*{Análisis de Verificación de Hechos}
+{% if fact_check_analisis %}
+    {{ fact_check_analisis | sanitize_fact_check }}
+{% else %}
+    No disponible.
+{% endif %}
+\vspace{1em}
+
 \end{document}

@@ -119,6 +119,54 @@ def escape_tex_special_chars(text):
     final_text = final_text_segments.replace(UNIQUE_PARAGRAPH_BREAK_STRING, "\n\\par\\medskip\n")
     return final_text
 
+def sanitize_and_format_fact_check(text):
+    """
+    A more robust filter specifically for the fact-checking analysis text.
+    - Preserves markdown-like structures like lists and bolding.
+    - Wraps list items in a valid LaTeX itemize environment to prevent compiler hangs.
+    - Escapes LaTeX special characters.
+    """
+    if not isinstance(text, str):
+        return ""
+
+    # 1. Basic cleaning, LaTeX escaping, and bolding
+    text = text.strip().replace("\r\n", "\n")
+    escaped_text = escape_tex_chars_in_plain_text_segment(text)
+    escaped_text = re.sub(r'\*\*(.*?)\*\*', r'\\textbf{\1}', escaped_text)
+
+    # 2. Process lines to handle lists correctly
+    lines = escaped_text.split('\n')
+    processed_lines = []
+    in_list = False
+    list_item_pattern = re.compile(r'^\s*[\*\-]\s+(.*)')
+
+    for line in lines:
+        match = list_item_pattern.match(line)
+        if match:
+            # Line is a list item
+            if not in_list:
+                processed_lines.append('\\begin{itemize}')
+                in_list = True
+            processed_lines.append(f'\\item {match.group(1)}')
+        else:
+            # Line is not a list item
+            if in_list:
+                processed_lines.append('\\end{itemize}')
+                in_list = False
+            processed_lines.append(line)
+    
+    # If the text ends with a list, close the environment
+    if in_list:
+        processed_lines.append('\\end{itemize}')
+
+    # 3. Reassemble text and handle paragraph breaks
+    reassembled_text = '\n'.join(processed_lines)
+    # Split into paragraphs and join with LaTeX paragraph command. This is safer than a complex re.sub.
+    paragraphs = re.split(r'\n(?:\s*\n)+', reassembled_text)
+    final_text = '\n\\par\\medskip\n'.join(p for p in paragraphs if p) # Join non-empty paragraphs
+
+    return final_text
+
 def replace_tex_special_chars_for_url(text):
     if not isinstance(text, str): text = str(text)
     text = strip_or_replace_problematic_unicode(text)
@@ -146,6 +194,7 @@ env.filters['escape_tex_special_chars'] = escape_tex_special_chars
 env.filters['escape_tex_inline'] = escape_tex_inline
 env.filters['replace_tex_special_chars'] = replace_tex_special_chars_for_url
 env.filters['format_date'] = format_date_for_latex
+env.filters['sanitize_fact_check'] = sanitize_and_format_fact_check
 
 def render_template(template_name, output_filename, context):
     try:
@@ -363,6 +412,17 @@ if __name__ == "__main__":
     
     news_item_data = clean_dict_recursive(news_item_data)
 
+    # Cargar el análisis de fact-checking
+    fact_check_file = os.path.join(output_dir, "fact_check_analisis.txt")
+    fact_check_analisis = ""
+    try:
+        with open(fact_check_file, "r", encoding="utf-8") as f:
+            fact_check_analisis = f.read()
+    except FileNotFoundError:
+        print(f"Advertencia: El archivo de análisis de fact-checking '{fact_check_file}' no fue encontrado.")
+    except IOError as e:
+        print(f"Error al leer el archivo de análisis de fact-checking: {e}")
+
     # Mapear campos para la plantilla LaTeX
     if "texto_referencia_diccionario" in news_item_data:
         news_item_data["texto_referencia_direct_dict_data"] = news_item_data["texto_referencia_diccionario"]
@@ -395,7 +455,11 @@ if __name__ == "__main__":
     else:
         print("No 'puntuacion_individual' data for spider chart.")
 
-    context = {"news_item": news_item_data, "spider_chart_file": spider_chart_file}
+    context = {
+        "news_item": news_item_data,
+        "spider_chart_file": spider_chart_file,
+        "fact_check_analisis": fact_check_analisis
+    }
     
     try:
         render_template(latex_template_file, output_tex_file, context)
