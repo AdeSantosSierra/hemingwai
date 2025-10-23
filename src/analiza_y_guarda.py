@@ -76,7 +76,28 @@ for campo in CAMPOS_CLAVE:
         sys.exit(1)
 print("Todos los campos clave están presentes en la noticia extraída.")
 
-# 3. Ejecutar render_latex.py para generar y subir el PDF
+# 3. Ejecutar fact_check_perplexity.py con el ID de la noticia
+print("Ejecutando verificación de hechos con Perplexity AI...")
+proc_fact_check = subprocess.run([
+    VENV_PYTHON, "fact_check_perplexity.py", noticia_id
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
+output_fact_check = (proc_fact_check.stdout or b"") + (proc_fact_check.stderr or b"")
+try:
+    output_fact_check = output_fact_check.decode("utf-8", errors="replace")
+except Exception:
+    output_fact_check = output_fact_check.decode("latin1", errors="replace")
+print(output_fact_check)
+
+# Verificar que el archivo de análisis se ha generado
+fact_check_file = os.path.join(output_dir, "fact_check_analisis.txt")
+if not os.path.exists(fact_check_file):
+    print(f"No se encontró el archivo {fact_check_file}. El análisis de Perplexity puede haber fallado. Abortando.")
+    sys.exit(1)
+print("Verificación de hechos completada y archivo de análisis generado.")
+
+
+
+# 4. Ejecutar render_latex.py para generar y subir el PDF
 print("Generando y subiendo PDF...")
 proc3 = subprocess.run([
     VENV_PYTHON, "render_latex.py"

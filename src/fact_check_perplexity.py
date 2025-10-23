@@ -86,6 +86,7 @@ def verificar_noticia(noticia_id: str) -> str:
                     "Es vital confrontar las formulaciones de la noticia con declaraciones o comunicados oficiales y comparar cómo se expresan en medios de referencia, detectando rápidamente cambios de sentido en verbos y expresiones clave. "
                     "Basa tu análisis en fuentes fiables y cítalas en tu respuesta. "
                     "¡MUY IMPORTANTE! Evita las expresiones “hecho objetivo”, “dato objetivo” “interpretación subjetiva”, “verdad objetiva”, “neutral”. Utilizar, en cambio solo “hecho”, “dato”, “interpretación”, “verdad”, “imparcial”, “ecuánime”, “adecuado”."
+                    "La respuesta no puede contener ni emoticonos ni tablas ni similar, únicamente puede ser texto plano"
                 )
             },
             {
@@ -123,6 +124,20 @@ if __name__ == "__main__":
     # --- Ejecutar la verificación ---
     resultado_analisis = verificar_noticia(noticia_id_arg)
     
+    #guardar resultado en un archivo
+    output_dir = os.path.join(ROOT_DIR, "output_temporal")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    
+    output_file = os.path.join(output_dir, "fact_check_analisis.txt")
+    try:
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(resultado_analisis)
+        print(f"Análisis guardado exitosamente en: {output_file}")
+    except IOError as e:
+        print(f"Error al escribir en el archivo {output_file}: {e}")
+        sys.exit(1)
+
     # --- Imprimir el resultado ---
     print("\n" + "="*50)
     print(" ANÁLISIS DE VERACIDAD DE LA NOTICIA")
