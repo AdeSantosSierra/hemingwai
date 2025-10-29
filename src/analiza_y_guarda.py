@@ -27,14 +27,33 @@ else:
         except Exception as e:
             print(f"No se pudo eliminar {f}: {e}")
 
-# 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada
-print("Ejecutando análisis de noticia con Hemingwai.py...")
+# --- Configuración del entorno para subprocesos ---
 env_utf8 = os.environ.copy()
 env_utf8["LC_ALL"] = "C.UTF-8"
 env_utf8["LANG"] = "C.UTF-8"
-proc = subprocess.run([
-    VENV_PYTHON, "Hemingwai.py"
-], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
+
+# --- 1. Ejecutar Hemingwai.py y capturar el ID de la noticia procesada ---
+
+# Preparar los argumentos para Hemingwai.py
+hemingwai_args = [VENV_PYTHON, "Hemingwai.py"]
+if len(sys.argv) > 1:
+    noticia_id_arg = sys.argv[1]
+    if not re.match(r"^[a-fA-F0-9]{24}$", noticia_id_arg):
+        print(f"El ID proporcionado '{noticia_id_arg}' no parece un ObjectId válido. Abortando.")
+        sys.exit(1)
+    print(f"Analizando noticia con ID específico: {noticia_id_arg}")
+    hemingwai_args.append(noticia_id_arg)
+else:
+    print("Ejecutando análisis de la próxima noticia disponible...")
+
+# Ejecutar el subproceso
+proc = subprocess.run(
+    hemingwai_args,
+    cwd=SRC_DIR,
+    capture_output=True,
+    text=False,
+    env=env_utf8
+)
 output = (proc.stdout or b"") + (proc.stderr or b"")
 try:
     output = output.decode("utf-8", errors="replace")
@@ -42,10 +61,10 @@ except Exception:
     output = output.decode("latin1", errors="replace")
 print(output)
 
-# Buscar el ID de la noticia en el output
+# Buscar el ID de la noticia en el output para confirmar que se procesó
 match = re.search(r"ID de la noticia a analizar: ([a-fA-F0-9]{24})", output)
 if not match:
-    print("No se pudo encontrar el ID de la noticia procesada. Abortando.")
+    print("No se pudo encontrar el ID de la noticia procesada en la salida de Hemingwai. Abortando.")
     sys.exit(1)
 noticia_id = match.group(1)
 print(f"ID de la noticia procesada: {noticia_id}")
