@@ -560,3 +560,1166 @@ PDF subido a Mega.nz en HemingwAI/PDF hemingwAI. Link: https://mega.co.nz/#!ddxy
 
 PDF generado: /home/ravila/hemingwai/output_temporal/Defensa_últimas_noticias_imágenes_y_vídeos_del_sector_defens.pdf
 Subida a Mega completada correctamente.
+Limpiando directorio: /home/roberto/hemingwai/output_temporal
+Ejecutando análisis de noticia con Hemingwai.py...
+Traceback (most recent call last):
+  File "/home/roberto/hemingwai/src/analiza_y_guarda.py", line 35, in <module>
+    proc = subprocess.run([
+        VENV_PYTHON, "Hemingwai.py"
+    ], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
+  File "/usr/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2125, in _communicate
+    ready = selector.select(timeout)
+  File "/usr/lib/python3.13/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt
+Limpiando directorio: /home/roberto/hemingwai/output_temporal
+Ejecutando análisis de noticia con Hemingwai.py...
+ID de la noticia a analizar: 67c9a2a9333c0027ba595bc5
+Procesando noticia: “Pla o Dalí no podien ser els estendards del diari Avui”
+Procesando titular: “Pla o Dalí no podien ser els estendards del diari Avui”
+Base de datos nueva actualizada:
+Noticia: “Pla o Dalí no podien ser els estendards del diari Avui”
+Puntuación global: 82
+Puntuación individual: {'1': 85, '2': 85, '3': 85, '4': 75, '5': 85, '6': 75, '7': 75, '8': 85, '9': 85, '10': 85}
+Es clickbait: False
+Título reformulado: None
+
+
+ID de la noticia procesada: 67c9a2a9333c0027ba595bc5
+Extrayendo noticia procesada...
+Running fetch_news_item.py directly as a standalone script.
+Fetching by id: 67c9a2a9333c0027ba595bc5
+Saved to /home/roberto/hemingwai/output_temporal/retrieved_news_item.txt
+
+Sample fetched item data:
+  _id: 67c9a2a9333c0027ba595bc5
+  url: https://www.elpuntavui.cat/cultura/article/19-cultura/2514197-pla-o-dali-no-podien-ser-els-estendard...
+  titulo: “Pla o Dalí no podien ser els estendards del diari Avui”
+  cuerpo: Josep Maria Figueres i Artigues (Vilanova i la Geltrú, 1950) és historiador del periodisme català, p...
+  fecha_publicacion: None
+  autor: [complex type - not showing full content]
+  identificador: 2d163e42723fef18b110e192c23da924db559aef920a2b6b8e5d8fb2c987e971
+  embedding: [complex type - not showing full content]
+  es_clickbait: False
+  puntuacion: 82
+  puntuacion_individual: [complex type - not showing full content]
+  resumen_valoracion: La noticia ofrece un análisis histórico detallado y neutral, pero se beneficiaría de más fuentes y m...
+  resumen_valoracion_titular: Titular con baja calidad periodística, ambiguo y poco informativo, con uso estratégico de nombres co...
+  texto_referencia: {'1': 'La noticia titulada “Pla o Dalí no podien ser els estendards del diari Avui” ofrece una narra...
+  texto_referencia_diccionario: [complex type - not showing full content]
+  valoracion_general: La noticia titulada “Pla o Dalí no podien ser els estendards del diari Avui” analiza la creación y r...
+  valoracion_titular: [complex type - not showing full content]
+  valoraciones: [complex type - not showing full content]
+  valoraciones_html: [complex type - not showing full content]
+
+Todos los campos clave están presentes en la noticia extraída.
+Ejecutando verificación de hechos con Perplexity AI...
+Conectando a MongoDB en la base de datos 'Base_de_datos_noticias'...
+Buscando la noticia con ID: 67c9a2a9333c0027ba595bc5...
+Noticia encontrada. Procediendo a la verificación de hechos.
+Enviando la noticia a Perplexity AI para su análisis...
+Análisis recibido correctamente.
+Conexión a MongoDB cerrada.
+Análisis guardado exitosamente en: /home/roberto/hemingwai/output_temporal/fact_check_analisis.txt
+
+==================================================
+ ANÁLISIS DE VERACIDAD DE LA NOTICIA
+==================================================
+Josep Maria Figueres i Artigues nace en Vilanova i la Geltrú en 1950, es historiador del periodismo catalán, profesor en la Universitat Autònoma de Barcelona y periodista. Según fuentes actuales, efectivamente ha publicado cerca de 50 libros de investigación y centenares de artículos en prensa[1][2][3][6][7]. La afirmación sobre "más de 2.000 artículos" es plausible y no contradice ninguna fuente consultada, aunque los listados públicos detallan el volumen exacto solo en algunos casos.
+
+Respecto a su biografía, vivió la juventud en Valls (donde cursó el bachillerato en el Institut Narcís Oller) y está fuertemente vinculado a Sant Cugat del Vallès, donde reside desde hace décadas[2][3]. Además, desde 1991 ejerce como profesor de historia del periodismo en la UAB, lo que concuerda con la noticia[2][3][6].
+
+Sobre su vinculación al diario Avui:
+- Figueres participó en el proyecto fundacional del Avui y trabajó allí desde 1974, tal como confirma la Viquipèdia en catalán[3]. Esto coincide con el testimonio del propio Figueres sobre trabajar antes de la salida del diario y colaborar en la campaña de captación de cuenta-partícipes.
+- La afirmación de que Figueres fue "cap de Promoció" (jefe de promoción) entre 1974 y 1979 se corresponde con múltiples testimonios y su propio perfil[3].
+- El testimonio sobre la capta de cuenta-partícipes y la primera gran campaña de micromecenazgo, logrando 34.000 suscriptores (cuenta-partícipes), está corroborado en fuentes sobre la historia del diario Avui; La cifra puede variar levemente según distintas fuentes (entre 33.000 y 35.000), pero está documentada como una de las experiencias pioneras de suscripción colectiva en Cataluña en los años 70. La versión aquí expuesta es adecuada y se encuentra en el rango documentado[3].
+
+En cuanto a datos específicos de la promoción y el papel de la campaña:
+- La implicación de Miró es un hecho conocido: Miró diseñó un cartel para el lanzamiento de Avui, aspecto confirmado en fuentes históricas sobre arte y prensa catalana[3].
+- La creación de un fondo de arte con donaciones de artistas (superando las 400 obras) es un hecho documentado y coincide con el recuento histórico de la colección del diario[3][9].
+
+Sobre el rol de figuras como Dalí y Pla:
+- La afirmación de que Dalí no participó en el fondo de arte es correcta. Las fuentes históricas no citan a Dalí entre los donantes del fondo artístico del Avui, mientras que Miró sí lo hizo[3].
+- El análisis sobre Pla y su relación con la prensa catalana está alineado con perfiles biográficos y testimonios indirectos en fuentes de referencia, aunque estos pasajes son más interpretativos y menos factuales en términos verificables.
+
+Respecto a fechas y acontecimientos clave:
+- El diario Avui salió el 23 de abril de 1976 (Sant Jordi), hecho confirmado en todas las fuentes consultadas[3].
+- El testimonio sobre la campaña de promoción y distribución en Sant Jordi de 1976, con una segunda edición de 100.000 ejemplares, es aceptable. Hay pequeñas oscilaciones según qué historia oficial se consulte, pero la cifra está documentada en los registros sobre el impacto inicial del diario[3].
+- El retorno de Tarradellas y las ediciones especiales son aspectos citados habitualmente por la prensa catalana; la falta de ejemplares en la hemeroteca sobre ciertas ediciones es un dato concreto conocido y documentado en registros de bibliotecas y en estudios sobre la prensa de la transición[3].
+
+Sobre la adscripción institucional:
+- La asociación de Figueres con la Societat Catalana d'Estudis Històrics y el Col·legi Oficial de Doctors i Llicenciats en Filosofia i Lletres está corroborada en su perfil académico[2][3][6].
+
+En resumen:
+- Los hechos numéricos y biográficos principales (fecha de nacimiento, vinculación con Valls, Sant Cugat, número de libros, años de docencia, papel fundacional en el diario Avui, número y naturaleza de cuenta-partícipes, hechos relacionados con Miró y el fondo de arte, ausencia de Dalí, y lanzamiento del diario en Sant Jordi 1976) son adecuados y encontrables en fuentes fiables[1][2][3][6][7][9].
+- Cualquier interpretación más subjetiva (sobre roles ideológicos, juicios sobre Miró o Dalí, valoraciones críticas sobre Pla) se expresa desde la perspectiva del entrevistado y no contradice datos estrictamente históricos.
+- No se detectan contradicciones ni información desactualizada relevante en los hechos principales. Las cifras y calendarios que ofrece la noticia son concordantes con las fuentes de referencia académica e institucional.
+- No se hallan formulaciones equívocas o datos inexactos que puedan modificar la comprensión global de la noticia en su dimensión de crónica biográfica, institucional y de prensa histórica. La interpretación de la influencia del diario en la transición y del papel de los intelectuales responde a la valoración de los protagonistas y está en línea con lo publicado en fuentes de referencia.
+==================================================
+
+
+Verificación de hechos completada y archivo de análisis generado.
+Generando y subiendo PDF...
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+
+(/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendar
+ds_del_diari_Avui.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-spanish/spanish.ldf))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered
+.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/sectsty/sectsty.sty
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.aux.
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+[2]
+[3]
+[4] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (255.0321pt too wide) in paragraph at lines 152--154
+[][]$\OT1/pcr/m/n/10 https : / / www . elpuntavui . cat / cultura / article / 1
+9-[]cultura / 2514197-[]pla-[]o-[]dali-[]no-[]podien-[]ser-[]els-[]estendards-[
+]del-[]diari-[]avui .
+
+[5]
+[6]
+[7 </home/roberto/hemingwai/output_temporal/spider_chart.png>]
+[8] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+[9]
+[10]
+[11]
+[12]
+(/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendar
+ds_del_diari_Avui.aux)
+
+Package rerunfilecheck Warning: File `Pla_o_Dalí_no_podien_ser_els_estendards_
+del_diari_Avui.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien
+_ser_els_estendards_del_diari_Avui.pdf (12 pages, 199015 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_po
+dien_ser_els_estendards_del_diari_Avui.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+📊 Tamaño: 194.35 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/hcRXzBrZ#Ob-DAIntk7u7SOJqUyHuZ0fb20_483zJ693qZex1pj8
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/hcRXzBrZ#Ob-DAIntk7u7SOJqUyHuZ0fb20_483zJ693qZex1pj8
+
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+Error: no se obtuvo enlace de Mega en la salida. La subida no se considera correcta.
+Salida de render_latex.py (recortada):
+Output written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien
+_ser_els_estendards_del_diari_Avui.pdf (12 pages, 199015 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_po
+dien_ser_els_estendards_del_diari_Avui.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+📊 Tamaño: 194.35 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/hcRXzBrZ#Ob-DAIntk7u7SOJqUyHuZ0fb20_483zJ693qZex1pj8
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/hcRXzBrZ#Ob-DAIntk7u7SOJqUyHuZ0fb20_483zJ693qZex1pj8
+
+Limpiando directorio: /home/roberto/hemingwai/output_temporal
+Ejecutando análisis de la próxima noticia disponible...
+ID de la noticia a analizar: 67c9a2ab333c0027ba595bc9
+Procesando noticia: Passa a planta una ferida crítica en l’accident entre dos autocars a la Diagonal
+Procesando titular: Passa a planta una ferida crítica en l’accident entre dos autocars a la Diagonal
+Base de datos nueva actualizada:
+Noticia: Passa a planta una ferida crítica en l’accident entre dos autocars a la Diagonal
+Puntuación global: 1
+Puntuación individual: {'1': 1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 1, '8': 1, '9': 1, '10': 1}
+Es clickbait: True
+Título reformulado: ** Una herida crítica mejora tras el accidente entre dos autobuses en la Diagonal.
+
+
+ID de la noticia procesada: 67c9a2ab333c0027ba595bc9
+Extrayendo noticia procesada...
+Running fetch_news_item.py directly as a standalone script.
+Fetching by id: 67c9a2ab333c0027ba595bc9
+Saved to /home/roberto/hemingwai/output_temporal/retrieved_news_item.txt
+
+Sample fetched item data:
+  _id: 67c9a2ab333c0027ba595bc9
+  url: https://www.elpuntavui.cat/societat/article/5-societat/2514798-passa-a-planta-una-ferida-critica-en-...
+  titulo: Passa a planta una ferida crítica en l’accident entre dos autocars a la Diagonal
+  cuerpo: Sin contenido
+  fecha_publicacion: None
+  autor: [complex type - not showing full content]
+  identificador: 4404be907640bda0f57a1be997f8a20a2ddac186859b2486bc400e92ec2b4c86
+  embedding: [complex type - not showing full content]
+  es_clickbait: True
+  puntuacion: 1
+  puntuacion_individual: [complex type - not showing full content]
+  resumen_valoracion: La noticia carece de desarrollo, contexto y fuentes verificables, afectando su credibilidad y compre...
+  resumen_valoracion_titular: Titular periodísticamente correcto: información veraz y relevante, con margen de mejora en claridad ...
+  texto_referencia: 1 | [Sin contenido]  
+2 | [Sin contenido]  
+3 | [Sin contenido]  
+4 | [Sin contenido]  
+5 | [Sin con...
+  texto_referencia_diccionario: [complex type - not showing full content]
+  titulo_reformulado: ** Una herida crítica mejora tras el accidente entre dos autobuses en la Diagonal.
+  valoracion_general: La noticia titulada "Passa a planta una ferida crítica en l’accident entre dos autocars a la Diagona...
+  valoracion_titular: [complex type - not showing full content]
+  valoraciones: [complex type - not showing full content]
+  valoraciones_html: [complex type - not showing full content]
+
+Todos los campos clave están presentes en la noticia extraída.
+Ejecutando verificación de hechos con Perplexity AI...
+Conectando a MongoDB en la base de datos 'Base_de_datos_noticias'...
+Buscando la noticia con ID: 67c9a2ab333c0027ba595bc9...
+Noticia encontrada. Procediendo a la verificación de hechos.
+Enviando la noticia a Perplexity AI para su análisis...
+Análisis recibido correctamente.
+Conexión a MongoDB cerrada.
+Análisis guardado exitosamente en: /home/roberto/hemingwai/output_temporal/fact_check_analisis.txt
+
+==================================================
+ ANÁLISIS DE VERACIDAD DE LA NOTICIA
+==================================================
+No es posible realizar una verificación ya que la noticia no ha sido proporcionada; no se ha incluido ningún texto, cifra ni afirmación concreta que permita analizar, cotejar o contrastar los datos[1][3][4][6]. 
+
+Para hacer una verificación adecuada de una noticia, es imprescindible disponer del contenido exacto —incluyendo datos específicos como cifras, hechos, fechas, lugares o nombres— para poder contrastar cada elemento con fuentes fiables y actuales, identificar posibles inexactitudes, contradicciones o desactualizaciones, y fundamentar las correcciones si son necesarias. Sin esa información, no es posible aplicar los métodos recomendados para detectar imprecisiones, desinformación y verificar la autenticidad del contenido[3][4][6][11].
+
+Si tienes una noticia concreta o un texto específico, por favor proporciónalo para realizar la verificación detallada conforme a criterios imparciales y con respaldo en fuentes verificadas.
+==================================================
+
+
+Verificación de hechos completada y archivo de análisis generado.
+Generando y subiendo PDF...
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+
+(/home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_
+laccident_entre_dos_aut.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-spanish/spanish.ldf))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered
+.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/sectsty/sectsty.sty
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.aux.
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (419.0321pt too wide) in paragraph at lines 52--54
+[][]$\OT1/pcr/m/n/10 https : / / www . elpuntavui . cat / societat / article / 
+5-[]societat / 2514798-[]passa-[]a-[]planta-[]una-[]ferida-[]critica-[]en-[]l-[
+]accident-[]entre-[]dos-[]autocars-[]a-[]la-[]diagonal .
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+[2 </home/roberto/hemingwai/output_temporal/spider_chart.png>]
+[3]
+[4]
+(/home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_
+laccident_entre_dos_aut.aux)
+
+Package rerunfilecheck Warning: File `Passa_a_planta_una_ferida_crítica_en_lac
+cident_entre_dos_aut.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_fe
+rida_crítica_en_laccident_entre_dos_aut.pdf (4 pages, 130234 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Passa_a_planta_un
+a_ferida_crítica_en_laccident_entre_dos_aut.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+📊 Tamaño: 127.18 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/UURjwaaa#4RbMz9Drl3Bf6fKOx_doBX-T7gT1BSgVRduryrPpaHA
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/UURjwaaa#4RbMz9Drl3Bf6fKOx_doBX-T7gT1BSgVRduryrPpaHA
+
+PDF generado: /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+Error: no se obtuvo enlace de Mega en la salida. La subida no se considera correcta.
+Salida de render_latex.py (recortada):
+/output_temporal/Passa_a_planta_una_fe
+rida_crítica_en_laccident_entre_dos_aut.pdf (4 pages, 130234 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Passa_a_planta_un
+a_ferida_crítica_en_laccident_entre_dos_aut.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+📊 Tamaño: 127.18 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Passa_a_planta_una_ferida_crítica_en_laccident_entre_dos_aut.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/UURjwaaa#4RbMz9Drl3Bf6fKOx_doBX-T7gT1BSgVRduryrPpaHA
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/UURjwaaa#4RbMz9Drl3Bf6fKOx_doBX-T7gT1BSgVRduryrPpaHA
+
+Limpiando directorio: /home/roberto/hemingwai/output_temporal
+Ejecutando análisis de la próxima noticia disponible...
+ID de la noticia a analizar: 67c9a2ac333c0027ba595bca
+Procesando noticia: “Pla o Dalí no podien ser els estendards del diari Avui”
+Procesando titular: “Pla o Dalí no podien ser els estendards del diari Avui”
+Base de datos nueva actualizada:
+Noticia: “Pla o Dalí no podien ser els estendards del diari Avui”
+Puntuación global: 83
+Puntuación individual: {'1': 85, '2': 75, '3': 75, '4': 85, '5': 85, '6': 85, '7': 85, '8': 85, '9': 85, '10': 85}
+Es clickbait: False
+Título reformulado: None
+
+
+ID de la noticia procesada: 67c9a2ac333c0027ba595bca
+Extrayendo noticia procesada...
+Running fetch_news_item.py directly as a standalone script.
+Fetching by id: 67c9a2ac333c0027ba595bca
+Saved to /home/roberto/hemingwai/output_temporal/retrieved_news_item.txt
+
+Sample fetched item data:
+  _id: 67c9a2ac333c0027ba595bca
+  url: https://www.elpuntavui.cat/cultura/article/19-cultura/2514197-pla-o-dali-no-podien-ser-els-estendard...
+  titulo: “Pla o Dalí no podien ser els estendards del diari Avui”
+  cuerpo: Josep Maria Figueres i Artigues (Vilanova i la Geltrú, 1950) és historiador del periodisme català, p...
+  fecha_publicacion: None
+  autor: [complex type - not showing full content]
+  identificador: fcf479ebb54dde264787850ab5a47c0d199dae942aff0d1611b7db1a4d8e3f1a
+  embedding: [complex type - not showing full content]
+  es_clickbait: False
+  puntuacion: 83
+  puntuacion_individual: [complex type - not showing full content]
+  resumen_valoracion: Análisis integral y veraz, pero requiere más fuentes y perspectivas para mejorar el equilibrio y la ...
+  resumen_valoracion_titular: Análisis de titular: moderada veracidad y claridad, alta relevancia cultural, bajo riesgo de clickba...
+  texto_referencia: {'1': 'La noticia titulada "Pla o Dalí no podien ser els estendards del diari Avui" es notable por s...
+  texto_referencia_diccionario: [complex type - not showing full content]
+  valoracion_general: La noticia titulada "Pla o Dalí no podien ser els estendards del diari Avui" ofrece un análisis inte...
+  valoracion_titular: [complex type - not showing full content]
+  valoraciones: [complex type - not showing full content]
+  valoraciones_html: [complex type - not showing full content]
+
+Todos los campos clave están presentes en la noticia extraída.
+Ejecutando verificación de hechos con Perplexity AI...
+Conectando a MongoDB en la base de datos 'Base_de_datos_noticias'...
+Buscando la noticia con ID: 67c9a2ac333c0027ba595bca...
+Noticia encontrada. Procediendo a la verificación de hechos.
+Enviando la noticia a Perplexity AI para su análisis...
+Análisis recibido correctamente.
+Conexión a MongoDB cerrada.
+Análisis guardado exitosamente en: /home/roberto/hemingwai/output_temporal/fact_check_analisis.txt
+
+==================================================
+ ANÁLISIS DE VERACIDAD DE LA NOTICIA
+==================================================
+La noticia sobre **Josep Maria Figueres i Artigues** incluye afirmaciones precisas respecto a su biografía y trayectoria profesional que en su mayor parte pueden ser corroboradas con fuentes actuales y fiables.
+
+- Es cierto que **nació en Vilanova i la Geltrú en 1950**, concretamente el 31 de octubre[3]. Es historiador, profesor universitario e investigador especializado en la historia del periodismo catalán[1][3][5].
+- Es profesor de la **Universitat Autònoma de Barcelona (UAB)** y ejerce la docencia desde 1991, especializado en la historia del periodismo catalán[2][3][5].
+- Ha publicado **alrededor de 50 libros** de investigación sobre periodismo catalán, catalanismo político e historia y cultura, cifra respaldada por la propia UAB y fuentes académicas recientes[2]. La cifra de **más de 2.000 artículos** publicados en prensa es probable considerando su dilatada actividad, aunque las fuentes verificadas solo confirman “centenares de monografías y artículos”[2][3][5]; este aspecto no es inexacto, pero carece de verificación exacta en fuentes de referencia.
+- Su juventud en Valls y residencia posterior en Sant Cugat del Vallès se ajusta a las biografías consultadas, que mencionan su traslado a Valls y su arraigo en Sant Cugat[2][3].
+- Respecto a la fundación del diario **Avui**, los datos muestran que Figueres colaboró en la puesta en marcha, trabajando en tareas de promoción desde 1974[3][5]. La referencia a una participación inicial de “20.000 pesetas” como cuenta-partícipe no puede ser verificada en fuentes públicas accesibles, pero no contradice la información documentada sobre el sistema de micromecenazgo en el nacimiento del Avui.
+- El número de **cuenta-partícipes (34.000)** en la primera campaña de micromecenazgo del diario Avui es consistente con la historia del diario y otras investigaciones sobre el proyecto, aunque la cifra puede variar ligeramente según fuentes secundarias. No existe contradicción grave en este dato, la magnitud es adecuada a lo verificado.
+- Su papel como **cap de Promoció** en los años previos a la salida del diario en 1976 y la vinculación con Josep Espar i Ticó están ampliamente respaldados por trabajos sobre la historia del Avui y testimonios de los implicados[3][5].
+- El diario **Avui salió por primera vez el 23 de abril de 1976** (Sant Jordi), hecho documentado en prensa y testimonios de los protagonistas y citado en la noticia correctamente[3][5].
+- La impresión de **100.000 ejemplares** en la segunda edición el día del estreno se ajusta a la información sobre el impacto inicial del periódico en Cataluña y coincide con otras fuentes periodísticas[3][5].
+- La implicación de artistas relevantes en el fondo de arte del diario, como **Miró**, **Tàpies**, **Cesc** o **Pilarín Bayés**, es un hecho recogido en la historia del Avui. La ausencia de Dalí se cita correctamente, y la explicación sobre su postura y contexto coincide con la interpretación del momento histórico, aunque no existe prueba documental de una negativa formal de Dalí ni evidencia de propuesta directa.
+- La referencia a **Joan Triadú**, **Josep Faulí**, **Josep Espar i Ticó**, entre otros, como participantes y colaboradores, está avalada por abundantes fuentes sobre la formación y primeras etapas de Avui[3][5].
+- El suplemento sobre **Lluís Companys** y los sumarios de guerra, así como la petición de digitalización, se corresponden con los intereses de investigación a largo plazo de Figueres y aparecen en su producción académica; sin embargo, la existencia o ausencia de ese suplemento específico en la hemeroteca requiere verificación puntual en archivos históricos y no puede ser corroborada íntegramente solo con fuentes abiertas[5].
+- Las valoraciones sobre el impacto del diario Avui en la Transición, su significado en la historia cultural y política catalana, o la postura de algunos escritores y artistas (Pla, Dalí), constituyen interpretaciones o posiciones personales y no hechos susceptibles de verificación numérica directa. Son ecuánimes y adecuadas en el contexto de una entrevista con un historiador.
+
+Datos numéricos principales que pueden verificarse resultan adecuados: fechas principales, nombres, tiradas, cargos y roles, así como la magnitud del micromecenazgo. No se detectan contradicciones significativas ni errores en las afirmaciones concretas sobre la biografía, obra y trayectoria de Figueres ni sobre el papel de Avui en la época señalada. Los escasos datos no verificables (como la cifra exacta de cuenta-partícipes o el número total de artículos) no alteran la comprensión global y aparecen en el contexto correcto.
+
+En resumen, la noticia es precisa y ecuánime en sus datos verificables, y las afirmaciones históricas que pueden ser contrastadas se ajustan a lo consignado en fuentes fiables actuales[1][2][3][5]. Las expresiones interpretativas y valoraciones personales no presentan sesgos que comprometan el relato sobre los hechos verificables.
+==================================================
+
+
+Verificación de hechos completada y archivo de análisis generado.
+Generando y subiendo PDF...
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+
+(/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendar
+ds_del_diari_Avui.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-spanish/spanish.ldf))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered
+.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/sectsty/sectsty.sty
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.aux.
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+[2]
+[3]
+[4] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (255.0321pt too wide) in paragraph at lines 152--154
+[][]$\OT1/pcr/m/n/10 https : / / www . elpuntavui . cat / cultura / article / 1
+9-[]cultura / 2514197-[]pla-[]o-[]dali-[]no-[]podien-[]ser-[]els-[]estendards-[
+]del-[]diari-[]avui .
+
+[5]
+[6]
+[7 </home/roberto/hemingwai/output_temporal/spider_chart.png>]
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+[8]
+[9]
+[10]
+[11]
+(/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendar
+ds_del_diari_Avui.aux)
+
+Package rerunfilecheck Warning: File `Pla_o_Dalí_no_podien_ser_els_estendards_
+del_diari_Avui.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien
+_ser_els_estendards_del_diari_Avui.pdf (11 pages, 194932 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_po
+dien_ser_els_estendards_del_diari_Avui.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+📊 Tamaño: 190.36 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/hFpn2YwD#pt2Z3sAuZgSFezOrdjGuXZnqZMX3a7JmijM0JBVQTos
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/hFpn2YwD#pt2Z3sAuZgSFezOrdjGuXZnqZMX3a7JmijM0JBVQTos
+
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+Error: no se obtuvo enlace de Mega en la salida. La subida no se considera correcta.
+Salida de render_latex.py (recortada):
+Output written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien
+_ser_els_estendards_del_diari_Avui.pdf (11 pages, 194932 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_po
+dien_ser_els_estendards_del_diari_Avui.log.
+Gráfico generado correctamente: /home/roberto/hemingwai/output_temporal/spider_chart.png
+Successfully rendered 'news_template.tex.j2' to '/home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex'
+
+To compile the LaTeX file, run: pdflatex /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.tex
+PDF generado: /home/roberto/hemingwai/output_temporal/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+INICIANDO SUBIDA A MEGA.NZ
+============================================================
+📄 Archivo: Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+📊 Tamaño: 190.36 KB
+
+🔄 Intento 1/3
+✅ mega-cmd detectado! Versión: MEGAcmd version: 1.7.0.0: code 1070000
+✅ Sesión ya activa para robertoavilagarcia@gmail.com
+
+🔍 Creando/verificando carpeta: HemingwAI/PDF hemingwAI
+   ✅ Carpeta encontrada: HemingwAI
+   ✅ Carpeta encontrada: HemingwAI/PDF hemingwAI
+
+⬆️ Subiendo archivo a MEGA...
+   Destino: HemingwAI/PDF hemingwAI
+✅ Archivo subido correctamente
+
+🔗 Generando enlace público...
+✅ Enlace generado
+
+🔍 Verificando que el archivo existe en MEGA...
+✅ Archivo verificado en MEGA: HemingwAI/PDF hemingwAI/Pla_o_Dalí_no_podien_ser_els_estendards_del_diari_Avui.pdf
+
+============================================================
+✅ SUBIDA COMPLETADA EXITOSAMENTE
+============================================================
+Link: https://mega.nz/file/hFpn2YwD#pt2Z3sAuZgSFezOrdjGuXZnqZMX3a7JmijM0JBVQTos
+============================================================
+
+
+✅ PDF subido exitosamente a Mega.nz
+Link: https://mega.nz/file/hFpn2YwD#pt2Z3sAuZgSFezOrdjGuXZnqZMX3a7JmijM0JBVQTos
+
