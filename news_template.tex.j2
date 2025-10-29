@@ -135,9 +135,22 @@
 % --- Análisis de Verificación de Hechos ---
 \section*{Análisis de Verificación de Hechos}
 {% if fact_check_analisis %}
-    {{ fact_check_analisis | sanitize_fact_check }}
+    {{ fact_check_analisis | format_analysis }}
 {% else %}
     No disponible.
+{% endif %}
+\vspace{1em}
+
+% --- Fuentes del Análisis de Verificación de Hechos ---
+\section*{Fuentes del Análisis}
+{% if fact_check_fuentes %}
+    \begin{enumerate}[leftmargin=*]
+        {% for fuente in fact_check_fuentes %}
+            \item \url{ {{ fuente | replace_tex_special_chars }} }
+        {% endfor %}
+    \end{enumerate}
+{% else %}
+    No se encontraron fuentes para este análisis.
 {% endif %}
 \vspace{1em}
 

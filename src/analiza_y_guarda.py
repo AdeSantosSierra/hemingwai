@@ -108,7 +108,7 @@ except Exception:
 print(output_fact_check)
 
 # Verificar que el archivo de análisis se ha generado
-fact_check_file = os.path.join(output_dir, "fact_check_analisis.txt")
+fact_check_file = os.path.join(output_dir, "fact_check_analisis.json")
 if not os.path.exists(fact_check_file):
     print(f"No se encontró el archivo {fact_check_file}. El análisis de Perplexity puede haber fallado. Abortando.")
     sys.exit(1)
