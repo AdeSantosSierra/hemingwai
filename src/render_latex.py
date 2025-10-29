@@ -119,6 +119,31 @@ def escape_tex_special_chars(text):
     final_text = final_text_segments.replace(UNIQUE_PARAGRAPH_BREAK_STRING, "\n\\par\\medskip\n")
     return final_text
 
+def format_analysis_text(text):
+    """
+    Filtro de Jinja2 para formatear el texto del análisis de Perplexity.
+    - Escapa caracteres especiales de LaTeX.
+    - Convierte los títulos de markdown (## Título) a secciones de LaTeX.
+    - Mantiene los saltos de párrafo.
+    """
+    if not isinstance(text, str):
+        return ""
+
+    # 1. Escapar caracteres especiales de LaTeX
+    text = escape_tex_chars_in_plain_text_segment(text)
+
+    # 2. Convertir títulos markdown a \subsection*
+    # Usamos una función de reemplazo para escapar el contenido del título
+    def replace_heading(match):
+        title_content = escape_tex_inline(match.group(1))
+        return f"\\subsection*{{{title_content}}}"
+    text = re.sub(r'##\s*(.*)', replace_heading, text)
+
+    # 3. Convertir saltos de línea dobles en párrafos de LaTeX
+    text = text.replace('\n\n', '\n\\par\\medskip\n')
+    
+    return text
+
 def sanitize_and_format_fact_check(text):
     """
     A more robust filter specifically for the fact-checking analysis text.
@@ -195,6 +220,7 @@ env.filters['escape_tex_inline'] = escape_tex_inline
 env.filters['replace_tex_special_chars'] = replace_tex_special_chars_for_url
 env.filters['format_date'] = format_date_for_latex
 env.filters['sanitize_fact_check'] = sanitize_and_format_fact_check
+env.filters['format_analysis'] = format_analysis_text
 
 def render_template(template_name, output_filename, context):
     try:
@@ -412,16 +438,19 @@ if __name__ == "__main__":
     
     news_item_data = clean_dict_recursive(news_item_data)
 
-    # Cargar el análisis de fact-checking
-    fact_check_file = os.path.join(output_dir, "fact_check_analisis.txt")
+    # Cargar el análisis de fact-checking y las fuentes desde el archivo JSON
+    fact_check_file = os.path.join(output_dir, "fact_check_analisis.json")
     fact_check_analisis = ""
+    fact_check_fuentes = []
     try:
         with open(fact_check_file, "r", encoding="utf-8") as f:
-            fact_check_analisis = f.read()
+            fact_check_data = json.load(f)
+            fact_check_analisis = fact_check_data.get("analisis", "")
+            fact_check_fuentes = fact_check_data.get("fuentes", [])
     except FileNotFoundError:
         print(f"Advertencia: El archivo de análisis de fact-checking '{fact_check_file}' no fue encontrado.")
-    except IOError as e:
-        print(f"Error al leer el archivo de análisis de fact-checking: {e}")
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"Error al leer o decodificar el archivo de análisis de fact-checking: {e}")
 
     # Mapear campos para la plantilla LaTeX
     if "texto_referencia_diccionario" in news_item_data:
@@ -458,7 +487,8 @@ if __name__ == "__main__":
     context = {
         "news_item": news_item_data,
         "spider_chart_file": spider_chart_file,
-        "fact_check_analisis": fact_check_analisis
+        "fact_check_analisis": fact_check_analisis,
+        "fact_check_fuentes": fact_check_fuentes
     }
     
     try:
