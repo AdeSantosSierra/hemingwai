@@ -19,3 +19,12 @@ src/nohup.out.cursor-server/
 # Esto ignora la carpeta que mencionaste en el prompt anterior
 venv/
 .venv/
+
+# Dependencias del Backend
+servidor_api/node_modules/
+
+# Dependencias del Frontend
+frontend/node_modules/
+# Dependencias de Node
+/node_modules
+/node/

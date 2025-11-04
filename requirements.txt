@@ -84,3 +84,17 @@ pathlib==1.0.1
 #
 # Si tu mirror devuelve 403, cambia temporalmente de mirror o usa texlive-full.
 #=============================================
+
+
+
+
+#cd ~/hemingwai/frontend
+#source ../.venv/bin/activate
+#export PATH=~/hemingwai/node/nodejs/bin:$PATH
+#npm run dev
+
+
+#cd ~/hemingwai/servidor_api
+#source ../.venv/bin/activate
+#export PATH=~/hemingwai/node/nodejs/bin:$PATH
+#npm start
