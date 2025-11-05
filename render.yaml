@@ -11,11 +11,6 @@ services:
     runtime: docker
     # Ruta al Dockerfile (relativa a la raíz del repositorio)
     dockerfilePath: ./Dockerfile
-    # Propiedad para asegurar que el disco tenga espacio suficiente para las dependencias
-    disk:
-      name: aplication-disk
-      sizeGB: 10
-      mountPath: /app
     # Variables de entorno que tu aplicación necesita.
     # ¡IMPORTANTE! Debes configurar los valores de estas variables en el dashboard de Render.
     # Render te permite crear un "grupo de variables" para no tener que repetirlas.
