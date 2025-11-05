@@ -102,56 +102,6 @@ app.post('/api/buscar', async (req, res) => {
     }
 });
 
-/**
- * POST /api/analizar
- * Fuerza el análisis de una noticia existente en la BD antigua.
- * body: { identificador: 'url_o_id' }
- */
-app.post('/api/analizar', async (req, res) => {
-    const { identificador } = req.body;
-
-    if (!identificador) {
-        return res.status(400).json({ error: "El campo 'identificador' es requerido para el análisis." });
-    }
-
-    // 1. Primero, verificamos si la noticia existe en la BD antigua para obtener su ID
-    let noticiaId = identificador;
-
-    // Si el identificador no es un ObjectId válido, lo buscamos con el script
-    if (!identificador.match(/^[0-9a-fA-F]{24}$/)) {
-        try {
-            // Buscamos solo en la BD antigua
-            const resultadoBusqueda = await ejecutarScriptPython('buscar_noticia.py', [identificador, '--solo-antigua']);
-
-            if (resultadoBusqueda.mensaje === "Noticia no encontrada.") {
-                return res.status(404).json({ error: "Noticia no encontrada en la BD antigua para análisis." });
-            }
-            noticiaId = resultadoBusqueda._id; // Obtenemos el ID para pasárselo a analiza_y_guarda.py
-
-        } catch (error) {
-            return res.status(500).json({ error: error.error || "Error al verificar existencia de noticia antes de analizar." });
-        }
-    }
-
-
-    // 2. Ejecutamos el script de análisis con el ID
-    try {
-        // Ejecutamos analiza_y_guarda.py con el ID como argumento.
-        // Asumimos que analiza_y_guarda.py ya maneja la lógica de análisis a partir del ID.
-        const resultadoAnalisis = await ejecutarScriptPython('analiza_y_guarda.py', [noticiaId]);
-
-        res.json({
-            mensaje: `Análisis iniciado para ID ${noticiaId}.`,
-            resultado: resultadoAnalisis // El script debería devolver un JSON de confirmación o resultado
-        });
-
-    } catch (error) {
-        console.error('Error en /api/analizar:', error);
-        res.status(500).json({ error: error.error || "Error interno del servidor al ejecutar script de análisis." });
-    }
-});
-
-
 // Inicio del servidor
 app.listen(PORT, () => {
     console.log(`API escuchando en puerto ${PORT}...`);
