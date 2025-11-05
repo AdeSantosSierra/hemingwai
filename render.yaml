@@ -1,0 +1,49 @@
+# render.yaml
+# Este archivo define la infraestructura como código para desplegar la aplicación en Render.
+# Render leerá este archivo y configurará automáticamente los servicios.
+
+services:
+  # Servicio 1: Backend (API de Node.js y Python)
+  # Usamos un Dockerfile para tener control total sobre el entorno (Node.js + Python)
+  - type: web
+    name: hemingwai-backend
+    # 'runtime: docker' le dice a Render que use nuestro Dockerfile
+    runtime: docker
+    # Ruta al Dockerfile (relativa a la raíz del repositorio)
+    dockerfilePath: ./Dockerfile
+    # Propiedad para asegurar que el disco tenga espacio suficiente para las dependencias
+    disk:
+      name: aplication-disk
+      sizeGB: 10
+      mountPath: /app
+    # Variables de entorno que tu aplicación necesita.
+    # ¡IMPORTANTE! Debes configurar los valores de estas variables en el dashboard de Render.
+    # Render te permite crear un "grupo de variables" para no tener que repetirlas.
+    envVars:
+      - key: NEW_MONGODB_URI
+        # Este valor debe ser la cadena de conexión a tu base de datos en la nube (ej. MongoDB Atlas)
+        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database"
+      - key: PERPLEXITY_API_KEY
+        # Tu clave de API para el servicio de Perplexity
+        value: "tu_api_key_de_perplexity"
+      - key: PYTHON_VERSION
+        value: "3.10" # Especificar la versión de Python que se está usando
+
+  # Servicio 2: Frontend (Sitio Estático de React/Vite)
+  - type: web
+    name: hemingwai-frontend
+    # 'runtime: static' es para sitios construidos con herramientas como Vite, React, etc.
+    runtime: node
+    # Comandos que Render ejecutará para construir tu sitio
+    build:
+      - npm install
+      - npm run build
+    # Directorio que contiene los archivos construidos para ser servidos
+    staticPublishPath: ./frontend/dist
+    # Variable de entorno para el frontend
+    # Le dice al código de React cuál es la URL del backend desplegado.
+    envVars:
+      - key: VITE_API_BASE_URL
+        # El valor '$HEMINGWAI_BACKEND_URL' es una referencia mágica de Render.
+        # Render lo reemplazará automáticamente con la URL pública del servicio 'hemingwai-backend'.
+        value: "https://hemingwai-backend.onrender.com"

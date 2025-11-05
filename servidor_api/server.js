@@ -10,10 +10,8 @@ const app = express();
 const PORT = 3000;
 const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 
-// 🌟 CORRECCIÓN DE RUTA CRÍTICA 🌟
-// Reemplaza ESTA RUTA si 'which python' te dio una ruta diferente a la predeterminada.
-// Si which python te dio /home/roberto/hemingwai/.venv/bin/python, déjalo así.
-const PYTHON_INTERPRETER = '/home/roberto/hemingwai/.venv/bin/python'; 
+// El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
+const PYTHON_INTERPRETER = 'python'; 
 
 
 // Middleware
