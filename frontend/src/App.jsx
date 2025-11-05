@@ -20,7 +20,7 @@ import {
 } from 'recharts';
 
 // URL base para nuestra API de Express.js
-const API_BASE_URL = "/api";
+import API_BASE_URL from './apiConfig';
 
 /* -------------------------
    Helpers: emoticono, markdown, diccionarios
@@ -495,3 +495,4 @@ function App() {
 }
 
 export default App;
+  
