@@ -7,6 +7,8 @@ services:
   # Usamos un Dockerfile para tener control total sobre el entorno (Node.js + Python)
   - type: web
     name: hemingwai-backend
+    # Especificamos explícitamente el plan gratuito para evitar solicitudes de pago.
+    plan: free
     # 'runtime: docker' le dice a Render que use nuestro Dockerfile
     runtime: docker
     # Ruta al Dockerfile (relativa a la raíz del repositorio)
