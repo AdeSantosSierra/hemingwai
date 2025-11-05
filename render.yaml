@@ -19,10 +19,10 @@ services:
     envVars:
       - key: NEW_MONGODB_URI
         # Este valor debe ser la cadena de conexión a tu base de datos en la nube (ej. MongoDB Atlas)
-        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database"
-      - key: PERPLEXITY_API_KEY
-        # Tu clave de API para el servicio de Perplexity
-        value: "tu_api_key_de_perplexity"
+        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database_new"
+      - key: OLD_MONGODB_URI
+        # Este valor debe ser la cadena de conexión a tu base de datos ANTIGUA en la nube
+        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database_old"
       - key: PYTHON_VERSION
         value: "3.10" # Especificar la versión de Python que se está usando
 
