@@ -34,10 +34,8 @@ services:
     name: hemingwai-frontend
     # 'runtime: static' es para sitios construidos con herramientas como Vite, React, etc.
     runtime: node
-    # Comandos que Render ejecutará para construir tu sitio
-    build:
-      - npm install
-      - npm run build
+    # Comandos que Render ejecutará para construir tu sitio, unidos en una sola línea.
+    buildCommand: "npm install && npm run build"
     # Directorio que contiene los archivos construidos para ser servidos
     staticPublishPath: ./frontend/dist
     # Variable de entorno para el frontend
