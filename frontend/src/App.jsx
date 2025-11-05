@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import {
   Search,
-  Zap,
   Code,
   Database,
   Loader,
@@ -147,6 +146,17 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
 
+  // Estado inicial
+  if (estado === 'idle') {
+    return (
+      <div className="p-8 bg-gray-50 text-gray-500 rounded-xl text-center shadow-inner">
+        <Search className="w-8 h-8 mx-auto mb-2 text-indigo-400" />
+        <p className="text-lg font-medium">Listo para buscar.</p>
+        <p className="text-sm">Introduce una URL o ID para ver el análisis de una noticia.</p>
+      </div>
+    );
+  }
+
   // Loading state
   if (estado === 'loading') {
     return (
@@ -171,11 +181,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   }
 
   // Vacío / no encontrada
-  if (!resultado || Object.keys(resultado).length === 0 || (resultado.mensaje && resultado.mensaje.toLowerCase().includes("no encontrada"))) {
+  if (estado === 'success' && (!resultado || Object.keys(resultado).length === 0 || (resultado.mensaje && resultado.mensaje.toLowerCase().includes("no encontrada")))) {
     return (
       <div className="p-8 bg-gray-50 text-gray-500 rounded-xl text-center shadow-inner">
         <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-        <p className="text-lg font-medium">Noticia no encontrada.</p>
+        <p className="text-lg font-medium">Noticia no encontrada o analizada todavía.</p>
         <p className="text-sm">Verifique el ID/URL e intente de nuevo.</p>
       </div>
     );
@@ -404,7 +414,15 @@ function App() {
         body: JSON.stringify({ identificador })
       });
 
-      // Si la respuesta no es ok
+      // Si la respuesta es 404 (No Encontrado), lo tratamos como un éxito de búsqueda
+      if (response.status === 404) {
+        const data = await response.json();
+        setEstadoBusqueda('success');
+        setResultadoBusqueda(data); // data contendrá { mensaje: "Noticia no encontrada." }
+        return;
+      }
+
+      // Para otros errores (500, etc.), lanzamos un error para que lo capture el catch
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Error en la API (${response.status}): ${errorText}`);
@@ -426,11 +444,6 @@ function App() {
     }
   };
 
-  // Función para analizar la noticia (aún no implementada)
-  const handleAnalisarNoticia = () => {
-    alert("La funcionalidad de Análisis (Zap) se implementará en el siguiente paso.");
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       {/* Cabecera Principal */}
@@ -443,7 +456,7 @@ function App() {
       <main className="max-w-4xl mx-auto space-y-8">
         <div className="p-6 bg-white shadow-2xl rounded-xl border-t-4 border-indigo-500">
           <h2 className="text-2xl font-semibold mb-4 text-gray-800 flex items-center">
-            <Search className="w-5 h-5 mr-2 text-indigo-500" /> Buscar y Analizar
+            <Search className="w-5 h-5 mr-2 text-indigo-500" /> Buscar Noticia
           </h2>
 
           <input
@@ -459,20 +472,11 @@ function App() {
             <button
               onClick={handleBuscarNoticia}
               disabled={estadoBusqueda === 'loading'}
-              className="flex-1 flex items-center justify-center px-4 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-200 shadow-md disabled:bg-gray-400"
+              className="w-full flex items-center justify-center px-4 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition duration-200 shadow-md disabled:bg-gray-400"
             >
               {estadoBusqueda === 'loading' && <Loader className="w-5 h-5 mr-2 animate-spin" />}
               <Database className="w-5 h-5 mr-2" />
-              Buscar Noticia (BD Nueva o Antigua)
-            </button>
-
-            <button
-              onClick={handleAnalisarNoticia}
-              disabled={estadoBusqueda === 'loading'}
-              className="flex-1 flex items-center justify-center px-4 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition duration-200 shadow-md disabled:bg-gray-400"
-            >
-              <Zap className="w-5 h-5 mr-2" />
-              Analizar Noticia (Forzar Análisis)
+              Buscar Noticia
             </button>
           </div>
         </div>
