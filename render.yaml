@@ -1,44 +1,30 @@
-# render.yaml
-# Este archivo define la infraestructura como código para desplegar la aplicación en Render.
-# Render leerá este archivo y configurará automáticamente los servicios.
-
 services:
-  # Servicio 1: Backend (API de Node.js y Python)
-  # Usamos un Dockerfile para tener control total sobre el entorno (Node.js + Python)
+  # Backend - API Node.js + Python
   - type: web
     name: hemingwai-backend
-    # Especificamos explícitamente el plan gratuito para evitar solicitudes de pago.
     plan: free
-    # 'runtime: docker' le dice a Render que use nuestro Dockerfile
     runtime: docker
-    # Ruta al Dockerfile (relativa a la raíz del repositorio)
     dockerfilePath: ./Dockerfile
-    # Variables de entorno que tu aplicación necesita.
-    # ¡IMPORTANTE! Debes configurar los valores de estas variables en el dashboard de Render.
-    # Render te permite crear un "grupo de variables" para no tener que repetirlas.
+    dockerContext: .
     envVars:
       - key: NEW_MONGODB_URI
-        # Este valor debe ser la cadena de conexión a tu base de datos en la nube (ej. MongoDB Atlas)
-        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database_new"
+        sync: false
       - key: OLD_MONGODB_URI
-        # Este valor debe ser la cadena de conexión a tu base de datos ANTIGUA en la nube
-        value: "mongodb+srv://user:password@cluster.mongodb.net/your_database_old"
-      - key: PYTHON_VERSION
-        value: "3.10" # Especificar la versión de Python que se está usando
+        sync: false
+      - key: PORT
+        value: 3000
 
-  # Servicio 2: Frontend (Sitio Estático de React/Vite)
+  # Frontend - Sitio estático
   - type: web
     name: hemingwai-frontend
-    # 'runtime: static' es para sitios construidos con herramientas como Vite, React, etc.
+    plan: free
     runtime: static
-    # Comandos que Render ejecutará para construir tu sitio, unidos en una sola línea.
-    buildCommand: "npm install && npm run build"
-    # Directorio que contiene los archivos construidos para ser servidos
-    staticPublishPath: ./frontend/dist
-    # Variable de entorno para el frontend
-    # Le dice al código de React cuál es la URL del backend desplegado.
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        # El valor '$HEMINGWAI_BACKEND_URL' es una referencia mágica de Render.
-        # Render lo reemplazará automáticamente con la URL pública del servicio 'hemingwai-backend'.
-        value: "https://hemingwai-backend.onrender.com"
+        value: https://hemingwai-backend.onrender.com

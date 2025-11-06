@@ -7,16 +7,36 @@ const cors = require('cors');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+
+// IMPORTANTE: Usar variable de entorno PORT para Render
+const PORT = process.env.PORT || 3000;
+
 const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 
 // El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
 const PYTHON_INTERPRETER = 'python'; 
 
-
 // Middleware
-app.use(cors()); // Permite que el frontend (puerto 5174) se conecte
+app.use(cors()); // Permite que el frontend se conecte
 app.use(express.json()); // Para parsear cuerpos de petición JSON
+
+// Ruta de health check para Render
+app.get('/', (req, res) => {
+    res.json({ 
+        status: 'ok',
+        message: 'API Hemingwai funcionando correctamente',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Ruta adicional de health check
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'healthy',
+        python: PYTHON_INTERPRETER,
+        scriptDir: PYTHON_SCRIPT_DIR
+    });
+});
 
 /**
  * Función que ejecuta un script de Python con argumentos.
@@ -100,8 +120,16 @@ app.post('/api/buscar', async (req, res) => {
     }
 });
 
+// Manejo de rutas no encontradas
+app.use((req, res) => {
+    res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
 // Inicio del servidor
-app.listen(PORT, () => {
-    console.log(`API escuchando en puerto ${PORT}...`);
-    console.log(`Ruta de intérprete Python: ${PYTHON_INTERPRETER}`);
+// CRÍTICO: Escuchar en 0.0.0.0 para que Render pueda acceder
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ API escuchando en puerto ${PORT}...`);
+    console.log(`🐍 Ruta de intérprete Python: ${PYTHON_INTERPRETER}`);
+    console.log(`📁 Directorio de scripts: ${PYTHON_SCRIPT_DIR}`);
+    console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
 });

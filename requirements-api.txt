@@ -1,0 +1,6 @@
+# requirements-api.txt
+# Este archivo contiene las dependencias mínimas necesarias para
+# que la API de búsqueda (`buscar_noticia.py`) funcione.
+
+pymongo
+python-dotenv
