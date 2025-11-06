@@ -408,7 +408,7 @@ function App() {
 
     try {
       // Llamada a la API de búsqueda
-      const response = await fetch(`${API_BASE_URL}/buscar`, {
+      const response = await fetch(`${API_BASE_URL}/api/buscar`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identificador })
