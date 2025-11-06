@@ -15,8 +15,9 @@ services:
         value: 3000
 
   # Frontend - Sitio estático
-  - type: static
+  - type: web
     name: hemingwai-frontend
+    runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     routes:
