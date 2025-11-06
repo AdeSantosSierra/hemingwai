@@ -17,7 +17,12 @@ const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 const PYTHON_INTERPRETER = 'python'; 
 
 // Middleware
-app.use(cors()); // Permite que el frontend se conecte
+// Configuración de CORS para permitir explícitamente el origen del frontend en Render
+const corsOptions = {
+    origin: 'https://hemingwai-frontend-5vw6.onrender.com',
+    optionsSuccessStatus: 200 // Para compatibilidad con navegadores antiguos o proxies
+};
+app.use(cors(corsOptions)); // Aplica la configuración de CORS
 app.use(express.json()); // Para parsear cuerpos de petición JSON
 
 // Ruta de health check para Render
