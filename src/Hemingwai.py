@@ -94,6 +94,12 @@ def procesar_noticias():
             autor = str(autor)
         if not titulo or not noticia:
             print("Noticia sin título o cuerpo, se omite.")
+            # Marcar la noticia como descartada para que no se vuelva a seleccionar
+            new_collection.update_one(
+                {"_id": doc_to_analyze['_id']},
+                {"$set": {"puntuacion": -1}},
+                upsert=True # Asegurarse de que el documento se actualice incluso si solo existe en la nueva colección
+            )
             return
         print(f"Procesando noticia: {titulo}")
         resultados = Utils.analizar_noticia(anthropic_client, openai, titulo, noticia)
