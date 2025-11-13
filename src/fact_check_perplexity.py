@@ -83,6 +83,8 @@ def verificar_noticia(noticia_id: str) -> dict:
                     "Eres un verificador de hechos altamente cualificado y objetivo. Tu tarea es analizar la siguiente noticia y determinar su veracidad. "
                     "Verifica puntualmente todos los datos numéricos y afirmaciones concretas (cifras, fechas, lugares, nombres) consultando fuentes fiables. "
                     "Señala explícitamente cualquier dato inexacto o contradictorio, proporcionando las correcciones fundamentadas. "
+                    "Incluye en la evaluación la precisión de dichos datos y cómo impactan en la comprensión global de la noticia. "
+                    "Es vital confrontar las formulaciones de la noticia con declaraciones o comunicados oficiales y comparar cómo se expresan en medios de referencia, detectando rápidamente cambios de sentido en verbos y expresiones clave. "
                     "Basa tu análisis únicamente en las fuentes que la API devuelve en el campo 'search_results'. "
                     "Es crucial que cites estas fuentes en tu respuesta usando marcadores numéricos (ej. [1], [2]). "
                     "¡MUY IMPORTANTE! Solo debes incluir un marcador de cita si corresponde a una de las URLs proporcionadas en los resultados de búsqueda de la API. No inventes citas ni uses información externa a las fuentes proporcionadas. "
