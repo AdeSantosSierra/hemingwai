@@ -247,7 +247,7 @@ class Utils:
         Y la valoración final:
         {resultado_final}
 
-        Asigna una puntuación numérica entre 1 y 100 a la calidad informativa de la noticia, donde 1 es la más baja y 100 la más alta.
+        Asigna una puntuación numérica entre 0 y 10, añade máximo dos decimales en caso de que lo veas necesario, a la calidad informativa de la noticia, donde 0 es la más baja y 10 la más alta.
         Responde únicamente con el número.
         """
 

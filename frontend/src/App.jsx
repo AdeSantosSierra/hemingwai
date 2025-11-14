@@ -124,6 +124,28 @@ const formatearDiccionario = (objOrString) => {
   return html;
 };
 
+// Formatea array de fuentes en HTML
+const formatearFuentes = (fuentes) => {
+  if (!fuentes || !Array.isArray(fuentes) || fuentes.length === 0) {
+    return '<p>No hay fuentes disponibles.</p>';
+  }
+  let html = '<ol class="list-decimal list-inside space-y-2">';
+  for (const fuente of fuentes) {
+    const url = String(fuente).trim();
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      html += `<li><a href="${escapeHtml(
+        url
+      )}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline break-all">${escapeHtml(
+        url
+      )}</a></li>`;
+    } else {
+      html += `<li class="break-all">${escapeHtml(url)}</li>`;
+    }
+  }
+  html += '</ol>';
+  return html;
+};
+
 /*  
    PuntuacionIndicador
      */
@@ -223,8 +245,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     puntuacion: resultado.puntuacion_individual?.[key] ?? 0
   }));
 
-  const abrirModal = (titulo, contenido, esDiccionario = false) => {
-    setSeccionSeleccionada({ titulo, contenido, esDiccionario });
+  const abrirModal = (titulo, contenido, tipoContenido = 'markdown') => {
+    setSeccionSeleccionada({ titulo, contenido, tipoContenido });
     setMostrarModal(true);
   };
 
@@ -342,8 +364,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                   onClick={() =>
                     abrirModal(
                       nombresSecciones[key],
-                      valoracion || 'Contenido no disponible',
-                      false
+                      valoracion || 'Contenido no disponible'
                     )
                   }
                   className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
@@ -424,7 +445,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             onClick={() =>
               abrirModal(
                 'Fuentes de fact-checking',
-                (resultado.fact_check_fuentes || []).join('\n')
+                resultado.fact_check_fuentes,
+                'fuentes'
               )
             }
             disabled={
@@ -447,7 +469,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               abrirModal(
                 'Texto de referencia',
                 resultado.texto_referencia_diccionario,
-                true
+                'diccionario'
               )
             }
             disabled={!resultado.texto_referencia_diccionario}
@@ -486,9 +508,19 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               <div className="prose max-w-none text-gray-800">
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: seccionSeleccionada.esDiccionario
-                      ? formatearDiccionario(seccionSeleccionada.contenido)
-                      : renderMarkdown(seccionSeleccionada.contenido)
+                    __html: (() => {
+                      if (!seccionSeleccionada) return '';
+                      const { contenido, tipoContenido } = seccionSeleccionada;
+                      switch (tipoContenido) {
+                        case 'diccionario':
+                          return formatearDiccionario(contenido);
+                        case 'fuentes':
+                          return formatearFuentes(contenido);
+                        case 'markdown':
+                        default:
+                          return renderMarkdown(contenido);
+                      }
+                    })()
                   }}
                 />
               </div>
