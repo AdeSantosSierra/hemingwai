@@ -1,6 +1,6 @@
 // App.jsx
 import React, { useState } from 'react';
-import logo from './assets/logo.png';
+import logo from './assets/logo2.png';
 
 import {
   Search,
@@ -28,9 +28,9 @@ import {
 
 import API_BASE_URL from './apiConfig';
 
-/* -------------------------
+/*  
    Helpers
-   ------------------------- */
+     */
 
 // Emoticono según puntuación
 const getEmoticonoPuntuacion = (puntuacion) => {
@@ -124,9 +124,9 @@ const formatearDiccionario = (objOrString) => {
   return html;
 };
 
-/* -------------------------
+/*  
    PuntuacionIndicador
-   ------------------------- */
+     */
 const PuntuacionIndicador = ({ puntuacion }) => {
   const score = Number(puntuacion);
   const getColor = (s) => {
@@ -144,9 +144,9 @@ const PuntuacionIndicador = ({ puntuacion }) => {
   );
 };
 
-/* -------------------------
+/*  
    ResultadoBusqueda
-   ------------------------- */
+     */
 const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -500,9 +500,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   );
 };
 
-/* -------------------------
+/*  
    App principal
-   ------------------------- */
+     */
 function App() {
   const [identificador, setIdentificador] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
@@ -567,10 +567,10 @@ function App() {
           />
           <div className="hidden sm:flex flex-col">
             <span className="text-sm font-semibold tracking-tight">
-              Mirada Media Lab
+              Mirada21 Media Lab
             </span>
             <span className="text-xs text-gray-300">
-              Suite de análisis de noticias con IA
+              Análisis de noticias con IA
             </span>
           </div>
         </div>

@@ -125,7 +125,7 @@ def verificar_noticia(noticia_id: str) -> dict:
             print("\n--- Fuentes Encontradas ---")
             for i, fuente in enumerate(fuentes, 1):
                 print(f"[{i}] {fuente}")
-            print("---------------------------\n")
+            print(" --\n")
         else:
             print("No se encontraron fuentes en la respuesta de la API.")
         
