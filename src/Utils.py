@@ -558,7 +558,80 @@ class Utils:
         resultados = {}
         criterio = {
             "nombre": "Evaluación del titular",
-            "instruccion": "Analiza si el titular es adecuado en cuanto a veracidad, claridad y relevancia o si resulta ser clickbait. Puntúa negativamente en proporción a su grado de clickbait y positivamente si es adecuado."
+            "instruccion": """
+        Analiza el titular de acuerdo con la siguiente rúbrica oficial de evaluación periodística. 
+        Utiliza estrictamente estos criterios, sin añadir otros y sin modificar su significado.
+
+        1. CONCEPTO Y FUNCIÓN DEL TITULAR
+        El titular debe:
+        - Relatar la información más importante del acontecimiento.
+        - Señalar los aspectos fundamentales para comprender sustancialmente el hecho.
+        - Si el sujeto es una persona o grupo → responder a “Quién hace qué” o “Quién dice qué”.
+        - Si el sujeto es un fenómeno o institución → responder a “Qué hace qué” o “Qué ocasiona qué”.
+        - Reflejar implícitamente:
+            - el bien o el mal principal generado por el acontecimiento,
+            - el impacto humano, emocional o social de sus consecuencias.
+        - Reflejar correctamente la trascendencia del hecho (mayor bien o mal causado al mayor número de personas).
+
+        2. ENFOQUE Y CONTENIDO
+        El titular debe:
+        - Identificar implícitamente el bien o mal provocado por la acción principal.
+        - Mostrar cómo y hasta dónde impacta el acontecimiento en las personas.
+        - Reflejar el valor informativo real del hecho.
+        - Permitir comprender el sentido del acontecimiento para la vida de las personas.
+
+        3. ESTRUCTURA
+        El titular debe:
+        - Tener sujeto + verbo + predicado.
+        - Presentar claramente el sujeto principal y la acción principal.
+        - No omitir el sujeto salvo excepciones justificadas cuando sea sobrentendido 
+        (ej.: “Detenido el ladrón de Madrid”).
+        - Mantener un orden sintáctico claro.
+        - No comenzar con un verbo, salvo en las excepciones anteriores.
+
+        4. ESTILO
+        El titular debe:
+        - Ser breve (ideal entre 7 y 15 palabras).
+        - Ser claro, preciso y sin ambigüedades.
+        - Utilizar lenguaje coloquial culto, accesible para un público generalista.
+        - Evitar vulgarismos, tecnicismos innecesarios o erudición excesiva.
+        - Usar correctamente las mayúsculas:
+            - nombres propios → mayúscula,
+            - nombres comunes → minúscula.
+
+        5. ERRORES COMUNES A PENALIZAR
+        Penaliza el titular si incurre en cualquiera de los siguientes errores:
+        1. Comenzar con verbos sin justificación.
+        2. Desorden sintáctico.
+        3. Ausencia de sujeto, verbo u objeto.
+        4. Uso de adjetivos calificativos innecesarios.
+        5. Verbos imprecisos.
+        6. Ambigüedad informativa.
+        7. Falta de autonomía de significado (el titular no se entiende por sí solo).
+        8. Uso de primera persona.
+        9. Sustantivo sin artículo.
+        10. Interpretaciones explícitas del periodista.
+        11. Opiniones explícitas.
+        12. Ausencia de datos relevantes necesarios para comprender el hecho.
+        13. Cualquier forma de sensacionalismo o clickbait.
+
+        6. FORMATO DE LA EVALUACIÓN
+        Debes desglosar tu análisis en los siguientes apartados:
+
+        1. Concepto y función del elemento
+        2. Enfoque y contenido
+        3. Estructura
+        4. Estilo
+        5. Errores comunes detectados
+
+        Después, añade una CONCLUSIÓN GENERAL indicando si el titular es adecuado o no.
+
+        7. DECISIÓN FINAL
+        - Si el titular es adecuado, escribe explícitamente: Aprobada
+        - Si es inadecuado, explica claramente por qué e incluye un titular alternativo libre de clickbait usando EXACTAMENTE este formato:
+
+        TITULO PROPUESTO: <tu versión alternativa aquí>
+        """
         }
         nombre_criterio = criterio["nombre"]
         instruccion_criterio = criterio["instruccion"]

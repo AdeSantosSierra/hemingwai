@@ -26,4 +26,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hemingwai-backend.onrender.com
+        value: https://hemingwai-backend-5vw6.onrender.com

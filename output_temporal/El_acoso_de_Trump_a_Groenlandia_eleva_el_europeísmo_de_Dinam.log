@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  7 NOV 2025 13:30
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  14 NOV 2025 12:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/home/roberto/hemingwai/output_temporal/Detienen_a_un_comandante_del_grupo_Wa
-gner_en_Finlandia_huyó_.tex
+**/home/roberto/hemingwai/output_temporal/El_acoso_de_Trump_a_Groenlandia_eleva
+_el_europeísmo_de_Dinam.tex
 
-(/home/roberto/hemingwai/output_temporal/Detienen_a_un_comandante_del_grupo_Wag
-ner_en_Finlandia_huyó_.tex
+(/home/roberto/hemingwai/output_temporal/El_acoso_de_Trump_a_Groenlandia_eleva_
+el_europeísmo_de_Dinam.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -664,8 +664,8 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count323
 \l__pdf_internal_box=\box68
 )
-No file Detienen_a_un_comandante_del_grupo_Wagner_en_Finlandia_huyó_.aux.
-\openout1 = `Detienen_a_un_comandante_del_grupo_Wagner_en_Finlandia_huyó_.aux'
+No file El_acoso_de_Trump_a_Groenlandia_eleva_el_europeísmo_de_Dinam.aux.
+\openout1 = `El_acoso_de_Trump_a_Groenlandia_eleva_el_europeísmo_de_Dinam.aux'
 .
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
@@ -690,7 +690,7 @@ LaTeX Info: Redefining \. on input line 29.
 LaTeX Info: Redefining \% on input line 29.
 Package hyperref Info: Link coloring OFF on input line 29.
 \@outlinefile=\write4
-\openout4 = `Detienen_a_un_comandante_del_grupo_Wagner_en_Finlandia_huyó_.out'
+\openout4 = `El_acoso_de_Trump_a_Groenlandia_eleva_el_europeísmo_de_Dinam.out'
 .
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
@@ -749,349 +749,318 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
-1.
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 5
+3.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
 )
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 53.
+
 
 [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-di
 st/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 6
-8.
-
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-)
-LaTeX Font Info:    Trying to load font information for U+msa on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 67.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 68.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 67.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Overfull \hbox (229.5321pt too wide) in paragraph at lines 68--70
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / detienen-
-[]comandante-[]grupo-[]wagner-[]finlandia-[]huyo-[]rusia-[]criticar-[]ejercito-
-[]p7m _
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 8
+0.
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+Overfull \hbox (336.5321pt too wide) in paragraph at lines 80--82
+[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / internacional / 202
+50703 / 10851169 / dinamarca-[]trump-[]groenlandia-[]presidencia-[]consejo-[]ue
+-[]defensa-[]europeismo .
  []
 
 
 
 [2]
-<spider_chart.png, id=25, 578.16pt x 578.16pt>
+<spider_chart.png, id=26, 578.16pt x 578.16pt>
 File: spider_chart.png Graphic file (type png)
 <use spider_chart.png>
-Package pdftex.def Info: spider_chart.png  used on input line 86.
+Package pdftex.def Info: spider_chart.png  used on input line 98.
 (pdftex.def)             Requested size: 362.37569pt x 362.37247pt.
 
 
 [3
 
  </home/roberto/hemingwai/output_temporal/spider_chart.png>]
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
-24.
-
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 124.
-
 
 [4
 
 ]
 
 [5]
-Overfull \hbox (365.5321pt too wide) in paragraph at lines 177--178
-[][]$\OT1/pcr/m/n/10 https : / / united24media . com / es / latest-[]news / wag
-ner-[]defector-[]seeks-[]asylum-[]in-[]finland-[]border-[]guards-[]say-[]he-[]s
-nuck-[]in-[]through-[]the-[]woods-[]9841$[] 
- []
-
-
-Overfull \hbox (455.0321pt too wide) in paragraph at lines 180--181
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2025 /
- 07 / 12 / un-[]soldado-[]ruso-[]y-[]ex-[]combatiente-[]del-[]grupo-[]mercenari
-o-[]wagner-[]deserto-[]y-[]solicito-[]asilo-[]en-[]finlandia/$[] 
- []
-
-
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 181--182
-[][]$\OT1/pcr/m/n/10 https : / / kyivindependent . com / former-[]wagner-[]figh
-ter-[]seeks-[]asylum-[]in-[]finland-[]after-[]fleeing-[]across-[]border-[]media
--[]reports/$[] 
- []
-
-
-Overfull \hbox (55.0321pt too wide) in paragraph at lines 182--183
-[][]$\OT1/pcr/m/n/10 https : / / indeksonline . net / en / arratiset-[]komandan
-ti-[]i-[]wagner-[]kerkon-[]azil-[]ne-[]norvegji/$[] 
- []
-
-
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 183--184
-[][]$\OT1/pcr/m/n/10 https : / / www . elmundo . es / internacional / 2025 / 07
- / 12 / 68723f9621efa0aa618b4587 . html$[] 
- []
-
-
-Overfull \hbox (342.0321pt too wide) in paragraph at lines 184--185
-[][]$\OT1/pcr/m/n/10 https : / / www . somosmass99 . com / batalla-[]en-[]selyd
-ove-[]tropas-[]rusas-[]se-[]toman-[]un-[]descanso-[]en-[]kiev-[]se-[]preparan-[
-]para-[]el-[]colapso-[]del-[]frente/$[] 
- []
-
-
 
 [6]
-Overfull \hbox (455.0321pt too wide) in paragraph at lines 186--187
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2025 /
- 07 / 12 / un-[]soldado-[]ruso-[]y-[]ex-[]combatiente-[]del-[]grupo-[]mercenari
-o-[]wagner-[]deserto-[]y-[]solicito-[]asilo-[]en-[]finlandia/$[] 
- []
-
-
-Overfull \hbox (41.5321pt too wide) in paragraph at lines 187--188
-[][]$\OT1/pcr/m/n/10 https : / / www . guerradeucrania . com / index . php / 20
-24 / 11 / 29 / guerra-[]de-[]ucrania-[]dia-[]1010/$[] 
- []
-
-
-Overfull \hbox (577.0321pt too wide) in paragraph at lines 188--189
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2023 /
- 05 / 05 / cuatro-[]claves-[]para-[]entender-[]la-[]posible-[]retirada-[]del-[]
-grupo-[]wagner-[]en-[]bakhmut-[]y-[]la-[]brutal-[]rivalidad-[]con-[]el-[]ejerci
-to-[]ruso/$[] 
- []
-
-
-Overfull \hbox (345.0321pt too wide) in paragraph at lines 189--190
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / estan-[]v
-olviendo-[]locos-[]soldados-[]rusos-[]destapan-[]regreso-[]tacticas-[]prohibida
-s-[]guerra-[]mundial-[]p7m _
- []
-
-
-Overfull \hbox (86.0321pt too wide) in paragraph at lines 190--191
-[][]$\OT1/pcr/m/n/10 https : / / indeksonline . net / es / rusia-[]terheq-[]pap
-ritur-[]trupat-[]e-[]saj-[]nga-[]kufiri-[]me-[]finlanden /
- []
-
-
-Overfull \hbox (475.5321pt too wide) in paragraph at lines 191--192
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / internacional / 2023-[]08-[]23 
-/ el-[]avion-[]en-[]el-[]que-[]figuraba-[]como-[]pasajero-[]el-[]jefe-[]de-[]lo
-s-[]mercenarios-[]wagner-[]prigozhin-[]se-[]estrella-[]en-[]rusia .
- []
-
-
-Overfull \hbox (242.0321pt too wide) in paragraph at lines 192--193
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / detienen-
-[]comandante-[]grupo-[]wagner-[]finlandia-[]huyo-[]rusia-[]criticar-[]ejercito-
-[]p7m _
- []
-
-
-Overfull \hbox (39.5321pt too wide) in paragraph at lines 193--194
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / europa / 
-20220920 / aobxfu4vivda3bukjq7xp232y4 .
- []
-
-
-Overfull \hbox (72.0321pt too wide) in paragraph at lines 194--195
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20230823 / accide
-nte-[]avion-[]rusia-[]wagner-[]prigozhin-[]viajero /
- []
-
-
-Overfull \hbox (289.0321pt too wide) in paragraph at lines 195--196
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / internacional / 2023012
-9 / brutales-[]tacticas-[]grupo-[]wagner-[]desveladas-[]informe-[]inteligencia-
-[]ucraniano _
- []
-
-
-Overfull \hbox (455.0321pt too wide) in paragraph at lines 196--197
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2025 /
- 07 / 12 / un-[]soldado-[]ruso-[]y-[]ex-[]combatiente-[]del-[]grupo-[]mercenari
-o-[]wagner-[]deserto-[]y-[]solicito-[]asilo-[]en-[]finlandia/$[] 
- []
-
-
-Overfull \hbox (492.0321pt too wide) in paragraph at lines 197--198
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2024 /
- 01 / 16 / finlandia-[]acuso-[]a-[]rusia-[]de-[]reclutar-[]como-[]espias-[]a-[]
-solicitantes-[]de-[]asilo-[]en-[]medio-[]de-[]la-[]crisis-[]migratoria/$[] 
- []
-
-
-Overfull \hbox (656.0321pt too wide) in paragraph at lines 198--199
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / america / mundo / 2023 /
- 04 / 12 / el-[]grupo-[]wagner-[]fue-[]acusado-[]de-[]crimenes-[]de-[]guerra-[]
-tras-[]la-[]publicacion-[]del-[]video-[]que-[]muestra-[]la-[]decapitacion-[]de-
-[]un-[]soldado-[]ucraniano/$[] 
- []
-
-
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 199--200
-[][]$\OT1/pcr/m/n/10 https : / / www . elmundo . es / internacional / 2025 / 07
- / 12 / 68723f9621efa0aa618b4587 . html$[] 
- []
-
-
-Overfull \hbox (139.0321pt too wide) in paragraph at lines 200--201
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / rusia-[]r
-ecluta-[]espias-[]inmigrantes-[]que-[]piden-[]asilo-[]finlandia _
- []
-
-
-Overfull \hbox (33.5321pt too wide) in paragraph at lines 201--202
-[][]$\OT1/pcr/m/n/10 http : / / publicaciones . bn . gob . ar / s1 / 001181802 
-/ 1931 / BNA _ S001181802 _ 19310811N00004 .
- []
-
-
-Overfull \hbox (462.5321pt too wide) in paragraph at lines 202--203
-[][]$\OT1/pcr/m/n/10 https : / / www . elconfidencial . com / mundo / 2024-[]07
--[]13 / ucrania-[]se-[]hace-[]un-[]wagner-[]el-[]sintoma-[]que-[]evidencia-[]qu
-e-[]no-[]hay-[]suficientes-[]soldados-[]para-[]tanta-[]guerra _
- []
-
-
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 204--205
-[][]$\OT1/pcr/m/n/10 https : / / es . wikipedia . org / wiki / Anexo : Ataques 
-_ perpetrados _ en _ centros _ educativos$[] 
- []
-
-
-Overfull \hbox (533.0321pt too wide) in paragraph at lines 208--209
-[][]$\OT1/pcr/m/n/10 https : / / united24media . com / es / latest-[]news / fin
-landia-[]despliega-[]nueva-[]vigilancia-[]fronteriza-[]mientras-[]rusia-[]ampli
-a-[]su-[]concentracion-[]militar-[]en-[]las-[]inmediaciones-[]8158$[] 
- []
-
-
-Overfull \hbox (380.5321pt too wide) in paragraph at lines 209--210
-[][]$\OT1/pcr/m/n/10 https : / / www . europapress . es / internacional / notic
-ia-[]tribunal-[]finlandia-[]condena-[]cadena-[]perpetua-[]ruso-[]crimenes-[]gue
-rra-[]ucrania-[]20250314094801 .
- []
-
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 210--211
-[][]$\OT1/pcr/m/n/10 https : / / www . defensa . gob . es / documents / 2073105
- / 2268520 / que _ sabemos _ del _ grupo _
- []
-
-
-Overfull \hbox (5.5321pt too wide) in paragraph at lines 210--211
-\OT1/pcr/m/n/10 wagner _ reedicion _ DIEEEINV04 _ 2022 . pdf / f5304825-[]80e9-
-[]0f72-[]dcb3-[]5194ea2b3b1e ?
- []
-
-
-Overfull \hbox (443.5321pt too wide) in paragraph at lines 211--212
-[][]$\OT1/pcr/m/n/10 https : / / www . escenariomundial . com / 2025 / 05 / 22 
-/ finlandia-[]refuerza-[]su-[]frontera-[]y-[]se-[]prepara-[]para-[]lo-[]peor-[]
-ante-[]la-[]creciente-[]presencia-[]militar-[]de-[]rusia/$[] 
- []
-
-
-Overfull \hbox (367.5321pt too wide) in paragraph at lines 212--213
-[][]$\OT1/pcr/m/n/10 https : / / www . lavozdegalicia . es / noticia / internac
-ional / 2025 / 03 / 14 / tribunal-[]finlandes-[]condena-[]cadena-[]perpetua-[]r
-uso-[]crimenes-[]guerra-[]dombas /
- []
-
-
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 214--215
-[][]$\OT1/pcr/m/n/10 https : / / www . elmundo . es / internacional / 2025 / 01
- / 02 / 67753757e4d4d88f418b4597 . html$[] 
- []
-
-
 
 [7]
-Overfull \hbox (151.0321pt too wide) in paragraph at lines 215--216
-[][]$\OT1/pcr/m/n/10 https : / / www . infofinland . fi / es / moving-[]to-[]fi
-nland / non-[]eu-[]citizens / negative-[]residence-[]permit-[]decision$[] 
+Overfull \hbox (35.5321pt too wide) in paragraph at lines 218--219
+[][]$\OT1/pcr/m/n/10 https : / / www . politico . com / news / 2025 / 05 / 04 /
+ trump-[]carney-[]canada-[]greenland-[]00325783$[] 
  []
 
 
-Overfull \hbox (299.5321pt too wide) in paragraph at lines 216--217
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / internacional / 2023-[]08-[]25 
-/ los-[]32-[]segundos-[]finales-[]en-[]la-[]vida-[]de-[]prigozhin-[]el-[]hombre
--[]que-[]desafio-[]a-[]putin .
+Overfull \hbox (78.5321pt too wide) in paragraph at lines 221--222
+[][]$\OT1/pcr/m/n/10 https : / / www . thearcticinstitute . org / white-[]house
+-[]calculating-[]cost-[]taking-[]over-[]greenland/$[] 
  []
 
 
-Overfull \hbox (237.5321pt too wide) in paragraph at lines 217--218
-[][]$\OT1/pcr/m/n/10 https : / / www . federacionanarquista . net / continuan-[
-]las-[]deserciones-[]en-[]los-[]frentes-[]de-[]la-[]guerra-[]entre-[]rusia-[]y-
-[]ucrania$[] 
+Overfull \hbox (132.0321pt too wide) in paragraph at lines 222--223
+[][]$\OT1/pcr/m/n/10 https : / / www . fmn . dk / en / topics / operations / on
+going-[]operations / danish-[]military-[]support-[]for-[]ukraine/$[] 
  []
 
 
-Overfull \hbox (219.5321pt too wide) in paragraph at lines 218--219
-[][]$\OT1/pcr/m/n/10 https : / / help . unhcr . org / finland / es / how-[]to-[
-]apply-[]for-[]asylum-[]in-[]finland / what-[]happens-[]after-[]i-[]applied-[]f
-or-[]asylum/$[] 
+Overfull \hbox (435.0321pt too wide) in paragraph at lines 223--224
+[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / news / sv / pre
+ss-[]room / 20250704IPR29448 / meps-[]debate-[]the-[]danish-[]presidency-[]s-[]
+priorities-[]with-[]prime-[]minister-[]frederiksen$[] 
  []
 
 
-Overfull \hbox (345.0321pt too wide) in paragraph at lines 222--223
-[][]$\OT1/pcr/m/n/10 https : / / www . larazon . es / internacional / estan-[]v
-olviendo-[]locos-[]soldados-[]rusos-[]destapan-[]regreso-[]tacticas-[]prohibida
-s-[]guerra-[]mundial-[]p7m _
+Overfull \hbox (73.5321pt too wide) in paragraph at lines 224--225
+[][]$\OT1/pcr/m/n/10 https : / / sieps . se / media / ldtdjos2 / the-[]danish-[
+]eu-[]presidency-[]2012 _ -[]a-[]midterm-[]report-[]2012 _
  []
 
 
-Overfull \hbox (120.5321pt too wide) in paragraph at lines 225--226
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20220915 / reclut
-amiento-[]presos-[]grupo-[]wagner-[]rusia-[]guerra-[]ucrania /
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 225--226
+[][]$\OT1/pcr/m/n/10 https : / / tidsskrift . dk / scandinavian _ political _ s
+tudies / article / download / 32803 /
  []
 
 
-Overfull \hbox (462.5321pt too wide) in paragraph at lines 228--229
-[][]$\OT1/pcr/m/n/10 https : / / www . elconfidencial . com / mundo / 2024-[]07
--[]13 / ucrania-[]se-[]hace-[]un-[]wagner-[]el-[]sintoma-[]que-[]evidencia-[]qu
-e-[]no-[]hay-[]suficientes-[]soldados-[]para-[]tanta-[]guerra _
+Overfull \hbox (18.0321pt too wide) in paragraph at lines 227--228
+[][]$\OT1/pcr/m/n/10 https : / / portugal . um . dk / en / about-[]denmark / de
+nmark-[]eu / danish-[]eu-[]presidency-[]2012$[] 
  []
 
 
-Overfull \hbox (139.0321pt too wide) in paragraph at lines 232--233
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20241007 / ano-[]
-guerra-[]gaza-[]videos-[]verificados-[]ataques-[]contra-[]civiles /
+Overfull \hbox (18.5321pt too wide) in paragraph at lines 229--230
+[][]$\OT1/pcr/m/n/10 https : / / nordics . info / show / artikel / denmark-[]an
+d-[]the-[]european-[]union-[]1940s-[]2000s$[] 
  []
 
 
-Overfull \hbox (455.5321pt too wide) in paragraph at lines 234--235
-[][]$\OT1/pcr/m/n/10 https : / / www . prontuario . org / prontuario / es / Pen
-al / Consulta / Extradicion-[]en-[]el-[]Convenio-[]Europeo-[]de-[]Extradicion-[
-]-[]hecho-[]en-[]Paris-[]el-[]13-[]de-[]diciembre-[]de-[]1957$[] 
+Overfull \hbox (57.5321pt too wide) in paragraph at lines 230--231
+[][]$\OT1/pcr/m/n/10 https : / / en . wikipedia . org / wiki / Withdrawal _ of 
+_ Greenland _ from _ the _ European _ Communities$[] 
  []
 
 
-Overfull \hbox (242.5321pt too wide) in paragraph at lines 235--236
-[][]$\OT1/pcr/m/n/10 https : / / www . hrw . org / es / news / 2020 / 09 / 10 /
- las-[]plataformas-[]de-[]redes-[]sociales-[]eliminan-[]evidencia-[]de-[]crimen
-es-[]de-[]guerra$[] 
+Overfull \hbox (55.0321pt too wide) in paragraph at lines 231--232
+[][]$\OT1/pcr/m/n/10 https : / / geopolitique . eu / en / articles / danish-[]d
+efense-[]opt-[]out-[]referendum-[]1-[]june-[]2022/$[] 
+ []
+
+
+Overfull \hbox (99.5321pt too wide) in paragraph at lines 232--233
+[][]$\OT1/pcr/m/n/10 https : / / www . au . dk / fileadmin / www . globaliserin
+g . au . dk / samfundsvidenskab / forskningsprojekter /
+ []
+
+
+Overfull \hbox (391.0321pt too wide) in paragraph at lines 233--234
+[][]$\OT1/pcr/m/n/10 https : / / www . hungarianconservative . com / articles /
+ culture _ society / european-[]integration-[]1985-[]greendlexit-[]greenland-[]
+denmark-[]european-[]community/$[] 
+ []
+
+
+Overfull \hbox (3.5321pt too wide) in paragraph at lines 236--237
+[][]$\OT1/pcr/m/n/10 https : / / en . wikipedia . org / wiki / 1973 _ enlargeme
+nt _ of _ the _ European _ Communities$[] 
+ []
+
+
+Overfull \hbox (159.5321pt too wide) in paragraph at lines 237--238
+[][]$\OT1/pcr/m/n/10 https : / / free-[]group . eu / 2014 / 10 / 09 / denmark-[
+]and-[]eu-[]justice-[]and-[]home-[]affairs-[]law-[]really-[]opting-[]back-[]in/
+$[] 
+ []
+
+
+Overfull \hbox (18.0321pt too wide) in paragraph at lines 239--240
+[][]$\OT1/pcr/m/n/10 https : / / policy . trade . ec . europa . eu / eu-[]trade
+-[]relationships-[]country-[]and-[]region /
  []
 
 
 
 [8]
-(/home/roberto/hemingwai/output_temporal/Detienen_a_un_comandante_del_grupo_Wag
-ner_en_Finlandia_huyó_.aux
+Overfull \hbox (159.5321pt too wide) in paragraph at lines 241--242
+[][]$\OT1/pcr/m/n/10 https : / / free-[]group . eu / 2014 / 10 / 09 / denmark-[
+]and-[]eu-[]justice-[]and-[]home-[]affairs-[]law-[]really-[]opting-[]back-[]in/
+$[] 
+ []
+
+
+Overfull \hbox (35.5321pt too wide) in paragraph at lines 243--244
+[][]$\OT1/pcr/m/n/10 https : / / www . politico . com / news / 2025 / 05 / 04 /
+ trump-[]carney-[]canada-[]greenland-[]00325783$[] 
+ []
+
+
+Overfull \hbox (40.0321pt too wide) in paragraph at lines 244--245
+[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / RegData / etude
+s / etudes / join / 2000 / 228145 / IPOL-[]LIBE _
+ []
+
+
+Overfull \hbox (443.5321pt too wide) in paragraph at lines 245--246
+[][]$\OT1/pcr/m/n/10 https : / / english . stm . dk / the-[]prime-[]minister / 
+speeches / prime-[]minister-[]mette-[]frederiksen-[]s-[]speech-[]at-[]the-[]ope
+ning-[]ceremony-[]for-[]the-[]danish-[]eu-[]presidency/$[] 
+ []
+
+
+Overfull \hbox (78.5321pt too wide) in paragraph at lines 246--247
+[][]$\OT1/pcr/m/n/10 https : / / www . thearcticinstitute . org / white-[]house
+-[]calculating-[]cost-[]taking-[]over-[]greenland/$[] 
+ []
+
+
+Overfull \hbox (73.5321pt too wide) in paragraph at lines 248--249
+[][]$\OT1/pcr/m/n/10 https : / / sieps . se / media / ldtdjos2 / the-[]danish-[
+]eu-[]presidency-[]2012 _ -[]a-[]midterm-[]report-[]2012 _
+ []
+
+
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 249--250
+[][]$\OT1/pcr/m/n/10 https : / / en . wikipedia . org / wiki / 2025 _ Polish _ 
+Presidency _ of _ the _ Council _ of _ the _
+ []
+
+
+Overfull \hbox (601.5321pt too wide) in paragraph at lines 251--252
+[][]$\OT1/pcr/m/n/10 https : / / english . stm . dk / the-[]prime-[]minister / 
+speeches / prime-[]minister-[]helle-[]thorning-[]schmidt-[]s-[]opening-[]addres
+s-[]to-[]the-[]folketing-[]the-[]danish-[]parliament-[]on-[]tuesday-[]2-[]octob
+er-[]2012/$[] 
+ []
+
+
+Overfull \hbox (183.0321pt too wide) in paragraph at lines 252--253
+[][]$\OT1/pcr/m/n/10 https : / / www . trade . gov . pl / en / news / poland-[]
+takes-[]over-[]the-[]presidency-[]of-[]the-[]council-[]of-[]the-[]european-[]un
+ion/$[] 
+ []
+
+
+Overfull \hbox (207.5321pt too wide) in paragraph at lines 253--254
+[][]$\OT1/pcr/m/n/10 https : / / miamieuc . fiu . edu / news / 2025 / danish-[]
+presidency-[]of-[]the-[]council-[]of-[]the-[]european-[]union-[]july-[]dec-[]31
+-[]2025/$[] 
+ []
+
+
+Overfull \hbox (369.0321pt too wide) in paragraph at lines 254--255
+[][]$\OT1/pcr/m/n/10 https : / / medarbejdere . au . dk / en / news-[]articles 
+/ news / artikel / aarhus-[]universitet-[]danner-[]ramme-[]om-[]den-[]officiell
+e-[]aabning-[]af-[]eu-[]formandskabet$[] 
+ []
+
+
+Overfull \hbox (451.0321pt too wide) in paragraph at lines 257--258
+[][]$\OT1/pcr/m/n/10 https : / / www . eunews . it / en / 2025 / 07 / 03 / denm
+ark-[]at-[]the-[]helm-[]of-[]the-[]eu-[]council-[]is-[]the-[]perfect-[]backing-
+[]for-[]von-[]der-[]leyens-[]proposed-[]clampdown-[]on-[]migrants/$[] 
+ []
+
+
+Overfull \hbox (169.5321pt too wide) in paragraph at lines 260--261
+[][]$\OT1/pcr/m/n/10 https : / / www . chathamhouse . org / 2025 / 09 / trumps-
+[]policies-[]and-[]actions-[]pose-[]serious-[]risks-[]corporate-[]america$[] 
+ []
+
+
+Overfull \hbox (133.0321pt too wide) in paragraph at lines 261--262
+[][]$\OT1/pcr/m/n/10 https : / / www . thearcticinstitute . org / arctic-[]aspe
+cts-[]denmark-[]new-[]foreign-[]security-[]policy-[]strategy/$[] 
+ []
+
+
+Overfull \hbox (190.5321pt too wide) in paragraph at lines 262--263
+[][]$\OT1/pcr/m/n/10 https : / / www . cambridge . org / core / services / aop-
+[]cambridge-[]core / content / view / A7F4BFEF6CE7296F4C1AA1A4C9C3C105 /
+ []
+
+
+Overfull \hbox (454.5321pt too wide) in paragraph at lines 263--264
+[][]$\OT1/pcr/m/n/10 https : / / www . americanprogress . org / article / the-[
+]trump-[]administration-[]continues-[]to-[]demonstrate-[]its-[]failure-[]to-[]a
+ppreciate-[]the-[]plight-[]of-[]american-[]farmers/$[] 
+ []
+
+
+Overfull \hbox (145.5321pt too wide) in paragraph at lines 265--266
+[][]$\OT1/pcr/m/n/10 https : / / nairametrics . com / 2024 / 01 / 27 / denmark-
+[]confirms-[]deal-[]to-[]recruit-[]1000-[]foreign-[]health-[]workers/$[] 
+ []
+
+
+Overfull \hbox (454.0321pt too wide) in paragraph at lines 267--268
+[][]$\OT1/pcr/m/n/10 https : / / english . stm . dk / the-[]prime-[]minister / 
+speeches / prime-[]minister-[]mette-[]frederiksens-[]presentation-[]of-[]the-[]
+danish-[]presidency-[]priorities-[]in-[]strasbourg/$[] 
+ []
+
+
+Overfull \hbox (297.5321pt too wide) in paragraph at lines 268--269
+[][]$\OT1/pcr/m/n/10 https : / / cphpost . dk / 2025-[]08-[]20 / news / politic
+s / no-[]solution-[]by-[]the-[]government-[]for-[]international-[]healthcare-[]
+workers-[]in-[]denmark/$[] 
+ []
+
+
+Overfull \hbox (12.5321pt too wide) in paragraph at lines 269--270
+[][]$\OT1/pcr/m/n/10 https : / / www . iiea . com / blog / the-[]2022-[]danish-
+[]elections-[]social-[]democrats-[]secure$[] 
+ []
+
+
+Overfull \hbox (314.5321pt too wide) in paragraph at lines 271--272
+[][]$\OT1/pcr/m/n/10 https : / / stm . dk / statsministeren / taler / statsmini
+ster-[]mette-[]frederiksens-[]tale-[]til-[]folketingets-[]afslutningsdebat-[]de
+n-[]21-[]maj-[]2025/$[] 
+ []
+
+
+Overfull \hbox (443.5321pt too wide) in paragraph at lines 274--275
+[][]$\OT1/pcr/m/n/10 https : / / english . stm . dk / the-[]prime-[]minister / 
+speeches / prime-[]minister-[]mette-[]frederiksen-[]s-[]speech-[]at-[]the-[]ope
+ning-[]ceremony-[]for-[]the-[]danish-[]eu-[]presidency/$[] 
+ []
+
+
+
+[9]
+Overfull \hbox (3.5321pt too wide) in paragraph at lines 276--277
+[][]$\OT1/pcr/m/n/10 https : / / www . goodreads . com / author / quotes / 6378
+ . Hans _ Christian _ Andersen ? page =
+ []
+
+
+
+[10]
+(/home/roberto/hemingwai/output_temporal/El_acoso_de_Trump_a_Groenlandia_eleva_
+el_europeísmo_de_Dinam.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -1101,34 +1070,34 @@ L3 programming layer <2025-01-18>
  ***********
 
 
-Package rerunfilecheck Warning: File `Detienen_a_un_comandante_del_grupo_Wagner
-_en_Finlandia_huyó_.out' has changed.
+Package rerunfilecheck Warning: File `El_acoso_de_Trump_a_Groenlandia_eleva_el_
+europeísmo_de_Dinam.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
-Package rerunfilecheck Info: Checksums for `Detienen_a_un_comandante_del_grupo_
-Wagner_en_Finlandia_huyó_.out':
+Package rerunfilecheck Info: Checksums for `El_acoso_de_Trump_a_Groenlandia_ele
+va_el_europeísmo_de_Dinam.out':
 (rerunfilecheck)             Before: <no file>
 (rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 22832 strings out of 474511
- 417456 string characters out of 5746820
- 822185 words of memory out of 5000000
- 45428 multiletter control sequences out of 15000+600000
- 574722 words of font info for 65 fonts, out of 8000000 for 9000
+ 22811 strings out of 474511
+ 417077 string characters out of 5746820
+ 823185 words of memory out of 5000000
+ 45408 multiletter control sequences out of 15000+600000
+ 574408 words of font info for 64 fonts, out of 8000000 for 9000
  376 hyphenation exceptions out of 8191
- 102i,6n,107p,789b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 102i,6n,107p,1192b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texli
 ve/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/f
 onts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
 times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Detienen_a_un_comanda
-nte_del_grupo_Wagner_en_Finlandia_huyó_.pdf (8 pages, 183763 bytes).
+Output written on /home/roberto/hemingwai/output_temporal/El_acoso_de_Trump_a_G
+roenlandia_eleva_el_europeísmo_de_Dinam.pdf (10 pages, 195293 bytes).
 PDF statistics:
- 242 PDF objects out of 1000 (max. 8388607)
- 217 compressed objects within 3 object streams
- 78 named destinations out of 1000 (max. 500000)
+ 243 PDF objects out of 1000 (max. 8388607)
+ 216 compressed objects within 3 object streams
+ 81 named destinations out of 1000 (max. 500000)
  18 words of extra memory for PDF output out of 10000 (max. 10000000)
 
