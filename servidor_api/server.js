@@ -17,10 +17,23 @@ const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 const PYTHON_INTERPRETER = 'python'; 
 
 // Middleware
-// Configuración de CORS para permitir explícitamente el origen del frontend en Render
+// Configuración de CORS para permitir explícitamente el origen del frontend en Render y en desarrollo local
+const allowedOrigins = [
+    'https://hemingwai-frontend-5vw6.onrender.com',
+    'http://localhost:5173'
+];
+
 const corsOptions = {
-    origin: 'https://hemingwai-frontend-5vw6.onrender.com',
-    optionsSuccessStatus: 200 // Para compatibilidad con navegadores antiguos o proxies
+    origin: function (origin, callback) {
+        // Permitir peticiones sin origen (como las de Postman o scripts de servidor)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'La política de CORS para este sitio no permite acceso desde el origen especificado.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions)); // Aplica la configuración de CORS
 app.use(express.json()); // Para parsear cuerpos de petición JSON
@@ -128,6 +141,37 @@ app.post('/api/buscar', async (req, res) => {
 // Manejo de rutas no encontradas
 app.use((req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada' });
+});
+
+/**
+ * POST /api/news/:newsId/chat
+ * Permite chatear sobre una noticia específica.
+ * params: { newsId: 'id_de_la_noticia' }
+ * body: { message: 'pregunta', history: [{ role: 'user', content: '...' }] }
+ */
+app.post('/api/news/:newsId/chat', async (req, res) => {
+    const { newsId } = req.params;
+    const { message, history } = req.body;
+
+    if (!message || !Array.isArray(history)) {
+        return res.status(400).json({ error: "Los campos 'message' e 'history' (array) son requeridos." });
+    }
+
+    try {
+        // Los argumentos deben ser strings, por lo que el historial se pasa como un string JSON
+        const historyJsonString = JSON.stringify(history);
+        
+        // El script espera 3 argumentos: newsId, message, history
+        const args = [newsId, message, historyJsonString];
+        
+        const resultado = await ejecutarScriptPython('chat_with_news.py', args);
+        
+        res.json(resultado);
+
+    } catch (error) {
+        console.error(`Error en /api/news/${newsId}/chat:`, error);
+        res.status(500).json({ error: error.error || "Error interno del servidor al ejecutar el script de chat." });
+    }
 });
 
 // Inicio del servidor

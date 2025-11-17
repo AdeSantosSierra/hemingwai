@@ -15,6 +15,9 @@ import {
   User,
   Globe2,
   Newspaper,
+  MessageCircle,
+  Send,
+  Mic,
 } from 'lucide-react';
 
 import {
@@ -256,11 +259,13 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Información básica */}
-      <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-          <h3 className="text-2xl font-bold text-gray-900 flex-1">
+    <div className="flex gap-6">
+      {/* Panel principal de análisis (70%) */}
+      <div className="w-[70%] space-y-6">
+        {/* Información básica */}
+        <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
+            <h3 className="text-2xl font-bold text-gray-900 flex-1">
             {resultado.titulo}
           </h3>
           <div className="md:ml-4 text-center">
@@ -528,6 +533,132 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
           </div>
         </div>
       )}
+      </div>
+
+      {/* Panel del Chatbot (30%) */}
+      <ChatbotPanel newsId={resultado._id} />
+    </div>
+  );
+};
+
+/*
+   ChatbotPanel
+*/
+const ChatbotPanel = ({ newsId }) => {
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Mensaje inicial del asistente
+  useEffect(() => {
+    setMessages([
+      {
+        role: 'assistant',
+        content: '¡Análisis completado! Ahora puedes preguntarme sobre las razones de esta evaluación.'
+      }
+    ]);
+  }, [newsId]);
+
+  const handleSendMessage = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = { role: 'user', content: input };
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const history = messages.map(({ role, content }) => ({ role, content }));
+      
+      const response = await fetch(`${API_BASE_URL}/api/news/${newsId}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input, history })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error de red: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
+      const assistantMessage = { role: 'assistant', content: data.answer };
+      setMessages(prev => [...prev, assistantMessage]);
+
+    } catch (error) {
+      console.error("Error en el chat:", error);
+      const errorMessage = {
+        role: 'assistant',
+        content: 'Ha habido un problema técnico, inténtalo de nuevo más tarde.'
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="w-[30%] bg-white/95 shadow-xl rounded-xl p-4 flex flex-col h-full max-h-[80vh]">
+      <div className="flex items-center gap-2 mb-3 border-b pb-2 text-gray-900">
+        <MessageCircle className="w-6 h-6 text-lima" />
+        <h4 className="text-lg font-bold">Chatea con la IA</h4>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-2 space-y-4">
+        {messages.map((msg, index) => (
+          <div
+            key={index}
+            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`max-w-[85%] p-3 rounded-xl text-sm ${
+                msg.role === 'user'
+                  ? 'bg-lima text-[#0A2342]'
+                  : 'bg-gray-200 text-gray-800'
+              }`}
+            >
+              {msg.content}
+            </div>
+          </div>
+        ))}
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="bg-gray-200 text-gray-800 p-3 rounded-xl text-sm">
+              <Loader className="w-4 h-4 animate-spin" />
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-auto pt-2 border-t">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Escribe tu pregunta..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            disabled={isLoading}
+            className="w-full pl-3 pr-20 py-2 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-300 focus:border-lima transition shadow-sm text-gray-900 text-sm"
+          />
+          <div className="absolute right-1 top-1/2 -translate-y-1/2 flex items-center">
+            <button className="p-2 text-gray-500 hover:text-red-500" disabled>
+              <Mic className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleSendMessage}
+              disabled={isLoading || !input.trim()}
+              className="p-2 text-gray-500 hover:text-lima disabled:opacity-50"
+            >
+              <Send className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
