@@ -5,8 +5,6 @@
 // por lo que las peticiones a '/api' son suficientes.
 // En producción, VITE_API_BASE_URL será definida por el entorno de Render
 // y apuntará a la URL pública del servicio backend.
-
-// Temporalmente, usamos la URL directa para depurar problemas con el proxy de Vite
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export default API_BASE_URL;
