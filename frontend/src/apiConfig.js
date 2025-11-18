@@ -5,6 +5,6 @@
 // por lo que las peticiones a '/api' son suficientes.
 // En producción, VITE_API_BASE_URL será definida por el entorno de Render
 // y apuntará a la URL pública del servicio backend.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.PROD ? import.meta.env.VITE_API_BASE_URL || '' : '';
 
 export default API_BASE_URL;
