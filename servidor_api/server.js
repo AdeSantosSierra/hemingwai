@@ -120,6 +120,9 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
+// Contraseña maestra para el chatbot
+const CHATBOT_PASSWORD = process.env.CHATBOT_PASSWORD;
+
 // Nombres de los parámetros de evaluación para dar contexto al modelo
 const NOMBRES_PARAMETROS = {
     1: "Interpretación del periodista",
@@ -139,12 +142,42 @@ const NOMBRES_PARAMETROS = {
 // =======================================================
 
 /**
+ * POST /api/verify-password
+ * Verifica si la contraseña proporcionada coincide con la variable de entorno.
+ * body: { password: string }
+ */
+app.post('/api/verify-password', (req, res) => {
+    const { password } = req.body;
+
+    // Si no hay contraseña configurada en el servidor, se asume acceso libre (o se fuerza configuración).
+    // Por seguridad y petición del usuario, si CHATBOT_PASSWORD existe, se debe validar.
+    
+    if (CHATBOT_PASSWORD) {
+        if (password === CHATBOT_PASSWORD) {
+            return res.json({ success: true });
+        } else {
+            return res.status(401).json({ success: false, error: "Contraseña incorrecta." });
+        }
+    } else {
+        // Si no está definida la variable, avisamos en log pero permitimos (o bloqueamos).
+        // Estrategia: Permitir acceso si no está configurada para no romper nada, pero idealmente debería configurarse.
+        console.warn("ADVERTENCIA: CHATBOT_PASSWORD no está definida en el entorno. Acceso permitido por defecto.");
+        return res.json({ success: true, warning: "Sin protección activada." });
+    }
+});
+
+/**
  * POST /api/chatbot
  * Recibe una pregunta y un contexto sobre una noticia y devuelve la respuesta de un LLM.
- * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object } }
+ * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object }, password: string }
  */
 app.post('/api/chatbot', async (req, res) => {
-    const { pregunta, contexto } = req.body;
+    const { pregunta, contexto, password } = req.body;
+
+    // Verificación de seguridad
+    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
+        return res.status(401).json({ error: "Acceso denegado. Contraseña incorrecta o ausente." });
+    }
 
     if (!pregunta || !contexto || !contexto.titulo || !contexto.cuerpo || !contexto.valoraciones) {
         return res.status(400).json({ error: "La pregunta y un contexto completo (título, cuerpo, valoraciones) son requeridos." });
