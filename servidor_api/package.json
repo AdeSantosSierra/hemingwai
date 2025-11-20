@@ -1,22 +1,25 @@
 {
-  "name": "servidor_api",
-  "version": "1.0.0",
-  "description": "Servidor Express.js para ejecutar scripts de Python y servir como API para el frontend.",
-  "main": "server.js",
-  "scripts": {
+    "name": "servidor_api",
+    "version": "1.0.0",
+    "description": "Servidor Express.js para ejecutar scripts de Python y servir como API para el frontend.",
+    "main": "server.js",
+    "scripts": {
       "start": "node server.js",
       "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [
+    },
+    "keywords": [
       "express",
       "python",
       "react"
-  ],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "dependencies": {
+    ],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "dependencies": {
       "cors": "^2.8.5",
-      "express": "^4.18.2"
+      "dotenv": "^17.2.3",
+      "express": "^4.18.2",
+      "openai": "^6.9.1"
+    }
   }
-}
+  

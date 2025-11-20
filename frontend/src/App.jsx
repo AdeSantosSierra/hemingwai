@@ -1,6 +1,7 @@
 // App.jsx
 import React, { useState } from 'react';
 import logo from './assets/logo2.png';
+import Chatbot from './components/Chatbot';
 
 import {
   Search,
@@ -527,6 +528,19 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Sección del Chatbot */}
+      {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
+          <div className="mt-6 bg-white/95 shadow-xl rounded-xl p-6">
+              <Chatbot 
+                  noticiaContexto={{
+                      titulo: resultado.titulo,
+                      cuerpo: resultado.cuerpo,
+                      valoraciones: resultado.valoraciones,
+                  }}
+              />
+          </div>
       )}
     </div>
   );

@@ -5,6 +5,10 @@ const express = require('express');
 const { exec } = require('child_process');
 const cors = require('cors');
 const path = require('path');
+const OpenAI = require('openai');
+
+// Cargar variables de entorno desde el archivo .env en el root del proyecto
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
 const app = express();
 
@@ -102,8 +106,137 @@ function ejecutarScriptPython(scriptName, args = []) {
 }
 
 // =======================================================
+// CONFIGURACIÓN DE OPENAI
+// =======================================================
+
+// Asegurarse de que la API key está disponible
+if (!process.env.OPENAI_API_KEY) {
+    console.error("Error fatal: La variable de entorno OPENAI_API_KEY no está definida.");
+    // En un entorno de producción, sería mejor salir del proceso si la configuración crítica falta.
+    // process.exit(1); 
+}
+
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+});
+
+// Nombres de los parámetros de evaluación para dar contexto al modelo
+const NOMBRES_PARAMETROS = {
+    1: "Interpretación del periodista",
+    2: "Opiniones",
+    3: "Cita de fuentes",
+    4: "Confiabilidad de las fuentes",
+    5: "Trascendencia",
+    6: "Relevancia de los datos",
+    7: "Precisión y claridad",
+    8: "Enfoque",
+    9: "Contexto",
+    10: "Ética",
+};
+
+// =======================================================
 // RUTAS DE LA API
 // =======================================================
+
+/**
+ * POST /api/chatbot
+ * Recibe una pregunta y un contexto sobre una noticia y devuelve la respuesta de un LLM.
+ * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object } }
+ */
+app.post('/api/chatbot', async (req, res) => {
+    const { pregunta, contexto } = req.body;
+
+    if (!pregunta || !contexto || !contexto.titulo || !contexto.cuerpo || !contexto.valoraciones) {
+        return res.status(400).json({ error: "La pregunta y un contexto completo (título, cuerpo, valoraciones) son requeridos." });
+    }
+
+    try {
+        // 1. Construir el contexto para la IA
+        let contextoParaIA = `Título de la noticia: "${contexto.titulo}"\n\n`;
+        contextoParaIA += `Cuerpo de la noticia: "${contexto.cuerpo}"\n\n`;
+        contextoParaIA += "Análisis de la noticia:\n";
+        
+        for (const key in contexto.valoraciones) {
+            const nombreParametro = NOMBRES_PARAMETROS[key] || `Parámetro ${key}`;
+            contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
+        }
+
+        // 2. Definir el prompt del sistema
+        const systemPrompt = `
+        Eres un asistente virtual experto en análisis de noticias.
+        Tu función es ayudar al usuario a entender mejor el ANÁLISIS de una noticia concreta usando el título, el cuerpo y las valoraciones que se te proporcionan.
+        
+        Estilo:
+        - Sé claro, profesional y pedagógico.
+        - Usa un tono respetuoso y colaborativo, sin emoticonos ni coloquialismos excesivos.
+        - Evita dar respuestas excesivamente generales: céntrate en lo que dice ESTE análisis concreto.
+        
+        Contenido:
+        - Basa tus respuestas únicamente en el contexto proporcionado (título, cuerpo y valoraciones).
+        - NO inventes datos ni hechos nuevos.
+        - Cuando el usuario pregunte por un parámetro concreto (por ejemplo: ética, rigor, calidad de las fuentes, contexto, etc.):
+            - Localiza las partes relevantes dentro de las valoraciones.
+            - Resume y parafrasea esa información con tus propias palabras.
+            - Organiza la respuesta en 2-3 ideas clave y, si es útil, añade 1-3 recomendaciones prácticas.
+        
+        Uso de las valoraciones:
+        - Evita copiar literalmente párrafos largos del campo "valoraciones".
+        - NO reproduzcas más de dos frases seguidas de forma literal. En lugar de eso, reescribe el contenido y organiza la información de forma más clara.
+        - Solo puedes citar literalmente frases cortas como ejemplo concreto cuando el usuario lo pida explícitamente.
+        
+        Uso del cuerpo de la noticia:
+        - Puedes resumir y parafrasear el contenido del cuerpo de la noticia para apoyar tus explicaciones.
+        - No reproduzcas el cuerpo completo ni grandes fragmentos de forma literal.
+        
+        Si el usuario te pide:
+        - El cuerpo completo de la noticia, o que copies literalmente grandes partes del texto (por ejemplo "dame el cuerpo completo", "copia las primeras frases exactamente"):
+            → responde:
+            "No puedo reproducir literalmente el texto de la noticia, pero puedo resumirlo o describir cómo empieza si lo deseas."
+        
+        - Palabras o frases concretas como ejemplos (por ejemplo: "¿qué expresión concreta se usa para describir X?"):
+            → puedes citar fragmentos breves del texto o de las valoraciones, siempre que no sean grandes bloques.
+        
+        - Algo que no puede deducirse del análisis ni del texto disponible:
+            → responde de forma amable, por ejemplo:
+            "Con los datos de este análisis no puedo responder con seguridad a esa pregunta. Haría falta información adicional."
+        
+        Responde siempre en español.
+        `;
+        
+
+
+
+
+        // 3. Llamar a la API de OpenAI
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+                {
+                    role: "system",
+                    content: systemPrompt
+                },
+                {
+                    role: "user",
+                    content: `Aquí está el contexto de la noticia:\n\n${contextoParaIA}\n\nMi pregunta es: ${pregunta}`
+                }
+            ],
+            temperature: 0, // Para respuestas más deterministas y objetivas
+            max_tokens: 4096,
+        });
+
+        const respuesta = completion.choices[0]?.message?.content?.trim();
+
+        if (respuesta) {
+            res.json({ respuesta });
+        } else {
+            res.status(500).json({ error: "No se pudo obtener una respuesta del servicio de IA." });
+        }
+
+    } catch (error) {
+        console.error("Error al llamar a la API de OpenAI:", error);
+        res.status(500).json({ error: "No he podido procesar tu pregunta, por favor inténtalo de nuevo." });
+    }
+});
 
 /**
  * POST /api/buscar
