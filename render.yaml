@@ -11,6 +11,10 @@ services:
         sync: false
       - key: OLD_MONGODB_URI
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CHATBOT_PASSWORD
+        sync: false
       - key: PORT
         value: 3000
 

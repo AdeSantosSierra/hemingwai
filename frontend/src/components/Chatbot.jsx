@@ -70,6 +70,8 @@ const styles = {
         color: '#ffffff', // Texto base blanco
         maxWidth: '700px',
         margin: '20px auto',
+        position: 'relative',
+        minHeight: '400px',
     },
     title: {
         margin: '0 0 16px 0',
@@ -139,6 +141,39 @@ const styles = {
     loading: {
         textAlign: 'center',
         color: '#d2d209', // "Pensando..." en lima
+    },
+    // Estilos para la pantalla de bloqueo
+    lockScreen: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(10, 35, 66, 0.98)', // Azul oscuro semi-opaco
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: '8px',
+        padding: '20px',
+    },
+    lockTitle: {
+        color: '#d2d209',
+        marginBottom: '15px',
+        fontSize: '1.2em',
+        textAlign: 'center',
+    },
+    lockInput: {
+        padding: '10px',
+        borderRadius: '20px',
+        border: '1px solid #d2d209',
+        marginBottom: '15px',
+        backgroundColor: '#ffffff',
+        color: '#000000',
+        width: '80%',
+        maxWidth: '300px',
+        textAlign: 'center',
     }
 };
 
@@ -149,6 +184,41 @@ const Chatbot = ({ noticiaContexto }) => {
     const [inputUsuario, setInputUsuario] = useState('');
     const [cargando, setCargando] = useState(false);
     const [error, setError] = useState(null);
+
+    // Estado para la autenticación
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [passwordInput, setPasswordInput] = useState('');
+    const [authError, setAuthError] = useState(null);
+    const [verifying, setVerifying] = useState(false);
+
+    // Manejar el envío de contraseña
+    const handleAuthSubmit = async (e) => {
+        e.preventDefault();
+        if (!passwordInput.trim() || verifying) return;
+
+        setVerifying(true);
+        setAuthError(null);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/verify-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: passwordInput })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                setIsAuthenticated(true);
+            } else {
+                throw new Error(data.error || 'Contraseña incorrecta');
+            }
+        } catch (err) {
+            setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
+        } finally {
+            setVerifying(false);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -169,10 +239,16 @@ const Chatbot = ({ noticiaContexto }) => {
                 body: JSON.stringify({
                     pregunta: inputUsuario,
                     contexto: noticiaContexto,
+                    password: passwordInput // Enviar la contraseña autenticada con cada petición
                 }),
             });
 
             if (!response.ok) {
+                // Si falla la autenticación en medio de la sesión (ej: reinicio de servidor)
+                if (response.status === 401) {
+                    setIsAuthenticated(false);
+                    throw new Error('Sesión expirada o contraseña inválida.');
+                }
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Ocurrió un error en el servidor.');
             }
@@ -193,6 +269,34 @@ const Chatbot = ({ noticiaContexto }) => {
 
     return (
         <div style={styles.chatbotContainer}>
+            {/* Pantalla de Bloqueo */}
+            {!isAuthenticated && (
+                <div style={styles.lockScreen}>
+                    <h3 style={styles.lockTitle}>🔒 Chatbot Protegido</h3>
+                    <p className="text-white mb-4 text-center text-sm">
+                        Introduce la contraseña para acceder al asistente.
+                    </p>
+                    <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                        <input
+                            type="password"
+                            value={passwordInput}
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                            placeholder="Contraseña..."
+                            style={styles.lockInput}
+                            autoFocus
+                        />
+                        <button 
+                            type="submit" 
+                            style={{...styles.button, ...(verifying ? styles.buttonDisabled : {})}} 
+                            disabled={verifying}
+                        >
+                            {verifying ? 'Verificando...' : 'Desbloquear'}
+                        </button>
+                    </form>
+                    {authError && <p style={styles.error}>{authError}</p>}
+                </div>
+            )}
+
             <h3 style={styles.title}>Pregúntale a Hemingwai</h3>
             <div style={styles.messagesContainer}>
                 {mensajes.map((msg, index) => {
@@ -223,9 +327,13 @@ const Chatbot = ({ noticiaContexto }) => {
                     onChange={(e) => setInputUsuario(e.target.value)}
                     placeholder="Escribe tu pregunta aquí..."
                     style={styles.input}
-                    disabled={cargando}
+                    disabled={cargando || !isAuthenticated}
                 />
-                <button type="submit" style={{...styles.button, ...(cargando ? styles.buttonDisabled : {})}} disabled={cargando}>
+                <button 
+                    type="submit" 
+                    style={{...styles.button, ...(cargando || !isAuthenticated ? styles.buttonDisabled : {})}} 
+                    disabled={cargando || !isAuthenticated}
+                >
                     Enviar
                 </button>
             </form>
