@@ -1,5 +1,31 @@
+# Archivos de Entorno
 .env
+
+# Dependencias de Node (si tu proyecto usa JS/TS)
 /node_modules
 
+# Archivos compilados de Python
 *.pyc
+__pycache__/
+
+# Archivos de Log y Salida
 src/nohup.out
+src/nohup.out.cursor-server/
+
+# Directorios de herramientas/IDE
+.cursor-server/
+
+# Entornos virtuales de Python (Crucial)
+# Esto ignora la carpeta que mencionaste en el prompt anterior
+venv/
+.venv/
+
+# Dependencias del Backend
+servidor_api/node_modules/
+
+# Dependencias del Frontend
+frontend/node_modules/
+frontend/src/assets/
+# Dependencias de Node
+/node_modules
+/node/
