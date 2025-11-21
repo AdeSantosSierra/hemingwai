@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import PropTypes from 'prop-types';
 import API_BASE_URL from '../apiConfig';
 
@@ -58,36 +58,41 @@ const renderMarkdown = (text) => {
 };
 // ----------------------------
 
-// Estilos actualizados con la paleta corporativa (Azul Oscuro y Lima)
+// Estilos con la paleta corporativa (Azul Oscuro y Lima)
 const styles = {
     chatbotContainer: {
         border: '1px solid #d2d209', // Borde lima
-        borderRadius: '8px',
-        padding: '16px',
-        marginTop: '20px',
+        borderRadius: '10px',
+        padding: '8px',
+        marginTop: '0',
         fontFamily: 'Inter, sans-serif', 
         backgroundColor: '#0A2342', // Azul oscuro de fondo
         color: '#ffffff', // Texto base blanco
-        maxWidth: '700px',
-        margin: '20px auto',
+        // maxWidth eliminada para que llene la columna
+        width: '100%',
+        margin: '0',
         position: 'relative',
-        minHeight: '400px',
+        minHeight: '600px', // Mayor altura mínima
+        display: 'flex',
+        flexDirection: 'column',
     },
     title: {
-        margin: '0 0 16px 0',
-        paddingBottom: '10px',
+        margin: '0 0 20px 0',
+        paddingBottom: '15px',
         borderBottom: '1px solid #d2d209', // Línea separadora lima
         textAlign: 'center',
         color: '#d2d209', // Título en lima
+        fontSize: '1.25rem',
     },
     messagesContainer: {
-        height: '300px',
+        flex: '1', // Ocupa el espacio restante
+        minHeight: '400px',
         overflowY: 'auto',
         border: '1px solid #1c3d6e',
-        padding: '10px',
-        marginBottom: '10px',
+        padding: '16px',
+        marginBottom: '16px',
         backgroundColor: '#0e2f56', // Azul ligeramente más claro para el área de mensajes
-        borderRadius: '4px',
+        borderRadius: '6px',
     },
     message: {
         marginBottom: '10px',
@@ -177,7 +182,7 @@ const styles = {
     }
 };
 
-const Chatbot = ({ noticiaContexto }) => {
+const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
     const [mensajes, setMensajes] = useState([
         { role: 'bot', content: 'Hola. ¿Qué te gustaría saber sobre el análisis de esta noticia?' }
     ]);
@@ -190,6 +195,81 @@ const Chatbot = ({ noticiaContexto }) => {
     const [passwordInput, setPasswordInput] = useState('');
     const [authError, setAuthError] = useState(null);
     const [verifying, setVerifying] = useState(false);
+
+    // Refs
+    const passwordInputRef = useRef(null);
+    const containerRef = useRef(null);
+
+    // Lógica principal de envío de mensaje
+    const sendMessage = async (textoMensaje) => {
+        if (!textoMensaje || !textoMensaje.trim() || cargando) return;
+
+        const nuevoMensajeUsuario = { role: 'user', content: textoMensaje };
+        setMensajes(prevMensajes => [...prevMensajes, nuevoMensajeUsuario]);
+        // Limpiamos el input si el mensaje vino del input
+        if (inputUsuario === textoMensaje) {
+            setInputUsuario('');
+        }
+        
+        setCargando(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/chatbot`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    pregunta: textoMensaje,
+                    contexto: noticiaContexto,
+                    password: passwordInput // Enviar la contraseña autenticada con cada petición
+                }),
+            });
+
+            if (!response.ok) {
+                // Si falla la autenticación en medio de la sesión (ej: reinicio de servidor)
+                if (response.status === 401) {
+                    setIsAuthenticated(false);
+                    throw new Error('Sesión expirada o contraseña inválida.');
+                }
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Ocurrió un error en el servidor.');
+            }
+
+            const data = await response.json();
+            const respuestaBot = { role: 'bot', content: data.respuesta };
+            setMensajes(prev => [...prev, respuestaBot]);
+
+        } catch (err) {
+            setError(err.message || 'No se pudo conectar con el chatbot. Inténtalo de nuevo.');
+            const mensajeErrorBot = { role: 'bot', content: 'Lo siento, he tenido un problema para procesar tu pregunta.' };
+            setMensajes(prev => [...prev, mensajeErrorBot]);
+        } finally {
+            setCargando(false);
+        }
+    };
+
+    // Exponer métodos al padre
+    useImperativeHandle(ref, () => ({
+        handleQuickQuestion: (question) => {
+            if (!isAuthenticated) {
+                // 1. Scroll al contenedor
+                if (containerRef.current) {
+                    containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                // 2. Focus en el input de contraseña
+                if (passwordInputRef.current) {
+                    passwordInputRef.current.focus();
+                }
+                // 3. Mostrar mensaje informativo
+                setAuthError("Para hacer esta pregunta, primero desbloquea el chat.");
+                return;
+            }
+            // Si está autenticado, enviar mensaje
+            sendMessage(question);
+        }
+    }));
 
     // Manejar el envío de contraseña
     const handleAuthSubmit = async (e) => {
@@ -220,55 +300,13 @@ const Chatbot = ({ noticiaContexto }) => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        if (!inputUsuario.trim() || cargando) return;
-
-        const nuevoMensajeUsuario = { role: 'user', content: inputUsuario };
-        setMensajes(prevMensajes => [...prevMensajes, nuevoMensajeUsuario]);
-        setInputUsuario('');
-        setCargando(true);
-        setError(null);
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/chatbot`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    pregunta: inputUsuario,
-                    contexto: noticiaContexto,
-                    password: passwordInput // Enviar la contraseña autenticada con cada petición
-                }),
-            });
-
-            if (!response.ok) {
-                // Si falla la autenticación en medio de la sesión (ej: reinicio de servidor)
-                if (response.status === 401) {
-                    setIsAuthenticated(false);
-                    throw new Error('Sesión expirada o contraseña inválida.');
-                }
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Ocurrió un error en el servidor.');
-            }
-
-            const data = await response.json();
-            const respuestaBot = { role: 'bot', content: data.respuesta };
-            setMensajes(prev => [...prev, respuestaBot]);
-
-        } catch (err) {
-            setError(err.message || 'No se pudo conectar con el chatbot. Inténtalo de nuevo.');
-            const mensajeErrorBot = { role: 'bot', content: 'Lo siento, he tenido un problema para procesar tu pregunta.' };
-            setMensajes(prev => [...prev, mensajeErrorBot]);
-        } finally {
-            setCargando(false);
-        }
-
+        sendMessage(inputUsuario);
     };
 
     return (
-        <div style={styles.chatbotContainer}>
+        <div style={styles.chatbotContainer} ref={containerRef}>
             {/* Pantalla de Bloqueo */}
             {!isAuthenticated && (
                 <div style={styles.lockScreen}>
@@ -278,6 +316,7 @@ const Chatbot = ({ noticiaContexto }) => {
                     </p>
                     <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                         <input
+                            ref={passwordInputRef}
                             type="password"
                             value={passwordInput}
                             onChange={(e) => setPasswordInput(e.target.value)}
@@ -340,7 +379,9 @@ const Chatbot = ({ noticiaContexto }) => {
             {error && <p style={styles.error}>{error}</p>}
         </div>
     );
-};
+});
+
+Chatbot.displayName = 'Chatbot';
 
 Chatbot.propTypes = {
     noticiaContexto: PropTypes.shape({

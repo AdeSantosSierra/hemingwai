@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import logo from './assets/logo2.png';
 import Chatbot from './components/Chatbot';
 
@@ -16,6 +16,7 @@ import {
   User,
   Globe2,
   Newspaper,
+  MessageSquare
 } from 'lucide-react';
 
 import {
@@ -174,6 +175,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarRadarGrande, setMostrarRadarGrande] = useState(false);
+  
+  // Referencia al chatbot
+  const chatbotRef = useRef(null);
 
   // Estado inicial
   if (estado === 'idle') {
@@ -257,279 +261,329 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     setSeccionSeleccionada(null);
   };
 
+  // Función para enviar pregunta rápida al chatbot
+  const handlePreguntaChatbot = (nombreSeccion) => {
+    if (chatbotRef.current) {
+        const pregunta = `Dame un resumen de la calificación que ha obtenido la sección de ${nombreSeccion}`;
+        chatbotRef.current.handleQuickQuestion(pregunta);
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Información básica */}
-      <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
-      <div className="flex flex-col md:flex-row gap-4 md:items-center">
+    <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start">
+      {/* Columna Izquierda: Contenido del análisis */}
+      <div className="space-y-6">
+        {/* Información básica */}
+        <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
+        <div className="flex flex-col md:flex-row gap-4 md:items-center">
 
-          {/* Columna izquierda: Título y Metadatos */}
-          <div className="flex-1">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              {resultado.titulo}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-semibold text-gray-600">
-                  Fecha de publicación:
-                </span>
-                <p className="text-gray-900">
-                  {resultado.fecha_publicacion
-                    ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
-                    : 'N/A'}
-                </p>
-              </div>
-              <div>
-                <span className="font-semibold text-gray-600">Fuente:</span>
-                <p className="text-gray-900">{resultado.fuente || 'N/A'}</p>
-              </div>
-              <div className="col-span-1 sm:col-span-2">
-                <span className="font-semibold text-gray-600">Autor(es):</span>
-                <p className="text-gray-900">
-                  {resultado.autor && resultado.autor.length > 0
-                    ? resultado.autor.join(', ')
-                    : 'N/A'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Columna derecha: Puntuación arriba, radar debajo */}
-          <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
-
-
-            {/* Puntuación General */}
-            <div className="text-center">
-              <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
-                Puntuación general
-              </div>
-              <div className="flex flex-col items-center justify-center">
-                <span className="text-4xl mb-1">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-3 h-3 rounded-full ${
-                      resultado.puntuacion >= 75
-                        ? 'bg-green-500'
-                        : resultado.puntuacion >= 60
-                        ? 'bg-yellow-500'
-                        : resultado.puntuacion >= 45
-                        ? 'bg-orange-500'
-                        : 'bg-red-500'
-                    }`}
-                  />
-                  <span className="text-3xl font-extrabold text-lima">
-                    {resultado.puntuacion ?? 'N/A'}
+            {/* Columna izquierda: Título y Metadatos */}
+            <div className="flex-1">
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                {resultado.titulo}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span className="font-semibold text-gray-600">
+                    Fecha de publicación:
                   </span>
+                  <p className="text-gray-900">
+                    {resultado.fecha_publicacion
+                      ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
+                      : 'N/A'}
+                  </p>
+                </div>
+                <div>
+                  <span className="font-semibold text-gray-600">Fuente:</span>
+                  <p className="text-gray-900">{resultado.fuente || 'N/A'}</p>
+                </div>
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="font-semibold text-gray-600">Autor(es):</span>
+                  <p className="text-gray-900">
+                    {resultado.autor && resultado.autor.length > 0
+                      ? resultado.autor.join(', ')
+                      : 'N/A'}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Mini Radar (Botón) */}
-            {resultado.puntuacion_individual && (
-              <div className="flex flex-col items-center">
-                <button
-                  onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
-                  className="w-24 h-24 rounded-lg hover:bg-gray-50 transition-colors p-1 border border-transparent hover:border-gray-200"
-                  title="Ver desglose de criterios"
-                >
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
-                      <PolarGrid stroke="#E5E7EB" />
-                      <PolarAngleAxis
-                        dataKey="seccion"
-                        tick={false}
-                        axisLine={false}
-                      />
-                      <PolarRadiusAxis
-                        angle={90}
-                        domain={[0, 100]}
-                        tick={{
-                          fill: '#6B7280',   
-                          fontSize: 0       
-                        }}
-                        tickLine={false}      
-                      />
-                      <Radar
-                        name="Puntuación"
-                        dataKey="puntuacion"
-                        stroke="#D2D209"
-                        fill="#D2D209"
-                        fillOpacity={0.5}
-                      />
-                    </RadarChart>
-                  </ResponsiveContainer>
-                </button>
+            {/* Columna derecha: Puntuación arriba, radar debajo */}
+            <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
+
+
+              {/* Puntuación General */}
+              <div className="text-center">
+                <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                  Puntuación general
+                </div>
+                <div className="flex flex-col items-center justify-center">
+                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        resultado.puntuacion >= 75
+                          ? 'bg-green-500'
+                          : resultado.puntuacion >= 60
+                          ? 'bg-yellow-500'
+                          : resultado.puntuacion >= 45
+                          ? 'bg-orange-500'
+                          : 'bg-red-500'
+                      }`}
+                    />
+                    <span className="text-3xl font-extrabold text-lima">
+                      {resultado.puntuacion ?? 'N/A'}
+                    </span>
+                  </div>
+                </div>
               </div>
-            )}
+
+              {/* Mini Radar (Botón) */}
+              {resultado.puntuacion_individual && (
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
+                    className="w-24 h-24 rounded-lg hover:bg-gray-50 transition-colors p-1 border border-transparent hover:border-gray-200"
+                    title="Ver desglose de criterios"
+                  >
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
+                        <PolarGrid stroke="#E5E7EB" />
+                        <PolarAngleAxis
+                          dataKey="seccion"
+                          tick={false}
+                          axisLine={false}
+                        />
+                        <PolarRadiusAxis
+                          angle={90}
+                          domain={[0, 100]}
+                          tick={{
+                            fill: '#6B7280',   
+                            fontSize: 0       
+                          }}
+                          tickLine={false}      
+                        />
+                        <Radar
+                          name="Puntuación"
+                          dataKey="puntuacion"
+                          stroke="#D2D209"
+                          fill="#D2D209"
+                          fillOpacity={0.5}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Radar chart Expandido */}
+          {mostrarRadarGrande && resultado.puntuacion_individual && (
+            <div className="mt-6 border-t border-gray-100 pt-6">
+              <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
+                Análisis visual de calidad
+              </h4>
+              <div style={{ width: '100%', height: 400 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart 
+                    data={datosRadar} 
+                    outerRadius="100%" 
+                    margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
+                  >
+                    <PolarGrid stroke="#E5E7EB" />
+                    <PolarAngleAxis
+                      dataKey="seccion"
+                      tick={{ fill: '#111827', fontSize: 14 }}
+                    />
+                    <PolarRadiusAxis
+                    angle={90}
+                    domain={[0, 100]}
+                    tick={{
+                      fill: '#6B7280',   // color de las etiquetas
+                      fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
+                    }}
+                    tickLine={false}
+                    
+                    />
+
+                    <Radar
+                      name="Puntuación"
+                      dataKey="puntuacion"
+                      stroke="#D2D209"
+                      fill="#D2D209"
+                      fillOpacity={0.5}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Otras secciones (Análisis adicional) */}
+        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+          <h4 className="text-xl font-bold text-gray-900 mb-4">
+            Análisis adicional
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button
+              onClick={() =>
+                abrirModal('Valoración general', resultado.valoracion_general)
+              }
+              disabled={!resultado.valoracion_general}
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+            >
+              <div className="font-semibold text-gray-800">📊 Valoración general</div>
+              {!resultado.valoracion_general && (
+                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+              )}
+            </button>
+
+            <button
+              onClick={() =>
+                abrirModal(
+                  'Valoración del titular',
+                  resultado.valoracion_titular?.titular
+                )
+              }
+              disabled={!resultado.valoracion_titular?.titular}
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+            >
+              <div className="font-semibold text-gray-800">
+                📰 Valoración del titular
+              </div>
+              {!resultado.valoracion_titular?.titular && (
+                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+              )}
+            </button>
+
+            <button
+              onClick={() =>
+                abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
+              }
+              disabled={!resultado.fact_check_analisis}
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+            >
+              <div className="font-semibold text-gray-800">
+                🔍 Análisis de Fact-Checking
+              </div>
+              {!resultado.fact_check_analisis && (
+                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+              )}
+            </button>
+
+            <button
+              onClick={() =>
+                abrirModal(
+                  'Fuentes de fact-checking',
+                  resultado.fact_check_fuentes,
+                  'fuentes'
+                )
+              }
+              disabled={
+                !resultado.fact_check_fuentes ||
+                resultado.fact_check_fuentes.length === 0
+              }
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+            >
+              <div className="font-semibold text-gray-800">
+                📚 Fuentes de Fact-Checking
+              </div>
+              {(!resultado.fact_check_fuentes ||
+                resultado.fact_check_fuentes.length === 0) && (
+                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Radar chart Expandido */}
-        {mostrarRadarGrande && resultado.puntuacion_individual && (
-          <div className="mt-6 border-t border-gray-100 pt-6">
-            <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
-              Análisis visual de calidad
-            </h4>
-            <div style={{ width: '100%', height: 400 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart 
-                  data={datosRadar} 
-                  outerRadius="100%" 
-                  margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
-                >
-                  <PolarGrid stroke="#E5E7EB" />
-                  <PolarAngleAxis
-                    dataKey="seccion"
-                    tick={{ fill: '#111827', fontSize: 14 }}
-                  />
-                  <PolarRadiusAxis
-                  angle={90}
-                  domain={[0, 100]}
-                  tick={{
-                    fill: '#6B7280',   // color de las etiquetas
-                    fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
-                  }}
-                  tickLine={false}
-                  
-                  />
-
-                  <Radar
-                    name="Puntuación"
-                    dataKey="puntuacion"
-                    stroke="#D2D209"
-                    fill="#D2D209"
-                    fillOpacity={0.5}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
+        {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
+        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+          <h4 className="text-xl font-bold text-gray-900 mb-2">
+            Pregúntale al chatbot
+          </h4>
+          <p className="text-sm text-gray-600 mb-4">
+             Haz clic en una sección para preguntar automáticamente al chatbot sobre su calificación.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            {Object.keys(nombresSecciones).map((key) => {
+                return (
+                  <button
+                    key={key}
+                    onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
+                    className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left bg-white flex items-center justify-between group"
+                  >
+                    <span className="text-sm font-semibold text-gray-800 group-hover:text-[#0A2342]">
+                      {nombresSecciones[key]}
+                    </span>
+                    <MessageSquare className="w-4 h-4 text-gray-400 group-hover:text-lima" />
+                  </button>
+                );
+              })}
           </div>
+        </div>
+
+        {/* Valoraciones individuales */}
+        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+          <h4 className="text-xl font-bold text-gray-900 mb-4">
+            Valoraciones por sección
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+            {resultado.puntuacion_individual &&
+              Object.keys(nombresSecciones).map((key) => {
+                const puntuacion = resultado.puntuacion_individual?.[key];
+                const valoracion = resultado.valoraciones?.[key];
+
+                return (
+                  <button
+                    key={key}
+                    onClick={() =>
+                      abrirModal(
+                        nombresSecciones[key],
+                        valoracion || 'Contenido no disponible'
+                      )
+                    }
+                    className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+                    disabled={!valoracion}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-gray-800">
+                        {nombresSecciones[key]}
+                      </span>
+                      {puntuacion ? (
+                        <PuntuacionIndicador puntuacion={puntuacion} />
+                      ) : (
+                        <span className="text-gray-400 text-xs">N/A</span>
+                      )}
+                    </div>
+                    {!valoracion && (
+                      <p className="text-xs text-gray-400 mt-2">No disponible</p>
+                    )}
+                  </button>
+                );
+              })}
+          </div>
+        </div>
+      </div>
+
+      {/* Columna Derecha: Chatbot Sticky */}
+      <div className="md:sticky md:top-4">
+        {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
+            <div className="bg-white/95 shadow-xl rounded-xl p-6">
+                <Chatbot 
+                    ref={chatbotRef}
+                    noticiaContexto={{
+                        titulo: resultado.titulo,
+                        cuerpo: resultado.cuerpo,
+                        valoraciones: resultado.valoraciones,
+                    }}
+                />
+            </div>
         )}
       </div>
 
-      {/* Otras secciones (Análisis adicional) */}
-      <div className="bg-white/95 shadow-xl rounded-xl p-6">
-        <h4 className="text-xl font-bold text-gray-900 mb-4">
-          Análisis adicional
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <button
-            onClick={() =>
-              abrirModal('Valoración general', resultado.valoracion_general)
-            }
-            disabled={!resultado.valoracion_general}
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-          >
-            <div className="font-semibold text-gray-800">📊 Valoración general</div>
-            {!resultado.valoracion_general && (
-              <p className="text-xs text-gray-400 mt-1">No disponible</p>
-            )}
-          </button>
-
-          <button
-            onClick={() =>
-              abrirModal(
-                'Valoración del titular',
-                resultado.valoracion_titular?.titular
-              )
-            }
-            disabled={!resultado.valoracion_titular?.titular}
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-          >
-            <div className="font-semibold text-gray-800">
-              📰 Valoración del titular
-            </div>
-            {!resultado.valoracion_titular?.titular && (
-              <p className="text-xs text-gray-400 mt-1">No disponible</p>
-            )}
-          </button>
-
-          <button
-            onClick={() =>
-              abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
-            }
-            disabled={!resultado.fact_check_analisis}
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-          >
-            <div className="font-semibold text-gray-800">
-              🔍 Análisis de Fact-Checking
-            </div>
-            {!resultado.fact_check_analisis && (
-              <p className="text-xs text-gray-400 mt-1">No disponible</p>
-            )}
-          </button>
-
-          <button
-            onClick={() =>
-              abrirModal(
-                'Fuentes de fact-checking',
-                resultado.fact_check_fuentes,
-                'fuentes'
-              )
-            }
-            disabled={
-              !resultado.fact_check_fuentes ||
-              resultado.fact_check_fuentes.length === 0
-            }
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-          >
-            <div className="font-semibold text-gray-800">
-              📚 Fuentes de Fact-Checking
-            </div>
-            {(!resultado.fact_check_fuentes ||
-              resultado.fact_check_fuentes.length === 0) && (
-              <p className="text-xs text-gray-400 mt-1">No disponible</p>
-            )}
-          </button>
-
-          
-            
-        </div>
-      </div>
-
-      {/* Valoraciones individuales - MOVIDO ABAJO */}
-      <div className="bg-white/95 shadow-xl rounded-xl p-6">
-        <h4 className="text-xl font-bold text-gray-900 mb-4">
-          Valoraciones por sección
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resultado.puntuacion_individual &&
-            Object.keys(nombresSecciones).map((key) => {
-              const puntuacion = resultado.puntuacion_individual?.[key];
-              const valoracion = resultado.valoraciones?.[key];
-
-              return (
-                <button
-                  key={key}
-                  onClick={() =>
-                    abrirModal(
-                      nombresSecciones[key],
-                      valoracion || 'Contenido no disponible'
-                    )
-                  }
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-                  disabled={!valoracion}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-gray-800">
-                      {nombresSecciones[key]}
-                    </span>
-                    {puntuacion ? (
-                      <PuntuacionIndicador puntuacion={puntuacion} />
-                    ) : (
-                      <span className="text-gray-400 text-xs">N/A</span>
-                    )}
-                  </div>
-                  {!valoracion && (
-                    <p className="text-xs text-gray-400 mt-2">No disponible</p>
-                  )}
-                </button>
-              );
-            })}
-        </div>
-      </div>
-
-      {/* Modal */}
+      {/* Modal - Se coloca fuera de la estructura de columnas para que cubra todo */}
       {mostrarModal && seccionSeleccionada && (
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
@@ -573,19 +627,6 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Sección del Chatbot */}
-      {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
-          <div className="mt-6 bg-white/95 shadow-xl rounded-xl p-6">
-              <Chatbot 
-                  noticiaContexto={{
-                      titulo: resultado.titulo,
-                      cuerpo: resultado.cuerpo,
-                      valoraciones: resultado.valoraciones,
-                  }}
-              />
-          </div>
       )}
     </div>
   );
@@ -683,7 +724,7 @@ function App() {
 
       {/* Contenido principal */}
       <main className="flex-1 flex flex-col items-center px-4 sm:px-6 lg:px-8 py-8">
-        <div className="w-full max-w-5xl">
+        <div className="w-full max-w-7xl">
           {/* Hero */}
           <section className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#071A31]/80 border border-lima shadow-sm mb-4">
@@ -703,7 +744,7 @@ function App() {
 
           {/* Tarjeta de búsqueda */}
           <section className="mb-8">
-            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6">
+            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto">
               <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
                 <Globe2 className="w-5 h-5 text-lima" />
                 Analizar noticia desde URL
