@@ -182,7 +182,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         <Search className="w-8 h-8 mx-auto mb-2 text-lima" />
         <p className="text-lg font-medium">Listo para analizar.</p>
         <p className="text-sm">
-          Introduce una URL o ID para ver el análisis de una noticia.
+          Introduce una URL para ver el análisis de una noticia.
         </p>
       </div>
     );
@@ -706,7 +706,7 @@ function App() {
             <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6">
               <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
                 <Globe2 className="w-5 h-5 text-lima" />
-                Analizar noticia desde URL o ID
+                Analizar noticia desde URL
               </h2>
 
               <div className="space-y-4">
@@ -714,7 +714,7 @@ function App() {
                   <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                   <input
                     type="text"
-                    placeholder="Pega aquí la URL o ID de la noticia..."
+                    placeholder="Pega aquí la URL de la noticia..."
                     value={identificador}
                     onChange={(e) => setIdentificador(e.target.value)}
                     className="w-full pl-10 pr-3 py-3 bg-gray-100 border border-gray-300 rounded-lg
