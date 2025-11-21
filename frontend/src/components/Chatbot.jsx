@@ -297,7 +297,7 @@ const Chatbot = ({ noticiaContexto }) => {
                 </div>
             )}
 
-            <h3 style={styles.title}>Pregúntale a Hemingwai</h3>
+            <h3 style={styles.title}>Pregúntale a la IA más información</h3>
             <div style={styles.messagesContainer}>
                 {mensajes.map((msg, index) => {
                     const isUser = msg.role === 'user';

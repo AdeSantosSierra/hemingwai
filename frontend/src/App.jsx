@@ -173,6 +173,7 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
+  const [mostrarRadarGrande, setMostrarRadarGrande] = useState(false);
 
   // Estado inicial
   if (estado === 'idle') {
@@ -242,7 +243,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   };
 
   const datosRadar = Object.keys(nombresSecciones).map((key) => ({
-    seccion: nombresSecciones[key].split(' ').slice(0, 2).join(' '),
+    seccion: nombresSecciones[key],
     puntuacion: resultado.puntuacion_individual?.[key] ?? 0
   }));
 
@@ -260,137 +261,153 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     <div className="space-y-6">
       {/* Información básica */}
       <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-4">
-          <h3 className="text-2xl font-bold text-gray-900 flex-1">
-            {resultado.titulo}
-          </h3>
-          <div className="md:ml-4 text-center">
-            <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
-              Puntuación general
-            </div>
-            <div className="flex items-center gap-3 justify-center">
-              <span className="text-4xl">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-3 h-3 rounded-full ${
-                    resultado.puntuacion >= 75
-                      ? 'bg-green-500'
-                      : resultado.puntuacion >= 60
-                      ? 'bg-yellow-500'
-                      : resultado.puntuacion >= 45
-                      ? 'bg-orange-500'
-                      : 'bg-red-500'
-                  }`}
-                />
-                <span className="text-3xl font-extrabold text-lima">
-                  {resultado.puntuacion ?? 'N/A'}
+      <div className="flex flex-col md:flex-row gap-4 md:items-center">
+
+          {/* Columna izquierda: Título y Metadatos */}
+          <div className="flex-1">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              {resultado.titulo}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="font-semibold text-gray-600">
+                  Fecha de publicación:
                 </span>
+                <p className="text-gray-900">
+                  {resultado.fecha_publicacion
+                    ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
+                    : 'N/A'}
+                </p>
+              </div>
+              <div>
+                <span className="font-semibold text-gray-600">Fuente:</span>
+                <p className="text-gray-900">{resultado.fuente || 'N/A'}</p>
+              </div>
+              <div className="col-span-1 sm:col-span-2">
+                <span className="font-semibold text-gray-600">Autor(es):</span>
+                <p className="text-gray-900">
+                  {resultado.autor && resultado.autor.length > 0
+                    ? resultado.autor.join(', ')
+                    : 'N/A'}
+                </p>
               </div>
             </div>
           </div>
+
+          {/* Columna derecha: Puntuación arriba, radar debajo */}
+          <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
+
+
+            {/* Puntuación General */}
+            <div className="text-center">
+              <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                Puntuación general
+              </div>
+              <div className="flex flex-col items-center justify-center">
+                <span className="text-4xl mb-1">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      resultado.puntuacion >= 75
+                        ? 'bg-green-500'
+                        : resultado.puntuacion >= 60
+                        ? 'bg-yellow-500'
+                        : resultado.puntuacion >= 45
+                        ? 'bg-orange-500'
+                        : 'bg-red-500'
+                    }`}
+                  />
+                  <span className="text-3xl font-extrabold text-lima">
+                    {resultado.puntuacion ?? 'N/A'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mini Radar (Botón) */}
+            {resultado.puntuacion_individual && (
+              <div className="flex flex-col items-center">
+                <button
+                  onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
+                  className="w-24 h-24 rounded-lg hover:bg-gray-50 transition-colors p-1 border border-transparent hover:border-gray-200"
+                  title="Ver desglose de criterios"
+                >
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
+                      <PolarGrid stroke="#E5E7EB" />
+                      <PolarAngleAxis
+                        dataKey="seccion"
+                        tick={false}
+                        axisLine={false}
+                      />
+                      <PolarRadiusAxis
+                        angle={90}
+                        domain={[0, 100]}
+                        tick={{
+                          fill: '#6B7280',   
+                          fontSize: 0       
+                        }}
+                        tickLine={false}      
+                      />
+                      <Radar
+                        name="Puntuación"
+                        dataKey="puntuacion"
+                        stroke="#D2D209"
+                        fill="#D2D209"
+                        fillOpacity={0.5}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="font-semibold text-gray-600">
-              Fecha de publicación:
-            </span>
-            <p className="text-gray-900">
-              {resultado.fecha_publicacion
-                ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
-                : 'N/A'}
-            </p>
-          </div>
-          <div>
-            <span className="font-semibold text-gray-600">Fuente:</span>
-            <p className="text-gray-900">{resultado.fuente || 'N/A'}</p>
-          </div>
-          <div className="col-span-2">
-            <span className="font-semibold text-gray-600">Autor(es):</span>
-            <p className="text-gray-900">
-              {resultado.autor && resultado.autor.length > 0
-                ? resultado.autor.join(', ')
-                : 'N/A'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Radar chart */}
-      {resultado.puntuacion_individual && (
-        <div className="bg-white/95 shadow-xl rounded-xl p-6">
-          <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
-            Análisis visual de calidad
-          </h4>
-          <div style={{ width: '100%', height: 360 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <RadarChart data={datosRadar}>
-                <PolarGrid stroke="#E5E7EB" />
-                <PolarAngleAxis
-                  dataKey="seccion"
-                  tick={{ fill: '#111827', fontSize: 12 }}
-                />
-                <PolarRadiusAxis
+        {/* Radar chart Expandido */}
+        {mostrarRadarGrande && resultado.puntuacion_individual && (
+          <div className="mt-6 border-t border-gray-100 pt-6">
+            <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
+              Análisis visual de calidad
+            </h4>
+            <div style={{ width: '100%', height: 400 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart 
+                  data={datosRadar} 
+                  outerRadius="100%" 
+                  margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
+                >
+                  <PolarGrid stroke="#E5E7EB" />
+                  <PolarAngleAxis
+                    dataKey="seccion"
+                    tick={{ fill: '#111827', fontSize: 14 }}
+                  />
+                  <PolarRadiusAxis
                   angle={90}
                   domain={[0, 100]}
-                  tick={{ fill: '#6B7280' }}
-                />
-                <Radar
-                  name="Puntuación"
-                  dataKey="puntuacion"
-                  stroke="#D2D209"
-                  fill="#D2D209"
-                  fillOpacity={0.5}
-                />
-              </RadarChart>
-            </ResponsiveContainer>
+                  tick={{
+                    fill: '#6B7280',   // color de las etiquetas
+                    fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
+                  }}
+                  tickLine={false}
+                  
+                  />
+
+                  <Radar
+                    name="Puntuación"
+                    dataKey="puntuacion"
+                    stroke="#D2D209"
+                    fill="#D2D209"
+                    fillOpacity={0.5}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Valoraciones individuales */}
-      <div className="bg-white/95 shadow-xl rounded-xl p-6">
-        <h4 className="text-xl font-bold text-gray-900 mb-4">
-          Valoraciones por sección
-        </h4>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {resultado.puntuacion_individual &&
-            Object.keys(nombresSecciones).map((key) => {
-              const puntuacion = resultado.puntuacion_individual?.[key];
-              const valoracion = resultado.valoraciones?.[key];
-
-              return (
-                <button
-                  key={key}
-                  onClick={() =>
-                    abrirModal(
-                      nombresSecciones[key],
-                      valoracion || 'Contenido no disponible'
-                    )
-                  }
-                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
-                  disabled={!valoracion}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-gray-800">
-                      {nombresSecciones[key]}
-                    </span>
-                    {puntuacion ? (
-                      <PuntuacionIndicador puntuacion={puntuacion} />
-                    ) : (
-                      <span className="text-gray-400 text-xs">N/A</span>
-                    )}
-                  </div>
-                  {!valoracion && (
-                    <p className="text-xs text-gray-400 mt-2">No disponible</p>
-                  )}
-                </button>
-              );
-            })}
-        </div>
+        )}
       </div>
 
-      {/* Otras secciones */}
+      {/* Otras secciones (Análisis adicional) */}
       <div className="bg-white/95 shadow-xl rounded-xl p-6">
         <h4 className="text-xl font-bold text-gray-900 mb-4">
           Análisis adicional
@@ -465,22 +482,50 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             )}
           </button>
 
-          <button
-            onClick={() =>
-              abrirModal(
-                'Texto de referencia',
-                resultado.texto_referencia_diccionario,
-                'diccionario'
-              )
-            }
-            disabled={!resultado.texto_referencia_diccionario}
-            className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white col-span-1 md:col-span-2"
-          >
-            <div className="font-semibold text-gray-800">📝 Texto de referencia</div>
-            {!resultado.texto_referencia_diccionario && (
-              <p className="text-xs text-gray-400 mt-1">No disponible</p>
-            )}
-          </button>
+          
+            
+        </div>
+      </div>
+
+      {/* Valoraciones individuales - MOVIDO ABAJO */}
+      <div className="bg-white/95 shadow-xl rounded-xl p-6">
+        <h4 className="text-xl font-bold text-gray-900 mb-4">
+          Valoraciones por sección
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {resultado.puntuacion_individual &&
+            Object.keys(nombresSecciones).map((key) => {
+              const puntuacion = resultado.puntuacion_individual?.[key];
+              const valoracion = resultado.valoraciones?.[key];
+
+              return (
+                <button
+                  key={key}
+                  onClick={() =>
+                    abrirModal(
+                      nombresSecciones[key],
+                      valoracion || 'Contenido no disponible'
+                    )
+                  }
+                  className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima hover:shadow-lg transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+                  disabled={!valoracion}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-semibold text-gray-800">
+                      {nombresSecciones[key]}
+                    </span>
+                    {puntuacion ? (
+                      <PuntuacionIndicador puntuacion={puntuacion} />
+                    ) : (
+                      <span className="text-gray-400 text-xs">N/A</span>
+                    )}
+                  </div>
+                  {!valoracion && (
+                    <p className="text-xs text-gray-400 mt-2">No disponible</p>
+                  )}
+                </button>
+              );
+            })}
         </div>
       </div>
 
