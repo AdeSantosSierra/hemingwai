@@ -294,6 +294,7 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                 throw new Error(data.error || 'Contraseña incorrecta');
             }
         } catch (err) {
+            console.error(err);
             setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
         } finally {
             setVerifying(false);
