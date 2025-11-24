@@ -293,6 +293,19 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                       : 'N/A'}
                   </p>
                 </div>
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="font-semibold text-gray-600">Resumen valoración:</span>
+                  <p className="text-gray-900">
+                    {resultado.resumen_valoracion
+                    }
+                  </p>
+                </div>
+                <div className="col-span-1 sm:col-span-2">
+                  <span className="font-semibold text-gray-600">Resumen valoración del titular:</span>
+                  <p className="text-gray-900">
+                    {resultado.resumen_valoracion_titular}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -417,7 +430,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         {/* Otras secciones (Análisis adicional) */}
         <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-4">
-            Análisis adicional
+            Análisis general
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <motion.button
@@ -429,7 +442,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               disabled={!resultado.valoracion_general}
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
             >
-              <div className="font-semibold text-gray-800">📊 Valoración general</div>
+              <div className="font-semibold text-gray-800">Valoración general</div>
               {!resultado.valoracion_general && (
                 <p className="text-xs text-gray-400 mt-1">No disponible</p>
               )}
@@ -448,7 +461,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
             >
               <div className="font-semibold text-gray-800">
-                📰 Valoración del titular
+                Valoración del titular
               </div>
               {!resultado.valoracion_titular?.titular && (
                 <p className="text-xs text-gray-400 mt-1">No disponible</p>
@@ -465,7 +478,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
             >
               <div className="font-semibold text-gray-800">
-                🔍 Análisis de Fact-Checking
+                Análisis de Fact-Checking
               </div>
               {!resultado.fact_check_analisis && (
                 <p className="text-xs text-gray-400 mt-1">No disponible</p>
@@ -489,7 +502,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
             >
               <div className="font-semibold text-gray-800">
-                📚 Fuentes de Fact-Checking
+                Fuentes de Fact-Checking
               </div>
               {(!resultado.fact_check_fuentes ||
                 resultado.fact_check_fuentes.length === 0) && (
