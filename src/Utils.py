@@ -132,6 +132,7 @@ class Utils:
         Evitar hablar de lenguaje neutral. Solo se habla de lenguaje imparcial, ecuánime o adecuado. 
         Evitar expresiones como "noticias objetivas". Mejor utilizar relatos veraces y noticias verdaderas.  
         Usar expresiones como "fundadas en hechos o datos que "factual" 
+        No puedes mencionar en tu análisis a Claude ni a ti mismo como autor del análisis.
         Evita el uso de expresiones como: "hechos verficables". Eso es una redundancia. Utilizar solo la expresión o palabra "Hechos" o "datos" es suficiente. 
         ¡MUY IMPORTANTE! Evita las expresiones "hecho objetivo", "dato objetivo" "interpretación subjetiva", "verdad objetiva", "neutral". Utilizar, en cambio solo "hecho", "dato", "interpretación", "verdad", "imparcial", "ecuánime", "adecuado". 
 
@@ -194,7 +195,7 @@ class Utils:
                     {historial_completo}
 
                     Evalúa la respuesta más reciente de ChatGPT sobre el criterio '{nombre_criterio}' para la noticia titulada: {titulo}.
-                    Justifica si es adecuada para aprobarla o si necesita mejoras. 
+                    Justifica si es adecuada para aprobarla o si necesita mejoras. No menciones a ChatGPT ni a ti mismo como autores del análisis.
                     Si necesita mejoras, sugiere cambios específicos que ChatGPT debe implementar.
                     """}]
                 ).content
@@ -207,6 +208,7 @@ class Utils:
                 Mejora tu respuesta sobre la noticia titulada: {titulo}, basándote en esta evaluación realizada por Claude:
                 {evaluacion_claude}
 
+                No menciones a Claude ni a ti mismo como autores del análisis.
                 Respuesta anterior de ChatGPT: {historial[-2]['contenido']}
                 """
                 salida_gpt_mejorada = cliente_openai.chat.completions.create(

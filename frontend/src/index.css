@@ -10,9 +10,14 @@
   * REGLAS GLOBALES (Opcional, pero bueno para la fuente)
   *   ------ */
  @layer base {
-   /* Usar Inter como fuente principal */
+   /* Usar Arimo como fuente principal */
    html {
-     font-family: 'Inter', sans-serif;
+     font-family: 'Arimo', sans-serif;
+   }
+   
+   /* Usar SUSE para todos los headings por defecto */
+   h1, h2, h3, h4, h5, h6 {
+     font-family: 'SUSE', sans-serif;
    }
  }
  
@@ -20,7 +25,7 @@
  body {
    margin: 0;
    min-height: 100vh;
-   background-color: #0A2342; /* Azul oscuro */
+   background-color: #0A2342;
  }
  
  @layer utilities {
@@ -34,7 +39,7 @@
      border-color: #d2d209;
    }
    .hover\:bg-lima-dark:hover {
-    background-color: #b8b808; /* Un poco más oscuro para el hover */
+    background-color: #d2d209; /* Un poco más oscuro para el hover */
   }
  }
  

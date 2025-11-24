@@ -58,15 +58,15 @@ const renderMarkdown = (text) => {
 };
 // ----------------------------
 
-// Estilos con la paleta corporativa (Azul Oscuro y Lima)
+// Estilos con la paleta corporativa (Azul Oscuro y #d2d209)
 const styles = {
     chatbotContainer: {
-        border: '1px solid #d2d209', // Borde lima
+        border: '1px solid #d2d209', // Borde #d2d209
         borderRadius: '10px',
         padding: '8px',
         marginTop: '0',
         fontFamily: 'Inter, sans-serif', 
-        backgroundColor: '#0A2342', // Azul oscuro de fondo
+        backgroundColor: '#001a33', // Azul oscuro de fondo
         color: '#ffffff', // Texto base blanco
         // maxWidth eliminada para que llene la columna
         width: '100%',
@@ -79,9 +79,9 @@ const styles = {
     title: {
         margin: '0 0 20px 0',
         paddingBottom: '15px',
-        borderBottom: '1px solid #d2d209', // Línea separadora lima
+        borderBottom: '1px solid #d2d209', // Línea separadora #d2d209
         textAlign: 'center',
-        color: '#d2d209', // Título en lima
+        color: '#d2d209', // Título en #d2d209
         fontSize: '1.25rem',
     },
     messagesContainer: {
@@ -102,14 +102,14 @@ const styles = {
         wordWrap: 'break-word',
     },
     userMessage: {
-        backgroundColor: '#d2d209', // Fondo lima
-        color: '#0A2342', // Texto oscuro para contraste
+        backgroundColor: '#d2d209', // Fondo #d2d209
+        color: '#001a33', // Texto oscuro para contraste
         alignSelf: 'flex-end',
         marginLeft: 'auto',
     },
     botMessage: {
         backgroundColor: '#ffffff', // Fondo blanco
-        color: '#0A2342', // Texto oscuro
+        color: '#001a33', // Texto oscuro
         alignSelf: 'flex-start',
     },
     form: {
@@ -128,8 +128,8 @@ const styles = {
         padding: '10px 20px',
         borderRadius: '20px',
         border: 'none',
-        backgroundColor: '#d2d209', // Botón lima
-        color: '#0A2342', // Texto botón oscuro
+        backgroundColor: '#d2d209', // Botón #d2d209
+        color: '#001a33', // Texto botón oscuro
         cursor: 'pointer',
         fontWeight: 'bold',
     },
@@ -145,7 +145,7 @@ const styles = {
     },
     loading: {
         textAlign: 'center',
-        color: '#d2d209', // "Pensando..." en lima
+        color: '#d2d209', // "Pensando..." en #d2d209
     },
     // Estilos para la pantalla de bloqueo
     lockScreen: {

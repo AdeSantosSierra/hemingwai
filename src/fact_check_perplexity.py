@@ -190,7 +190,7 @@ if __name__ == "__main__":
         print(f"Error al serializar a JSON: {e}")
         sys.exit(1)
 
-    # --- Imprimir el análisis en la terminal para mantener la retroalimentación ---
+    # --- Imprimir el análisis en la terminal para mantener la retroa#d2d209ntación ---
     analisis_texto = resultado_dict.get("analisis", "No se encontró análisis en el resultado.")
     print("\n" + "="*50)
     print(" ANÁLISIS DE VERACIDAD DE LA NOTICIA")

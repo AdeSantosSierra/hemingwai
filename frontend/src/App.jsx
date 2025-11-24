@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import logo from './assets/logo2.png';
 import {
   Search,
@@ -27,6 +27,10 @@ function App() {
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [history, setHistory] = useState([]);
+  
+  // State for History Dropdown
+  const [showHistory, setShowHistory] = useState(false);
+  const historyRef = useRef(null);
 
   // Cargar historial desde sessionStorage al inicio
   useEffect(() => {
@@ -44,6 +48,25 @@ function App() {
   useEffect(() => {
     sessionStorage.setItem('analysisHistory', JSON.stringify(history));
   }, [history]);
+
+  // Click outside handler for History dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (historyRef.current && !historyRef.current.contains(event.target)) {
+        setShowHistory(false);
+      }
+    }
+    
+    if (showHistory) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showHistory]);
 
   const addToHistory = (item) => {
     setHistory((prev) => {
@@ -127,6 +150,7 @@ function App() {
   };
 
   const handleHistorySelect = (item) => {
+      setShowHistory(false);
       // Smooth scroll si es necesario (aunque al cargar nuevos resultados el componente ResultadoBusqueda hace scroll automático o reemplaza contenido)
       window.scrollTo({ top: 0, behavior: 'smooth' });
       handleBuscarNoticia(item.query);
@@ -154,9 +178,23 @@ function App() {
           </div>
         </div>
         <div className="flex items-center gap-4 text-gray-200">
-          <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Historial">
-            <History className="w-5 h-5" />
-          </button>
+          {/* History Button and Dropdown */}
+          <div className="relative" ref={historyRef}>
+            <button 
+              className={`hover:text-lima transition-colors transform hover:scale-110 duration-200 ${showHistory ? 'text-lima' : ''}`}
+              title="Historial"
+              onClick={() => setShowHistory(!showHistory)}
+            >
+              <History className="w-5 h-5" />
+            </button>
+            
+            {showHistory && (
+              <div className="absolute right-0 mt-2 z-50 bg-[#071A31] border border-gray-700 rounded-lg shadow-2xl overflow-hidden">
+                <HistoryPanel history={history} onSelect={handleHistorySelect} />
+              </div>
+            )}
+          </div>
+
           <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Ayuda">
             <HelpCircle className="w-5 h-5" />
           </button>
@@ -191,7 +229,7 @@ function App() {
 
           {/* Tarjeta de búsqueda */}
           <section className="mb-2">
-            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lime-500/20">
+            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lima-500/20">
               <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
                 <Globe2 className="w-5 h-5 text-lima" />
                 Analizar noticia desde URL
@@ -207,7 +245,7 @@ function App() {
                     onChange={(e) => setIdentificador(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleBuscarNoticia()}
                     className="w-full pl-10 pr-3 py-3 bg-gray-100 border border-gray-300 rounded-lg
-                               focus:ring-2 focus:ring-lime-300 focus:border-lima
+                               focus:ring-2 focus:ring-lima-300 focus:border-lima
                                transition shadow-sm text-gray-900 text-sm"
                     disabled={estadoBusqueda === 'loading'}
                   />
@@ -218,7 +256,7 @@ function App() {
                   disabled={estadoBusqueda === 'loading'}
                   className="w-full flex items-center justify-center px-4 py-3 
                              bg-lima text-[#0A2342] font-bold rounded-lg 
-                             hover:bg-lime-400 hover:scale-[1.01] active:scale-[0.99]
+                             hover:bg-[#0A2342] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
                              transition-all duration-200 
                              shadow-md disabled:bg-gray-400 disabled:text-gray-100 disabled:cursor-not-allowed"
                 >
@@ -230,11 +268,6 @@ function App() {
                 </button>
               </div>
             </div>
-          </section>
-
-          {/* Historial */}
-          <section>
-              <HistoryPanel history={history} onSelect={handleHistorySelect} />
           </section>
 
           {/* Resultados */}

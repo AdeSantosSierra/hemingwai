@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Arimo', 'sans-serif'], // Arimo por defecto para texto
+        display: ['SUSE', 'sans-serif'], // SUSE para títulos
+      },
       colors: {
         lima: '#d2d209',
         'lima-dark': '#baba08',

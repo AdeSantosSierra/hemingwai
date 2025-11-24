@@ -415,7 +415,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
 
         {/* Otras secciones (Análisis adicional) */}
-        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-4">
             Análisis adicional
           </h4>
@@ -500,7 +500,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
 
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
-        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-2">
             Pregúntale al chatbot
           </h4>
@@ -512,7 +512,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 return (
                   <motion.button
                     key={key}
-                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                     onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
                     className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left bg-white flex items-center justify-between group"
                   >
@@ -527,7 +527,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
 
         {/* Valoraciones individuales */}
-        <div className="bg-white/95 shadow-xl rounded-xl p-6">
+        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-4">
             Valoraciones por sección
           </h4>
@@ -540,7 +540,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 return (
                   <motion.button
                     key={key}
-                    whileHover={{ scale: 1.02 }}
+                    whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() =>
                       abrirModal(
