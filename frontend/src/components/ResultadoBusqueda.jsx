@@ -163,6 +163,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [mostrarRadarGrande, setMostrarRadarGrande] = useState(false);
+  const [mostrarResumen, setMostrarResumen] = useState(false);
   
   // Referencia al chatbot
   const chatbotRef = useRef(null);
@@ -263,7 +264,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
       <div className="space-y-6">
         {/* Información básica */}
         <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
-        <div className="flex flex-col md:flex-row gap-4 md:items-center">
+        <div className="flex flex-col md:flex-row gap-4 md:items-start">
 
             {/* Columna izquierda: Título y Metadatos */}
             <div className="flex-1">
@@ -293,19 +294,42 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                       : 'N/A'}
                   </p>
                 </div>
-                <div className="col-span-1 sm:col-span-2">
-                  <span className="font-semibold text-gray-600">Resumen valoración:</span>
-                  <p className="text-gray-900">
-                    {resultado.resumen_valoracion
-                    }
-                  </p>
+                {/* Botón Resumen del análisis */}
+                <div className="col-span-1 sm:col-span-2 mt-2">
+                  <button
+                    onClick={() => setMostrarResumen(!mostrarResumen)}
+                    className="bg-[#0A2342] text-lima px-4 py-2 rounded-md shadow-md hover:bg-[#0f2e52] transition-colors font-medium text-sm"
+                  >
+                    Resumen del análisis
+                  </button>
                 </div>
-                <div className="col-span-1 sm:col-span-2">
-                  <span className="font-semibold text-gray-600">Resumen valoración del titular:</span>
-                  <p className="text-gray-900">
-                    {resultado.resumen_valoracion_titular}
-                  </p>
-                </div>
+
+                {/* Dropdown Resumen */}
+                {mostrarResumen && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="col-span-1 sm:col-span-2 space-y-4 overflow-hidden border-t border-gray-100 pt-4 mt-2"
+                  >
+                    <div>
+                      <span className="font-semibold text-gray-600 block mb-1">
+                        Resumen valoración:
+                      </span>
+                      <p className="text-gray-900 leading-relaxed">
+                        {resultado.resumen_valoracion || 'No disponible'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="font-semibold text-gray-600 block mb-1">
+                        Resumen valoración del titular:
+                      </span>
+                      <p className="text-gray-900 leading-relaxed">
+                        {resultado.resumen_valoracion_titular || 'No disponible'}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
               </div>
             </div>
 
