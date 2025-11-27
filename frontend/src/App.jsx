@@ -229,9 +229,23 @@ function App() {
 
           {/* Tarjeta de búsqueda */}
           <section className="mb-2">
-            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lima-500/20">
-              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
-                <Globe2 className="w-5 h-5 text-lima" />
+            <div
+              className={`bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 max-w-5xl mx-auto transition-all duration-500 hover:shadow-lima-500/20 ${
+                estadoBusqueda === 'idle' ? 'py-16 sm:py-24' : 'py-6'
+              }`}
+            >
+              <h2
+                className={`font-semibold mb-5 text-[#0A2342] flex items-center gap-2 transition-all duration-500 ${
+                  estadoBusqueda === 'idle'
+                    ? 'text-2xl sm:text-3xl justify-center mb-10'
+                    : 'text-lg sm:text-xl'
+                }`}
+              >
+                <Globe2
+                  className={`text-lima transition-all duration-500 ${
+                    estadoBusqueda === 'idle' ? 'w-8 h-8' : 'w-5 h-5'
+                  }`}
+                />
                 Analizar noticia desde URL
               </h2>
 
@@ -271,18 +285,20 @@ function App() {
           </section>
 
           {/* Resultados */}
-          <section className="mb-8">
-            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#0A2342] flex items-center gap-2">
-                <Code className="w-5 h-5 text-lima" />
-                Resultado del análisis
-              </h3>
-              <ResultadoBusqueda
-                estado={estadoBusqueda}
-                resultado={resultadoBusqueda}
-              />
-            </div>
-          </section>
+          {estadoBusqueda !== 'idle' && (
+            <section className="mb-8 animate-fade-in">
+              <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#0A2342] flex items-center gap-2">
+                  <Code className="w-5 h-5 text-lima" />
+                  Resultado del análisis
+                </h3>
+                <ResultadoBusqueda
+                  estado={estadoBusqueda}
+                  resultado={resultadoBusqueda}
+                />
+              </div>
+            </section>
+          )}
 
           {/* Footer */}
           <footer className="mt-6 mb-2">
