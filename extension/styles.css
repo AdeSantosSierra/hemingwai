@@ -1,0 +1,114 @@
+/* Estilos para la extensión HemingwAI */
+
+/* Badge Circular */
+.hemingwai-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: #fff;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 9999;
+    position: relative;
+    transition: transform 0.2s ease;
+    user-select: none;
+    line-height: 1; /* Reset line-height to ensure centering */
+}
+
+.hemingwai-badge:hover {
+    transform: scale(1.1);
+}
+
+/* Colores del Badge */
+.hemingwai-badge-high { background-color: #28a745; } /* Verde */
+.hemingwai-badge-medium { background-color: #ffc107; color: #333; } /* Amarillo */
+.hemingwai-badge-low { background-color: #dc3545; } /* Rojo */
+
+/* Contenedor del Popover/Acordeón */
+.hemingwai-popover {
+    display: none; /* Oculto por defecto */
+    position: absolute;
+    /* La posición se calculará o ajustará en JS/CSS relativo al padre */
+    top: 100%;
+    left: 0;
+    width: 300px;
+    background-color: #0A2342; /* Azul Oscuro Corporativo */
+    color: #fff;
+    border-left: 4px solid #d2d209; /* Lima Corporativo */
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 10000;
+    font-family: sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-top: 8px;
+    text-align: left; /* Asegurar alineación izquierda del texto */
+    font-weight: normal; /* Reset font weight from H1 context */
+}
+
+/* Mostrar el popover */
+.hemingwai-popover.visible {
+    display: block;
+    animation: hemingwai-fade-in 0.2s ease-out;
+}
+
+/* Título dentro del popover */
+.hemingwai-popover h4 {
+    margin: 0 0 10px 0;
+    color: #d2d209; /* Lima */
+    font-size: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+    font-family: sans-serif;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+/* Secciones del contenido */
+.hemingwai-section {
+    margin-bottom: 12px;
+}
+
+.hemingwai-section:last-child {
+    margin-bottom: 0;
+}
+
+.hemingwai-label {
+    font-weight: bold;
+    color: #ccc;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.hemingwai-text {
+    color: #fff;
+    font-size: 13px;
+}
+
+/* Enlaces */
+.hemingwai-link {
+    color: #d2d209;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.hemingwai-link:hover {
+    text-decoration: underline;
+}
+
+/* Animación simple */
+@keyframes hemingwai-fade-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
