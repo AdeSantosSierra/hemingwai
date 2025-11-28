@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   RadarChart,
   PolarGrid,
@@ -254,14 +255,15 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start"
-    >
-      {/* Columna Izquierda: Contenido del análisis */}
-      <div className="space-y-6">
+    <>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start"
+      >
+        {/* Columna Izquierda: Contenido del análisis */}
+        <div className="space-y-6">
         {/* Información básica */}
         <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
         <div className="flex flex-col md:flex-row gap-4 md:items-start">
@@ -608,24 +610,25 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
       </div>
 
-      {/* Columna Derecha: Chatbot Sticky */}
-      <div className="md:sticky md:top-4">
-        {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
-            <div className="bg-white/95 shadow-xl rounded-xl p-6">
-                <Chatbot 
-                    ref={chatbotRef}
-                    noticiaContexto={{
-                        titulo: resultado.titulo,
-                        cuerpo: resultado.cuerpo,
-                        valoraciones: resultado.valoraciones,
-                    }}
-                />
-            </div>
-        )}
-      </div>
+        {/* Columna Derecha: Chatbot Sticky */}
+        <div className="md:sticky md:top-4">
+          {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
+              <div className="bg-white/95 shadow-xl rounded-xl p-6">
+                  <Chatbot 
+                      ref={chatbotRef}
+                      noticiaContexto={{
+                          titulo: resultado.titulo,
+                          cuerpo: resultado.cuerpo,
+                          valoraciones: resultado.valoraciones,
+                      }}
+                  />
+              </div>
+          )}
+        </div>
+      </motion.div>
 
-      {/* Modal - Se coloca fuera de la estructura de columnas para que cubra todo */}
-      {mostrarModal && seccionSeleccionada && (
+      {/* Modal - Renderizado en Portal para evitar conflictos con transformaciones CSS */}
+      {mostrarModal && seccionSeleccionada && createPortal(
         <div
           className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
           onClick={cerrarModal}
@@ -672,9 +675,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               </div>
             </div>
           </motion.div>
-        </div>
+        </div>,
+        document.body
       )}
-    </motion.div>
+    </>
   );
 };
 
