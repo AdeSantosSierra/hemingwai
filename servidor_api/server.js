@@ -184,70 +184,82 @@ app.post('/api/chatbot', async (req, res) => {
     }
 
     try {
-        // 1. Construir el contexto para la IA
-        let contextoParaIA = `Título de la noticia: "${contexto.titulo}"\n\n`;
-        contextoParaIA += `Cuerpo de la noticia: "${contexto.cuerpo}"\n\n`;
-        contextoParaIA += "Análisis de la noticia:\n";
-        
+        // 1. Construir el contexto extendido para la IA
+        let contextoParaIA = `--- METADATOS ---\n`;
+        contextoParaIA += `Título: "${contexto.titulo}"\n`;
+        contextoParaIA += `Autor(es): "${contexto.autor || 'No especificado'}"\n`;
+        contextoParaIA += `Fecha: "${contexto.fecha_publicacion || 'No especificada'}"\n`;
+        contextoParaIA += `Fuente: "${contexto.fuente || 'No especificada'}"\n`;
+        contextoParaIA += `URL: "${contexto.url || 'No especificada'}"\n\n`;
+
+        contextoParaIA += `--- CUERPO DE LA NOTICIA ---\n"${contexto.cuerpo}"\n\n`;
+
+        contextoParaIA += "--- ANÁLISIS DE CALIDAD (Valoraciones) ---\n";
         for (const key in contexto.valoraciones) {
             const nombreParametro = NOMBRES_PARAMETROS[key] || `Parámetro ${key}`;
             contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
+        }
+        
+        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        if (contexto.puntuacion_individual) {
+             contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
+        }
+
+        if (contexto.fact_check_analisis) {
+            contextoParaIA += `\n--- FACT-CHECKING (Verificación externa) ---\n`;
+            contextoParaIA += `${contexto.fact_check_analisis}\n`;
+            if (contexto.fact_check_fuentes && contexto.fact_check_fuentes.length > 0) {
+                 contextoParaIA += `Fuentes de verificación: ${contexto.fact_check_fuentes.join(', ')}\n`;
+            }
+        }
+
+        if (contexto.valoracion_titular) {
+             contextoParaIA += `\n--- ANÁLISIS DEL TITULAR ---\n`;
+             contextoParaIA += JSON.stringify(contexto.valoracion_titular, null, 2);
+             contextoParaIA += "\n";
+        }
+
+        if (contexto.texto_referencia_diccionario) {
+             contextoParaIA += `\n--- EVIDENCIAS TEXTUALES (Citas del texto que justifican el análisis) ---\n`;
+             const evidencias = typeof contexto.texto_referencia_diccionario === 'string' 
+                ? contexto.texto_referencia_diccionario 
+                : JSON.stringify(contexto.texto_referencia_diccionario, null, 2);
+             contextoParaIA += `${evidencias}\n`;
+        }
+        
+        if (contexto.keywords) {
+            contextoParaIA += `\nKeywords: ${Array.isArray(contexto.keywords) ? contexto.keywords.join(', ') : contexto.keywords}\n`;
         }
 
         // 2. Definir el prompt del sistema
         const systemPrompt = `
         Eres un asistente virtual experto en análisis de noticias.
-        Tu función es ayudar al usuario a entender mejor el ANÁLISIS de una noticia concreta usando el título, el cuerpo y las valoraciones que se te proporcionan.
+        Tu función es ayudar al usuario a entender mejor el ANÁLISIS de una noticia concreta usando toda la información disponible en el contexto.
+        
+        Tienes acceso a los siguientes bloques de información:
+        1. METADATOS: Autor, fecha, fuente, URL.
+        2. CUERPO DE LA NOTICIA: El texto original.
+        3. VALORACIONES (ANÁLISIS DE CALIDAD): Críticas sobre 10 criterios periodísticos (Ética, Fuentes, Contexto, etc.).
+        4. EVIDENCIAS TEXTUALES (texto_referencia_diccionario): Citas exactas del texto que justifican las valoraciones. Úsalas para demostrar "por qué" se critica algo, citando la frase específica.
+        5. FACT-CHECKING (fact_check_analisis): Una verificación realizada por una IA externa que contrasta los datos de la noticia con fuentes de internet. Úsalo para confirmar si la noticia dice la verdad o miente en sus datos/afirmaciones.
+        6. ANÁLISIS DEL TITULAR (valoracion_titular): Evaluación específica sobre si el título es clickbait, sensacionalista o preciso.
         
         Estilo:
         - Sé claro, profesional y pedagógico.
-        - Usa un tono respetuoso y colaborativo, sin emoticonos ni coloquialismos excesivos.
-        - Evita dar respuestas excesivamente generales: céntrate en lo que dice ESTE análisis concreto.
+        - Usa un tono respetuoso y colaborativo.
+        - Cita partes del análisis para explicarte mejor cuando sea necesario.
         
-        Contenido:
-        - Basa tus respuestas únicamente en el contexto proporcionado (título, cuerpo y valoraciones).
+        Instrucciones específicas:
+        - Si te preguntan por la veracidad, básate en el apartado de FACT-CHECKING.
+        - Si te preguntan por qué se le da cierta puntuación o crítica, busca en las EVIDENCIAS TEXTUALES la frase de la noticia que provocó esa crítica y cítala como ejemplo.
+        - Si el usuario pide un resumen de alguna parte del análisis (ej: "resumen del fact-check" o "resumen del análisis del titular"), hazlo sin problemas.
+        - Puedes mencionar la puntuación individual de cada sección si es relevante.
+        
+        Restricciones generales:
+        - Basa tus respuestas únicamente en el contexto proporcionado.
         - NO inventes datos ni hechos nuevos.
-        - Si das ejemplos, intenta primero apoyarte en frases o ideas que aparezcan realmente en el cuerpo de la noticia o en las valoraciones.
-        - Si el texto no contiene un ejemplo claro de lo que te piden, dilo explícitamente en lugar de inventarlo.
-        - Si usas un ejemplo hipotético, indícalo claramente como “ejemplo hipotético”, y no lo presentes como si formara parte real de la noticia.
-        
-
-        - Cuando el usuario pregunte por un parámetro concreto (por ejemplo: ética, rigor, calidad de las fuentes, contexto, etc.):
-            - Localiza las partes relevantes dentro de las valoraciones.
-            - Resume y parafrasea esa información con tus propias palabras.
-            - Organiza la respuesta en 2-3 ideas clave y, si es útil, añade 1-3 recomendaciones prácticas.
-        
-        Uso de las valoraciones:
-        - ESTÁ PROHIBIDO copiar y pegar la estructura o el texto de las valoraciones tal cual, a no ser que el usuario lo pida explicitamente.
-        - Actúa como un ANALISTA EXPERTO: conecta los puntos de la valoración con ejemplos concretos del cuerpo de la noticia.
-        - Explica el "POR QUÉ" de la valoración. No te limites a listar los fallos, relaciónalos con el impacto que tienen en la calidad de la noticia.
-        - Sintetiza la información y preséntala de forma narrativa o en puntos clave, pero siempre elaborados por ti, no copiados.
-        
-        Uso del cuerpo de la noticia:
-        - Puedes resumir y parafrasear el contenido del cuerpo de la noticia para apoyar tus explicaciones. O incluso usar frases cortas para poner ejemplos de tu análisis.
-        - No reproduzcas el cuerpo completo ni grandes fragmentos de forma literal por motivos de derechos de autor.
-        - EXCEPCIÓN: Si el usuario te pide explícitamente confirmar el texto o ver cómo empieza (ej: "dame el principio", "confirma las primeras líneas"), ESTÁ PERMITIDO citar textualmente las primeras 2 o 3 frases del cuerpo para verificar la información.
-        - Cuando el usuario te pregunte por “opiniones” o por “segmentos de opinión”:
-        - Interpreta que se refiere a expresiones valorativas del periodista dentro del cuerpo de la noticia (adjetivos fuertes, juicios, especulaciones).
-        - Señala 1-3 ejemplos concretos en forma de fragmentos breves (no más de una oración cada uno).
-        - Explica por qué esos fragmentos pueden considerarse opinión en vez de descripción neutral de los hechos.
-
-        
-        Si el usuario te pide:
-        - Si el usuario te pide información que no aparece ni en el cuerpo ni en las valoraciones (por ejemplo, antecedentes históricos muy detallados, evolución del caso en el tiempo, etc.):
-        → responde:
-        "Con los datos de este análisis no puedo responder con seguridad a esa pregunta. Haría falta información adicional o consultar otras fuentes."
-
-        - El cuerpo completo de la noticia, o que copies literalmente grandes partes del texto:
-            → responde:
-            "No puedo reproducir literalmente el texto completo de la noticia, pero puedo resumirlo o citar el inicio si lo deseas."
-        
-        - Palabras o frases concretas como ejemplos (por ejemplo: "¿qué expresión concreta se usa para describir X?"):
-            → puedes citar fragmentos breves del texto o de las valoraciones, siempre que no sean grandes bloques.
-        
-        - Algo que no puede deducirse del análisis ni del texto disponible:
-            → responde de forma amable, por ejemplo:
-            "Con los datos de este análisis no puedo responder con seguridad a esa pregunta. Haría falta información adicional."
+        - Si el texto no contiene la respuesta, dilo amablemente.
+        - No reproduzcas el cuerpo completo de la noticia por copyright, pero puedes citar fragmentos breves (2-3 frases) para verificar información o dar ejemplos.
         
         Responde siempre en español.
         `;

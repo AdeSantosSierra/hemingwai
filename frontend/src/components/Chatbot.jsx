@@ -389,6 +389,18 @@ Chatbot.propTypes = {
         titulo: PropTypes.string.isRequired,
         cuerpo: PropTypes.string.isRequired,
         valoraciones: PropTypes.object.isRequired,
+        fact_check_analisis: PropTypes.string,
+        fact_check_fuentes: PropTypes.array,
+        texto_referencia_diccionario: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+        valoracion_titular: PropTypes.object,
+        autor: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+        url: PropTypes.string,
+        fecha_publicacion: PropTypes.string,
+        fuente: PropTypes.string,
+        keywords: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+        tags: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+        puntuacion: PropTypes.number,
+        puntuacion_individual: PropTypes.object,
     }).isRequired,
 };
 

@@ -620,6 +620,18 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                           titulo: resultado.titulo,
                           cuerpo: resultado.cuerpo,
                           valoraciones: resultado.valoraciones,
+                          fact_check_analisis: resultado.fact_check_analisis,
+                          fact_check_fuentes: resultado.fact_check_fuentes,
+                          texto_referencia_diccionario: resultado.texto_referencia_diccionario,
+                          valoracion_titular: resultado.valoracion_titular,
+                          autor: resultado.autor,
+                          url: resultado.url,
+                          fecha_publicacion: resultado.fecha_publicacion,
+                          fuente: resultado.fuente,
+                          keywords: resultado.keywords,
+                          tags: resultado.tags,
+                          puntuacion: resultado.puntuacion,
+                          puntuacion_individual: resultado.puntuacion_individual,
                       }}
                   />
               </div>
