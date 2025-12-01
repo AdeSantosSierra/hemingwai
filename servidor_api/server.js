@@ -21,26 +21,9 @@ const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 const PYTHON_INTERPRETER = 'python'; 
 
 // Middleware
-// Configuración de CORS para permitir explícitamente el origen del frontend en Render y localhost para desarrollo
-const allowedOrigins = [
-    'https://hemingwai-frontend-5vw6.onrender.com', // Origen de producción
-    'http://localhost:5173',                        // Origen local común para Vite
-    'http://localhost:5174',                        // Origen local alternativo para Vite
-    'http://localhost:5175'                         // Origen local alternativo para Vite
-];
-
-const corsOptions = {
-    origin: (origin, callback) => {
-        // Permitir peticiones sin origen (ej. Postman) o si el origen está en la lista blanca
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-    optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions)); // Aplica la configuración de CORS
+// Configuración de CORS simplificada para permitir acceso desde cualquier origen (Frontend, Extensión, etc.)
+// TODO: En el futuro restringir esto a dominios específicos si es necesario.
+app.use(cors()); 
 app.use(express.json()); // Para parsear cuerpos de petición JSON
 
 // Ruta de health check para Render
