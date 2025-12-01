@@ -2,8 +2,8 @@
 // Detecta noticias y muestra su valoración de calidad.
 
 // Configuración
-//const API_ENDPOINT = "https://hemingwai.onrender.com/api/check-url";
-const API_ENDPOINT = "http://localhost:3000/api/check-url";
+const API_ENDPOINT = "https://hemingwai-backend-5vw6.onrender.com/api/check-url";
+// const API_ENDPOINT = "http://localhost:3000/api/check-url"; // Para desarrollo local
 
 /**
  * Detecta si la página actual es un artículo de noticias.
