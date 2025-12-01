@@ -264,10 +264,6 @@ app.post('/api/chatbot', async (req, res) => {
         Responde siempre en español.
         `;
         
-
-
-
-
         // 3. Llamar a la API de OpenAI
         const completion = await openai.chat.completions.create({
             model: "gpt-4o-mini",
@@ -296,6 +292,62 @@ app.post('/api/chatbot', async (req, res) => {
     } catch (error) {
         console.error("Error al llamar a la API de OpenAI:", error);
         res.status(500).json({ error: "No he podido procesar tu pregunta, por favor inténtalo de nuevo." });
+    }
+});
+
+/**
+ * POST /api/check-url
+ * Endpoint ligero para que la extensión del navegador compruebe si una URL ya ha sido analizada.
+ * body: { url: string }
+ */
+app.post('/api/check-url', async (req, res) => {
+    const { url } = req.body;
+
+    if (!url) {
+        return res.status(400).json({ error: "El campo 'url' es requerido." });
+    }
+
+    try {
+        // Reutilizamos la misma lógica que en /api/buscar,
+        // pero pasando directamente la URL como identificador.
+        const args = [url];
+        const resultado = await ejecutarScriptPython('buscar_noticia.py', args);
+
+        // El propio script devuelve un mensaje estándar cuando no encuentra nada
+        if (!resultado || resultado.mensaje === "Noticia no encontrada.") {
+            return res.status(404).json({ analizado: false });
+        }
+
+        // Intentamos mapear posibles nombres de campos de puntuación y resúmenes
+        const id = resultado._id || resultado.id || null;
+        const puntuacion =
+            resultado.puntuacion ??
+            resultado.puntuacion_global ??
+            resultado.puntuacionTotal ??
+            null;
+
+        const resumen_valoracion =
+            resultado.resumen_valoracion ||
+            resultado.resumen_global ||
+            null;
+
+        const resumen_valoracion_titular =
+            resultado.resumen_valoracion_titular ||
+            (resultado.valoracion_titular && resultado.valoracion_titular.resumen) ||
+            null;
+
+        return res.json({
+            analizado: true,
+            id,
+            puntuacion,
+            resumen_valoracion,
+            resumen_valoracion_titular
+        });
+    } catch (error) {
+        console.error('Error en /api/check-url:', error);
+        return res.status(500).json({
+            error: error.error || "Error interno del servidor al ejecutar script de búsqueda."
+        });
     }
 });
 

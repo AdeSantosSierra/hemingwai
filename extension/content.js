@@ -1,198 +1,193 @@
-// Función para generar un color aleatorio entre rojo, amarillo y verde
-function getColorForNumber(num) {
-    const red = Math.min(255, Math.floor((1 - num / 90) * 255)); // Rojo disminuye con el número
-    const green = Math.min(255, Math.floor((num / 90) * 255)); // Verde aumenta con el número
-    return `rgb(${red}, ${green}, 0)`; // Color entre rojo y verde
-}
+// HemingwAI Extension - Content Script
+// Detecta noticias y muestra su valoración de calidad.
 
-// Función para subrayar palabras aleatorias en el titular
-function underlineRandomWords(headlineText) {
-    const words = headlineText.split(" ");
-    const numWordsToUnderline = Math.floor(Math.random() * (words.length / 2)); // Número aleatorio de palabras a subrayar
-    const underlinedWords = new Set();
+// Configuración
+//const API_ENDPOINT = "https://hemingwai.onrender.com/api/check-url";
+const API_ENDPOINT = "http://localhost:3000/api/check-url";
 
-    while (underlinedWords.size < numWordsToUnderline) {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        underlinedWords.add(randomIndex);
+/**
+ * Detecta si la página actual es un artículo de noticias.
+ * Utiliza heurísticas basadas en metadatos y estructura HTML.
+ * @returns {boolean}
+ */
+function isNewsArticle() {
+    // 1. Verificar Open Graph Type
+    const ogType = document.querySelector('meta[property="og:type"]');
+    if (ogType && ogType.content === 'article') return true;
+
+    // 2. Verificar Schema.org NewsArticle
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    for (const script of scripts) {
+        if (script.textContent.includes('NewsArticle') || script.textContent.includes('ReportageNewsArticle')) {
+            return true;
+        }
     }
 
-    return words.map((word, index) => {
-        if (underlinedWords.has(index)) {
-            return `<span style="background-color: rgba(255, 255, 0, 0.4);">${word}</span>`;
-        }
-        return word;
-    }).join(" ");
+    // 3. Fallback: Presencia de etiqueta <article> y un <h1>
+    const hasArticleTag = document.getElementsByTagName('article').length > 0;
+    const hasH1 = document.getElementsByTagName('h1').length > 0;
+
+    if (hasArticleTag && hasH1) return true;
+
+    return false;
 }
 
-function underlineGivenWords() {
+/**
+ * Obtiene el color del badge basado en la puntuación.
+ * @param {number} score - Puntuación de 0 a 100.
+ * @returns {string} - Clase CSS correspondiente.
+ */
+function getBadgeClass(score) {
+    if (score >= 70) return 'hemingwai-badge-high'; // Verde
+    if (score >= 50) return 'hemingwai-badge-medium'; // Amarillo
+    return 'hemingwai-badge-low'; // Rojo
+}
 
-    document.querySelectorAll("p").forEach(async cuerpo => { 
-        if (!cuerpo.dataset.modified) { // Evita duplicados
-            // Subrayar palabras aleatorias en el titular
-            const originalText = cuerpo.textContent;
-            const updatedText = underlineRandomWords(originalText);
-            cuerpo.innerHTML = updatedText; // Reemplaza el contenido HTML con las palabras subrayadas
+/**
+ * Helper para obtener el código hexadecimal del color (para uso inline si es necesario)
+ */
+function getBadgeColorHex(score) {
+    if (score >= 70) return '#28a745';
+    if (score >= 50) return '#ffc107';
+    return '#dc3545';
+}
 
-            const response = await fetch(`https://hemingwai.onrender.com/url?url=${url}`);
+/**
+ * Renderiza la interfaz de usuario (Badge + Popover).
+ * @param {object} data - Datos devueltos por la API.
+ */
+function renderUI(data) {
+    const h1 = document.querySelector('h1');
+    if (!h1 || h1.dataset.hemingwai) return; // Evitar duplicados
 
-            const data = await response.json();
-
-            console.log(data.texto_referencia_diccionario)
-
+    h1.dataset.hemingwai = "active"; // Marcar como procesado
     
-            const regex = new RegExp(`(${escapeRegExp(textoParaSubrayar)})`, 'gi');
+    // Necesitamos un contenedor para posicionar el badge y el popover juntos
+    // Opción: Insertar el badge dentro del H1, y el popover RELATIVO al badge.
+    
+    // 1. Crear el Badge (span inline-block)
+    const badge = document.createElement('span');
+    badge.className = `hemingwai-badge ${getBadgeClass(data.puntuacion)}`;
+    badge.textContent = data.puntuacion;
+    badge.title = "Click para ver detalles del análisis de HemingwAI";
 
+    // 2. Crear el Popover (div block)
+    const popover = document.createElement('div');
+    popover.className = 'hemingwai-popover';
+    
+    // Contenido del Popover
+    popover.innerHTML = `
+        <h4>Análisis HemingwAI</h4>
+        
+        <div class="hemingwai-section">
+            <span class="hemingwai-label">Puntuación Global</span>
+            <span class="hemingwai-text" style="font-size: 1.2em; font-weight: bold; color: ${getBadgeColorHex(data.puntuacion)}">${data.puntuacion}/100</span>
+        </div>
+
+        <div class="hemingwai-section">
+            <span class="hemingwai-label">Resumen</span>
+            <div class="hemingwai-text">${data.resumen_valoracion || "Sin resumen disponible."}</div>
+        </div>
+
+        <div class="hemingwai-section">
+            <span class="hemingwai-label">Análisis del Titular</span>
+            <div class="hemingwai-text">${data.resumen_valoracion_titular || "Sin análisis específico."}</div>
+        </div>
+        
+        <div style="text-align: right; margin-top: 10px;">
+             <a href="https://hemingwai-frontend-5vw6.onrender.com/analisis/${data.id || ''}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
+        </div>
+    `;
+
+    // 3. Insertar en el DOM
+    // Estrategia segura: Badge dentro del H1. Popover como hermano del Badge para evitar anidamiento inválido (div dentro de span),
+    // pero necesitamos que el popover se posicione respecto al badge.
+    
+    // Solución: Crear un wrapper inline-flex dentro del H1 que contenga ambos, 
+    // o simplemente insertar ambos en el H1 y usar posicionamiento relativo en el wrapper.
+    const wrapper = document.createElement('span');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-flex';
+    wrapper.style.verticalAlign = 'middle';
+    
+    wrapper.appendChild(badge);
+    wrapper.appendChild(popover);
+    
+    h1.appendChild(wrapper);
+
+    // 4. Lógica de Interacción (Toggle)
+    badge.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        
+        const isVisible = popover.classList.contains('visible');
+        
+        // Cerrar otros popovers
+        document.querySelectorAll('.hemingwai-popover').forEach(p => p.classList.remove('visible'));
+
+        if (!isVisible) {
+            popover.classList.add('visible');
+            // Ajustar posición si se sale de pantalla (básico)
+            const rect = popover.getBoundingClientRect();
+            if (rect.right > window.innerWidth) {
+                popover.style.left = 'auto';
+                popover.style.right = '0';
+            }
         }
     });
 
-
-    
-
-    return headlineText.replace(regex, '<span style="background-color: rgba(255, 255, 0, 0.4);">$1</span>');
-}
-
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-
-async function getScoreForArticle(url) {
-    try {
-        // Haces la solicitud al backend, pasando el Id_noticia como parámetro
-        const response = await fetch(`https://hemingwai.onrender.com/url?url=${url}`);
-
-        console.log('window.location.href')
-        console.log(window.location.href)
-        console.log('url')
-        console.log(url)
-
-        const data = await response.json();
-        
-        // Retornamos el valor del puntuacion
-        console.log('data')
-        console.log(data)
-        console.log(data.puntuacion)
-        console.log(data.texto_referencia_diccionario)
-        
-        return data.puntuacion;
-    } catch (error) {
-        console.error('Error al obtener el puntuacion:', error);
-        return null; // Si hay error, devolvemos null
-    }
-}
-
-async function getValoracionForArticle(url) {
-    try {
-        // Haces la solicitud al backend, pasando el Id_noticia como parámetro
-        const response = await fetch(`https://hemingwai.onrender.com/url?url=${url}`);
-
-        const data = await response.json();
-        
-        // Retornamos el valor del puntuacion
-        console.log('data')
-        console.log(data)
-        console.log('data.valoraciones_html')
-        console.log(data.valoraciones_html)
-        console.log(data.valoraciones_html[1])
-        
-        return data.valoraciones_html[1];
-    } catch (error) {
-        console.error('Error al obtener la valoración:', error);
-        return null; // Si hay error, devolvemos null
-    }
-}
-
-
-
-// Función para agregar números aleatorios a los titulares
-async function addRandomNumbersToHeadlines() {
-    document.querySelectorAll("h1, h2, h3").forEach(async headline => { 
-        if (!headline.dataset.modified) { // Evita duplicados
-            // Subrayar palabras aleatorias en el titular
-            const originalText = headline.textContent;
-            const updatedText = underlineRandomWords(originalText);
-            headline.innerHTML = updatedText; // Reemplaza el contenido HTML con las palabras subrayadas
-
-            console.log(window.location.href); 
-
-            const url = window.location.href;  // Aquí deberías obtener el url real de tu artículo (puedes hacerlo dinámicamente)
-            const score_noticia = await getScoreForArticle(url);  // Llamada a la API para obtener el score_noticia
-
-            let circle = document.createElement("span");
-
-            // Asignamos el color aleatorio basado en el score_noticia (si existe)
-            circle.textContent = score_noticia !== null ? score_noticia : 5;  // Si score_noticia es null, mostrar 'Cargando...'
-            circle.style.cssText = `
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
-                margin-left: 10px;
-                width: 24px;
-                height: 24px;
-                background-color: ${getColorForNumber(score_noticia)}; // Color según el score_noticia
-                color: white;
-                font-size: 14px;
-                font-weight: bold;
-                text-align: center;
-                border-radius: 50%;
-                cursor: pointer;
-                position: absolute;
-                left: -30px;
-                top: 50%;
-                transform: translateY(-50%);
-            `;
-
-            headline.appendChild(circle);
-            headline.dataset.modified = "true";
-
-            // Crear el modal más sencillo
-            let modal = document.createElement("div");
-
-            const valoracion = await getValoracionForArticle(url);
-
-            modal.innerHTML = valoracion !== null ? valoracion : "Lorem ipsum dolor sit amet."; // Texto simple
-
-            modal.style.cssText = `
-                display: none;
-                position: absolute;
-                background: white;
-                color: black;
-                padding: 10px 15px;
-                border-radius: 5px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                font-size: 10px; /* Aumenté el tamaño de la fuente */
-                font-family: Arial, sans-serif; /* Se puede cambiar la fuente */
-                line-height: 1.5; /* Mejorar la legibilidad del texto */
-                min-width: 500px; /* Hice el modal 3 veces más ancho */
-                min-height: 50px; /* Aumenté la altura mínima para dar más espacio al texto */
-                z-index: 100000;
-                pointer-events: none;
-                left: 50%;
-                transform: translateX(-50%);
-            `;
-
-
-            circle.appendChild(modal);
-
-            // Mostrar el modal cuando el ratón entre en el círculo
-            circle.addEventListener("mouseenter", (event) => {
-                modal.style.display = "block";
-                modal.style.top = `-35px`;
-            });
-
-            // Mover el modal con el ratón
-            circle.addEventListener("mousemove", (event) => {
-                modal.style.top = `-35px`;
-            });
-
-            // Ocultar el modal cuando el ratón salga del círculo
-            circle.addEventListener("mouseleave", () => {
-                modal.style.display = "none";
-            });
+    // Cerrar al hacer click fuera
+    document.addEventListener('click', (e) => {
+        if (!wrapper.contains(e.target)) {
+            popover.classList.remove('visible');
         }
     });
 }
 
+/**
+ * Función principal de inicio.
+ */
+async function init() {
+    // 1. Verificar si es noticia
+    if (!isNewsArticle()) {
+        console.log("HemingwAI: No se detectó un artículo de noticias.");
+        return;
+    }
 
-// Ejecuta la función al cargar la página
-addRandomNumbersToHeadlines();
+    console.log("HemingwAI: Artículo detectado. Consultando API...");
+
+    try {
+        // 2. Consultar API
+        const response = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: window.location.href
+            })
+        });
+
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.log("HemingwAI: Noticia no analizada todavía.");
+            } else {
+                console.error("HemingwAI: Error en la respuesta del servidor", response.status);
+            }
+            return;
+        }
+
+        const data = await response.json();
+
+        // 3. Renderizar si está analizado
+        if (data.analizado && data.puntuacion !== undefined) {
+            renderUI(data);
+        }
+
+    } catch (error) {
+        console.error("HemingwAI: Error de conexión", error);
+    }
+}
+
+// Ejecutar al cargar (idle)
+init();

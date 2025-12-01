@@ -1,13 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Numerador de Titulares",
-  "version": "1.0",
-  "description": "Añade un número aleatorio a cada titular en cualquier página web",
+  "name": "HemingwAI - Analizador de Noticias",
+  "version": "2.0",
+  "description": "Verifica la calidad de las noticias que lees con inteligencia artificial.",
   "permissions": ["scripting"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "css": ["styles.css"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
