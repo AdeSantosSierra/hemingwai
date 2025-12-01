@@ -2,8 +2,8 @@
 // Detecta noticias y muestra su valoración de calidad.
 
 // Configuración
-//const API_ENDPOINT = "https://hemingwai.onrender.com/api/check-url";
-const API_ENDPOINT = "http://localhost:3000/api/check-url";
+const API_ENDPOINT = "https://hemingwai-backend-5vw6.onrender.com/api/check-url";
+// const API_ENDPOINT = "http://localhost:3000/api/check-url"; // Para desarrollo local
 
 /**
  * Detecta si la página actual es un artículo de noticias.
@@ -62,13 +62,19 @@ function renderUI(data) {
 
     h1.dataset.hemingwai = "active"; // Marcar como procesado
     
+    // Extracción segura de datos con valores por defecto
+    const puntuacion = data.puntuacion !== undefined ? data.puntuacion : '?';
+    const resumen = data.resumen_valoracion || "Sin resumen disponible.";
+    const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
+    const id = data.id || '';
+
     // Necesitamos un contenedor para posicionar el badge y el popover juntos
     // Opción: Insertar el badge dentro del H1, y el popover RELATIVO al badge.
     
     // 1. Crear el Badge (span inline-block)
     const badge = document.createElement('span');
-    badge.className = `hemingwai-badge ${getBadgeClass(data.puntuacion)}`;
-    badge.textContent = data.puntuacion;
+    badge.className = `hemingwai-badge ${getBadgeClass(puntuacion)}`;
+    badge.textContent = puntuacion;
     badge.title = "Click para ver detalles del análisis de HemingwAI";
 
     // 2. Crear el Popover (div block)
@@ -81,21 +87,21 @@ function renderUI(data) {
         
         <div class="hemingwai-section">
             <span class="hemingwai-label">Puntuación Global</span>
-            <span class="hemingwai-text" style="font-size: 1.2em; font-weight: bold; color: ${getBadgeColorHex(data.puntuacion)}">${data.puntuacion}/100</span>
+            <span class="hemingwai-text" style="font-size: 1.2em; font-weight: bold; color: ${getBadgeColorHex(puntuacion)}">${puntuacion}/100</span>
         </div>
 
         <div class="hemingwai-section">
             <span class="hemingwai-label">Resumen</span>
-            <div class="hemingwai-text">${data.resumen_valoracion || "Sin resumen disponible."}</div>
+            <div class="hemingwai-text">${resumen}</div>
         </div>
 
         <div class="hemingwai-section">
             <span class="hemingwai-label">Análisis del Titular</span>
-            <div class="hemingwai-text">${data.resumen_valoracion_titular || "Sin análisis específico."}</div>
+            <div class="hemingwai-text">${resumenTitular}</div>
         </div>
         
         <div style="text-align: right; margin-top: 10px;">
-             <a href="https://hemingwai-frontend-5vw6.onrender.com/analisis/${data.id || ''}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
+             <a href="https://hemingwai-frontend-5vw6.onrender.com/analisis/${id}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
         </div>
     `;
 
