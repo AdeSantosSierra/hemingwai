@@ -31,7 +31,14 @@ const HistoryPanel = ({ history, onSelect }) => {
               </h4>
               <div className="flex items-center gap-1 mt-0.5">
                  <span className="text-[10px] text-gray-500 truncate group-hover:text-gray-400">
-                   {new URL(item.query).hostname.replace('www.', '')}
+                   {(() => {
+                     try {
+                       const urlStr = item.url || item.query;
+                       return new URL(urlStr).hostname.replace('www.', '');
+                     } catch (e) {
+                       return 'ID: ' + item.query.substring(0, 8) + '...';
+                     }
+                   })()}
                  </span>
                  <span className="text-[10px] text-gray-600 group-hover:text-gray-500">• {new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
               </div>

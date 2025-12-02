@@ -135,6 +135,7 @@ function App() {
                 id: crypto.randomUUID(),
                 query: query,
                 title: data.titulo,
+                url: data.url,
                 timestamp: Date.now()
             });
         }
