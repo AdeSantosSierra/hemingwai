@@ -335,6 +335,61 @@ app.post('/api/check-url', async (req, res) => {
 });
 
 /**
+ * POST /api/check-urls
+ * Endpoint batch para verificar múltiples URLs a la vez.
+ * body: { urls: string[] }
+ */
+app.post('/api/check-urls', (req, res) => {
+    const { urls } = req.body;
+
+    if (!urls || !Array.isArray(urls)) {
+        return res.status(400).json({ error: "El campo 'urls' debe ser una lista." });
+    }
+
+    if (urls.length === 0) {
+        return res.json({ resultados: [] });
+    }
+
+    // Limitar el número de URLs para evitar abusos
+    const MAX_URLS = 50;
+    if (urls.length > MAX_URLS) {
+        return res.status(400).json({ error: `No se pueden procesar más de ${MAX_URLS} URLs por petición.` });
+    }
+
+    const scriptName = 'buscar_noticias_batch.py';
+    const scriptPath = path.join(PYTHON_SCRIPT_DIR, scriptName);
+    
+    // Ejecutar script pasando el JSON por stdin
+    const command = `${PYTHON_INTERPRETER} ${scriptPath}`;
+    
+    // console.log(`Ejecutando batch: ${command} con ${urls.length} URLs`);
+
+    const child = require('child_process').exec(command, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error al ejecutar ${scriptName}: ${stderr}`);
+            try {
+                const errorJson = JSON.parse(stderr);
+                return res.status(500).json({ error: errorJson.error || "Error desconocido." });
+            } catch (e) {
+                return res.status(500).json({ error: `Error de ejecución: ${error.message}` });
+            }
+        }
+
+        try {
+            const resultado = JSON.parse(stdout);
+            res.json(resultado);
+        } catch (e) {
+            console.error(`Error al parsear JSON batch: ${stdout}`);
+            res.status(500).json({ error: "Respuesta inválida del procesador de datos." });
+        }
+    });
+
+    // Enviar datos por stdin
+    child.stdin.write(JSON.stringify({ urls }));
+    child.stdin.end();
+});
+
+/**
  * POST /api/buscar
  * Busca una noticia por URL o ID en las BD (Nueva -> Antigua).
  * body: { identificador: 'url_o_id', soloAntigua: false }
