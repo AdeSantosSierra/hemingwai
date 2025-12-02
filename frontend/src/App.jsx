@@ -42,6 +42,17 @@ function App() {
     } catch (e) {
       console.error('Error al cargar historial:', e);
     }
+
+    // Detectar ruta /analisis/:id al montar
+    const path = window.location.pathname;
+    const match = path.match(/^\/analisis\/([^/]+)/);
+    if (match) {
+      const id = match[1];
+      if (id) {
+        // Ejecutar búsqueda automáticamente
+        handleBuscarNoticia(id);
+      }
+    }
   }, []);
 
   // Guardar historial en sessionStorage cuando cambie
@@ -135,6 +146,7 @@ function App() {
                 id: crypto.randomUUID(),
                 query: query,
                 title: data.titulo,
+                url: data.url,
                 timestamp: Date.now()
             });
         }
@@ -158,7 +170,7 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0A2342] text-gray-100 font-sans">
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
       <header className="w-full border-b border-lima/60 bg-[#071A31]/95 backdrop-blur flex items-center justify-between px-6 sm:px-10 py-3 shadow-md sticky top-0 z-50">
@@ -229,23 +241,9 @@ function App() {
 
           {/* Tarjeta de búsqueda */}
           <section className="mb-2">
-            <div
-              className={`bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 max-w-5xl mx-auto transition-all duration-500 hover:shadow-lima-500/20 ${
-                estadoBusqueda === 'idle' ? 'py-16 sm:py-24' : 'py-6'
-              }`}
-            >
-              <h2
-                className={`font-semibold mb-5 text-[#0A2342] flex items-center gap-2 transition-all duration-500 ${
-                  estadoBusqueda === 'idle'
-                    ? 'text-2xl sm:text-3xl justify-center mb-10'
-                    : 'text-lg sm:text-xl'
-                }`}
-              >
-                <Globe2
-                  className={`text-lima transition-all duration-500 ${
-                    estadoBusqueda === 'idle' ? 'w-8 h-8' : 'w-5 h-5'
-                  }`}
-                />
+            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lima-500/20">
+              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
+                <Globe2 className="w-5 h-5 text-lima" />
                 Analizar noticia desde URL
               </h2>
 
@@ -285,20 +283,18 @@ function App() {
           </section>
 
           {/* Resultados */}
-          {estadoBusqueda !== 'idle' && (
-            <section className="mb-8 animate-fade-in">
-              <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#0A2342] flex items-center gap-2">
-                  <Code className="w-5 h-5 text-lima" />
-                  Resultado del análisis
-                </h3>
-                <ResultadoBusqueda
-                  estado={estadoBusqueda}
-                  resultado={resultadoBusqueda}
-                />
-              </div>
-            </section>
-          )}
+          <section className="mb-8">
+            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#0A2342] flex items-center gap-2">
+                <Code className="w-5 h-5 text-lima" />
+                Resultado del análisis
+              </h3>
+              <ResultadoBusqueda
+                estado={estadoBusqueda}
+                resultado={resultadoBusqueda}
+              />
+            </div>
+          </section>
 
           {/* Footer */}
           <footer className="mt-6 mb-2">
