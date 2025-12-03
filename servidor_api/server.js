@@ -2,7 +2,7 @@
 // Escucha peticiones del frontend y orquesta la ejecución de scripts de Python.
 
 const express = require('express');
-const { exec } = require('child_process');
+const { exec, spawn } = require('child_process');
 const cors = require('cors');
 const path = require('path');
 const OpenAI = require('openai');
@@ -21,9 +21,16 @@ const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 const PYTHON_INTERPRETER = 'python'; 
 
 // Middleware
-// Configuración de CORS simplificada para permitir acceso desde cualquier origen (Frontend, Extensión, etc.)
-// TODO: En el futuro restringir esto a dominios específicos si es necesario.
-app.use(cors()); 
+// Configuración de CORS global explícita y permisiva
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
+
 app.use(express.json()); // Para parsear cuerpos de petición JSON
 
 // Ruta de health check para Render
@@ -336,57 +343,131 @@ app.post('/api/check-url', async (req, res) => {
 
 /**
  * POST /api/check-urls
- * Endpoint batch para verificar múltiples URLs a la vez.
+ * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
  */
 app.post('/api/check-urls', (req, res) => {
     const { urls } = req.body;
 
     if (!urls || !Array.isArray(urls)) {
-        return res.status(400).json({ error: "El campo 'urls' debe ser una lista." });
+        return res.status(400).json({ ok: false, error: "El campo 'urls' debe ser una lista." });
     }
 
     if (urls.length === 0) {
-        return res.json({ resultados: [] });
+        return res.json({ ok: true, resultados: [] });
     }
 
     // Limitar el número de URLs para evitar abusos
     const MAX_URLS = 50;
     if (urls.length > MAX_URLS) {
-        return res.status(400).json({ error: `No se pueden procesar más de ${MAX_URLS} URLs por petición.` });
+        return res.status(400).json({ ok: false, error: `No se pueden procesar más de ${MAX_URLS} URLs por petición.` });
     }
 
     const scriptName = 'buscar_noticias_batch.py';
     const scriptPath = path.join(PYTHON_SCRIPT_DIR, scriptName);
     
-    // Ejecutar script pasando el JSON por stdin
-    const command = `${PYTHON_INTERPRETER} ${scriptPath}`;
+    // Configuración del spawn
+    const py = spawn(PYTHON_INTERPRETER, [scriptPath]);
     
-    // console.log(`Ejecutando batch: ${command} con ${urls.length} URLs`);
+    let stdoutData = '';
+    let stderrData = '';
+    
+    // Timeout de 30 segundos
+    const TIMEOUT_MS = 30000;
+    const timeout = setTimeout(() => {
+        console.error(`[/api/check-urls] Timeout (${TIMEOUT_MS}ms). Matando proceso.`);
+        py.kill();
+        if (!res.headersSent) {
+            res.status(504).json({
+                ok: false,
+                error: 'Timeout in /api/check-urls Python process',
+            });
+        }
+    }, TIMEOUT_MS);
 
-    const child = require('child_process').exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.error(`Error al ejecutar ${scriptName}: ${stderr}`);
+    // Captura de streams
+    py.stdout.on('data', (data) => {
+        const str = data.toString();
+        // console.log("[/api/check-urls] py stdout (chunk):", str.length);
+        stdoutData += str;
+    });
+
+    py.stderr.on('data', (data) => {
+        const str = data.toString();
+        console.error("[/api/check-urls] py stderr:", str);
+        stderrData += str;
+    });
+
+    py.on('error', (err) => {
+        clearTimeout(timeout);
+        console.error("[/api/check-urls] Error al iniciar proceso spawn:", err);
+        if (!res.headersSent) {
+            res.status(500).json({ 
+                ok: false, 
+                error: 'Error interno al iniciar script de Python',
+                details: err.message 
+            });
+        }
+    });
+
+    py.on('close', (code) => {
+        clearTimeout(timeout);
+        
+        // Si la respuesta ya se envió (por timeout), no hacemos nada
+        if (res.headersSent) return;
+
+        if (code !== 0) {
+            console.error(`[/api/check-urls] Proceso terminó con código ${code}`);
+            
+            // Intentar parsear stdout/stderr por si el script imprimió JSON de error antes de morir
             try {
-                const errorJson = JSON.parse(stderr);
-                return res.status(500).json({ error: errorJson.error || "Error desconocido." });
+                const jsonError = JSON.parse(stdoutData || stderrData);
+                return res.status(500).json({
+                    ok: false,
+                    error: jsonError.error || 'Error en script Python',
+                    details: jsonError.details || null,
+                    pythonError: stderrData // Opcional, para debug
+                });
             } catch (e) {
-                return res.status(500).json({ error: `Error de ejecución: ${error.message}` });
+                return res.status(500).json({
+                    ok: false,
+                    error: `Error interno en /api/check-urls (exit code ${code})`,
+                    details: stderrData || 'No stderr details'
+                });
             }
         }
 
+        // Si el código es 0, intentamos parsear el JSON exitoso
         try {
-            const resultado = JSON.parse(stdout);
-            res.json(resultado);
+            const resultado = JSON.parse(stdoutData);
+            
+            // Verificamos si el propio JSON dice ok: false (aunque exit code sea 0, por seguridad)
+            if (resultado.ok === false) {
+                 return res.status(500).json(resultado);
+            }
+            
+            return res.json(resultado);
         } catch (e) {
-            console.error(`Error al parsear JSON batch: ${stdout}`);
-            res.status(500).json({ error: "Respuesta inválida del procesador de datos." });
+            console.error(`[/api/check-urls] Error al parsear JSON: ${e.message}. Salida raw: ${stdoutData.substring(0, 200)}...`);
+            return res.status(500).json({
+                ok: false,
+                error: 'Respuesta inválida del procesador de datos.',
+                details: 'El script Python no devolvió un JSON válido.'
+            });
         }
     });
 
     // Enviar datos por stdin
-    child.stdin.write(JSON.stringify({ urls }));
-    child.stdin.end();
+    try {
+        py.stdin.write(JSON.stringify({ urls }));
+        py.stdin.end();
+    } catch (stdinErr) {
+        clearTimeout(timeout);
+        console.error("[/api/check-urls] Error escribiendo en stdin:", stdinErr);
+        if (!res.headersSent) {
+            res.status(500).json({ ok: false, error: "Error de comunicación con script Python" });
+        }
+    }
 });
 
 /**
