@@ -69,7 +69,131 @@ function getArticleTagCount() {
 }
 
 // ========================================================
-// UI HELPERS
+// UI HELPERS (INTERACTION)
+// ========================================================
+
+let activePopover = null;
+let hideTimeout = null;
+
+function hideActivePopover() {
+    if (activePopover) {
+        const p = activePopover;
+        activePopover = null; // Clear immediately
+        p.classList.remove('visible');
+        setTimeout(() => {
+            if (p.parentNode) p.parentNode.removeChild(p);
+        }, 150);
+    }
+}
+
+function scheduleHide() {
+    clearTimeout(hideTimeout);
+    hideTimeout = setTimeout(() => {
+        hideActivePopover();
+    }, 150); // 150ms delay to allow crossing gap
+}
+
+function cancelHide() {
+    clearTimeout(hideTimeout);
+}
+
+// Global scroll listener: close popover on scroll
+window.addEventListener('scroll', () => {
+    if (activePopover) {
+        hideActivePopover();
+    }
+}, { passive: true });
+
+function setupBadgeInteractions(wrapper, badge, data) {
+    // HOVER on WRAPPER
+    wrapper.addEventListener('mouseenter', () => {
+        cancelHide();
+        // If we don't have an active popover (or it's a different one, though we usually just recreate), show it.
+        // We simply call showPopover which handles cleanup of existing ones.
+        showPopover(badge, data);
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+        scheduleHide();
+    });
+
+    // CLICK on BADGE (Keep existing click behavior)
+    badge.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelHide();
+        showPopover(badge, data);
+    });
+}
+
+function showPopover(badge, data) {
+    // 1. Clean up any existing popovers
+    const existing = document.querySelectorAll('.hemingwai-popover');
+    existing.forEach(el => el.remove());
+    // Also ensure state is clear
+    activePopover = null;
+
+    // 2. Create content
+    const contentHtml = getPopoverContent(data);
+
+    // 3. Create new popover element
+    const popover = document.createElement('div');
+    popover.className = 'hemingwai-popover';
+    popover.innerHTML = contentHtml;
+
+    // 4. Attach hover listeners to the POPOVER itself
+    // This allows the user to move from badge -> popover without it closing
+    popover.addEventListener('mouseenter', cancelHide);
+    popover.addEventListener('mouseleave', scheduleHide);
+
+    // 5. Append to body to measure dimensions
+    document.body.appendChild(popover);
+
+    // 6. Calculate position
+    const rect = badge.getBoundingClientRect();
+    const margin = 8;
+    const windowWidth = window.innerWidth;
+    
+    // Top: below badge
+    const top = rect.bottom + margin;
+    
+    // Left: aligned with badge, but constrained to viewport width
+    let left = rect.left;
+    const popoverWidth = popover.offsetWidth;
+    
+    // Prevent overflow on right edge
+    if (left + popoverWidth + 16 > windowWidth) {
+        left = windowWidth - popoverWidth - 16;
+    }
+    
+    // Ensure it doesn't go off the left edge either
+    if (left < 16) {
+        left = 16;
+    }
+
+    popover.style.top = `${top}px`;
+    popover.style.left = `${left}px`;
+    
+    // 7. Make visible
+    void popover.offsetWidth; // Force reflow
+    popover.classList.add('visible');
+
+    // 8. Update state
+    activePopover = popover;
+}
+
+// Global click listener to close popovers when clicking outside
+document.addEventListener('click', (e) => {
+    const isPopover = e.target.closest('.hemingwai-popover');
+    const isBadge = e.target.closest('.hemingwai-badge');
+    
+    if (!isPopover && !isBadge) {
+        hideActivePopover();
+    }
+});
+
+// ========================================================
+// UI HELPERS (CREATION)
 // ========================================================
 
 function getBadgeClass(score) {
@@ -105,13 +229,8 @@ function createBadgeElement(data, isSmall = false) {
         badge.title = `Puntuación HemingwAI: ${score}/100`;
     }
 
-    // Attach click handler to show popover
-    badge.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const content = getPopoverContent(data);
-        showPopoverAtBadge(badge, content);
-    });
+    // NOTE: Click listener removed from here. 
+    // It is now handled in setupBadgeInteractions called by render functions.
 
     return badge;
 }
@@ -124,7 +243,6 @@ function getPopoverContent(data) {
     let contentHtml = '';
 
     if (isPending) {
-        // STATE: Registered but not analyzed
         contentHtml = `
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
@@ -141,7 +259,6 @@ function getPopoverContent(data) {
             </div>
         `;
     } else {
-        // STATE: Analyzed
         const score = data.puntuacion;
         const resumen = data.resumen_valoracion || "Sin resumen disponible.";
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
@@ -174,71 +291,6 @@ function getPopoverContent(data) {
     return contentHtml;
 }
 
-function showPopoverAtBadge(badge, popoverContentHtml) {
-    // 1. Remove any existing popovers
-    const existing = document.querySelectorAll('.hemingwai-popover');
-    existing.forEach(el => el.remove());
-
-    // 2. Create new popover element
-    const popover = document.createElement('div');
-    popover.className = 'hemingwai-popover';
-    popover.innerHTML = popoverContentHtml;
-
-    // 3. Append to body to measure dimensions (invisible initially via css class/style)
-    document.body.appendChild(popover);
-
-    // 4. Calculate position
-    const rect = badge.getBoundingClientRect();
-    const margin = 8;
-    const windowWidth = window.innerWidth;
-    
-    // Top: below badge
-    const top = rect.bottom + margin;
-    
-    // Left: aligned with badge, but constrained to viewport width
-    // popover.offsetWidth is available now because we appended it
-    let left = rect.left;
-    const popoverWidth = popover.offsetWidth;
-    
-    // Prevent overflow on right edge
-    if (left + popoverWidth + 16 > windowWidth) {
-        left = windowWidth - popoverWidth - 16;
-    }
-    
-    // Ensure it doesn't go off the left edge either
-    if (left < 16) {
-        left = 16;
-    }
-
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
-    
-    // 5. Make visible
-    // Force a reflow before adding 'visible' for transition (optional, but good practice)
-    void popover.offsetWidth; 
-    popover.classList.add('visible');
-}
-
-// Global click listener to close popovers
-document.addEventListener('click', (e) => {
-    // Check if click is inside any popover or on a badge
-    const isPopover = e.target.closest('.hemingwai-popover');
-    const isBadge = e.target.closest('.hemingwai-badge');
-    
-    // If not clicking a popover and not clicking a badge (badge click is handled separately with stopPropagation)
-    if (!isPopover && !isBadge) {
-        const popovers = document.querySelectorAll('.hemingwai-popover.visible');
-        popovers.forEach(p => {
-            p.classList.remove('visible');
-            // Remove from DOM after transition matches CSS (0.15s)
-            setTimeout(() => {
-                if (p.parentNode) p.parentNode.removeChild(p);
-            }, 150); 
-        });
-    }
-});
-
-
 // ========================================================
 // RENDERING UI
 // ========================================================
@@ -259,6 +311,9 @@ function renderArticleUI(data) {
     const badge = createBadgeElement(data, false); // Large
     wrapper.appendChild(badge);
 
+    // Setup interactions (hover, click, scroll-close is global)
+    setupBadgeInteractions(wrapper, badge, data);
+
     // Append to h1
     h1.appendChild(wrapper);
 }
@@ -276,6 +331,9 @@ function renderListBadge(anchor, data) {
     // Create badge
     const badge = createBadgeElement(data, true); // Small
     wrapper.appendChild(badge);
+    
+    // Setup interactions
+    setupBadgeInteractions(wrapper, badge, data);
     
     // Insert wrapper AFTER anchor
     if (anchor.nextSibling) {
