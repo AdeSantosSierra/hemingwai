@@ -25,7 +25,7 @@
 }
 
 .hemingwai-badge-medium {
-    background-color: #d2d209; /* Amarillo */
+    background-color: #ffc107; /* Amarillo */
     color: #333;
 }
 
@@ -35,8 +35,8 @@
 
 /* Badge pendiente (Logo) */
 .hemingwai-badge-pending {
-    background-color: #001a33; /* Dark Blue */
-    border: 2px solid #d2d209; /* Lime */
+    background-color: #001a33; /* Dark Blue corporativo*/
+    border: 2px solid #d2d209; /* Lime corporativo*/
     display: inline-flex;
     justify-content: center;
     align-items: center;
