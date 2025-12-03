@@ -4,7 +4,7 @@
 // Configuración
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
-const MAX_URLS_PER_PAGE = 50;
+const MAX_URLS_PER_PAGE = 100;
 const LOGO_URL = chrome.runtime.getURL("logo_small.png");
 
 // ========================================================
