@@ -41,7 +41,7 @@
     justify-content: center;
     align-items: center;
     padding: 0;
-    box-sizing: border-box; /* Para que el borde no aumente el tamaño inesperadamente */
+    box-sizing: border-box; 
 }
 
 .hemingwai-badge-pending img {
@@ -61,70 +61,85 @@
     vertical-align: middle;
 }
 
-/* --- Popover --- */
+/* --- Popover (Dark Navy Theme) --- */
 
 .hemingwai-popover {
-    /* Anchored relative to the wrapper */
-    position: absolute;
-    top: 130%; /* Just below the badge */
-    left: 0;
-    width: 300px;
+    position: fixed; /* Fixed as requested */
+    width: 320px;
     max-width: 420px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    padding: 15px;
-    z-index: 999999;
-    display: none; /* Oculto por defecto */
-    font-family: sans-serif;
+    background: #0A2342; /* Dark Navy */
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    border-top: 3px solid #ffd400; /* Brand Yellow */
+    padding: 16px 20px;
+    z-index: 2147483647; /* Always on top */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    box-sizing: border-box;
     text-align: left;
-    color: #333;
-    transform: none; /* Reset any potential transforms */
+    line-height: 1.5;
 }
 
 .hemingwai-popover.visible {
     display: block;
-    animation: hemingwai-fadein 0.2s ease-out;
+    opacity: 1;
 }
 
 .hemingwai-popover h4 {
-    margin: 0 0 10px 0;
+    margin: 0 0 16px 0;
     font-size: 16px;
-    color: #0A2342;
-    border-bottom: 2px solid #d2d209; /* Subrayado lime */
-    padding-bottom: 5px;
+    font-weight: 700;
+    color: #ffd400; /* Brand Yellow title */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .hemingwai-section {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
 }
 
 .hemingwai-label {
     display: block;
     font-size: 11px;
     text-transform: uppercase;
-    color: #666;
-    margin-bottom: 2px;
+    color: rgba(255,255,255,0.7); /* Dimmed white */
+    margin-bottom: 4px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
 .hemingwai-text {
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+.hemingwai-score {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.hemingwai-footer {
+    text-align: right;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
 }
 
 .hemingwai-link {
-    font-size: 12px;
-    color: #007bff;
+    font-size: 13px;
+    color: #ffd400; /* Brand Yellow */
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    transition: opacity 0.2s;
 }
 
 .hemingwai-link:hover {
     text-decoration: underline;
-}
-
-@keyframes hemingwai-fadein {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
+    opacity: 0.9;
 }
