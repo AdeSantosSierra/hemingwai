@@ -352,8 +352,17 @@ async function scanListingPage() {
             const rect = a.getBoundingClientRect();
             const absoluteTop = window.scrollY + rect.top;
 
-            // Filtro de texto muy corto (salvo que tenga imagen, difícil saber aquí rápido, mantenemos lógica existente)
-            if ((a.textContent || "").trim().length < 15 && !a.querySelector('img')) continue; 
+            // --- Lógica actualizada de filtrado de texto ---
+            // Revisar si el texto del enlace es muy corto, pero
+            // permitirlo si está dentro de un encabezado (h1, h2, h3) con texto suficiente.
+            
+            const anchorText = (a.textContent || "").trim();
+            const heading = a.closest('h1, h2, h3');
+            const headingText = heading ? heading.textContent.trim() : anchorText;
+            
+            // Si el texto relevante (heading o anchor) es muy corto (< 20) y no hay imagen, saltar.
+            // (Antes era < 15 sobre anchorText. Ajustado a < 20 sobre headingText a petición).
+            if (headingText.length < 20 && !a.querySelector('img')) continue; 
             
             const fullUrl = urlObj.href;
             const normUrlDedup = normalizeUrlForDedup(fullUrl);
@@ -365,8 +374,19 @@ async function scanListingPage() {
                 top: absoluteTop
             });
 
+            // Log de ejemplo (solo uno para no saturar)
+            if (allCandidates.length === 1) {
+                console.log("HemingwAI: ejemplo candidato", {
+                  href: fullUrl,
+                  anchorText,
+                  headingText
+                });
+            }
+
         } catch (e) { }
     }
+
+    console.log("HemingwAI: candidatos listados ->", allCandidates.length);
 
     // 2. Ordenar por posición vertical (Top)
     allCandidates.sort((a, b) => a.top - b.top);
