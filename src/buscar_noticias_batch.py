@@ -55,7 +55,6 @@ def buscar_noticias_batch(urls):
         return {"ok": False, "error": "Error al conectar a MongoDB", "details": str(e)}
 
     # 1. Normalizar URLs y eliminar duplicados para la búsqueda
-    # Map: normalized_url -> original_url (para referencia, aunque devolveremos normalized)
     unique_normalized_urls = set()
     
     for url in urls:
@@ -116,20 +115,30 @@ def buscar_noticias_batch(urls):
             if not resumen_titular and isinstance(doc.get("valoracion_titular"), dict):
                 resumen_titular = doc.get("valoracion_titular").get("resumen")
             
+            # Determinamos si está analizada
+            # "analizado": true si tiene puntuación válida.
+            # "analizado": false si tiene ID pero no puntuación.
+            esta_analizada = (puntuacion is not None)
+            
             output_list.append({
                 "url": norm_url,
-                "analizado": True,
+                "analizado": esta_analizada,
                 "id": str(doc["_id"]),
                 "puntuacion": puntuacion,
                 "resumen_valoracion": resumen,
                 "resumen_valoracion_titular": resumen_titular
             })
         else:
+            # Caso no encontrado: podemos enviar analizado: false sin ID, o no enviar nada.
+            # El frontend parece esperar {url: ..., analizado: false} si no hay datos.
             output_list.append({
                 "url": norm_url,
-                "analizado": False
+                "analizado": False,
+                "id": None,
+                "puntuacion": None
             })
 
+    # IMPORTANTE: No filtramos. Devolvemos TODO lo que encontramos o no encontramos.
     return {"ok": True, "resultados": output_list}
 
 if __name__ == "__main__":

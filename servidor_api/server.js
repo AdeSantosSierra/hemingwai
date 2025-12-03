@@ -353,14 +353,21 @@ app.post('/api/check-urls', (req, res) => {
         return res.status(400).json({ ok: false, error: "El campo 'urls' debe ser una lista." });
     }
 
-    if (urls.length === 0) {
+    const count = urls.length;
+    console.log(`[/api/check-urls] received URLs: ${count}`);
+
+    if (count === 0) {
         return res.json({ ok: true, resultados: [] });
     }
 
     // Limitar el número de URLs para evitar abusos
-    const MAX_URLS = 50;
-    if (urls.length > MAX_URLS) {
-        return res.status(400).json({ ok: false, error: `No se pueden procesar más de ${MAX_URLS} URLs por petición.` });
+    const MAX_BATCH_URLS = 100;
+    if (count > MAX_BATCH_URLS) {
+        return res.status(400).json({ 
+            ok: false, 
+            error: `/api/check-urls expects 1-${MAX_BATCH_URLS} URLs`,
+            received: count
+        });
     }
 
     const scriptName = 'buscar_noticias_batch.py';
@@ -446,6 +453,12 @@ app.post('/api/check-urls', (req, res) => {
                  return res.status(500).json(resultado);
             }
             
+            const resultadosList = resultado.resultados || [];
+            console.log(`[/api/check-urls] resultados length: ${resultadosList.length}`);
+            if (resultadosList.length > 0) {
+                console.log(`[/api/check-urls] example resultado:`, JSON.stringify(resultadosList[0]));
+            }
+
             return res.json(resultado);
         } catch (e) {
             console.error(`[/api/check-urls] Error al parsear JSON: ${e.message}. Salida raw: ${stdoutData.substring(0, 200)}...`);
