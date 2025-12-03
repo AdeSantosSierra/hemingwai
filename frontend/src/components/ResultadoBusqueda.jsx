@@ -109,7 +109,7 @@ const formatearDiccionario = (objOrString) => {
       typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
     html += `
       <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-        <div class="font-semibold text-[#0A2342] mb-2">${escapeHtml(key)}</div>
+        <div class="font-semibold text-[#001a33] mb-2">${escapeHtml(key)}</div>
         <pre class="whitespace-pre-wrap font-mono text-sm">${escapeHtml(valStr)}</pre>
       </div>
     `;
@@ -300,7 +300,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 <div className="col-span-1 sm:col-span-2 mt-2">
                   <button
                     onClick={() => setMostrarResumen(!mostrarResumen)}
-                    className="bg-[#0A2342] text-lima px-4 py-2 rounded-md shadow-md hover:bg-[#0f2e52] transition-colors font-medium text-sm"
+                    className="bg-[#001a33] text-lima px-4 py-2 rounded-md shadow-md hover:bg-[#0f2e52] transition-colors font-medium text-sm"
                   >
                     Resumen del análisis
                   </button>
@@ -555,7 +555,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
                     className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left bg-white flex items-center justify-between group"
                   >
-                    <span className="text-sm font-semibold text-gray-800 group-hover:text-[#0A2342]">
+                    <span className="text-sm font-semibold text-gray-800 group-hover:text-[#001a33]">
                       {nombresSecciones[key]}
                     </span>
                     <MessageSquare className="w-4 h-4 text-gray-400 group-hover:text-lima" />
@@ -654,7 +654,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               e.stopPropagation();
             }}
           >
-            <div className="p-6 border-b border-gray-200 flex items-center justify-between bg-[#0A2342]/5">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between bg-[#001a33]/5">
               <h3 className="text-2xl font-bold text-gray-900">
                 {seccionSeleccionada.titulo}
               </h3>

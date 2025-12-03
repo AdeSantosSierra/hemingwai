@@ -25,7 +25,7 @@
 }
 
 .hemingwai-badge-medium {
-    background-color: #ffc107; /* Amarillo */
+    background-color: #d2d209; /* Amarillo */
     color: #333;
 }
 
@@ -35,7 +35,7 @@
 
 /* Badge pendiente (Logo) */
 .hemingwai-badge-pending {
-    background-color: #0A2342; /* Dark Blue */
+    background-color: #001a33; /* Dark Blue */
     border: 2px solid #d2d209; /* Lime */
     display: inline-flex;
     justify-content: center;
@@ -67,11 +67,11 @@
     position: fixed; /* Fixed as requested */
     width: 320px;
     max-width: 420px;
-    background: #0A2342; /* Dark Navy */
+    background: #001a33; /* Dark Navy */
     color: #ffffff;
     border-radius: 10px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    border-top: 3px solid #ffd400; /* Brand Yellow */
+    border-top: 3px solid #d2d209; /* Brand Yellow */
     padding: 16px 20px;
     z-index: 2147483647; /* Always on top */
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -92,7 +92,7 @@
     margin: 0 0 16px 0;
     font-size: 16px;
     font-weight: 700;
-    color: #ffd400; /* Brand Yellow title */
+    color: #d2d209; /* Brand Yellow title */
     border-bottom: 1px solid rgba(255,255,255,0.1);
     padding-bottom: 8px;
     text-transform: uppercase;
@@ -133,7 +133,7 @@
 
 .hemingwai-link {
     font-size: 13px;
-    color: #ffd400; /* Brand Yellow */
+    color: #d2d209; /* Brand Yellow */
     text-decoration: none;
     font-weight: 600;
     transition: opacity 0.2s;

@@ -169,7 +169,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#0A2342] text-gray-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#001a33] text-gray-100 font-sans">
       <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
@@ -242,7 +242,7 @@ function App() {
           {/* Tarjeta de búsqueda */}
           <section className="mb-2">
             <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lima-500/20">
-              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#0A2342] flex items-center gap-2">
+              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#001a33] flex items-center gap-2">
                 <Globe2 className="w-5 h-5 text-lima" />
                 Analizar noticia desde URL
               </h2>
@@ -267,8 +267,8 @@ function App() {
                   onClick={() => handleBuscarNoticia()}
                   disabled={estadoBusqueda === 'loading'}
                   className="w-full flex items-center justify-center px-4 py-3 
-                             bg-lima text-[#0A2342] font-bold rounded-lg 
-                             hover:bg-[#0A2342] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
+                             bg-lima text-[#001a33] font-bold rounded-lg 
+                             hover:bg-[#001a33] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
                              transition-all duration-200 
                              shadow-md disabled:bg-gray-400 disabled:text-gray-100 disabled:cursor-not-allowed"
                 >
@@ -285,7 +285,7 @@ function App() {
           {/* Resultados */}
           <section className="mb-8">
             <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#0A2342] flex items-center gap-2">
+              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2">
                 <Code className="w-5 h-5 text-lima" />
                 Resultado del análisis
               </h3>
