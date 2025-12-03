@@ -3,110 +3,191 @@
 
 // Configuración
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
-const API_ENDPOINT_SINGLE = `${API_BASE}/api/check-url`;
+const API_ENDPOINT_SINGLE = `${API_BASE}/api/check-url`; // Deprecado, pero mantenido por si acaso
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 // const API_BASE = "http://localhost:3000"; // Para desarrollo local
 
 const MAX_URLS_PER_PAGE = 50;
 
+// ========================================================
+// HELPERS
+// ========================================================
+
+/**
+ * Normaliza una URL para comparaciones robustas.
+ * Esquema: origin + pathname (sin query params ni hash).
+ * @param {string} urlStr 
+ * @returns {string}
+ */
+function normalizeUrl(urlStr) {
+    try {
+        const u = new URL(urlStr);
+        // Aseguramos que no haya trailing slash si el backend es estricto, 
+        // pero la implementación Python actual usa urlparse que mantiene lo que haya.
+        // Lo más seguro es mantener pathname tal cual pero sin query.
+        return u.origin + u.pathname;
+    } catch (e) {
+        return urlStr;
+    }
+}
+
+function getOgType() {
+    const meta = document.querySelector('meta[property="og:type"]');
+    return meta ? meta.content : null;
+}
+
+function hasPublishDateMeta() {
+    const selectors = [
+        'meta[property="article:published_time"]',
+        'meta[itemprop="datePublished"]',
+        'meta[name="date"]',
+        'meta[name="DC.date.issued"]',
+        'meta[name="pubdate"]'
+    ];
+    return document.querySelector(selectors.join(',')) !== null;
+}
+
+function getNewsArticleLdJsonCount() {
+    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    let count = 0;
+    for (const script of scripts) {
+        if (script.textContent.includes('"NewsArticle"') || 
+            script.textContent.includes('"ReportageNewsArticle"') ||
+            script.textContent.includes('"Article"')) {
+            // Contamos ocurrencias simples o bloques
+            // Para simplificar, si el script contiene el tipo, asumimos +1 (o más).
+            // Pero queremos saber si es una lista larga.
+            // Si el JSON es una lista de artículos, el string aparecerá muchas veces.
+            const matches = (script.textContent.match(/"(News)?Article"/g) || []).length;
+            count += matches;
+        }
+    }
+    return count;
+}
+
+function getArticleTagCount() {
+    return document.getElementsByTagName('article').length;
+}
+
+// ========================================================
+// LÓGICA DE DETECCIÓN
+// ========================================================
+
 /**
  * Detecta si la página actual es un artículo de noticias.
- * Utiliza heurísticas basadas en metadatos y estructura HTML.
+ * Utiliza heurísticas mejoradas para evitar falsos positivos en homepages.
  * @returns {boolean}
  */
 function isNewsArticle() {
-    // 1. Verificar Open Graph Type
-    const ogType = document.querySelector('meta[property="og:type"]');
-    if (ogType && ogType.content === 'article') return true;
-
-    // 2. Verificar Schema.org NewsArticle
-    const scripts = document.querySelectorAll('script[type="application/ld+json"]');
-    for (const script of scripts) {
-        if (script.textContent.includes('NewsArticle') || script.textContent.includes('ReportageNewsArticle')) {
-            return true;
-        }
+    const url = new URL(window.location.href);
+    const path = url.pathname;
+    
+    // 1. Descarte rápido de Home y secciones obvias
+    if (path === '/' || path === '/index.html') {
+        // Excepción: Si explicitamente dice og:type="article", podría ser una "home" especial, 
+        // pero muy raro. Asumimos False.
+        return false;
     }
 
-    // 3. Fallback: Presencia de etiqueta <article> y un <h1>
-    const hasArticleTag = document.getElementsByTagName('article').length > 0;
-    const hasH1 = document.getElementsByTagName('h1').length > 0;
+    // Patrones comunes de secciones (terminan en .html pero son listas)
+    // Ejemplo: /deportes.html, /espana.html
+    // Si no tienen señales fuertes de noticia, las descartaremos abajo.
 
-    if (hasArticleTag && hasH1) return true;
+    const ogType = getOgType();
+    const hasDate = hasPublishDateMeta();
+    const jsonLdCount = getNewsArticleLdJsonCount();
+    const articleTags = getArticleTagCount();
 
+    console.log("HemingwAI: Debug Detection ->", { 
+        path, ogType, hasDate, jsonLdCount, articleTags 
+    });
+
+    // 2. Reglas de ACEPTACIÓN (Señales fuertes)
+    
+    // A) Open Graph explícito
+    if (ogType === 'article') {
+        return true;
+    }
+
+    // B) Metadatos de fecha + Estructura razonable
+    // Si tiene fecha de publicación, es muy probable que sea noticia, 
+    // a menos que sea un listado de archivo (raro tener meta datePublished global).
+    // Reforzamos con que no haya un exceso de tags <article> (típico de grids).
+    if (hasDate && articleTags < 10) {
+        return true;
+    }
+
+    // C) JSON-LD NewsArticle específico
+    // Si hay un bloque NewsArticle y no es una lista gigante
+    if (jsonLdCount > 0 && jsonLdCount < 5 && hasDate) {
+        return true;
+    }
+
+    // 3. Reglas de RECHAZO (Si no se cumplió lo anterior)
+    
+    if (ogType === 'website') {
+        return false;
+    }
+
+    // Si llegamos aquí, no hay og:type=article, ni fecha clara.
+    // Probablemente sea una sección o portada.
     return false;
 }
 
-/**
- * Obtiene el color del badge basado en la puntuación.
- * @param {number} score - Puntuación de 0 a 100.
- * @returns {string} - Clase CSS correspondiente.
- */
+// ========================================================
+// UI RENDERING
+// ========================================================
+
 function getBadgeClass(score) {
     if (score >= 70) return 'hemingwai-badge-high'; // Verde
     if (score >= 50) return 'hemingwai-badge-medium'; // Amarillo
     return 'hemingwai-badge-low'; // Rojo
 }
 
-/**
- * Helper para obtener el código hexadecimal del color (para uso inline si es necesario)
- */
 function getBadgeColorHex(score) {
     if (score >= 70) return '#28a745';
     if (score >= 50) return '#ffc107';
     return '#dc3545';
 }
 
-/**
- * Renderiza la interfaz de usuario para una noticia individual (Badge + Popover).
- * @param {object} data - Datos devueltos por la API.
- */
 function renderArticleUI(data) {
     const h1 = document.querySelector('h1');
-    if (!h1 || h1.dataset.hemingwai) return; // Evitar duplicados
+    if (!h1 || h1.dataset.hemingwai) return;
 
-    h1.dataset.hemingwai = "active"; // Marcar como procesado
+    h1.dataset.hemingwai = "active";
     
-    // Extracción segura de datos con valores por defecto
     const puntuacion = data.puntuacion !== undefined ? data.puntuacion : '?';
     const resumen = data.resumen_valoracion || "Sin resumen disponible.";
     const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
     const id = data.id || '';
     
-    // 1. Crear el Badge (span inline-block)
     const badge = document.createElement('span');
     badge.className = `hemingwai-badge ${getBadgeClass(puntuacion)}`;
     badge.textContent = puntuacion;
     badge.title = "Click para ver detalles del análisis de HemingwAI";
 
-    // 2. Crear el Popover (div block)
     const popover = document.createElement('div');
     popover.className = 'hemingwai-popover';
     
-    // Contenido del Popover
     popover.innerHTML = `
         <h4>Análisis HemingwAI</h4>
-        
         <div class="hemingwai-section">
             <span class="hemingwai-label">Puntuación Global</span>
             <span class="hemingwai-text" style="font-size: 1.2em; font-weight: bold; color: ${getBadgeColorHex(puntuacion)}">${puntuacion}/100</span>
         </div>
-
         <div class="hemingwai-section">
             <span class="hemingwai-label">Resumen</span>
             <div class="hemingwai-text">${resumen}</div>
         </div>
-
         <div class="hemingwai-section">
             <span class="hemingwai-label">Análisis del Titular</span>
             <div class="hemingwai-text">${resumenTitular}</div>
         </div>
-        
         <div style="text-align: right; margin-top: 10px;">
              <a href="https://hemingwai-frontend-5vw6.onrender.com/analisis/${id}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
         </div>
     `;
 
-    // 3. Insertar en el DOM
     const wrapper = document.createElement('span');
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-flex';
@@ -117,19 +198,13 @@ function renderArticleUI(data) {
     
     h1.appendChild(wrapper);
 
-    // 4. Lógica de Interacción (Toggle)
     badge.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault();
-        
         const isVisible = popover.classList.contains('visible');
-        
-        // Cerrar otros popovers
         document.querySelectorAll('.hemingwai-popover').forEach(p => p.classList.remove('visible'));
-
         if (!isVisible) {
             popover.classList.add('visible');
-            // Ajustar posición si se sale de pantalla (básico)
             const rect = popover.getBoundingClientRect();
             if (rect.right > window.innerWidth) {
                 popover.style.left = 'auto';
@@ -138,7 +213,6 @@ function renderArticleUI(data) {
         }
     });
 
-    // Cerrar al hacer click fuera
     document.addEventListener('click', (e) => {
         if (!wrapper.contains(e.target)) {
             popover.classList.remove('visible');
@@ -146,14 +220,8 @@ function renderArticleUI(data) {
     });
 }
 
-/**
- * Renderiza un badge pequeño para listados/portadas.
- * @param {HTMLElement} anchor - El elemento <a>.
- * @param {object} data - Datos de la noticia.
- */
 function renderListBadge(anchor, data) {
     if (anchor.dataset.hemingwai === "active") return;
-    
     anchor.dataset.hemingwai = "active";
     
     const puntuacion = data.puntuacion !== undefined ? data.puntuacion : '?';
@@ -164,23 +232,20 @@ function renderListBadge(anchor, data) {
     badge.textContent = puntuacion;
     badge.title = `Puntuación HemingwAI: ${puntuacion}/100`;
 
-    // Envolver en enlace si hay ID
     if (id) {
         const link = document.createElement('a');
         link.href = `https://hemingwai-frontend-5vw6.onrender.com/analisis/${id}`;
         link.target = "_blank";
         link.style.textDecoration = "none";
-        link.style.display = "inline-flex"; // Mantener alineación
+        link.style.display = "inline-flex";
         link.appendChild(badge);
         
-        // Insertar después del anchor
         if (anchor.nextSibling) {
             anchor.parentNode.insertBefore(link, anchor.nextSibling);
         } else {
             anchor.parentNode.appendChild(link);
         }
     } else {
-         // Insertar directamente si no hay ID (raro si está analizado)
          if (anchor.nextSibling) {
             anchor.parentNode.insertBefore(badge, anchor.nextSibling);
         } else {
@@ -189,54 +254,63 @@ function renderListBadge(anchor, data) {
     }
 }
 
+// ========================================================
+// LOGICA PRINCIPAL
+// ========================================================
 
 /**
- * Procesa la página actual como una noticia individual.
+ * Procesa la página actual como noticia, usando el endpoint BATCH para consistencia.
  */
 async function processArticlePage() {
-    console.log("HemingwAI: Artículo detectado. Consultando API...");
+    console.log("HemingwAI: Artículo detectado. Consultando API (Batch)...");
+    
+    const currentUrl = window.location.href;
+    const currentUrlNorm = normalizeUrl(currentUrl);
 
     try {
-        const response = await fetch(API_ENDPOINT_SINGLE, {
+        // Usamos check-urls enviando un array de 1 elemento
+        const response = await fetch(API_ENDPOINT_BATCH, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: window.location.href })
+            body: JSON.stringify({ urls: [currentUrl] })
         });
 
         if (!response.ok) {
-            if (response.status === 404) {
-                console.log("HemingwAI: Noticia no analizada todavía.");
-            } else {
-                console.error("HemingwAI: Error en la respuesta del servidor", response.status);
-            }
+            console.error("HemingwAI: Error en la respuesta del servidor", response.status);
             return;
         }
 
         const data = await response.json();
+        const resultados = data.resultados || [];
+        
+        // Buscar el resultado que coincida con la URL actual
+        const match = resultados.find(r => normalizeUrl(r.url) === currentUrlNorm);
 
-        if (data.analizado && data.puntuacion !== undefined) {
-            renderArticleUI(data);
+        if (match && match.analizado && match.puntuacion !== undefined) {
+            console.log("HemingwAI: Noticia analizada encontrada.", match);
+            renderArticleUI(match);
+        } else {
+            console.log("HemingwAI: Noticia no analizada (batch).");
         }
 
     } catch (error) {
-        console.error("HemingwAI: Error de conexión (Single)", error);
+        console.error("HemingwAI: Error de conexión (Single/Batch)", error);
     }
 }
 
 /**
- * Escanea una página de listado/portada buscando enlaces a noticias.
+ * Escanea una página de listado/portada.
  */
 async function scanListingPage() {
     console.log("HemingwAI: Escaneando listado/portada...");
     
     const anchors = Array.from(document.querySelectorAll('a'));
     const candidates = [];
-    const urlToAnchorMap = new Map(); // Mapa para renderizar después
+    const urlToAnchorMap = new Map(); // Mapa NormUrl -> Array[Anchor]
 
     const currentOrigin = window.location.origin;
 
     for (const a of anchors) {
-        // Filtrado básico
         if (candidates.length >= MAX_URLS_PER_PAGE) break;
         if (a.dataset.hemingwai === "active") continue;
         
@@ -246,25 +320,26 @@ async function scanListingPage() {
         try {
             const urlObj = new URL(href, currentOrigin);
             
-            // Filtros
-            if (urlObj.origin !== currentOrigin) continue; // Solo enlaces internos
-            if (urlObj.pathname === '/' || urlObj.pathname === '') continue; // Ignorar home
-            if (urlObj.hash) continue; // Ignorar anclas internas
-            if ((a.textContent || "").trim().length < 20) continue; // Ignorar enlaces cortos (menús, etc)
+            if (urlObj.origin !== currentOrigin) continue;
+            if (urlObj.pathname === '/' || urlObj.pathname === '') continue;
+            if (urlObj.hash) continue;
+            if ((a.textContent || "").trim().length < 20) continue;
             
-            // Añadir a candidatos
             const fullUrl = urlObj.href;
-            candidates.push(fullUrl);
-            
-            // Guardar referencia al anchor (puede haber múltiples anchors a la misma URL)
-            if (!urlToAnchorMap.has(fullUrl)) {
-                urlToAnchorMap.set(fullUrl, []);
-            }
-            urlToAnchorMap.get(fullUrl).push(a);
+            const normUrl = normalizeUrl(fullUrl);
 
-        } catch (e) {
-            // Ignorar URLs inválidas
-        }
+            // Evitar duplicados en candidates
+            if (!candidates.includes(fullUrl)) {
+                 candidates.push(fullUrl);
+            }
+            
+            // Mapear por URL Normalizada
+            if (!urlToAnchorMap.has(normUrl)) {
+                urlToAnchorMap.set(normUrl, []);
+            }
+            urlToAnchorMap.get(normUrl).push(a);
+
+        } catch (e) { }
     }
 
     if (candidates.length === 0) {
@@ -272,15 +347,14 @@ async function scanListingPage() {
         return;
     }
 
-    // Eliminar duplicados en la lista de envío
-    const uniqueUrls = [...new Set(candidates)];
-    console.log(`HemingwAI: Consultando batch para ${uniqueUrls.length} URLs...`);
+    // Enviamos las URLs originales (uniques)
+    console.log(`HemingwAI: Consultando batch para ${candidates.length} URLs...`);
 
     try {
         const response = await fetch(API_ENDPOINT_BATCH, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ urls: uniqueUrls })
+            body: JSON.stringify({ urls: candidates })
         });
 
         if (!response.ok) {
@@ -291,55 +365,37 @@ async function scanListingPage() {
         const data = await response.json();
         const resultados = data.resultados || [];
 
-        // Procesar resultados
         let foundCount = 0;
         for (const res of resultados) {
             if (res.analizado) {
-                foundCount++;
-                // Buscar qué anchors apuntaban a esta URL (o equivalente)
-                // Nota: El backend devuelve la URL normalizada en 'url' si queremos ser estrictos, 
-                // pero aquí 'res.url' es lo que el backend procesó.
-                // Como el backend normaliza, puede que la URL devuelta no coincida string-exacto con la enviada 
-                // si tenía query params que nosotros no quitamos en el frontend (aunque intentamos no enviar cosas raras).
+                // El backend devuelve 'url' normalizada (o tal cual la procesó python)
+                const resUrlNorm = normalizeUrl(res.url);
                 
-                // Estrategia robusta: El backend devuelve la 'url' que le enviamos (normalizada). 
-                // Pero nuestro map usa la URL completa.
-                // Deberíamos normalizar aquí también para hacer match, O confiar en que el backend devuelve la URL que matchea.
-                
-                // En nuestra implementación de python batch, devolvemos la 'norm_url'.
-                // Así que necesitamos comparar normalizado con normalizado.
-                
-                const resUrlNorm = res.url; // Ya viene normalizada del backend
-
-                // Iteramos nuestro mapa y normalizamos sus claves para ver si coinciden
-                for (const [originalUrl, anchorList] of urlToAnchorMap.entries()) {
-                     // Normalización simple frontend para comparar
-                     let mapUrlNorm = originalUrl;
-                     try {
-                         const u = new URL(originalUrl);
-                         mapUrlNorm = u.origin + u.pathname;
-                     } catch(e) {}
-
-                     // Comparación (el backend normaliza scheme+netloc+path)
-                     if (mapUrlNorm === resUrlNorm) {
-                         anchorList.forEach(anchor => renderListBadge(anchor, res));
-                     }
+                // Buscar en nuestro mapa
+                if (urlToAnchorMap.has(resUrlNorm)) {
+                    const anchorsToUpdate = urlToAnchorMap.get(resUrlNorm);
+                    anchorsToUpdate.forEach(anchor => {
+                        renderListBadge(anchor, res);
+                        foundCount++;
+                    });
                 }
             }
         }
-        console.log(`HemingwAI: Se encontraron ${foundCount} noticias analizadas.`);
+        console.log(`HemingwAI: Se pintaron badges en ${foundCount} elementos.`);
 
     } catch (error) {
         console.error("HemingwAI: Error batch fetch", error);
     }
 }
 
-
 /**
  * Función principal de inicio.
  */
 async function init() {
-    if (isNewsArticle()) {
+    const isNews = isNewsArticle();
+    console.log("HemingwAI: isNewsArticle ->", isNews, window.location.href);
+
+    if (isNews) {
         await processArticlePage();
     } else {
         await scanListingPage();
@@ -347,7 +403,6 @@ async function init() {
 }
 
 // Ejecutar al cargar (idle)
-// Usar requestIdleCallback si está disponible para no bloquear carga inicial
 if (window.requestIdleCallback) {
     window.requestIdleCallback(() => init());
 } else {
