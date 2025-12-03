@@ -16,7 +16,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     user-select: none;
     font-family: sans-serif;
-    z-index: 9999;
+    z-index: 2147483647; /* Máximo z-index seguro */
 }
 
 /* Colores de puntuación */
@@ -64,21 +64,19 @@
 /* --- Popover --- */
 
 .hemingwai-popover {
-    position: absolute;
-    top: 100%; /* Justo debajo */
-    left: 0;
+    /* Fixed para que funcione relativo al viewport cuando se adjunta al body */
+    position: fixed; 
     width: 300px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     padding: 15px;
-    z-index: 10000;
+    z-index: 2147483647; /* Máximo z-index seguro */
     display: none; /* Oculto por defecto */
     font-family: sans-serif;
     text-align: left;
     color: #333;
-    margin-top: 8px; /* Separación del badge */
 }
 
 .hemingwai-popover.visible {

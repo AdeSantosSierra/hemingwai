@@ -4,7 +4,7 @@
 // Configuración
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
-const MAX_URLS_PER_PAGE = 100;
+const MAX_URLS_PER_PAGE = 50;
 const LOGO_URL = chrome.runtime.getURL("logo_small.png");
 
 // ========================================================
@@ -181,55 +181,87 @@ function getPopoverContent(data) {
 /**
  * Adjunta la lógica de popover a un badge.
  * Retorna el wrapper que contiene badge + popover.
+ * El popover se monta en document.body para evitar problemas de z-index (stacking context).
  */
 function attachPopover(badge, data) {
+    // Creamos el popover pero NO lo añadimos al wrapper, lo gestionaremos dinámicamente en body
     const popover = document.createElement('div');
     popover.className = 'hemingwai-popover';
     popover.innerHTML = getPopoverContent(data);
 
     const wrapper = document.createElement('span');
     wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-flex'; // Ajuste para que no rompa layout
-    wrapper.style.verticalAlign = 'middle'; // Ajuste alineación
+    wrapper.style.display = 'inline-flex'; 
+    wrapper.style.verticalAlign = 'middle'; 
+    wrapper.style.zIndex = '2147483647'; // High z-index para el badge wrapper
     
     wrapper.appendChild(badge);
-    wrapper.appendChild(popover);
 
     // Eventos Click
     badge.addEventListener('click', (e) => {
         e.stopPropagation();
         e.preventDefault(); // Evita navegar si está dentro de un <a>
 
-        // Cerrar otros
-        document.querySelectorAll('.hemingwai-popover').forEach(p => {
-            if (p !== popover) p.classList.remove('visible');
+        // Si ya está visible y es ESTE mismo popover, lo cerramos
+        if (popover.classList.contains('visible') && popover.parentNode === document.body) {
+            closePopover(popover);
+            return;
+        }
+
+        // Cerrar otros popovers abiertos
+        document.querySelectorAll('.hemingwai-popover.visible').forEach(p => {
+            closePopover(p);
         });
 
-        const isVisible = popover.classList.contains('visible');
-        if (!isVisible) {
-            popover.classList.add('visible');
-            
-            // Posicionamiento inteligente simple
-            const rect = popover.getBoundingClientRect();
-            
-            // Si se sale por la derecha
-            if (rect.right > window.innerWidth) {
-                popover.style.left = 'auto';
-                popover.style.right = '0';
-            }
-        } else {
-            popover.classList.remove('visible');
+        // Mostrar este popover
+        document.body.appendChild(popover);
+        // Forzamos reflow para que la transición funcione si hay
+        void popover.offsetWidth; 
+        popover.classList.add('visible');
+        
+        // Posicionamiento
+        const rect = badge.getBoundingClientRect();
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+        // Posición base: debajo del badge
+        let top = rect.bottom + scrollTop + 8;
+        let left = rect.left + scrollLeft;
+
+        // Ajuste si se sale por la derecha
+        // popover.offsetWidth puede ser 0 si no está visible, pero ya lo añadimos al DOM
+        const popoverWidth = 320; // Ancho aproximado definido en CSS o dinámico
+        if (rect.left + popoverWidth > window.innerWidth) {
+             left = (rect.right + scrollLeft) - popoverWidth;
         }
+
+        // Ajuste si se sale por abajo (opcional, por ahora simple)
+
+        popover.style.top = `${top}px`;
+        popover.style.left = `${left}px`;
     });
 
     // Cerrar al hacer click fuera
+    // Usamos un listener global que verifica si el click fue fuera del popover Y del badge
+    // Nota: Como el popover está en body, 'wrapper.contains' no incluye al popover.
     document.addEventListener('click', (e) => {
-        if (!wrapper.contains(e.target)) {
-            popover.classList.remove('visible');
+        if (popover.classList.contains('visible')) {
+            if (!popover.contains(e.target) && !badge.contains(e.target)) {
+                closePopover(popover);
+            }
         }
     });
 
     return wrapper;
+}
+
+function closePopover(popover) {
+    popover.classList.remove('visible');
+    // Esperar a transición si la hay, o eliminar directamente
+    // Para simplificar y evitar fugas de memoria, lo quitamos del DOM
+    if (popover.parentNode) {
+        popover.parentNode.removeChild(popover);
+    }
 }
 
 // ========================================================
@@ -257,8 +289,7 @@ function renderListBadge(anchor, data) {
     const badge = createBadgeElement(data, true); // Pequeño
     const wrapper = attachPopover(badge, data);
     
-    // Insertar en el DOM (justo después del enlace o dentro)
-    // Para no romper estilos, insertamos después.
+    // Insertar en el DOM
     if (anchor.nextSibling) {
         anchor.parentNode.insertBefore(wrapper, anchor.nextSibling);
     } else {
@@ -311,14 +342,9 @@ async function processArticlePage() {
         // Buscar coincidencia
         const match = resultados.find(r => normalizeUrl(r.url) === currentUrlNorm);
 
-        // Caso A (Analizado) o Caso B (Registrado sin puntuación)
         if (match && match.id) {
-            // Si tiene id, es relevante (sea A o B).
-            // La UI se encarga de diferenciar.
             console.log("HemingwAI: Resultado encontrado", match);
             renderArticleUI(match);
-        } else {
-            // Caso C: No existe o no tiene ID -> No hacer nada
         }
 
     } catch (error) {
@@ -332,7 +358,6 @@ async function scanListingPage() {
     const anchors = Array.from(document.querySelectorAll('a'));
     
     // 1. Recopilar Candidatos
-    // Array de { fullUrl, normUrlDedup, anchor, top }
     const allCandidates = [];
     const currentOrigin = window.location.origin;
 
@@ -347,21 +372,14 @@ async function scanListingPage() {
             if (urlObj.origin !== currentOrigin) continue;
             if (urlObj.pathname === '/' || urlObj.pathname === '') continue;
             if (urlObj.hash) continue;
-            // Filtro básico de texto o imagen? Asumimos enlaces visibles.
-            // (Opcional: chequear si está visible)
+
             const rect = a.getBoundingClientRect();
             const absoluteTop = window.scrollY + rect.top;
 
-            // --- Lógica actualizada de filtrado de texto ---
-            // Revisar si el texto del enlace es muy corto, pero
-            // permitirlo si está dentro de un encabezado (h1, h2, h3) con texto suficiente.
-            
             const anchorText = (a.textContent || "").trim();
             const heading = a.closest('h1, h2, h3');
             const headingText = heading ? heading.textContent.trim() : anchorText;
             
-            // Si el texto relevante (heading o anchor) es muy corto (< 20) y no hay imagen, saltar.
-            // (Antes era < 15 sobre anchorText. Ajustado a < 20 sobre headingText a petición).
             if (headingText.length < 20 && !a.querySelector('img')) continue; 
             
             const fullUrl = urlObj.href;
@@ -374,35 +392,28 @@ async function scanListingPage() {
                 top: absoluteTop
             });
 
-            // Log de ejemplo (solo uno para no saturar)
-            if (allCandidates.length === 1) {
-                console.log("HemingwAI: ejemplo candidato", {
-                  href: fullUrl,
-                  anchorText,
-                  headingText
-                });
-            }
-
         } catch (e) { }
     }
 
     console.log("HemingwAI: candidatos listados ->", allCandidates.length);
 
     // 2. Ordenar por posición vertical (Top)
+    // Esto asegura que al elegir "el primero" elegimos el que está más arriba visualmente.
     allCandidates.sort((a, b) => a.top - b.top);
 
-    // 3. Seleccionar únicos (hasta MAX) y mapear
-    const uniqueUrlsToQuery = []; // Array strings (fullUrl)
+    // 3. Seleccionar únicos y mapear
+    // CAMBIO: urlToAnchorMap ahora guarda solo UN anchor (el primero/mejor) por URL
+    const uniqueUrlsToQuery = []; 
     const seenDedupUrls = new Set();
-    const urlToAnchorMap = new Map(); // DedupNormUrl -> Array[Anchor]
+    const urlToAnchorMap = new Map(); // DedupNormUrl -> SingleAnchor
 
     for (const cand of allCandidates) {
+        // Solo guardamos el primer anchor que encontramos para esta URL
         if (!urlToAnchorMap.has(cand.normUrlDedup)) {
-            urlToAnchorMap.set(cand.normUrlDedup, []);
+            urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
         }
-        urlToAnchorMap.get(cand.normUrlDedup).push(cand.anchor);
-
-        // Si es la primera vez que vemos esta URL normalizada, la añadimos a la lista de query
+        
+        // Lógica de query batch (mantenemos hasta MAX)
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
             seenDedupUrls.add(cand.normUrlDedup);
             if (uniqueUrlsToQuery.length < MAX_URLS_PER_PAGE) {
@@ -430,20 +441,16 @@ async function scanListingPage() {
 
         let foundCount = 0;
         for (const res of resultados) {
-            // El resultado trae 'url' (la que enviamos o normalizada backend).
-            // Usamos nuestra normalización dedup para encontrar los anchors.
-            if (res.id) { // Caso A o B (Si tiene ID existe)
+            if (res.id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
                 
-                if (urlToAnchorMap.has(resUrlDedup)) {
-                    const anchorsToUpdate = urlToAnchorMap.get(resUrlDedup);
-                    // Renderizamos en TODOS los anchors que apuntan a esa noticia
-                    anchorsToUpdate.forEach(anchor => {
-                        renderListBadge(anchor, res);
-                    });
+                // CAMBIO: Obtenemos el anchor único
+                const anchor = urlToAnchorMap.get(resUrlDedup);
+                
+                if (anchor) {
+                    renderListBadge(anchor, res);
                     foundCount++;
                     
-                    // Log de estado
                     const state = (res.puntuacion !== undefined && res.puntuacion !== null) ? "ANALIZADA" : "PENDIENTE";
                     console.log(`HemingwAI: URL ${state} ->`, res.url);
                 }
