@@ -4,18 +4,13 @@
 // Configuración
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
-const MAX_URLS_PER_PAGE = 100;
+const MAX_URLS_PER_PAGE = 100; // Confirmed 100
 const LOGO_URL = chrome.runtime.getURL("logo_small.png");
 
 // ========================================================
 // HELPERS
 // ========================================================
 
-/**
- * Normaliza una URL para comparaciones con la API (Backend).
- * Mantiene origin + pathname (sin query params ni hash).
- * NO modifica trailing slashes para coincidir con lo que espera el backend.
- */
 function normalizeUrl(urlStr) {
     try {
         const u = new URL(urlStr);
@@ -25,10 +20,6 @@ function normalizeUrl(urlStr) {
     }
 }
 
-/**
- * Normaliza una URL para deduplicación local en el frontend.
- * Elimina trailing slashes del pathname para agrupar /path y /path/.
- */
 function normalizeUrlForDedup(urlStr) {
     try {
         const u = new URL(urlStr);
@@ -81,9 +72,9 @@ function getArticleTagCount() {
 // ========================================================
 
 function getBadgeClass(score) {
-    if (score >= 70) return 'hemingwai-badge-high'; // Verde
-    if (score >= 50) return 'hemingwai-badge-medium'; // Amarillo
-    return 'hemingwai-badge-low'; // Rojo
+    if (score >= 70) return 'hemingwai-badge-high'; 
+    if (score >= 50) return 'hemingwai-badge-medium'; 
+    return 'hemingwai-badge-low'; 
 }
 
 function getBadgeColorHex(score) {
@@ -92,11 +83,6 @@ function getBadgeColorHex(score) {
     return '#dc3545';
 }
 
-/**
- * Crea el elemento visual del badge.
- * Caso A: Puntuación numérica.
- * Caso B: Logo (pendiente).
- */
 function createBadgeElement(data, isSmall = false) {
     const badge = document.createElement('span');
     const isPending = (data.puntuacion === undefined || data.puntuacion === null);
@@ -105,7 +91,6 @@ function createBadgeElement(data, isSmall = false) {
     if (isSmall) baseClass += ' hemingwai-badge-small';
 
     if (isPending) {
-        // CASO B: Registrada pero no analizada
         badge.className = `${baseClass} hemingwai-badge-pending`;
         const img = document.createElement('img');
         img.src = LOGO_URL;
@@ -113,7 +98,6 @@ function createBadgeElement(data, isSmall = false) {
         badge.appendChild(img);
         badge.title = "Noticia registrada en HemingwAI (pendiente de análisis)";
     } else {
-        // CASO A: Analizada
         const score = data.puntuacion;
         badge.className = `${baseClass} ${getBadgeClass(score)}`;
         badge.textContent = score;
@@ -123,9 +107,6 @@ function createBadgeElement(data, isSmall = false) {
     return badge;
 }
 
-/**
- * Genera el contenido HTML del popover.
- */
 function getPopoverContent(data) {
     const isPending = (data.puntuacion === undefined || data.puntuacion === null);
     const id = data.id || '';
@@ -134,7 +115,6 @@ function getPopoverContent(data) {
     let contentHtml = '';
 
     if (isPending) {
-        // CASO B
         contentHtml = `
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
@@ -144,7 +124,6 @@ function getPopoverContent(data) {
             </div>
         `;
     } else {
-        // CASO A
         const score = data.puntuacion;
         const resumen = data.resumen_valoracion || "Sin resumen disponible.";
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
@@ -166,7 +145,6 @@ function getPopoverContent(data) {
         `;
     }
 
-    // Link común
     if (id) {
         contentHtml += `
             <div style="text-align: right; margin-top: 10px;">
@@ -179,88 +157,44 @@ function getPopoverContent(data) {
 }
 
 /**
- * Adjunta la lógica de popover a un badge.
- * Retorna el wrapper que contiene badge + popover.
- * El popover se monta en document.body para evitar problemas de z-index (stacking context).
+ * Shared helper to attach popover logic to a badge wrapper.
+ * The popover is appended INSIDE the wrapper and positioned absolutely relative to it.
  */
-function attachPopover(badge, data) {
-    // Creamos el popover pero NO lo añadimos al wrapper, lo gestionaremos dinámicamente en body
+function attachPopoverToBadge(wrapper, badge, data) {
     const popover = document.createElement('div');
     popover.className = 'hemingwai-popover';
     popover.innerHTML = getPopoverContent(data);
 
-    const wrapper = document.createElement('span');
-    wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-flex'; 
-    wrapper.style.verticalAlign = 'middle'; 
-    wrapper.style.zIndex = '2147483647'; // High z-index para el badge wrapper
-    
-    wrapper.appendChild(badge);
+    // Append popover inside wrapper as requested
+    wrapper.appendChild(popover);
 
-    // Eventos Click
+    // Toggle visibility on click
     badge.addEventListener('click', (e) => {
+        e.preventDefault();
         e.stopPropagation();
-        e.preventDefault(); // Evita navegar si está dentro de un <a>
 
-        // Si ya está visible y es ESTE mismo popover, lo cerramos
-        if (popover.classList.contains('visible') && popover.parentNode === document.body) {
-            closePopover(popover);
-            return;
-        }
-
-        // Cerrar otros popovers abiertos
+        // Close other open popovers
         document.querySelectorAll('.hemingwai-popover.visible').forEach(p => {
-            closePopover(p);
+            if (p !== popover) p.classList.remove('visible');
         });
 
-        // Mostrar este popover
-        document.body.appendChild(popover);
-        // Forzamos reflow para que la transición funcione si hay
-        void popover.offsetWidth; 
-        popover.classList.add('visible');
-        
-        // Posicionamiento
-        const rect = badge.getBoundingClientRect();
-        const scrollTop = window.scrollY || document.documentElement.scrollTop;
-        const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
-
-        // Posición base: debajo del badge
-        let top = rect.bottom + scrollTop + 8;
-        let left = rect.left + scrollLeft;
-
-        // Ajuste si se sale por la derecha
-        // popover.offsetWidth puede ser 0 si no está visible, pero ya lo añadimos al DOM
-        const popoverWidth = 320; // Ancho aproximado definido en CSS o dinámico
-        if (rect.left + popoverWidth > window.innerWidth) {
-             left = (rect.right + scrollLeft) - popoverWidth;
-        }
-
-        // Ajuste si se sale por abajo (opcional, por ahora simple)
-
-        popover.style.top = `${top}px`;
-        popover.style.left = `${left}px`;
+        popover.classList.toggle('visible');
     });
 
-    // Cerrar al hacer click fuera
-    // Usamos un listener global que verifica si el click fue fuera del popover Y del badge
-    // Nota: Como el popover está en body, 'wrapper.contains' no incluye al popover.
-    document.addEventListener('click', (e) => {
-        if (popover.classList.contains('visible')) {
-            if (!popover.contains(e.target) && !badge.contains(e.target)) {
-                closePopover(popover);
-            }
-        }
-    });
-
-    return wrapper;
-}
-
-function closePopover(popover) {
-    popover.classList.remove('visible');
-    // Esperar a transición si la hay, o eliminar directamente
-    // Para simplificar y evitar fugas de memoria, lo quitamos del DOM
-    if (popover.parentNode) {
-        popover.parentNode.removeChild(popover);
+    // Close on click outside (Global listener, added once technically, but simple to add check inside)
+    // To avoid adding multiple global listeners, we can rely on a single one if we assume it exists or add one safely.
+    // For simplicity and robustness within this content script scope:
+    if (!window._hemingwaiGlobalClick) {
+        window._hemingwaiGlobalClick = true;
+        document.addEventListener('click', (e) => {
+            // Close all popovers if click is outside
+            document.querySelectorAll('.hemingwai-popover.visible').forEach(p => {
+                // If the click is NOT inside the wrapper that contains this popover
+                if (!p.parentNode.contains(e.target)) {
+                    p.classList.remove('visible');
+                }
+            });
+        });
     }
 }
 
@@ -274,9 +208,18 @@ function renderArticleUI(data) {
 
     h1.dataset.hemingwai = "active";
     
-    // Crear componentes
-    const badge = createBadgeElement(data, false); // Grande
-    const wrapper = attachPopover(badge, data);
+    // Create wrapper
+    const wrapper = document.createElement('span');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-flex';
+    wrapper.style.verticalAlign = 'middle';
+    
+    // Create badge
+    const badge = createBadgeElement(data, false); // Large
+    wrapper.appendChild(badge);
+
+    // Attach popover
+    attachPopoverToBadge(wrapper, badge, data);
     
     h1.appendChild(wrapper);
 }
@@ -285,11 +228,20 @@ function renderListBadge(anchor, data) {
     if (anchor.dataset.hemingwai === "active") return;
     anchor.dataset.hemingwai = "active";
     
-    // Crear componentes
-    const badge = createBadgeElement(data, true); // Pequeño
-    const wrapper = attachPopover(badge, data);
+    // Create wrapper
+    const wrapper = document.createElement('span');
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-flex';
+    wrapper.style.verticalAlign = 'middle';
+
+    // Create badge
+    const badge = createBadgeElement(data, true); // Small
+    wrapper.appendChild(badge);
+
+    // Attach popover
+    attachPopoverToBadge(wrapper, badge, data);
     
-    // Insertar en el DOM
+    // Insert wrapper AFTER anchor
     if (anchor.nextSibling) {
         anchor.parentNode.insertBefore(wrapper, anchor.nextSibling);
     } else {
@@ -339,7 +291,6 @@ async function processArticlePage() {
         const data = await response.json();
         const resultados = data.resultados || [];
         
-        // Buscar coincidencia
         const match = resultados.find(r => normalizeUrl(r.url) === currentUrlNorm);
 
         if (match && match.id) {
@@ -357,7 +308,6 @@ async function scanListingPage() {
     
     const anchors = Array.from(document.querySelectorAll('a'));
     
-    // 1. Recopilar Candidatos
     const allCandidates = [];
     const currentOrigin = window.location.origin;
 
@@ -397,23 +347,17 @@ async function scanListingPage() {
 
     console.log("HemingwAI: candidatos listados ->", allCandidates.length);
 
-    // 2. Ordenar por posición vertical (Top)
-    // Esto asegura que al elegir "el primero" elegimos el que está más arriba visualmente.
     allCandidates.sort((a, b) => a.top - b.top);
 
-    // 3. Seleccionar únicos y mapear
-    // CAMBIO: urlToAnchorMap ahora guarda solo UN anchor (el primero/mejor) por URL
     const uniqueUrlsToQuery = []; 
     const seenDedupUrls = new Set();
-    const urlToAnchorMap = new Map(); // DedupNormUrl -> SingleAnchor
+    const urlToAnchorMap = new Map();
 
     for (const cand of allCandidates) {
-        // Solo guardamos el primer anchor que encontramos para esta URL
         if (!urlToAnchorMap.has(cand.normUrlDedup)) {
             urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
         }
         
-        // Lógica de query batch (mantenemos hasta MAX)
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
             seenDedupUrls.add(cand.normUrlDedup);
             if (uniqueUrlsToQuery.length < MAX_URLS_PER_PAGE) {
@@ -426,7 +370,6 @@ async function scanListingPage() {
 
     console.log(`HemingwAI: Consultando batch para ${uniqueUrlsToQuery.length} URLs únicas...`);
 
-    // 4. Consultar API
     try {
         const response = await fetch(API_ENDPOINT_BATCH, {
             method: 'POST',
@@ -443,8 +386,6 @@ async function scanListingPage() {
         for (const res of resultados) {
             if (res.id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
-                
-                // CAMBIO: Obtenemos el anchor único
                 const anchor = urlToAnchorMap.get(resUrlDedup);
                 
                 if (anchor) {
@@ -463,9 +404,6 @@ async function scanListingPage() {
     }
 }
 
-/**
- * Función principal de inicio.
- */
 async function init() {
     const isNews = isNewsArticle();
     console.log("HemingwAI: isNewsArticle ->", isNews, window.location.href);
@@ -477,7 +415,6 @@ async function init() {
     }
 }
 
-// Ejecutar al cargar (idle)
 if (window.requestIdleCallback) {
     window.requestIdleCallback(() => init());
 } else {

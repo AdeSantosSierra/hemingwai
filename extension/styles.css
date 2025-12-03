@@ -64,19 +64,23 @@
 /* --- Popover --- */
 
 .hemingwai-popover {
-    /* Fixed para que funcione relativo al viewport cuando se adjunta al body */
-    position: fixed; 
+    /* Anchored relative to the wrapper */
+    position: absolute;
+    top: 130%; /* Just below the badge */
+    left: 0;
     width: 300px;
+    max-width: 420px;
     background: white;
     border: 1px solid #ddd;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.25);
     padding: 15px;
-    z-index: 2147483647; /* Máximo z-index seguro */
+    z-index: 999999;
     display: none; /* Oculto por defecto */
     font-family: sans-serif;
     text-align: left;
     color: #333;
+    transform: none; /* Reset any potential transforms */
 }
 
 .hemingwai-popover.visible {
