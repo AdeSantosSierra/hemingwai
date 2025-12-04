@@ -105,7 +105,7 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 function setupBadgeInteractions(wrapper, badge, data) {
-    // HOVER on WRAPPER
+    // HOVER on WRAPPER triggers popover
     wrapper.addEventListener('mouseenter', () => {
         cancelHide();
         // If we don't have an active popover (or it's a different one, though we usually just recreate), show it.
@@ -208,35 +208,40 @@ function getBadgeColorHex(score) {
     return '#dc3545';
 }
 
-function createBadgeElement(data, isSmall = false) {
-    const badge = document.createElement('span');
-    const isPending = (data.puntuacion === undefined || data.puntuacion === null);
+function createBadgeElement(data) {
+    const isPending = (data.puntuacion === undefined || data.puntuacion === null || String(data.puntuacion).trim() === '');
 
-    let baseClass = 'hemingwai-badge';
-    if (isSmall) baseClass += ' hemingwai-badge-small';
+    const badge = document.createElement('div');
+    badge.className = 'hemingwai-badge';
+
+    // Logo Image
+    const img = document.createElement('img');
+    img.src = LOGO_URL;
+    img.alt = 'HemingwAI';
+    img.className = 'hemingwai-badge-logo';
+    badge.appendChild(img);
 
     if (isPending) {
-        badge.className = `${baseClass} hemingwai-badge-pending`;
-        const img = document.createElement('img');
-        img.src = LOGO_URL;
-        img.alt = 'HemingwAI';
-        badge.appendChild(img);
+        // Pending state: Logo only, specific style
+        badge.classList.add('hemingwai-badge-pending');
         badge.title = "Noticia registrada en HemingwAI (pendiente de análisis)";
     } else {
+        // Scored state: Logo + Score
         const score = data.puntuacion;
-        badge.className = `${baseClass} ${getBadgeClass(score)}`;
-        badge.textContent = score;
+        badge.classList.add(getBadgeClass(score));
         badge.title = `Puntuación HemingwAI: ${score}/100`;
-    }
 
-    // NOTE: Click listener removed from here. 
-    // It is now handled in setupBadgeInteractions called by render functions.
+        const scoreSpan = document.createElement('span');
+        scoreSpan.className = 'hemingwai-badge-score';
+        scoreSpan.textContent = score;
+        badge.appendChild(scoreSpan);
+    }
 
     return badge;
 }
 
 function getPopoverContent(data) {
-    const isPending = (data.puntuacion === undefined || data.puntuacion === null);
+    const isPending = (data.puntuacion === undefined || data.puntuacion === null || String(data.puntuacion).trim() === '');
     const id = data.id || '';
     const linkUrl = `${ANALYSIS_BASE_URL}${id}`;
     
@@ -295,52 +300,62 @@ function getPopoverContent(data) {
 // RENDERING UI
 // ========================================================
 
+function wrapAndAppendBadge(targetElement, badge, data) {
+    // Create Wrapper
+    const wrapper = document.createElement('span');
+    wrapper.className = 'hemingwai-wrapper';
+    
+    // Insert wrapper before target
+    if (targetElement.parentNode) {
+        targetElement.parentNode.insertBefore(wrapper, targetElement);
+        // Move target into wrapper
+        wrapper.appendChild(targetElement);
+        // Append Badge to wrapper (absolute positioned via CSS)
+        wrapper.appendChild(badge);
+        
+        // Setup interactions on the WRAPPER
+        setupBadgeInteractions(wrapper, badge, data);
+    }
+}
+
 function renderArticleUI(data) {
     const h1 = document.querySelector('h1');
     if (!h1 || h1.dataset.hemingwai) return;
 
     h1.dataset.hemingwai = "active";
     
-    // Create wrapper
-    const wrapper = document.createElement('span');
-    wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-flex';
-    wrapper.style.verticalAlign = 'middle';
+    // Create Badge
+    const badge = createBadgeElement(data);
     
-    // Create badge
-    const badge = createBadgeElement(data, false); // Large
+    // For Article H1, we wrap the H1 content, not the H1 itself (to preserve H1 block behavior usually)
+    // Or we can wrap the H1 inner content.
+    // The previous implementation appended a wrapper. 
+    // The new requirement is "wrapper around headline/link".
+    // For H1, let's wrap the internal content to be safe.
+    
+    const wrapper = document.createElement('span');
+    wrapper.className = 'hemingwai-wrapper';
+    
+    // Move all child nodes of h1 to wrapper
+    while (h1.firstChild) {
+        wrapper.appendChild(h1.firstChild);
+    }
+    
     wrapper.appendChild(badge);
-
-    // Setup interactions (hover, click, scroll-close is global)
-    setupBadgeInteractions(wrapper, badge, data);
-
-    // Append to h1
     h1.appendChild(wrapper);
+    
+    setupBadgeInteractions(wrapper, badge, data);
 }
 
 function renderListBadge(anchor, data) {
     if (anchor.dataset.hemingwai === "active") return;
     anchor.dataset.hemingwai = "active";
     
-    // Create wrapper
-    const wrapper = document.createElement('span');
-    wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-flex';
-    wrapper.style.verticalAlign = 'middle';
+    // Create Badge
+    const badge = createBadgeElement(data);
 
-    // Create badge
-    const badge = createBadgeElement(data, true); // Small
-    wrapper.appendChild(badge);
-    
-    // Setup interactions
-    setupBadgeInteractions(wrapper, badge, data);
-    
-    // Insert wrapper AFTER anchor
-    if (anchor.nextSibling) {
-        anchor.parentNode.insertBefore(wrapper, anchor.nextSibling);
-    } else {
-        anchor.parentNode.appendChild(wrapper);
-    }
+    // For list items (anchors), we wrap the anchor itself as requested
+    wrapAndAppendBadge(anchor, badge, data);
 }
 
 // ========================================================

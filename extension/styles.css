@@ -143,3 +143,78 @@
     text-decoration: underline;
     opacity: 0.9;
 }
+
+/* --- New Capsule Badge Styles --- */
+
+.hemingwai-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: baseline; /* Align with text baseline generally, or middle */
+}
+
+.hemingwai-badge {
+    position: absolute;
+    left: 100%; /* Push to the right of the content */
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 8px; /* Gap from text */
+    
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 6px;
+    border-radius: 999px;
+    
+    /* Default font styles */
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 1;
+    color: white; /* Default text color */
+    
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    z-index: 999999;
+    white-space: nowrap; /* Prevent wrapping inside badge */
+}
+
+.hemingwai-badge-logo {
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+    display: block;
+}
+
+/* Add margin only if score exists (handled by sibling selector or just always if mixed) */
+.hemingwai-badge-logo + .hemingwai-badge-score {
+    margin-left: 4px;
+}
+
+.hemingwai-badge-score {
+    display: inline-block;
+    min-width: 14px;
+    text-align: center;
+}
+
+/* Background Colors (reusing logic but applying to capsule) */
+.hemingwai-badge.hemingwai-badge-high {
+    background-color: #28a745;
+}
+.hemingwai-badge.hemingwai-badge-medium {
+    background-color: #ffc107;
+    color: #333; /* Dark text for yellow bg */
+}
+.hemingwai-badge.hemingwai-badge-low {
+    background-color: #dc3545;
+}
+.hemingwai-badge.hemingwai-badge-pending {
+    background-color: #001a33; /* Dark Navy */
+    border: 1px solid #d2d209; /* Lime border */
+    padding: 3px; /* Smaller padding for just logo */
+}
+
+/* Adjust pending logo size if needed */
+.hemingwai-badge.hemingwai-badge-pending .hemingwai-badge-logo {
+    width: 14px; 
+    height: 14px;
+}
