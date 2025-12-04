@@ -15,7 +15,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["logo_small.png"],
+      "resources": ["logo_extension_blue.png", "logo_ectension_blanco.png"],
       "matches": ["<all_urls>"]
     }
   ]

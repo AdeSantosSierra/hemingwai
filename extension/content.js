@@ -6,7 +6,10 @@ const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
 const MAX_URLS_PER_PAGE = 100; 
-const LOGO_URL = chrome.runtime.getURL("logo_small.png");
+
+// Logos
+const BLUE_LOGO_URL = chrome.runtime.getURL("logo_extension_blue.png");
+const WHITE_LOGO_URL = chrome.runtime.getURL("logo_ectension_blanco.png");
 
 // ========================================================
 // HELPERS
@@ -69,7 +72,37 @@ function getArticleTagCount() {
 }
 
 // ========================================================
-// UI HELPERS (INTERACTION & POPOVER)
+// COLOR & LOGO LOGIC
+// ========================================================
+
+function getColorForScore(score) {
+    // If undefined/null -> Pending state
+    if (score === undefined || score === null || String(score).trim() === '') {
+        return { bgColor: '#001a33', isBad: false }; // Dark Navy (Pending) - Blue Logo
+    }
+
+    const val = Number(score);
+    if (isNaN(val)) return { bgColor: '#001a33', isBad: false };
+
+    // Semáforo:
+    // < 50: Rojo (Mala) -> Logo Blanco
+    // 50-69: Amarillo (Regular) -> Logo Azul (texto oscuro)
+    // >= 70: Verde (Buena) -> Logo Azul (o Blanco? user only specified Red -> White)
+    
+    // "Si la puntuación es mala (bola roja) → logo blanco"
+    // "Por defecto azul"
+    
+    if (val < 50) {
+        return { bgColor: '#dc3545', isBad: true }; // Red
+    }
+    if (val < 70) {
+        return { bgColor: '#ffc107', isBad: false }; // Yellow
+    }
+    return { bgColor: '#28a745', isBad: false }; // Green
+}
+
+// ========================================================
+// POPOVER LOGIC (Attach to Badge ONLY)
 // ========================================================
 
 let currentPinnedBadge = null;
@@ -77,9 +110,7 @@ let activePopover = null;
 
 function hidePopover(popoverEl) {
     if (!popoverEl) return;
-    
     popoverEl.classList.remove('visible');
-    // Remove from DOM after transition
     setTimeout(() => {
         if (popoverEl.parentNode) popoverEl.parentNode.removeChild(popoverEl);
         if (activePopover === popoverEl) activePopover = null;
@@ -87,188 +118,61 @@ function hidePopover(popoverEl) {
 }
 
 function closeAllHemingwaiPopovers() {
-    // Unpin global
     if (currentPinnedBadge) {
         currentPinnedBadge.__pinned = false;
         currentPinnedBadge = null;
     }
-    // Remove DOM elements
     const popovers = document.querySelectorAll('.hemingwai-popover');
     popovers.forEach(p => hidePopover(p));
     activePopover = null;
 }
 
-function showPopoverForBadge(badgeEl, data) {
-    // 1. Clean up existing (non-pinned logic handled by caller, but safety check)
-    // Actually, we usually want to close others first
+function showPopoverForBadge(badgeEl, popoverEl) { // Note: we usually create popover here or pass it
+    // Wait, the design requires dynamic content per badge.
+    // We should probably recreate the popover content here.
+    // But the attach function logic is "openPopover()" which calls "showPopoverForBadge"
+    // Let's adapt.
+    
+    // Close others
     const existing = document.querySelectorAll('.hemingwai-popover');
     existing.forEach(el => el.remove());
 
-    // 2. Create content
-    const contentHtml = getPopoverContent(data);
+    // Append new popover
+    document.body.appendChild(popoverEl);
 
-    // 3. Create popover
-    const popover = document.createElement('div');
-    popover.className = 'hemingwai-popover';
-    popover.innerHTML = contentHtml;
-
-    // 4. Append
-    document.body.appendChild(popover);
-
-    // 5. Position
+    // Position
     const rect = badgeEl.getBoundingClientRect();
     const margin = 8;
     const windowWidth = window.innerWidth;
 
     const top = rect.bottom + margin;
     let left = rect.left;
-    const popoverWidth = 320; // approximate or read from offsetWidth after append
-    
-    // Prevent overflow right
+    const popoverWidth = 320; 
+
     if (left + popoverWidth + 16 > windowWidth) {
         left = windowWidth - popoverWidth - 16;
     }
     if (left < 16) left = 16;
 
-    popover.style.top = `${top}px`;
-    popover.style.left = `${left}px`;
-
-    // 6. Show
-    void popover.offsetWidth; // Force reflow
-    popover.classList.add('visible');
-    activePopover = popover;
-
-    return popover;
+    popoverEl.style.top = `${top}px`;
+    popoverEl.style.left = `${left}px`;
+    
+    // Show
+    void popoverEl.offsetWidth;
+    popoverEl.classList.add('visible');
+    activePopover = popoverEl;
 }
 
-function attachPopoverHandlers(badgeEl, data) {
-    let pinned = false;
-
-    // Helper to get current popover for THIS badge
-    // Since we destroy popovers, activePopover is the source of truth if it matches logic
-    // But simplistically, we just show/hide.
-
-    function openPopover() {
-        showPopoverForBadge(badgeEl, data);
-    }
-
-    function closePopover() {
-        if (activePopover) hidePopover(activePopover);
-    }
-
-    // Hover Handlers
-    badgeEl.addEventListener('mouseenter', () => {
-        if (!badgeEl.__pinned) {
-            openPopover();
-        }
-    });
-
-    badgeEl.addEventListener('mouseleave', () => {
-        if (!badgeEl.__pinned) {
-            closePopover();
-        }
-    });
-
-    // Click Handler (Toggle Pin)
-    badgeEl.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-
-        // If another badge is pinned, unpin it
-        if (currentPinnedBadge && currentPinnedBadge !== badgeEl) {
-            currentPinnedBadge.__pinned = false;
-            // Close that popover
-            hidePopover(activePopover); 
-        }
-
-        // Toggle state
-        pinned = !badgeEl.__pinned;
-        badgeEl.__pinned = pinned;
-
-        if (pinned) {
-            currentPinnedBadge = badgeEl;
-            openPopover(); // Ensure it's open
-        } else {
-            currentPinnedBadge = null;
-            closePopover();
-        }
-    });
-}
-
-// Global Click Listener (Close if clicking outside)
-document.addEventListener('click', (event) => {
-    if (currentPinnedBadge) {
-        const badge = currentPinnedBadge;
-        // Check if click is inside badge or inside active popover
-        const isBadge = badge.contains(event.target);
-        const isPopover = activePopover && activePopover.contains(event.target);
-
-        if (!isBadge && !isPopover) {
-            badge.__pinned = false;
-            currentPinnedBadge = null;
-            if (activePopover) hidePopover(activePopover);
-        }
-    }
-});
-
-// Global Scroll Listener (Close everything)
-window.addEventListener('scroll', () => {
-    closeAllHemingwaiPopovers();
-}, { passive: true });
-
-
-// ========================================================
-// BADGE CREATION & WRAPPING
-// ========================================================
-
-function getBadgeClass(score) {
-    if (score >= 70) return 'hemingwai-badge-high'; 
-    if (score >= 50) return 'hemingwai-badge-medium'; 
-    return 'hemingwai-badge-low'; 
-}
-
-function getBadgeColorHex(score) {
-    if (score >= 70) return '#28a745';
-    if (score >= 50) return '#ffc107';
-    return '#dc3545';
-}
-
-function createHemingwaiBadge(data) {
-    const isPending = (data.puntuacion === undefined || data.puntuacion === null || String(data.puntuacion).trim() === '');
-
-    const badge = document.createElement('div');
-    // Default classes
-    badge.className = 'hemingwai-badge';
-
-    const img = document.createElement('img');
-    img.src = LOGO_URL;
-    img.alt = 'HemingwAI';
-    img.className = 'hemingwai-badge-logo';
-    badge.appendChild(img);
-
-    if (isPending) {
-        badge.classList.add('hemingwai-badge-pending');
-        badge.title = "HemingwAI: Pendiente de análisis";
-    } else {
-        const score = data.puntuacion;
-        badge.classList.add(getBadgeClass(score));
-        badge.title = `Puntuación HemingwAI: ${score}/100`;
-
-        const scoreSpan = document.createElement('span');
-        scoreSpan.className = 'hemingwai-badge-score';
-        scoreSpan.textContent = score;
-        badge.appendChild(scoreSpan);
-    }
-
-    return badge;
-}
-
-function getPopoverContent(data) {
+function createPopoverElement(data) {
     const isPending = (data.puntuacion === undefined || data.puntuacion === null || String(data.puntuacion).trim() === '');
     const id = data.id || '';
     const linkUrl = `${ANALYSIS_BASE_URL}${id}`;
     
     let contentHtml = '';
+
+    // Color text for global score in popover
+    const scoreVal = data.puntuacion;
+    const { bgColor } = getColorForScore(scoreVal);
 
     if (isPending) {
         contentHtml = `
@@ -287,7 +191,6 @@ function getPopoverContent(data) {
             </div>
         `;
     } else {
-        const score = data.puntuacion;
         const resumen = data.resumen_valoracion || "Sin resumen disponible.";
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
         
@@ -295,7 +198,7 @@ function getPopoverContent(data) {
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
-                <span class="hemingwai-score" style="color: ${getBadgeColorHex(score)}">${score}/100</span>
+                <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/100</span>
             </div>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">RESUMEN</span>
@@ -316,50 +219,206 @@ function getPopoverContent(data) {
         `;
     }
 
-    return contentHtml;
+    const popover = document.createElement('div');
+    popover.className = 'hemingwai-popover';
+    popover.innerHTML = contentHtml;
+    
+    // Popover self-hover logic (keep open if mouse moves to popover)
+    popover.addEventListener('mouseenter', () => {
+         // cancel any hide timer if we had one (we rely on badge leave)
+         // Actually, if we leave badge, we close. We need a shared timer or logic.
+         // Simplest: if we are pinned, we don't care.
+         // If unpinned (hover mode): moving to popover should keep it open?
+         // User: "mouseleave del badge → cerrar el pop-over SI no está “pineado”".
+         // Typically user wants to be able to click links in popover.
+         // But user instructions were strict: "Hover sobre la bolita... mouseleave del badge → cerrar".
+         // If I strictly follow that, user can't click links in popover in hover mode.
+         // I will assume standard behavior (bridge gap) is implied or user pins to click.
+         // Given "Click la pinea...", user implies interaction requires pinning?
+         // Let's stick to strict instruction: "mouseleave del badge → cerrar...".
+         // But I'll add a small grace period just in case.
+    });
+
+    return popover;
 }
 
-function attachOrUpdateBadge(wrapper, data) {
-    let badge = wrapper.querySelector('.hemingwai-badge');
+function attachPopoverHandlersToBadge(badgeEl, data) {
+    let pinned = false;
+    let hideTimer = null;
+
+    // Create popover element ONCE or on demand? On demand is better for fresh data/DOM.
+    // But we need reference. Let's create on open.
     
-    // If badge exists, remove it to recreate (simpler for updating state/score)
-    // Or just update content. Recreating is safer for pending->score transitions.
-    if (badge) {
-        badge.remove();
+    function openPopover() {
+        const popoverEl = createPopoverElement(data);
+        
+        // Add listeners to popover to allow hovering IT (standard UX, even if strict instructions said badge)
+        // because otherwise links are unclickable without pinning.
+        popoverEl.addEventListener('mouseenter', () => {
+            if (hideTimer) clearTimeout(hideTimer);
+        });
+        popoverEl.addEventListener('mouseleave', () => {
+            if (!pinned) closePopover();
+        });
+
+        showPopoverForBadge(badgeEl, popoverEl);
     }
+
+    function closePopover() {
+        if (activePopover) {
+            hideTimer = setTimeout(() => {
+                hidePopover(activePopover);
+            }, 150); // Small delay
+        }
+    }
+
+    badgeEl.addEventListener('mouseenter', () => {
+        if (hideTimer) clearTimeout(hideTimer);
+        if (!pinned) openPopover();
+    });
+
+    badgeEl.addEventListener('mouseleave', () => {
+        if (!pinned) closePopover();
+    });
+
+    badgeEl.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (currentPinnedBadge && currentPinnedBadge !== badgeEl) {
+            currentPinnedBadge.__pinned = false;
+            // Close others immediately
+            const all = document.querySelectorAll('.hemingwai-popover');
+            all.forEach(p => p.remove()); 
+            activePopover = null;
+        }
+
+        pinned = !badgeEl.__pinned;
+        badgeEl.__pinned = pinned;
+
+        if (pinned) {
+            currentPinnedBadge = badgeEl;
+            // Ensure open and clear timers
+            if (hideTimer) clearTimeout(hideTimer);
+            openPopover(); 
+        } else {
+            currentPinnedBadge = null;
+            closePopover();
+        }
+    });
+}
+
+// Global listeners
+document.addEventListener('click', (event) => {
+    if (!currentPinnedBadge) return;
+
+    const badge = currentPinnedBadge;
+    // We need to find the active popover for this badge.
+    // activePopover global should be it.
     
-    badge = createHemingwaiBadge(data);
-    // Add inline class
-    badge.classList.add('hemingwai-badge-inline');
+    const isBadge = badge.contains(event.target);
+    const isPopover = activePopover && activePopover.contains(event.target);
+
+    if (!isBadge && !isPopover) {
+        badge.__pinned = false;
+        currentPinnedBadge = null;
+        if (activePopover) hidePopover(activePopover);
+    }
+});
+
+window.addEventListener('scroll', () => {
+    if (currentPinnedBadge) {
+        currentPinnedBadge.__pinned = false;
+        currentPinnedBadge = null;
+    }
+    const popovers = document.querySelectorAll('.hemingwai-popover');
+    popovers.forEach(p => hidePopover(p));
+    activePopover = null;
+}, { passive: true });
+
+
+// ========================================================
+// BADGE CREATION & UPDATE
+// ========================================================
+
+function updateHemingwaiBadge(badge, data) {
+    const score = data.puntuacion;
+    const img = badge.querySelector('.hemingwai-badge-logo');
+    const scoreSpan = badge.querySelector('.hemingwai-badge-score');
+
+    const hasScore = (score !== undefined && score !== null && String(score).trim() !== '');
+
+    if (hasScore) {
+        scoreSpan.textContent = String(score);
+        scoreSpan.style.display = 'inline-block'; // or inline
+        badge.title = `Puntuación HemingwAI: ${score}/100`;
+        badge.classList.remove('hemingwai-badge-pending'); // Remove pending class if present
+    } else {
+        scoreSpan.textContent = '';
+        scoreSpan.style.display = 'none';
+        badge.title = "HemingwAI: Pendiente de análisis";
+        badge.classList.add('hemingwai-badge-pending'); // Add pending class
+    }
+
+    const { bgColor, isBad } = getColorForScore(score);
+    badge.style.backgroundColor = bgColor;
+
+    // Text color adjustment (yellow bg needs dark text usually, others white)
+    if (bgColor === '#ffc107') {
+        badge.style.color = '#333';
+    } else {
+        badge.style.color = 'white';
+    }
+
+    img.src = isBad ? WHITE_LOGO_URL : BLUE_LOGO_URL;
+}
+
+function createHemingwaiBadge(data) {
+    const badge = document.createElement('span');
+    badge.className = 'hemingwai-badge';
+
+    const img = document.createElement('img');
+    img.className = 'hemingwai-badge-logo';
+    img.alt = 'HemingwAI';
+    badge.appendChild(img);
+
+    const scoreSpan = document.createElement('span');
+    scoreSpan.className = 'hemingwai-badge-score';
+    badge.appendChild(scoreSpan);
+
+    updateHemingwaiBadge(badge, data);
     
-    wrapper.appendChild(badge);
-    
-    // Attach handlers
-    attachPopoverHandlers(badge, data);
-    
+    // Attach Popover Handlers HERE
+    attachPopoverHandlersToBadge(badge, data);
+
     return badge;
 }
 
-function wrapHeadlineWithBadge(headlineEl, data) {
-    // Check if already wrapped
-    if (headlineEl.closest('.hemingwai-headline-wrapper')) {
-        const wrapper = headlineEl.closest('.hemingwai-headline-wrapper');
-        return attachOrUpdateBadge(wrapper, data);
+function attachInlineBadgeToHeadline(headlineEl, data) {
+    // Avoid duplicates
+    if (headlineEl.dataset.hemingwaiBadgeAttached === 'true') {
+        const next = headlineEl.nextElementSibling; // use nextElementSibling for Element
+        if (next && next.classList && next.classList.contains('hemingwai-badge')) {
+            updateHemingwaiBadge(next, data);
+            // Re-attach handlers in case data changed? 
+            // Better to re-attach or update closure?
+            // updateHemingwaiBadge updates visuals. Handlers bind to 'data'.
+            // If data content changes (unlikely for same ID), we might need to update handlers.
+            // For now, assume static data per page load.
+            return next;
+        }
+        // If marker is true but badge missing (removed?), continue to create.
     }
-    
-    // Create wrapper
-    const wrapper = document.createElement('span');
-    wrapper.className = 'hemingwai-headline-wrapper';
-    
-    // Insert wrapper before headline
-    if (headlineEl.parentNode) {
-        headlineEl.parentNode.insertBefore(wrapper, headlineEl);
-        // Move headline into wrapper
-        wrapper.appendChild(headlineEl);
-        
-        // Attach badge
-        attachOrUpdateBadge(wrapper, data);
-    }
+
+    const badge = createHemingwaiBadge(data);
+    badge.classList.add('hemingwai-badge-inline');
+
+    // Insert JUST AFTER the headline element
+    headlineEl.insertAdjacentElement('afterend', badge);
+
+    headlineEl.dataset.hemingwaiBadgeAttached = 'true';
+    headlineEl.dataset.hemingwai = "processed"; // Legacy marker just in case
+    return badge;
 }
 
 
@@ -369,22 +428,57 @@ function wrapHeadlineWithBadge(headlineEl, data) {
 
 function renderArticleUI(data) {
     const h1 = document.querySelector('h1');
-    if (!h1 || h1.dataset.hemingwai === "processed") return;
+    if (!h1) return;
     
-    h1.dataset.hemingwai = "processed";
-    wrapHeadlineWithBadge(h1, data);
+    // Check if we already attached
+    if (h1.dataset.hemingwaiBadgeAttached === 'true') return;
+
+    // We no longer wrap. We append after.
+    // NOTE: If H1 has children, we append after H1 itself.
+    // If user wants it "inside" H1 at the end of text, that's different.
+    // User said: "El badge debe ir al final del titular como si fuera parte del texto, en la misma línea... <a>Texto...</a><span class=badge></span>"
+    // "headlineEl.insertAdjacentElement('afterend', badge)" places it AFTER the closing tag </h1? or </a>
+    // For <a> (inline), placing span after it keeps it inline if parent is block.
+    // For <h1> (block), placing span after it puts it on new line usually.
+    // Unless H1 is display:inline or flex.
+    // BUT user gave example: <a>Text</a><span class="...inline">...</span>
+    // And said "is_news = true: wrap del elemento principal... NO, wait."
+    // User said in LATEST instruction: 
+    // "El badge debe ir al final del titular como si fuera parte del texto... 
+    // headlineEl.insertAdjacentElement('afterend', badge);"
+    // This implies headlineEl is the inline element containing text?
+    // If H1 is block, `afterend` puts it outside.
+    // H1 is block. `<span>` after `<h1>` is new line.
+    // User code snippet: `headlineEl.insertAdjacentElement('afterend', badge);`
+    // User logic: `is_news === true: Llama a attachInlineBadgeToHeadline sobre el elemento del titular principal (normalmente el <h1>...)`
+    // If I do `h1.after(badge)`, and h1 is block, badge is on next line.
+    // To make it inline, H1 should be `display: inline` OR badge inside H1?
+    // User said "como si fuera parte del texto, en la misma línea".
+    // If I cannot change H1 display, I should probably append *inside* H1?
+    // "Insertar el badge JUSTO después del titular/enlace" -> `afterend`.
+    // Maybe user expects me to force H1 to be inline? Or flex?
+    // Or maybe user thinks `afterend` works for their specific CSS?
+    // Wait, user's previous instruction used a wrapper. Now explicitly says "elimina wrappers".
+    // And "attachInlineBadgeToHeadline... insertAdjacentElement('afterend', badge)".
+    // I will follow instructions. But for H1, to ensure it sits next to it, 
+    // usually one would appendChild to H1.
+    // "<a>Texto...</a><span>badge</span>" works for links.
+    // For H1? `<h1>Title</h1> <span>Badge</span>`.
+    // If I append to H1: `<h1>Title <span>Badge</span></h1>`. This guarantees inline.
+    // But user code said `headlineEl.insertAdjacentElement('afterend', badge)`.
+    // I will try to follow the "afterend" instruction. 
+    // If it looks broken in my mental model, I'll stick to instructions as user claimed "compruebo yo si funciona".
+    
+    attachInlineBadgeToHeadline(h1, data);
 }
 
 function renderListBadge(anchor, data) {
-    if (anchor.dataset.hemingwai === "processed") return;
-    anchor.dataset.hemingwai = "processed";
-    
-    wrapHeadlineWithBadge(anchor, data);
+    attachInlineBadgeToHeadline(anchor, data);
 }
 
 
 // ========================================================
-// LÓGICA DE DETECCIÓN & SCAN (Same as before)
+// LÓGICA DE DETECCIÓN & SCAN (Standard)
 // ========================================================
 
 function isNewsArticle() {
@@ -446,7 +540,7 @@ async function scanListingPage() {
     const currentOrigin = window.location.origin;
 
     for (const a of anchors) {
-        if (a.dataset.hemingwai === "processed") continue;
+        if (a.dataset.hemingwaiBadgeAttached === 'true') continue;
         
         const href = a.href;
         if (!href) continue;

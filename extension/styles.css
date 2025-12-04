@@ -83,96 +83,63 @@
 }
 
 
-/* --- Wrappers & Positioning --- */
+/* --- Badge Styles --- */
 
-/* Wrapper que alinea texto + badge en línea */
-.hemingwai-headline-wrapper {
-    display: inline-flex;
-    align-items: center; /* centra verticalmente texto y badge */
-    gap: 0.5em;          /* separación similar a un espacio de texto */
-    vertical-align: middle;
-}
-
-/* Badge en modo “inline”, pegado al titular */
+/* Badge como “carácter inline” pegado al titular */
 .hemingwai-badge-inline {
-    position: static !important;  /* nada absoluto en este modo */
-    transform: none !important;
-    margin: 0 !important;
-}
-
-
-/* --- Capsule Badge Styles --- */
-
-.hemingwai-badge {
-    /* Default Styles (can be overridden by inline class) */
-    position: relative; /* Default to relative if not inline/absolute */
-    
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    margin-left: 0.5em;           /* separación ≈ un espacio de texto */
+    position: static !important;  /* NO absoluto en titulares/listados */
+    vertical-align: baseline;     /* alineado con el texto del titular */
+    transform: none !important;
+}
+
+.hemingwai-badge {
+    /* Base styles */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
     padding: 2px 6px;
     border-radius: 999px;
     
-    /* Reset layout properties */
-    width: auto;
-    height: auto;
-    min-width: 0; 
-    line-height: 1;
-    
-    /* Font styles */
     font-family: system-ui, -apple-system, sans-serif;
     font-weight: bold;
-    font-size: 12px;
-    color: white; 
+    font-size: 0.8rem; /* approx 12-13px */
+    line-height: 1;
+    color: white; /* Default text color (overridden by isBad logic via HTML if needed, but usually white) */
     
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    z-index: 999999;
-    white-space: nowrap; 
+    box-shadow: 0 0 4px rgba(0,0,0,0.2);
+    z-index: 99999;
+    white-space: nowrap;
     cursor: pointer;
     user-select: none;
+    
+    /* Ensure no legacy interference */
+    width: auto;
+    height: auto;
 }
 
 .hemingwai-badge-logo {
     width: 14px;
     height: 14px;
+    margin-right: 4px;
     object-fit: contain;
     display: block;
-    margin: 0;
-    pointer-events: none; /* Let clicks pass to badge */
+    pointer-events: none;
 }
 
-/* Add margin only if score exists */
-.hemingwai-badge-logo + .hemingwai-badge-score {
-    margin-left: 4px;
-}
+/* Hide margin if no score sibling (though current JS creates empty span, ensure CSS handles visual check if needed) */
+/* Actually, JS sets display:none on scoreSpan, so margin works naturally */
 
 .hemingwai-badge-score {
     display: inline-block;
-    min-width: 14px;
+    min-width: 16px;
     text-align: center;
     pointer-events: none;
 }
 
-/* Background Colors */
-.hemingwai-badge.hemingwai-badge-high {
-    background-color: #28a745;
-}
-.hemingwai-badge.hemingwai-badge-medium {
-    background-color: #ffc107;
-    color: #333; 
-}
-.hemingwai-badge.hemingwai-badge-low {
-    background-color: #dc3545;
-}
-
-/* Pending State Modifier */
-.hemingwai-badge.hemingwai-badge-pending {
-    background-color: #001a33; 
-    border: 1px solid #d2d209; 
-    padding: 3px; 
-}
-
-.hemingwai-badge.hemingwai-badge-pending .hemingwai-badge-logo {
-    width: 14px; 
-    height: 14px;
-}
+/* Colors managed by JS inline styles or utility classes can be added here if preferred */
+/* But user logic asked for JS dynamic color setting, so we stick to base layout here. */
