@@ -14,6 +14,7 @@ import {
   Code
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import API_BASE_URL from './apiConfig';
 import ResultadoBusqueda from './components/ResultadoBusqueda';
@@ -31,6 +32,8 @@ function App() {
   // State for History Dropdown
   const [showHistory, setShowHistory] = useState(false);
   const historyRef = useRef(null);
+
+  const isIdle = estadoBusqueda === 'idle';
 
   // Cargar historial desde sessionStorage al inicio
   useEffect(() => {
@@ -163,13 +166,13 @@ function App() {
 
   const handleHistorySelect = (item) => {
       setShowHistory(false);
-      // Smooth scroll si es necesario (aunque al cargar nuevos resultados el componente ResultadoBusqueda hace scroll automático o reemplaza contenido)
+      // Smooth scroll si es necesario
       window.scrollTo({ top: 0, behavior: 'smooth' });
       handleBuscarNoticia(item.query);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#001a33] text-gray-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#001a33] text-gray-100 font-sans overflow-x-hidden">
       <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
@@ -201,7 +204,7 @@ function App() {
             </button>
             
             {showHistory && (
-              <div className="absolute right-0 mt-2 z-50 bg-[#071A31] border border-gray-700 rounded-lg shadow-2xl overflow-hidden">
+              <div className="absolute right-0 mt-2 z-50 bg-[#071A31] border border-gray-700 rounded-lg shadow-2xl overflow-hidden w-64 md:w-80">
                 <HistoryPanel history={history} onSelect={handleHistorySelect} />
               </div>
             )}
@@ -220,96 +223,143 @@ function App() {
       </header>
 
       {/* Contenido principal */}
-      <main className="flex-1 flex flex-col items-center px-4 sm:px-6 lg:px-8 py-8">
-        <div className="w-full max-w-7xl">
-          {/* Hero */}
-          <section className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#071A31]/80 border border-lima shadow-sm mb-4 animate-fade-in">
-              <Newspaper className="w-4 h-4 text-lima" />
-              <span className="text-xs font-semibold tracking-wide uppercase">
-                IA para análisis periodístico
-              </span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
-              La IA que evalúa la calidad de las noticias
-            </h1>
-            <p className="text-sm sm:text-base text-gray-200 max-w-2xl mx-auto">
-              Analiza titulares, fuentes, contexto y criterios éticos para ayudarte
-              a entender la calidad informativa de cada artículo.
-            </p>
-          </section>
+      <main className="flex-1 flex flex-col px-4 sm:px-6 lg:px-8 relative w-full max-w-7xl mx-auto">
+        
+        {/* HERO SECTION */}
+        {/* En Idle: se queda arriba (con margen). En Active: igual, arriba. */}
+        <motion.section 
+          layout 
+          className={`text-center w-full transition-all duration-700 ${isIdle ? 'mt-20 sm:mt-24 mb-0' : 'mt-8 mb-8'}`}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#071A31]/80 border border-lima shadow-sm mb-4 animate-fade-in">
+            <Newspaper className="w-4 h-4 text-lima" />
+            <span className="text-xs font-semibold tracking-wide uppercase">
+              IA para análisis periodístico
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-2">
+            La IA que evalúa la calidad de las noticias
+          </h1>
+          <p className="text-sm sm:text-base text-gray-200 max-w-2xl mx-auto">
+            Analiza titulares, fuentes, contexto y criterios éticos para ayudarte
+            a entender la calidad informativa de cada artículo.
+          </p>
+        </motion.section>
 
+        {/* WRAPPER PARA EL BUSCADOR */}
+        {/* 
+            En Idle: flex-1 (ocupa todo el espacio restante hasta el footer) + flex + justify-center 
+            Esto centra verticalmente la tarjeta de búsqueda en el espacio disponible.
+        */}
+        <motion.div 
+          layout
+          className={`w-full flex flex-col items-center transition-all duration-700 ease-in-out ${isIdle ? 'flex-1 justify-center pb-20' : 'justify-start'}`}
+        >
           {/* Tarjeta de búsqueda */}
-          <section className="mb-2">
-            <div className="bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima px-6 sm:px-8 py-6 max-w-5xl mx-auto transition-all duration-300 hover:shadow-lima-500/20">
-              <h2 className="text-lg sm:text-xl font-semibold mb-5 text-[#001a33] flex items-center gap-2">
-                <Globe2 className="w-5 h-5 text-lima" />
+          <motion.section 
+            layout
+            className={`w-full transition-all duration-500 ease-in-out ${isIdle ? 'max-w-4xl' : 'max-w-5xl mb-2'}`}
+          >
+            <div className={`
+              bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima 
+              transition-all duration-500 hover:shadow-lima-500/20
+              ${isIdle ? 'px-8 sm:px-12 py-12' : 'px-6 sm:px-8 py-6'}
+            `}>
+              <h2 className={`
+                font-semibold text-[#001a33] flex items-center gap-2 transition-all duration-300
+                ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center' : 'text-lg sm:text-xl mb-5'}
+              `}>
+                <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-8 h-8' : 'w-5 h-5'}`} />
                 Analizar noticia desde URL
               </h2>
 
-              <div className="space-y-4">
+              <div className={`space-y-4 ${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
                 <div className="relative group">
-                  <Search className="absolute left-3 top-3 text-gray-400 w-5 h-5 group-focus-within:text-lima transition-colors" />
+                  <Search className={`
+                    absolute left-4 text-gray-400 group-focus-within:text-lima transition-all duration-300
+                    ${isIdle ? 'top-5 w-7 h-7' : 'top-3 w-5 h-5'}
+                  `} />
                   <input
                     type="text"
                     placeholder="Pega aquí la URL de la noticia..."
                     value={identificador}
                     onChange={(e) => setIdentificador(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleBuscarNoticia()}
-                    className="w-full pl-10 pr-3 py-3 bg-gray-100 border border-gray-300 rounded-lg
-                               focus:ring-2 focus:ring-lima-300 focus:border-lima
-                               transition shadow-sm text-gray-900 text-sm"
+                    className={`
+                      w-full bg-gray-100 border border-gray-300 rounded-lg
+                      focus:ring-2 focus:ring-lima-300 focus:border-lima
+                      transition-all shadow-sm text-gray-900 
+                      ${isIdle ? 'pl-14 pr-4 py-5 text-xl' : 'pl-10 pr-3 py-3 text-sm'}
+                    `}
                     disabled={estadoBusqueda === 'loading'}
+                    autoFocus={isIdle}
                   />
                 </div>
 
                 <button
                   onClick={() => handleBuscarNoticia()}
                   disabled={estadoBusqueda === 'loading'}
-                  className="w-full flex items-center justify-center px-4 py-3 
-                             bg-lima text-[#001a33] font-bold rounded-lg 
-                             hover:bg-[#001a33] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
-                             transition-all duration-200 
-                             shadow-md disabled:bg-gray-400 disabled:text-gray-100 disabled:cursor-not-allowed"
+                  className={`
+                    w-full flex items-center justify-center font-bold rounded-lg 
+                    hover:bg-[#001a33] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
+                    transition-all duration-200 shadow-md 
+                    disabled:bg-gray-400 disabled:text-gray-100 disabled:cursor-not-allowed
+                    bg-lima text-[#001a33]
+                    ${isIdle ? 'px-8 py-5 text-xl mt-6' : 'px-4 py-3 text-base'}
+                  `}
                 >
                   {estadoBusqueda === 'loading' && (
-                    <Loader className="w-5 h-5 mr-2 animate-spin" />
+                    <Loader className={`animate-spin ${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />
                   )}
-                  <Database className="w-5 h-5 mr-2" />
-                  {estadoBusqueda === 'loading' ? 'Analizando...' : 'Analizar'}
+                  {estadoBusqueda !== 'loading' && <Database className={`${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />}
+                  {estadoBusqueda === 'loading' ? 'Analizando...' : 'Analizar Noticia'}
                 </button>
               </div>
             </div>
-          </section>
+          </motion.section>
+        </motion.div>
 
-          {/* Resultados */}
-          <section className="mb-8">
-            <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-              <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2">
-                <Code className="w-5 h-5 text-lima" />
-                Resultado del análisis
-              </h3>
-              <ResultadoBusqueda
-                estado={estadoBusqueda}
-                resultado={resultadoBusqueda}
-              />
-            </div>
-          </section>
+        {/* Resultados - Solo visible si no es idle */}
+        <AnimatePresence>
+          {!isIdle && (
+            <motion.section 
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 50 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="w-full mt-0 mb-8"
+            >
+              <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
+                <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2">
+                  <Code className="w-5 h-5 text-lima" />
+                  Resultado del análisis
+                </h3>
+                <ResultadoBusqueda
+                  estado={estadoBusqueda}
+                  resultado={resultadoBusqueda}
+                />
+              </div>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
-          {/* Footer */}
-          <footer className="mt-6 mb-2">
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-[#071A31] text-gray-200 text-xs text-center py-3 rounded-xl border border-lima shadow-[0_0_25px_rgba(210,210,9,0.4)] px-4">
+        {/* Footer */}
+        <footer className={`mt-auto mb-6 w-full ${isIdle ? '' : ''}`}>
+          <div className="max-w-3xl mx-auto">
+            {!isIdle && (
+                <div className="bg-[#071A31] text-gray-200 text-xs text-center py-3 rounded-xl border border-lima shadow-[0_0_25px_rgba(210,210,9,0.4)] px-4 mb-3">
                 Esta IA puede cometer errores. Verifica la información relevante
                 antes de tomar decisiones basadas en los resultados.
               </div>
-              <p className="text-[11px] text-gray-400 text-center mt-3">
-                © 2025 Mirada Media Lab · Suite de Análisis IA. Todos los derechos
-                reservados.
-              </p>
-            </div>
-          </footer>
-        </div>
+            )}
+            <p className="text-[11px] text-gray-400 text-center">
+              © 2025 Mirada Media Lab · Suite de Análisis IA. Todos los derechos
+              reservados.
+            </p>
+          </div>
+        </footer>
+
       </main>
     </div>
   );

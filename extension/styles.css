@@ -116,6 +116,7 @@
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
+    pointer-events: auto !important;
     
     /* Ensure no legacy interference */
     width: auto;
@@ -254,6 +255,7 @@
   margin-left: 0.5em;           /* separación ≈ un espacio */
   position: static !important;  /* asegurarnos de que no es absolute en titulares */
   vertical-align: baseline;     /* alineado con el texto */
+  pointer-events: auto !important;
 }
 
 .hemingwai-badge-logo {
