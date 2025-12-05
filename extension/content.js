@@ -480,6 +480,40 @@ function isNewsArticle() {
     return false;
 }
 
+function findHeadlineAnchorForUrl(normUrlDedup) {
+    const anchors = document.querySelectorAll('a[href]');
+    let best = null;
+
+    for (const a of anchors) {
+        let href;
+        try {
+            href = new URL(a.href, window.location.origin).href;
+        } catch (e) {
+            continue;
+        }
+
+        if (normalizeUrlForDedup(href) !== normUrlDedup) continue;
+
+        // Solo considerar enlaces dentro de headings
+        const heading = a.closest('h1, h2, h3');
+        if (!heading) continue;
+
+        // Solo enlaces sin hijos (texto plano, sin divs ni spans extraños dentro)
+        if (a.children.length > 0) continue;
+
+        // Texto mínimo de 3 chars
+        const text = (a.textContent || '').trim();
+        if (text.length < 3) continue;
+
+        // Si hay varios, preferir el de texto más largo
+        if (!best || text.length > best.textLength) {
+            best = { element: a, textLength: text.length };
+        }
+    }
+
+    return best ? best.element : null;
+}
+
 async function processArticlePage() {
     console.log("HemingwAI: Artículo detectado. Consultando API...");
     
@@ -620,8 +654,16 @@ async function scanListingPage() {
         for (const res of resultados) {
             if (res.id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
+
+                // 1) Ancla elegida por el scraper (score/top)
                 const entry = urlToAnchorMap.get(resUrlDedup);
-                const anchor = entry && entry.anchor;
+                let anchor = entry && entry.anchor;
+
+                // 2) Preferencia absoluta por el enlace de titular sencillo dentro de h1/h2/h3
+                const headlineAnchor = findHeadlineAnchorForUrl(resUrlDedup);
+                if (headlineAnchor) {
+                    anchor = headlineAnchor;
+                }
                 
                 if (anchor) {
                     renderListBadge(anchor, res);
