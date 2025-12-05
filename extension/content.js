@@ -78,27 +78,24 @@ function getArticleTagCount() {
 function getColorForScore(score) {
     // If undefined/null -> Pending state
     if (score === undefined || score === null || String(score).trim() === '') {
-        return { bgColor: '#001a33', isBad: false }; // Dark Navy (Pending) - Blue Logo
+        return { bgColor: '#001a33', useWhiteLogo: false }; // Dark Navy (Pending) - Blue Logo
     }
 
     const val = Number(score);
-    if (isNaN(val)) return { bgColor: '#001a33', isBad: false };
+    if (isNaN(val)) return { bgColor: '#001a33', useWhiteLogo: false };
 
     // Semáforo:
-    // < 50: Rojo (Mala) -> Logo Blanco
-    // 50-69: Amarillo (Regular) -> Logo Azul (texto oscuro)
-    // >= 70: Verde (Buena) -> Logo Azul (o Blanco? user only specified Red -> White)
-    
-    // "Si la puntuación es mala (bola roja) → logo blanco"
-    // "Por defecto azul"
+    // < 50: Rojo (Mala) -> Logo Blanco, Texto Blanco
+    // 50-69: Amarillo (Regular) -> Logo Azul (texto oscuro), Texto Negro
+    // >= 70: Verde (Buena) -> Logo Blanco, Texto Blanco
     
     if (val < 50) {
-        return { bgColor: '#dc3545', isBad: true }; // Red
+        return { bgColor: '#dc3545', useWhiteLogo: true }; // Red
     }
     if (val < 70) {
-        return { bgColor: '#ffc107', isBad: false }; // Yellow
+        return { bgColor: '#ffc107', useWhiteLogo: false }; // Yellow
     }
-    return { bgColor: '#28a745', isBad: false }; // Green
+    return { bgColor: '#28a745', useWhiteLogo: true }; // Green
 }
 
 // ========================================================
@@ -365,17 +362,17 @@ function updateHemingwaiBadge(badge, data) {
         badge.classList.add('hemingwai-badge-pending'); // Add pending class
     }
 
-    const { bgColor, isBad } = getColorForScore(score);
+    const { bgColor, useWhiteLogo } = getColorForScore(score);
     badge.style.backgroundColor = bgColor;
 
     // Text color adjustment (yellow bg needs dark text usually, others white)
     if (bgColor === '#ffc107') {
-        badge.style.color = '#333';
+        badge.style.color = '#000000'; // Black for yellow
     } else {
-        badge.style.color = 'white';
+        badge.style.color = '#ffffff'; // White for others
     }
 
-    img.src = isBad ? WHITE_LOGO_URL : BLUE_LOGO_URL;
+    img.src = useWhiteLogo ? WHITE_LOGO_URL : BLUE_LOGO_URL;
 }
 
 function createHemingwaiBadge(data) {
