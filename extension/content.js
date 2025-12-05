@@ -421,6 +421,28 @@ function attachInlineBadgeToHeadline(headlineEl, data) {
     return badge;
 }
 
+function attachInlineBadgeToArticleHeadline(h1El, data) {
+    if (!h1El) return null;
+
+    if (h1El.dataset.hemingwaiBadgeAttached === 'true') {
+        const existing = h1El.querySelector('.hemingwai-badge');
+        if (existing) {
+            updateHemingwaiBadge(existing, data);
+            return existing;
+        }
+    }
+
+    const badge = createHemingwaiBadge(data);
+    badge.classList.add('hemingwai-badge-inline', 'hemingwai-badge-article');
+
+    // Añadimos un espacio y el badge DENTRO del <h1>, al final del contenido
+    h1El.appendChild(document.createTextNode(' '));
+    h1El.appendChild(badge);
+
+    h1El.dataset.hemingwaiBadgeAttached = 'true';
+    return badge;
+}
+
 
 // ========================================================
 // RENDERING UI
@@ -429,47 +451,10 @@ function attachInlineBadgeToHeadline(headlineEl, data) {
 function renderArticleUI(data) {
     const h1 = document.querySelector('h1');
     if (!h1) return;
-    
-    // Check if we already attached
+
     if (h1.dataset.hemingwaiBadgeAttached === 'true') return;
 
-    // We no longer wrap. We append after.
-    // NOTE: If H1 has children, we append after H1 itself.
-    // If user wants it "inside" H1 at the end of text, that's different.
-    // User said: "El badge debe ir al final del titular como si fuera parte del texto, en la misma línea... <a>Texto...</a><span class=badge></span>"
-    // "headlineEl.insertAdjacentElement('afterend', badge)" places it AFTER the closing tag </h1? or </a>
-    // For <a> (inline), placing span after it keeps it inline if parent is block.
-    // For <h1> (block), placing span after it puts it on new line usually.
-    // Unless H1 is display:inline or flex.
-    // BUT user gave example: <a>Text</a><span class="...inline">...</span>
-    // And said "is_news = true: wrap del elemento principal... NO, wait."
-    // User said in LATEST instruction: 
-    // "El badge debe ir al final del titular como si fuera parte del texto... 
-    // headlineEl.insertAdjacentElement('afterend', badge);"
-    // This implies headlineEl is the inline element containing text?
-    // If H1 is block, `afterend` puts it outside.
-    // H1 is block. `<span>` after `<h1>` is new line.
-    // User code snippet: `headlineEl.insertAdjacentElement('afterend', badge);`
-    // User logic: `is_news === true: Llama a attachInlineBadgeToHeadline sobre el elemento del titular principal (normalmente el <h1>...)`
-    // If I do `h1.after(badge)`, and h1 is block, badge is on next line.
-    // To make it inline, H1 should be `display: inline` OR badge inside H1?
-    // User said "como si fuera parte del texto, en la misma línea".
-    // If I cannot change H1 display, I should probably append *inside* H1?
-    // "Insertar el badge JUSTO después del titular/enlace" -> `afterend`.
-    // Maybe user expects me to force H1 to be inline? Or flex?
-    // Or maybe user thinks `afterend` works for their specific CSS?
-    // Wait, user's previous instruction used a wrapper. Now explicitly says "elimina wrappers".
-    // And "attachInlineBadgeToHeadline... insertAdjacentElement('afterend', badge)".
-    // I will follow instructions. But for H1, to ensure it sits next to it, 
-    // usually one would appendChild to H1.
-    // "<a>Texto...</a><span>badge</span>" works for links.
-    // For H1? `<h1>Title</h1> <span>Badge</span>`.
-    // If I append to H1: `<h1>Title <span>Badge</span></h1>`. This guarantees inline.
-    // But user code said `headlineEl.insertAdjacentElement('afterend', badge)`.
-    // I will try to follow the "afterend" instruction. 
-    // If it looks broken in my mental model, I'll stick to instructions as user claimed "compruebo yo si funciona".
-    
-    attachInlineBadgeToHeadline(h1, data);
+    attachInlineBadgeToArticleHeadline(h1, data);
 }
 
 function renderListBadge(anchor, data) {

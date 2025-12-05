@@ -143,3 +143,129 @@
 
 /* Colors managed by JS inline styles or utility classes can be added here if preferred */
 /* But user logic asked for JS dynamic color setting, so we stick to base layout here. */
+/* HEMINGWAI STYLES */
+
+/* --- Popover (Dark Navy Theme) --- */
+.hemingwai-popover {
+    position: fixed;
+    width: 320px;
+    max-width: 420px;
+    background: #001a33; /* Dark Navy */
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    border-top: 3px solid #d2d209; /* Brand Yellow */
+    padding: 16px 20px;
+    z-index: 2147483647; /* Always on top */
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.15s ease-out;
+    box-sizing: border-box;
+    text-align: left;
+    line-height: 1.5;
+}
+
+.hemingwai-popover.visible {
+    display: block;
+    opacity: 1;
+}
+
+.hemingwai-popover h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #d2d209; /* Brand Yellow title */
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hemingwai-section {
+    margin-bottom: 16px;
+}
+
+.hemingwai-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7); /* Dimmed white */
+    margin-bottom: 4px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.hemingwai-text {
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 1.5;
+}
+
+.hemingwai-score {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+.hemingwai-footer {
+    text-align: right;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.hemingwai-link {
+    font-size: 13px;
+    color: #d2d209; /* Brand Yellow */
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.hemingwai-link:hover {
+    text-decoration: underline;
+    opacity: 0.9;
+}
+
+
+/* --- Badge Styles --- */
+
+/* Badge genérico */
+.hemingwai-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  line-height: 1;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  z-index: 99999;
+
+  /* Forzar que nunca se estire a toda la columna */
+  width: auto !important;
+  max-width: none !important;
+  white-space: nowrap;
+}
+
+/* Variante inline, usada tanto en listados como en artículo */
+.hemingwai-badge-inline {
+  margin-left: 0.5em;           /* separación ≈ un espacio */
+  position: static !important;  /* asegurarnos de que no es absolute en titulares */
+  vertical-align: baseline;     /* alineado con el texto */
+}
+
+.hemingwai-badge-logo {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+}
+
+.hemingwai-badge-score {
+  min-width: 16px;
+  text-align: center;
+}
+
+/* Colors managed by JS inline styles or utility classes can be added here if preferred */
+/* But user logic asked for JS dynamic color setting, so we stick to base layout here. */
