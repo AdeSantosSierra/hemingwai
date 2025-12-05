@@ -574,19 +574,10 @@ async function scanListingPage() {
     const urlToAnchorMap = new Map();
 
     for (const cand of allCandidates) {
-        // Lógica de selección de anchor (priorizar titulares)
         if (!urlToAnchorMap.has(cand.normUrlDedup)) {
             urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
-        } else {
-            const currentAnchor = urlToAnchorMap.get(cand.normUrlDedup);
-            const currentIsHeadline = !!currentAnchor.closest('h1, h2, h3');
-            const newIsHeadline = !!cand.anchor.closest('h1, h2, h3');
-
-            if (!currentIsHeadline && newIsHeadline) {
-                urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
-            }
         }
-        
+
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
             seenDedupUrls.add(cand.normUrlDedup);
             if (uniqueUrlsToQuery.length < MAX_URLS_PER_PAGE) {
