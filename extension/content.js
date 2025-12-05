@@ -5,8 +5,7 @@
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
-const MAX_URLS_PER_PAGE = 100;
-const DEBUG_LISTING = true;
+const MAX_URLS_PER_PAGE = 100; 
 
 // Logos
 const BLUE_LOGO_URL = chrome.runtime.getURL("logo_extension_blue.png");
@@ -480,40 +479,6 @@ function isNewsArticle() {
     return false;
 }
 
-function findHeadlineAnchorForUrl(normUrlDedup) {
-    const anchors = document.querySelectorAll('a[href]');
-    let best = null;
-
-    for (const a of anchors) {
-        let href;
-        try {
-            href = new URL(a.href, window.location.origin).href;
-        } catch (e) {
-            continue;
-        }
-
-        if (normalizeUrlForDedup(href) !== normUrlDedup) continue;
-
-        // Solo considerar enlaces dentro de headings
-        const heading = a.closest('h1, h2, h3');
-        if (!heading) continue;
-
-        // Solo enlaces sin hijos (texto plano, sin divs ni spans extraños dentro)
-        if (a.children.length > 0) continue;
-
-        // Texto mínimo de 3 chars
-        const text = (a.textContent || '').trim();
-        if (text.length < 3) continue;
-
-        // Si hay varios, preferir el de texto más largo
-        if (!best || text.length > best.textLength) {
-            best = { element: a, textLength: text.length };
-        }
-    }
-
-    return best ? best.element : null;
-}
-
 async function processArticlePage() {
     console.log("HemingwAI: Artículo detectado. Consultando API...");
     
@@ -567,27 +532,17 @@ async function scanListingPage() {
             const rect = a.getBoundingClientRect();
             const absoluteTop = window.scrollY + rect.top;
 
-            // Ignorar enlaces que estén claramente en navegación o footer
-            if (a.closest('header, nav, footer')) continue;
-
-            // Ignorar enlaces con rol típico de menú/botón
-            const role = (a.getAttribute('role') || '').toLowerCase();
-            if (role.includes('button') || role.includes('menuitem')) continue;
-
             const anchorText = (a.textContent || "").trim();
             const heading = a.closest('h1, h2, h3');
             const headingText = heading ? heading.textContent.trim() : anchorText;
             
-            // Filtro de longitud más exigente (30 chars)
-            if (headingText.length < 30 && !a.querySelector('img')) continue; 
+            if (headingText.length < 20 && !a.querySelector('img')) continue; 
             
             const fullUrl = urlObj.href;
             const normUrlDedup = normalizeUrlForDedup(fullUrl);
 
-            // Debug: marcar el enlace como candidato en modo listado (opcional)
-            if (DEBUG_LISTING) {
-                a.classList.add('hemingwai-debug-candidate');
-            }
+            // Debug: marcar el enlace como candidato en modo listado
+            a.classList.add('hemingwai-debug-candidate');
 
             allCandidates.push({
                 fullUrl: fullUrl,
@@ -608,24 +563,10 @@ async function scanListingPage() {
     const urlToAnchorMap = new Map();
 
     for (const cand of allCandidates) {
-        const a = cand.anchor;
-        let score = 0;
-        
-        // +3 si está dentro de un heading
-        if (a.closest('h1, h2, h3')) score += 3;
-        
-        // +2 si tiene texto razonablemente largo
-        const text = (a.textContent || '').trim();
-        if (text.length >= 40) score += 2;
-        
-        // +1 si no es solo imagen
-        if (!a.querySelector('img')) score += 1;
-
-        const currentEntry = urlToAnchorMap.get(cand.normUrlDedup);
-        if (!currentEntry || score > currentEntry.score) {
-            urlToAnchorMap.set(cand.normUrlDedup, { anchor: a, score: score });
+        if (!urlToAnchorMap.has(cand.normUrlDedup)) {
+            urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
         }
-
+        
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
             seenDedupUrls.add(cand.normUrlDedup);
             if (uniqueUrlsToQuery.length < MAX_URLS_PER_PAGE) {
@@ -654,16 +595,7 @@ async function scanListingPage() {
         for (const res of resultados) {
             if (res.id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
-
-                // 1) Ancla elegida por el scraper (score/top)
-                const entry = urlToAnchorMap.get(resUrlDedup);
-                let anchor = entry && entry.anchor;
-
-                // 2) Preferencia absoluta por el enlace de titular sencillo dentro de h1/h2/h3
-                const headlineAnchor = findHeadlineAnchorForUrl(resUrlDedup);
-                if (headlineAnchor) {
-                    anchor = headlineAnchor;
-                }
+                const anchor = urlToAnchorMap.get(resUrlDedup);
                 
                 if (anchor) {
                     renderListBadge(anchor, res);
@@ -674,15 +606,13 @@ async function scanListingPage() {
 
                     const hasScore = (res.puntuacion !== undefined && res.puntuacion !== null && String(res.puntuacion).trim() !== '');
 
-                    if (DEBUG_LISTING) {
-                        // Debug visual en el propio <a>
-                        anchor.classList.add('hemingwai-debug-found');
+                    // Debug visual en el propio <a>
+                    anchor.classList.add('hemingwai-debug-found');
 
-                        if (hasScore) {
-                            anchor.classList.add('hemingwai-debug-analyzed');
-                        } else {
-                            anchor.classList.add('hemingwai-debug-pending');
-                        }
+                    if (hasScore) {
+                        anchor.classList.add('hemingwai-debug-analyzed');
+                    } else {
+                        anchor.classList.add('hemingwai-debug-pending');
                     }
                 }
             }
