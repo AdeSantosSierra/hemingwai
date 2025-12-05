@@ -6,7 +6,7 @@ const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
 const MAX_URLS_PER_PAGE = 100;
-const DEBUG_LISTING = false;
+const DEBUG_LISTING = true;
 
 // Logos
 const BLUE_LOGO_URL = chrome.runtime.getURL("logo_extension_blue.png");
