@@ -390,34 +390,36 @@ function createHemingwaiBadge(data) {
     
     // Attach Popover Handlers HERE
     attachPopoverHandlersToBadge(badge, data);
+    badge.dataset.hemingwaiPopoverAttached = 'true';
 
     return badge;
 }
 
 function attachInlineBadgeToHeadline(headlineEl, data) {
-    // Avoid duplicates
+    let badge = null;
+
     if (headlineEl.dataset.hemingwaiBadgeAttached === 'true') {
-        const next = headlineEl.nextElementSibling; // use nextElementSibling for Element
+        const next = headlineEl.nextElementSibling;
         if (next && next.classList && next.classList.contains('hemingwai-badge')) {
-            updateHemingwaiBadge(next, data);
-            // Re-attach handlers in case data changed? 
-            // Better to re-attach or update closure?
-            // updateHemingwaiBadge updates visuals. Handlers bind to 'data'.
-            // If data content changes (unlikely for same ID), we might need to update handlers.
-            // For now, assume static data per page load.
-            return next;
+            badge = next;
+            updateHemingwaiBadge(badge, data);
         }
-        // If marker is true but badge missing (removed?), continue to create.
     }
 
-    const badge = createHemingwaiBadge(data);
-    badge.classList.add('hemingwai-badge-inline');
+    if (!badge) {
+        badge = createHemingwaiBadge(data); // This calls attachPopoverHandlersToBadge and sets the flag
+        badge.classList.add('hemingwai-badge-inline');
+        headlineEl.insertAdjacentElement('afterend', badge);
+        headlineEl.dataset.hemingwaiBadgeAttached = 'true';
+        headlineEl.dataset.hemingwai = "processed"; // Legacy marker
+    }
 
-    // Insert JUST AFTER the headline element
-    headlineEl.insertAdjacentElement('afterend', badge);
+    // Safety: ensure handlers are attached
+    if (!badge.dataset.hemingwaiPopoverAttached) {
+        attachPopoverHandlersToBadge(badge, data);
+        badge.dataset.hemingwaiPopoverAttached = 'true';
+    }
 
-    headlineEl.dataset.hemingwaiBadgeAttached = 'true';
-    headlineEl.dataset.hemingwai = "processed"; // Legacy marker just in case
     return badge;
 }
 
