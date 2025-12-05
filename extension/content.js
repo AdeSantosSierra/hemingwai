@@ -541,9 +541,6 @@ async function scanListingPage() {
             const fullUrl = urlObj.href;
             const normUrlDedup = normalizeUrlForDedup(fullUrl);
 
-            // Debug: marcar el enlace como candidato en modo listado
-            a.classList.add('hemingwai-debug-candidate');
-
             allCandidates.push({
                 fullUrl: fullUrl,
                 normUrlDedup: normUrlDedup,
@@ -603,17 +600,6 @@ async function scanListingPage() {
                     
                     const state = (res.puntuacion !== undefined && res.puntuacion !== null) ? "ANALIZADA" : "PENDIENTE";
                     console.log(`HemingwAI: URL ${state} ->`, res.url);
-
-                    const hasScore = (res.puntuacion !== undefined && res.puntuacion !== null && String(res.puntuacion).trim() !== '');
-
-                    // Debug visual en el propio <a>
-                    anchor.classList.add('hemingwai-debug-found');
-
-                    if (hasScore) {
-                        anchor.classList.add('hemingwai-debug-analyzed');
-                    } else {
-                        anchor.classList.add('hemingwai-debug-pending');
-                    }
                 }
             }
         }
