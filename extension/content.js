@@ -401,41 +401,18 @@ function createHemingwaiBadge(data) {
 }
 
 function attachInlineBadgeToHeadline(headlineEl, data) {
-    let badge = null;
+    // Esta función solo se usa en listados (isNews === false)
 
-    if (headlineEl.dataset.hemingwaiBadgeAttached === 'true') {
-        const next = headlineEl.nextElementSibling;
-        if (next && next.classList && next.classList.contains('hemingwai-badge')) {
-            badge = next;
-            updateHemingwaiBadge(badge, data);
-            console.log('[HemingwAI][List] Reusing existing badge for', headlineEl.href || headlineEl.textContent?.slice(0,80));
-        }
-    }
+    // Siempre creamos un badge nuevo para evitar inconsistencias
+    const badge = createHemingwaiBadge(data);  // ya lleva attachPopoverHandlersToBadge dentro
+    badge.classList.add('hemingwai-badge-inline');
 
-    if (!badge) {
-        console.log('[HemingwAI][List] Creating new badge for', headlineEl.href || headlineEl.textContent?.slice(0,80));
-        badge = createHemingwaiBadge(data); // already calls attachPopoverHandlersToBadge
-        badge.classList.add('hemingwai-badge-inline');
-        headlineEl.insertAdjacentElement('afterend', badge);
-        headlineEl.dataset.hemingwaiBadgeAttached = 'true';
-        headlineEl.dataset.hemingwai = "processed"; // Legacy marker
-    }
+    // Insertar justo después del enlace/titular
+    headlineEl.insertAdjacentElement('afterend', badge);
 
-    // Safety: ensure handlers are attached (for reused badges)
-    if (!badge.dataset.hemingwaiPopoverAttached) {
-        console.log('[HemingwAI][List] Re-attaching popover handlers for reused badge');
-        attachPopoverHandlersToBadge(badge, data);
-        badge.dataset.hemingwaiPopoverAttached = 'true';
-    }
-
-    // Debug: comprobar que eventos se enganchan
-    badge.addEventListener('mouseenter', () => {
-        console.log('[HemingwAI][List] badge mouseenter fired');
-    }, { once: true });
-
-    badge.addEventListener('click', () => {
-        console.log('[HemingwAI][List] badge click fired');
-    }, { once: true });
+    // Marcar el enlace como procesado por si en el futuro queremos evitar duplicados
+    headlineEl.dataset.hemingwaiBadgeAttached = 'true';
+    headlineEl.dataset.hemingwai = "processed";
 
     return badge;
 }
