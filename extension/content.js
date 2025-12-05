@@ -6,7 +6,6 @@ const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
 const MAX_URLS_PER_PAGE = 100; 
-const DEBUG_LISTING = true;
 
 // Logos
 const BLUE_LOGO_URL = chrome.runtime.getURL("logo_extension_blue.png");
@@ -513,63 +512,43 @@ async function processArticlePage() {
 async function scanListingPage() {
     console.log("HemingwAI: Escaneando listado/portada...");
     
-    const mainEl = document.querySelector('main');
-    const scope = mainEl || document.body;
-    const anchors = Array.from(scope.querySelectorAll('a'));
+    const anchors = Array.from(document.querySelectorAll('a'));
     
     const allCandidates = [];
     const currentOrigin = window.location.origin;
 
     for (const a of anchors) {
-        // Ya procesado por HemingwAI
         if (a.dataset.hemingwaiBadgeAttached === 'true') continue;
-
+        
         const href = a.href;
         if (!href) continue;
 
-        let urlObj;
         try {
-            urlObj = new URL(href, currentOrigin);
-        } catch (e) {
-            continue;
-        }
+            const urlObj = new URL(href, currentOrigin);
+            if (urlObj.origin !== currentOrigin) continue;
+            if (urlObj.pathname === '/' || urlObj.pathname === '') continue;
+            if (urlObj.hash) continue;
 
-        // Solo mismo origen
-        if (urlObj.origin !== currentOrigin) continue;
+            const rect = a.getBoundingClientRect();
+            const absoluteTop = window.scrollY + rect.top;
 
-        // Evitar home pura o vacía
-        if (urlObj.pathname === '/' || urlObj.pathname === '') continue;
+            const anchorText = (a.textContent || "").trim();
+            const heading = a.closest('h1, h2, h3');
+            const headingText = heading ? heading.textContent.trim() : anchorText;
+            
+            if (headingText.length < 20 && !a.querySelector('img')) continue; 
+            
+            const fullUrl = urlObj.href;
+            const normUrlDedup = normalizeUrlForDedup(fullUrl);
 
-        // Evitar anclas internas
-        if (urlObj.hash) continue;
+            allCandidates.push({
+                fullUrl: fullUrl,
+                normUrlDedup: normUrlDedup,
+                anchor: a,
+                top: absoluteTop
+            });
 
-        // Evitar cosas de navegación/sidebars aunque estemos en body
-        if (a.closest('header, nav, footer, aside')) continue;
-
-        // (a partir de aquí sigue la lógica que ya tienes
-        // para calcular rect, absoluteTop, headingText, etc.)
-        const rect = a.getBoundingClientRect();
-        const absoluteTop = window.scrollY + rect.top;
-
-        const anchorText = (a.textContent || "").trim();
-        const heading = a.closest('h1, h2, h3');
-        const headingText = heading ? heading.textContent.trim() : anchorText;
-        
-        if (headingText.length < 20 && !a.querySelector('img')) continue; 
-
-        if (DEBUG_LISTING) {
-            a.classList.add('hemingwai-debug-candidate');
-        }
-        
-        const fullUrl = urlObj.href;
-        const normUrlDedup = normalizeUrlForDedup(fullUrl);
-
-        allCandidates.push({
-            fullUrl: fullUrl,
-            normUrlDedup: normUrlDedup,
-            anchor: a,
-            top: absoluteTop
-        });
+        } catch (e) { }
     }
 
     console.log("HemingwAI: candidatos listados ->", allCandidates.length);
@@ -616,21 +595,6 @@ async function scanListingPage() {
                 const anchor = urlToAnchorMap.get(resUrlDedup);
                 
                 if (anchor) {
-                    if (DEBUG_LISTING && anchor) {
-                        anchor.classList.add('hemingwai-debug-found');
-
-                        const hasScore =
-                            res.puntuacion !== undefined &&
-                            res.puntuacion !== null &&
-                            String(res.puntuacion).trim() !== '';
-
-                        if (hasScore) {
-                            anchor.classList.add('hemingwai-debug-analyzed');
-                        } else {
-                            anchor.classList.add('hemingwai-debug-pending');
-                        }
-                    }
-
                     renderListBadge(anchor, res);
                     foundCount++;
                     
