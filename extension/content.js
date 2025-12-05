@@ -574,8 +574,22 @@ async function scanListingPage() {
     const urlToAnchorMap = new Map();
 
     for (const cand of allCandidates) {
-        if (!urlToAnchorMap.has(cand.normUrlDedup)) {
-            urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
+        const a = cand.anchor;
+        let score = 0;
+        
+        // +3 si está dentro de un heading
+        if (a.closest('h1, h2, h3')) score += 3;
+        
+        // +2 si tiene texto razonablemente largo
+        const text = (a.textContent || '').trim();
+        if (text.length >= 40) score += 2;
+        
+        // +1 si no es solo imagen
+        if (!a.querySelector('img')) score += 1;
+
+        const currentEntry = urlToAnchorMap.get(cand.normUrlDedup);
+        if (!currentEntry || score > currentEntry.score) {
+            urlToAnchorMap.set(cand.normUrlDedup, { anchor: a, score: score });
         }
 
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
@@ -606,7 +620,8 @@ async function scanListingPage() {
         for (const res of resultados) {
             if (res.id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
-                const anchor = urlToAnchorMap.get(resUrlDedup);
+                const entry = urlToAnchorMap.get(resUrlDedup);
+                const anchor = entry && entry.anchor;
                 
                 if (anchor) {
                     renderListBadge(anchor, res);
