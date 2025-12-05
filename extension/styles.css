@@ -146,3 +146,21 @@
 
 /* Colors managed by JS inline styles or utility classes can be added here if preferred */
 /* But user logic asked for JS dynamic color setting, so we stick to base layout here. */
+
+/* === DEBUG VISUAL PARA LISTADOS (solo desarrollo) === */
+
+.hemingwai-debug-candidate {
+  outline: 1px dashed rgba(255, 165, 0, 0.7) !important; /* naranja */
+}
+
+.hemingwai-debug-found {
+  outline: 2px solid rgba(0, 188, 212, 0.9) !important; /* cian */
+}
+
+.hemingwai-debug-analyzed {
+  outline-color: rgba(76, 175, 80, 0.9) !important; /* verde para analizadas */
+}
+
+.hemingwai-debug-pending {
+  outline-color: rgba(255, 193, 7, 0.9) !important; /* amarillo para pendientes */
+}
