@@ -5,7 +5,8 @@
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
-const MAX_URLS_PER_PAGE = 100; 
+const MAX_URLS_PER_PAGE = 100;
+const DEBUG_LISTING = false;
 
 // Logos
 const BLUE_LOGO_URL = chrome.runtime.getURL("logo_extension_blue.png");
@@ -532,17 +533,27 @@ async function scanListingPage() {
             const rect = a.getBoundingClientRect();
             const absoluteTop = window.scrollY + rect.top;
 
+            // Ignorar enlaces que estén claramente en navegación o footer
+            if (a.closest('header, nav, footer')) continue;
+
+            // Ignorar enlaces con rol típico de menú/botón
+            const role = (a.getAttribute('role') || '').toLowerCase();
+            if (role.includes('button') || role.includes('menuitem')) continue;
+
             const anchorText = (a.textContent || "").trim();
             const heading = a.closest('h1, h2, h3');
             const headingText = heading ? heading.textContent.trim() : anchorText;
             
-            if (headingText.length < 20 && !a.querySelector('img')) continue; 
+            // Filtro de longitud más exigente (30 chars)
+            if (headingText.length < 30 && !a.querySelector('img')) continue; 
             
             const fullUrl = urlObj.href;
             const normUrlDedup = normalizeUrlForDedup(fullUrl);
 
-            // Debug: marcar el enlace como candidato en modo listado
-            a.classList.add('hemingwai-debug-candidate');
+            // Debug: marcar el enlace como candidato en modo listado (opcional)
+            if (DEBUG_LISTING) {
+                a.classList.add('hemingwai-debug-candidate');
+            }
 
             allCandidates.push({
                 fullUrl: fullUrl,
@@ -563,8 +574,17 @@ async function scanListingPage() {
     const urlToAnchorMap = new Map();
 
     for (const cand of allCandidates) {
+        // Lógica de selección de anchor (priorizar titulares)
         if (!urlToAnchorMap.has(cand.normUrlDedup)) {
             urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
+        } else {
+            const currentAnchor = urlToAnchorMap.get(cand.normUrlDedup);
+            const currentIsHeadline = !!currentAnchor.closest('h1, h2, h3');
+            const newIsHeadline = !!cand.anchor.closest('h1, h2, h3');
+
+            if (!currentIsHeadline && newIsHeadline) {
+                urlToAnchorMap.set(cand.normUrlDedup, cand.anchor);
+            }
         }
         
         if (!seenDedupUrls.has(cand.normUrlDedup)) {
@@ -606,13 +626,15 @@ async function scanListingPage() {
 
                     const hasScore = (res.puntuacion !== undefined && res.puntuacion !== null && String(res.puntuacion).trim() !== '');
 
-                    // Debug visual en el propio <a>
-                    anchor.classList.add('hemingwai-debug-found');
+                    if (DEBUG_LISTING) {
+                        // Debug visual en el propio <a>
+                        anchor.classList.add('hemingwai-debug-found');
 
-                    if (hasScore) {
-                        anchor.classList.add('hemingwai-debug-analyzed');
-                    } else {
-                        anchor.classList.add('hemingwai-debug-pending');
+                        if (hasScore) {
+                            anchor.classList.add('hemingwai-debug-analyzed');
+                        } else {
+                            anchor.classList.add('hemingwai-debug-pending');
+                        }
                     }
                 }
             }
