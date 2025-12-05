@@ -367,7 +367,7 @@ function updateHemingwaiBadge(badge, data) {
 
     // Text color adjustment (yellow bg needs dark text usually, others white)
     if (bgColor === '#ffc107') {
-        badge.style.color = '#000000'; // Black for yellow
+        badge.style.color = '#001a33'; // Corporate Blue for yellow
     } else {
         badge.style.color = '#ffffff'; // White for others
     }
