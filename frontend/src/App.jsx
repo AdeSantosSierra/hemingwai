@@ -243,7 +243,7 @@ function App() {
           
           <GlitchTitle 
             text="La IA que evalúa la calidad de las noticias" 
-            className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2"
+            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4"
           />
 
           <p className="text-sm sm:text-base text-gray-200 max-w-2xl mx-auto">
