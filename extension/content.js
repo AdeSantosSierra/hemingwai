@@ -2,6 +2,7 @@
 // Detecta noticias y muestra su valoración de calidad.
 
 // Configuración
+const DEBUG_MODE = true; // Set to true to enable visual debug outlines
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
@@ -454,6 +455,33 @@ function renderListBadge(anchor, data) {
     attachInlineBadgeToHeadline(anchor, data);
 }
 
+function markLinkDebugState(element, state) {
+    if (!DEBUG_MODE) return;
+    if (!element) return;
+
+    // Reset outline to ensure clean state change
+    element.style.outline = 'none';
+
+    switch (state) {
+        case 'candidate':
+            // Red: Detected candidate, not confirmed in DB yet
+            element.style.outline = '3px solid #dc3545'; 
+            break;
+        case 'no_score':
+            // Yellow: In DB but no score (pending)
+            element.style.outline = '3px solid #ffc107';
+            break;
+        case 'analyzed':
+            // Green: In DB with score
+            element.style.outline = '3px solid #28a745';
+            break;
+        case 'none':
+        default:
+            element.style.outline = 'none';
+            break;
+    }
+}
+
 
 // ========================================================
 // LÓGICA DE DETECCIÓN & SCAN (Standard)
@@ -548,6 +576,10 @@ async function scanListingPage() {
                 top: absoluteTop
             });
 
+            if (DEBUG_MODE) {
+                markLinkDebugState(a, 'candidate');
+            }
+
         } catch (e) { }
     }
 
@@ -598,7 +630,12 @@ async function scanListingPage() {
                     renderListBadge(anchor, res);
                     foundCount++;
                     
-                    const state = (res.puntuacion !== undefined && res.puntuacion !== null) ? "ANALIZADA" : "PENDIENTE";
+                    const hasScore = (res.puntuacion !== undefined && res.puntuacion !== null);
+                    if (DEBUG_MODE) {
+                        markLinkDebugState(anchor, hasScore ? 'analyzed' : 'no_score');
+                    }
+
+                    const state = hasScore ? "ANALIZADA" : "PENDIENTE";
                     console.log(`HemingwAI: URL ${state} ->`, res.url);
                 }
             }
