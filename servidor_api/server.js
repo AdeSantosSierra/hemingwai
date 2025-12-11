@@ -342,6 +342,192 @@ app.post('/api/check-url', async (req, res) => {
 });
 
 /**
+ * GET /api/news/context
+ * Busca una noticia por URL y devuelve su contexto (análisis, metadatos) sin el embedding.
+ * query: ?url=...
+ */
+app.get('/api/news/context', async (req, res) => {
+    const { url } = req.query;
+
+    if (!url) {
+        return res.status(400).json({ error: "El parámetro 'url' es requerido." });
+    }
+
+    try {
+        const args = [url];
+        // Ejecutamos buscar_noticia.py que ya maneja la lógica de búsqueda por URL
+        const resultado = await ejecutarScriptPython('buscar_noticia.py', args);
+
+        if (!resultado || resultado.mensaje === "Noticia no encontrada.") {
+            return res.status(404).json({ ok: false, error: "Noticia no encontrada" });
+        }
+
+        // Limpiamos el resultado si fuera necesario, pero el script ya devuelve lo que necesitamos
+        // Mapeamos a la estructura esperada por la extensión si hace falta, 
+        // pero devolver el objeto completo de mongo es lo más flexible.
+        return res.json({
+            ok: true,
+            news: resultado
+        });
+
+    } catch (error) {
+        console.error('Error en /api/news/context:', error);
+        return res.status(500).json({ 
+            ok: false, 
+            error: error.error || "Error interno del servidor al obtener contexto." 
+        });
+    }
+});
+
+/**
+ * POST /api/chat/news
+ * Chatbot específico para la extensión. Recibe newsId, recupera el contexto del backend y llama a la IA.
+ * body: { newsId: string, userMessage: string, password: string, previousMessages: array }
+ */
+app.post('/api/chat/news', async (req, res) => {
+    const { newsId, userMessage, password, previousMessages } = req.body;
+
+    // 1. Verificación de seguridad
+    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
+        return res.status(401).json({ ok: false, error: "Acceso denegado. Contraseña incorrecta." });
+    }
+
+    if (!newsId || !userMessage) {
+        return res.status(400).json({ ok: false, error: "newsId y userMessage son requeridos." });
+    }
+
+    try {
+        // 2. Recuperar el contexto de la noticia desde MongoDB usando el newsId
+        const args = [newsId];
+        const contexto = await ejecutarScriptPython('buscar_noticia.py', args);
+
+        if (!contexto || contexto.mensaje === "Noticia no encontrada.") {
+            return res.status(404).json({ ok: false, error: "Noticia no encontrada para generar respuesta." });
+        }
+
+        // 3. Construir el contexto para la IA (Reutilizando lógica de /api/chatbot)
+        let contextoParaIA = `--- METADATOS ---\n`;
+        contextoParaIA += `Título: "${contexto.titulo}"\n`;
+        contextoParaIA += `Autor(es): "${contexto.autor || 'No especificado'}"\n`;
+        contextoParaIA += `Fecha: "${contexto.fecha_publicacion || 'No especificada'}"\n`;
+        contextoParaIA += `Fuente: "${contexto.fuente || 'No especificada'}"\n`;
+        contextoParaIA += `URL: "${contexto.url || 'No especificada'}"\n\n`;
+
+        contextoParaIA += `--- CUERPO DE LA NOTICIA ---\n"${contexto.cuerpo}"\n\n`;
+
+        contextoParaIA += "--- ANÁLISIS DE CALIDAD (Valoraciones) ---\n";
+        if (contexto.valoraciones) {
+            for (const key in contexto.valoraciones) {
+                const nombreParametro = NOMBRES_PARAMETROS[key] || `Parámetro ${key}`;
+                contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
+            }
+        }
+        
+        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        if (contexto.puntuacion_individual) {
+             contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
+        }
+
+        if (contexto.fact_check_analisis) {
+            contextoParaIA += `\n--- FACT-CHECKING (Verificación externa) ---\n`;
+            contextoParaIA += `${contexto.fact_check_analisis}\n`;
+            if (contexto.fact_check_fuentes && contexto.fact_check_fuentes.length > 0) {
+                 contextoParaIA += `Fuentes de verificación: ${contexto.fact_check_fuentes.join(', ')}\n`;
+            }
+        }
+
+        if (contexto.valoracion_titular) {
+             contextoParaIA += `\n--- ANÁLISIS DEL TITULAR ---\n`;
+             contextoParaIA += JSON.stringify(contexto.valoracion_titular, null, 2);
+             contextoParaIA += "\n";
+        }
+
+        if (contexto.texto_referencia_diccionario) {
+             contextoParaIA += `\n--- EVIDENCIAS TEXTUALES (Citas del texto que justifican el análisis) ---\n`;
+             const evidencias = typeof contexto.texto_referencia_diccionario === 'string' 
+                ? contexto.texto_referencia_diccionario 
+                : JSON.stringify(contexto.texto_referencia_diccionario, null, 2);
+             contextoParaIA += `${evidencias}\n`;
+        }
+
+        // 4. Definir el prompt del sistema (Idéntico a /api/chatbot)
+        const systemPrompt = `
+        Eres un asistente virtual experto en análisis de noticias.
+        Tu función es ayudar al usuario a entender mejor el ANÁLISIS de una noticia concreta usando toda la información disponible en el contexto.
+        
+        Tienes acceso a los siguientes bloques de información:
+        1. METADATOS: Autor, fecha, fuente, URL.
+        2. CUERPO DE LA NOTICIA: El texto original.
+        3. VALORACIONES (ANÁLISIS DE CALIDAD): Críticas sobre 10 criterios periodísticos (Ética, Fuentes, Contexto, etc.).
+        4. EVIDENCIAS TEXTUALES (texto_referencia_diccionario): Citas exactas del texto que justifican las valoraciones. Úsalas para demostrar "por qué" se critica algo, citando la frase específica.
+        5. FACT-CHECKING (fact_check_analisis): Una verificación realizada por una IA externa que contrasta los datos de la noticia con fuentes de internet. Úsalo para confirmar si la noticia dice la verdad o miente en sus datos/afirmaciones.
+        6. ANÁLISIS DEL TITULAR (valoracion_titular): Evaluación específica sobre si el título es clickbait, sensacionalista o preciso.
+        
+        Estilo:
+        - Sé claro, profesional y pedagógico.
+        - Usa un tono respetuoso y colaborativo.
+        - Cita partes del análisis para explicarte mejor cuando sea necesario.
+        
+        Instrucciones específicas:
+        - Si te preguntan por la veracidad, básate en el apartado de FACT-CHECKING.
+        - Si te preguntan por qué se le da cierta puntuación o crítica, busca en las EVIDENCIAS TEXTUALES la frase de la noticia que provocó esa crítica y cítala como ejemplo.
+        - Si el usuario pide un resumen de alguna parte del análisis (ej: "resumen del fact-check" o "resumen del análisis del titular"), hazlo sin problemas.
+        - Puedes mencionar la puntuación individual de cada sección si es relevante.
+        
+        Restricciones generales:
+        - Basa tus respuestas únicamente en el contexto proporcionado.
+        - NO inventes datos ni hechos nuevos.
+        - Si el texto no contiene la respuesta, dilo amablemente.
+        - No reproduzcas el cuerpo completo de la noticia por copyright, pero puedes citar fragmentos breves (2-3 frases) para verificar información o dar ejemplos.
+        
+        Responde siempre en español.
+        `;
+
+        // Construir historial de mensajes si existe
+        const messages = [
+            { role: "system", content: systemPrompt }
+        ];
+
+        // Añadimos mensajes previos si los hay (opcional, para contexto multi-turno)
+        if (previousMessages && Array.isArray(previousMessages)) {
+            // Filtramos y limitamos para seguridad y tokens
+            const history = previousMessages.slice(-6); // Últimos 6 mensajes
+            history.forEach(msg => {
+                if (msg.role && msg.content) {
+                    messages.push({ role: msg.role, content: msg.content });
+                }
+            });
+        }
+
+        // Añadimos el mensaje actual con el contexto
+        // IMPORTANTE: En /api/chatbot enviamos el contexto en el mensaje del usuario. Hacemos lo mismo aquí.
+        messages.push({
+            role: "user",
+            content: `Aquí está el contexto de la noticia:\n\n${contextoParaIA}\n\nMi pregunta es: ${userMessage}`
+        });
+
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: messages,
+            temperature: 0,
+            max_tokens: 4096,
+        });
+
+        const assistantMessage = completion.choices[0]?.message?.content?.trim();
+
+        if (assistantMessage) {
+            res.json({ ok: true, assistantMessage });
+        } else {
+            res.status(500).json({ ok: false, error: "No se pudo obtener una respuesta del servicio de IA." });
+        }
+
+    } catch (error) {
+        console.error("Error en /api/chat/news:", error);
+        res.status(500).json({ ok: false, error: "Error interno del servidor al procesar el chat." });
+    }
+});
+
+/**
  * POST /api/check-urls
  * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
