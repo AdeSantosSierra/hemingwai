@@ -11,7 +11,10 @@ import {
   Newspaper,
   Loader,
   Database,
-  Code
+  Code,
+  Link2,
+  Brain,
+  ShieldCheck
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,6 +24,7 @@ import ResultadoBusqueda from './components/ResultadoBusqueda';
 import HistoryPanel from './components/HistoryPanel';
 import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
+import BackgroundParticles from './components/BackgroundParticles';
 
 /*  
    App principal
@@ -174,7 +178,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#001a33] text-gray-100 font-sans overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-animated text-gray-100 font-sans overflow-x-hidden">
+      {/* Capa de Partículas (Z-Index 1, entre Grid y Contenido) */}
+      <BackgroundParticles />
+      
       <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
@@ -352,6 +359,56 @@ function App() {
             </RevealOnScroll>
           )}
         </AnimatePresence>
+
+        {/* Sección: ¿Cómo analiza HemingwAI tus noticias? */}
+        <section className="w-full mt-10 mb-12">
+          <RevealOnScroll>
+            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-10 text-white font-heading">
+              ¿Cómo analiza HemingwAI tus noticias?
+            </h2>
+          </RevealOnScroll>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {/* Card 1 */}
+            <RevealOnScroll delay={0} className="h-full">
+              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+                <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
+                  <Link2 className="w-6 h-6 text-lima" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">1. Leemos tu URL</h3>
+                <p className="text-sm text-gray-300">
+                  Extraemos el titular, el cuerpo de la noticia y la fuente original para procesar la información.
+                </p>
+              </div>
+            </RevealOnScroll>
+
+            {/* Card 2 */}
+            <RevealOnScroll delay={100} className="h-full">
+              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+                 <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
+                  <Brain className="w-6 h-6 text-lima" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">2. Analizamos el contenido</h3>
+                <p className="text-sm text-gray-300">
+                  La IA evalúa la calidad del titular, la precisión, el contexto y la confiabilidad de las fuentes.
+                </p>
+              </div>
+            </RevealOnScroll>
+
+            {/* Card 3 */}
+            <RevealOnScroll delay={200} className="h-full">
+              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+                 <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
+                  <ShieldCheck className="w-6 h-6 text-lima" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">3. Te devolvemos la valoración</h3>
+                <p className="text-sm text-gray-300">
+                  Te mostramos una puntuación global y un desglose detallado de la información.
+                </p>
+              </div>
+            </RevealOnScroll>
+          </div>
+        </section>
 
         {/* Footer */}
         <footer className={`mt-auto mb-6 w-full ${isIdle ? '' : ''}`}>

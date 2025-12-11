@@ -128,3 +128,49 @@
      transform: skew(0.2deg);
    }
  }
+
+/* --- NUEVO: Fondo estático y grid para partículas --- */
+
+.bg-animated {
+  position: relative;
+  min-height: 100vh;
+  background-color: #001a33; /* Azul corporativo base */
+  overflow-x: hidden;
+  /* El canvas de partículas se encargará del movimiento */
+  isolation: isolate;
+}
+
+/* Grid overlay estático - Z-index 0 */
+.bg-animated::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 60px 60px; /* Debe coincidir con GRID_SIZE en BackgroundParticles.jsx */
+  opacity: 0.6;
+  mix-blend-mode: soft-light;
+  z-index: 0;
+}
+
+/* 
+   Asegurar que el contenido principal (header, main, footer) 
+   esté por encima de las partículas (que tendrán z-index 1) 
+   
+   Usamos selectores específicos para no afectar al canvas u otros elementos
+*/
+.bg-animated > header,
+.bg-animated > main,
+.bg-animated > footer {
+  position: relative;
+  z-index: 2; /* Contenido encima de todo (Grid=0, Particles=1, Content=2) */
+}
+
+/* Ajuste específico para el toast de Sonner para que siempre esté encima de todo */
+[data-sonner-toaster] {
+  position: fixed !important;
+  z-index: 9999 !important;
+  pointer-events: auto;
+}

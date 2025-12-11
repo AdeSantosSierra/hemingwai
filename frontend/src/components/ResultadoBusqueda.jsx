@@ -20,6 +20,7 @@ import { motion } from 'framer-motion';
 import Chatbot from './Chatbot';
 import ScoreCounter from './ScoreCounter';
 import SkeletonAnalysis from './SkeletonAnalysis';
+import RevealOnScroll from './RevealOnScroll';
 
 /*  
    Helpers
@@ -261,10 +262,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start"
+        key={resultado._id || resultado.url}
       >
         {/* Columna Izquierda: Contenido del análisis */}
         <div className="space-y-6">
         {/* Información básica */}
+        <RevealOnScroll delay={0}>
         <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
         <div className="flex flex-col md:flex-row gap-4 md:items-start">
 
@@ -452,8 +455,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             </motion.div>
           )}
         </div>
+        </RevealOnScroll>
 
         {/* Otras secciones (Análisis adicional) */}
+        <RevealOnScroll delay={100}>
         <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-4">
             Análisis general
@@ -537,8 +542,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             </motion.button>
           </div>
         </div>
+        </RevealOnScroll>
 
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
+        <RevealOnScroll delay={200}>
         <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-2">
             Pregúntale al chatbot
@@ -564,8 +571,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               })}
           </div>
         </div>
+        </RevealOnScroll>
 
         {/* Valoraciones individuales */}
+        <RevealOnScroll delay={300}>
         <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-gray-900 mb-4">
             Valoraciones por sección
@@ -608,10 +617,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               })}
           </div>
         </div>
+        </RevealOnScroll>
       </div>
 
         {/* Columna Derecha: Chatbot Sticky */}
         <div className="md:sticky md:top-4">
+          <RevealOnScroll delay={150}>
           {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
               <div className="bg-white/95 shadow-xl rounded-xl p-6">
                   <Chatbot 
@@ -636,6 +647,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                   />
               </div>
           )}
+          </RevealOnScroll>
         </div>
       </motion.div>
 
