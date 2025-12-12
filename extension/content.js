@@ -71,6 +71,24 @@ function getNewsArticleLdJsonCount() {
 function getArticleTagCount() {
     return document.getElementsByTagName('article').length;
 }
+// Helper para usar chrome.runtime.sendMessage con async/await
+function sendMessageAsync(message) {
+    return new Promise((resolve) => {
+        try {
+            chrome.runtime.sendMessage(message, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.warn("[HemingwAI] runtime.lastError:", chrome.runtime.lastError);
+                    resolve(undefined);
+                } else {
+                    resolve(response);
+                }
+            });
+        } catch (e) {
+            console.error("[HemingwAI] Error en sendMessageAsync:", e);
+            resolve(undefined);
+        }
+    });
+}
 
 // ========================================================
 // COLOR & LOGO LOGIC
@@ -531,7 +549,7 @@ class HemingwaiSidebar {
         // If not loaded, fetch context
         if (!this.newsData) {
             this.renderLoading();
-            const response = await chrome.runtime.sendMessage({ 
+            const response = await sendMessageAsync({ 
                 type: "NEWS_CONTEXT_REQUEST", 
                 url: window.location.href 
             });
@@ -839,7 +857,7 @@ class HemingwaiSidebar {
         const errorEl = this.shadowRoot.querySelector('#lock-error');
         if (errorEl) errorEl.textContent = "Verificando...";
 
-        const response = await chrome.runtime.sendMessage({ 
+        const response = await sendMessageAsync({ 
             type: "VERIFY_PASSWORD", 
             password: password 
         });
@@ -857,7 +875,7 @@ class HemingwaiSidebar {
         this.isLoading = true;
         this.render(); // Update UI immediately
 
-        const response = await chrome.runtime.sendMessage({
+        const response = await sendMessageAsync({
             type: "NEWS_CHAT_MESSAGE",
             newsId: this.newsId,
             userMessage: text,
