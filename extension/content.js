@@ -191,7 +191,7 @@ function createPopoverElement(data) {
             <div class="hemingwai-section">
                 <span class="hemingwai-label">ESTADO</span>
                 <div class="hemingwai-text">
-                    Noticia registrada en la base de datos de Newscore, pero aún no ha sido analizada automáticamente.
+                    Noticia registrada en la base de datos de HemingwAI, pero aún no ha sido analizada automáticamente.
                 </div>
             </div>
             <div class="hemingwai-section">
@@ -206,7 +206,7 @@ function createPopoverElement(data) {
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
         
         contentHtml = `
-            <h4>Análisis Newscore</h4>
+            <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
                 <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/100</span>
@@ -345,12 +345,12 @@ function updateHemingwaiBadge(badge, data) {
     if (hasScore) {
         scoreSpan.textContent = String(score);
         scoreSpan.style.display = 'inline-block';
-        badge.title = `Puntuación Newscore: ${score}/100`;
+        badge.title = `Puntuación HemingwAI: ${score}/100`;
         badge.classList.remove('hemingwai-badge-pending');
     } else {
         scoreSpan.textContent = '';
         scoreSpan.style.display = 'none';
-        badge.title = "Newscore: Pendiente de análisis";
+        badge.title = "HemingwAI: Pendiente de análisis";
         badge.classList.add('hemingwai-badge-pending');
     }
 
@@ -372,7 +372,7 @@ function createHemingwaiBadge(data) {
 
     const img = document.createElement('img');
     img.className = 'hemingwai-badge-logo';
-    img.alt = 'Newscore';
+    img.alt = 'HemingwAI';
     badge.appendChild(img);
 
     const scoreSpan = document.createElement('span');
@@ -518,6 +518,12 @@ class HemingwaiSidebar {
         btn.appendChild(img);
         
         btn.addEventListener('click', () => this.toggleSidebar());
+        
+        // Stop propagation to prevent clicks from reaching underlying page elements
+        ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup'].forEach(evt => {
+            btn.addEventListener(evt, (e) => e.stopPropagation(), { capture: false });
+        });
+
         document.body.appendChild(btn);
         this.toggleButton = btn;
     }
@@ -591,6 +597,15 @@ class HemingwaiSidebar {
             display: 'none',
             boxShadow: '-4px 0 12px rgba(0,0,0,0.4)'
         });
+        this.sidebarHost.style.pointerEvents = 'auto';
+
+        // Stop propagation to prevent clicks from reaching underlying page elements
+        const stopEvents = (e) => {
+            e.stopPropagation();
+        };
+        ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup'].forEach(evt => {
+            this.sidebarHost.addEventListener(evt, stopEvents, { capture: false });
+        });
 
         this.shadowRoot = this.sidebarHost.attachShadow({ mode: 'open' });
         
@@ -605,6 +620,7 @@ class HemingwaiSidebar {
                 flex-direction: column;
                 height: 100%;
                 box-sizing: border-box;
+                pointer-events: auto;
             }
             * { box-sizing: border-box; }
             
@@ -616,6 +632,7 @@ class HemingwaiSidebar {
                 justify-content: space-between;
                 align-items: center;
                 background: #001a33;
+                pointer-events: auto;
             }
             .header h2 {
                 margin: 0;
@@ -644,6 +661,7 @@ class HemingwaiSidebar {
                 gap: 12px;
                 background: #0e2f56; /* Slightly lighter blue */
                 position: relative;
+                pointer-events: auto;
             }
 
             /* Messages */
@@ -682,6 +700,7 @@ class HemingwaiSidebar {
                 background: #001a33;
                 display: flex;
                 gap: 8px;
+                pointer-events: auto;
             }
             input {
                 flex: 1;
@@ -717,6 +736,7 @@ class HemingwaiSidebar {
                 justify-content: center;
                 z-index: 10;
                 padding: 20px;
+                pointer-events: auto;
             }
             .lock-card {
                 background: #0e2f56;
