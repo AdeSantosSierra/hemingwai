@@ -125,12 +125,7 @@ function closeAllHemingwaiPopovers() {
     activePopover = null;
 }
 
-function showPopoverForBadge(badgeEl, popoverEl) { // Note: we usually create popover here or pass it
-    // Wait, the design requires dynamic content per badge.
-    // We should probably recreate the popover content here.
-    // But the attach function logic is "openPopover()" which calls "showPopoverForBadge"
-    // Let's adapt.
-    
+function showPopoverForBadge(badgeEl, popoverEl) { 
     // Close others
     const existing = document.querySelectorAll('.hemingwai-popover');
     existing.forEach(el => el.remove());
@@ -221,20 +216,8 @@ function createPopoverElement(data) {
     popover.className = 'hemingwai-popover';
     popover.innerHTML = contentHtml;
     
-    // Popover self-hover logic (keep open if mouse moves to popover)
     popover.addEventListener('mouseenter', () => {
-         // cancel any hide timer if we had one (we rely on badge leave)
-         // Actually, if we leave badge, we close. We need a shared timer or logic.
-         // Simplest: if we are pinned, we don't care.
-         // If unpinned (hover mode): moving to popover should keep it open?
-         // User: "mouseleave del badge → cerrar el pop-over SI no está “pineado”".
-         // Typically user wants to be able to click links in popover.
-         // But user instructions were strict: "Hover sobre la bolita... mouseleave del badge → cerrar".
-         // If I strictly follow that, user can't click links in popover in hover mode.
-         // I will assume standard behavior (bridge gap) is implied or user pins to click.
-         // Given "Click la pinea...", user implies interaction requires pinning?
-         // Let's stick to strict instruction: "mouseleave del badge → cerrar...".
-         // But I'll add a small grace period just in case.
+         // Keep open logic
     });
 
     return popover;
@@ -248,15 +231,10 @@ function attachPopoverHandlersToBadge(badgeEl, data) {
         context: data && data.url ? 'list_or_article' : 'unknown',
         url: data && data.url
     });
-
-    // Create popover element ONCE or on demand? On demand is better for fresh data/DOM.
-    // But we need reference. Let's create on open.
     
     function openPopover() {
         const popoverEl = createPopoverElement(data);
         
-        // Add listeners to popover to allow hovering IT (standard UX, even if strict instructions said badge)
-        // because otherwise links are unclickable without pinning.
         popoverEl.addEventListener('mouseenter', () => {
             if (hideTimer) clearTimeout(hideTimer);
         });
@@ -290,7 +268,6 @@ function attachPopoverHandlersToBadge(badgeEl, data) {
 
         if (currentPinnedBadge && currentPinnedBadge !== badgeEl) {
             currentPinnedBadge.__pinned = false;
-            // Close others immediately
             const all = document.querySelectorAll('.hemingwai-popover');
             all.forEach(p => p.remove()); 
             activePopover = null;
@@ -301,7 +278,6 @@ function attachPopoverHandlersToBadge(badgeEl, data) {
 
         if (pinned) {
             currentPinnedBadge = badgeEl;
-            // Ensure open and clear timers
             if (hideTimer) clearTimeout(hideTimer);
             openPopover(); 
         } else {
@@ -316,9 +292,6 @@ document.addEventListener('click', (event) => {
     if (!currentPinnedBadge) return;
 
     const badge = currentPinnedBadge;
-    // We need to find the active popover for this badge.
-    // activePopover global should be it.
-    
     const isBadge = badge.contains(event.target);
     const isPopover = activePopover && activePopover.contains(event.target);
 
@@ -353,24 +326,23 @@ function updateHemingwaiBadge(badge, data) {
 
     if (hasScore) {
         scoreSpan.textContent = String(score);
-        scoreSpan.style.display = 'inline-block'; // or inline
+        scoreSpan.style.display = 'inline-block';
         badge.title = `Puntuación HemingwAI: ${score}/100`;
-        badge.classList.remove('hemingwai-badge-pending'); // Remove pending class if present
+        badge.classList.remove('hemingwai-badge-pending');
     } else {
         scoreSpan.textContent = '';
         scoreSpan.style.display = 'none';
         badge.title = "HemingwAI: Pendiente de análisis";
-        badge.classList.add('hemingwai-badge-pending'); // Add pending class
+        badge.classList.add('hemingwai-badge-pending');
     }
 
     const { bgColor, useWhiteLogo } = getColorForScore(score);
     badge.style.backgroundColor = bgColor;
 
-    // Text color adjustment (yellow bg needs dark text usually, others white)
     if (bgColor === '#ffc107') {
-        badge.style.color = '#001a33'; // Corporate Blue for yellow
+        badge.style.color = '#001a33'; 
     } else {
-        badge.style.color = '#ffffff'; // White for others
+        badge.style.color = '#ffffff'; 
     }
 
     img.src = useWhiteLogo ? WHITE_LOGO_URL : BLUE_LOGO_URL;
@@ -390,8 +362,6 @@ function createHemingwaiBadge(data) {
     badge.appendChild(scoreSpan);
 
     updateHemingwaiBadge(badge, data);
-    
-    // Attach Popover Handlers HERE
     attachPopoverHandlersToBadge(badge, data);
     badge.dataset.hemingwaiPopoverAttached = 'true';
 
@@ -399,19 +369,11 @@ function createHemingwaiBadge(data) {
 }
 
 function attachInlineBadgeToHeadline(headlineEl, data) {
-    // Esta función solo se usa en listados (isNews === false)
-
-    // Siempre creamos un badge nuevo para evitar inconsistencias
-    const badge = createHemingwaiBadge(data);  // ya lleva attachPopoverHandlersToBadge dentro
+    const badge = createHemingwaiBadge(data);
     badge.classList.add('hemingwai-badge-inline');
-
-    // Insertar justo después del enlace/titular
     headlineEl.insertAdjacentElement('afterend', badge);
-
-    // Marcar el enlace como procesado por si en el futuro queremos evitar duplicados
     headlineEl.dataset.hemingwaiBadgeAttached = 'true';
     headlineEl.dataset.hemingwai = "processed";
-
     return badge;
 }
 
@@ -429,7 +391,6 @@ function attachInlineBadgeToArticleHeadline(h1El, data) {
     const badge = createHemingwaiBadge(data);
     badge.classList.add('hemingwai-badge-inline', 'hemingwai-badge-article');
 
-    // Añadimos un espacio y el badge DENTRO del <h1>, al final del contenido
     h1El.appendChild(document.createTextNode(' '));
     h1El.appendChild(badge);
 
@@ -439,7 +400,7 @@ function attachInlineBadgeToArticleHeadline(h1El, data) {
 
 
 // ========================================================
-// RENDERING UI
+// RENDERING UI (Badge Logic)
 // ========================================================
 
 function renderArticleUI(data) {
@@ -447,7 +408,6 @@ function renderArticleUI(data) {
     if (!h1) return;
 
     if (h1.dataset.hemingwaiBadgeAttached === 'true') return;
-
     attachInlineBadgeToArticleHeadline(h1, data);
 }
 
@@ -458,27 +418,469 @@ function renderListBadge(anchor, data) {
 function markLinkDebugState(element, state) {
     if (!DEBUG_MODE) return;
     if (!element) return;
-
-    // Reset outline to ensure clean state change
     element.style.outline = 'none';
 
     switch (state) {
         case 'candidate':
-            // Red: Detected candidate, not confirmed in DB yet
             element.style.outline = '3px solid #dc3545'; 
             break;
         case 'no_score':
-            // Yellow: In DB but no score (pending)
             element.style.outline = '3px solid #ffc107';
             break;
         case 'analyzed':
-            // Green: In DB with score
             element.style.outline = '3px solid #28a745';
             break;
         case 'none':
         default:
             element.style.outline = 'none';
             break;
+    }
+}
+
+// ========================================================
+// SIDEBAR (CHAT) UI & LOGIC
+// ========================================================
+
+class HemingwaiSidebar {
+    constructor() {
+        this.isOpen = false;
+        this.isUnlocked = false;
+        this.newsId = null;
+        this.newsData = null;
+        this.messages = []; // {role: 'user'|'assistant', content: string}
+        this.sidebarHost = null;
+        this.shadowRoot = null;
+        this.toggleButton = null;
+        this.isLoading = false;
+    }
+
+    async init() {
+        // Create Toggle Button
+        this.createToggleButton();
+
+        // Check initial auth status
+        chrome.runtime.sendMessage({ type: "CHECK_AUTH_STATUS" }, (response) => {
+            if (response && response.isUnlocked) {
+                this.isUnlocked = true;
+            }
+        });
+    }
+
+    createToggleButton() {
+        const btn = document.createElement('div');
+        btn.id = 'hemingwai-sidebar-toggle';
+        
+        // Styles for the button (inline to ensure visibility)
+        Object.assign(btn.style, {
+            position: 'fixed',
+            top: '50%',
+            right: '0',
+            transform: 'translateY(-50%)',
+            width: '40px',
+            height: '100px',
+            backgroundColor: '#001a33',
+            borderTopLeftRadius: '8px',
+            borderBottomLeftRadius: '8px',
+            boxShadow: '-2px 0 8px rgba(0,0,0,0.3)',
+            border: '2px solid #d2d209', // Brand yellow border
+            borderRight: 'none',
+            zIndex: '2147483646', // Just below max
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'right 0.3s ease'
+        });
+
+        // Icon/Logo inside button
+        const img = document.createElement('img');
+        img.src = WHITE_LOGO_URL;
+        img.style.width = '24px';
+        img.style.height = 'auto';
+        btn.appendChild(img);
+        
+        btn.addEventListener('click', () => this.toggleSidebar());
+        document.body.appendChild(btn);
+        this.toggleButton = btn;
+    }
+
+    toggleSidebar() {
+        if (this.isOpen) {
+            this.close();
+        } else {
+            this.open();
+        }
+    }
+
+    async open() {
+        if (this.isOpen) return;
+        
+        if (!this.sidebarHost) {
+            this.createSidebarDOM();
+        }
+
+        this.isOpen = true;
+        this.sidebarHost.style.display = 'block';
+        this.toggleButton.style.display = 'none'; // Hide toggle when open
+
+        // Shift page content
+        const sidebarWidth = 350;
+        document.documentElement.style.transition = 'margin-right 0.3s ease';
+        document.documentElement.style.marginRight = `${sidebarWidth}px`;
+
+        // If not loaded, fetch context
+        if (!this.newsData) {
+            this.renderLoading();
+            const response = await chrome.runtime.sendMessage({ 
+                type: "NEWS_CONTEXT_REQUEST", 
+                url: window.location.href 
+            });
+
+            if (response && response.ok && response.news) {
+                this.newsData = response.news;
+                this.newsId = response.news._id || response.news.id;
+                this.messages.push({ 
+                    role: 'assistant', 
+                    content: `Hola. Estoy listo para responder preguntas sobre esta noticia: "${this.newsData.titulo || 'Sin título'}".` 
+                });
+                this.render();
+            } else {
+                this.renderError("No se pudo cargar el análisis de esta noticia. Asegúrate de que está en nuestra base de datos.");
+            }
+        }
+    }
+
+    close() {
+        if (!this.isOpen) return;
+        this.isOpen = false;
+        this.sidebarHost.style.display = 'none';
+        this.toggleButton.style.display = 'flex';
+        
+        document.documentElement.style.marginRight = '0px';
+    }
+
+    createSidebarDOM() {
+        this.sidebarHost = document.createElement('div');
+        this.sidebarHost.id = 'hemingwai-sidebar-host';
+        Object.assign(this.sidebarHost.style, {
+            position: 'fixed',
+            top: '0',
+            right: '0',
+            width: '350px',
+            height: '100vh',
+            zIndex: '2147483647',
+            backgroundColor: '#001a33', // Fallback
+            display: 'none',
+            boxShadow: '-4px 0 12px rgba(0,0,0,0.4)'
+        });
+
+        this.shadowRoot = this.sidebarHost.attachShadow({ mode: 'open' });
+        
+        // Inject Styles
+        const style = document.createElement('style');
+        style.textContent = `
+            :host {
+                font-family: system-ui, -apple-system, sans-serif;
+                color: white;
+                background-color: #001a33;
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                box-sizing: border-box;
+            }
+            * { box-sizing: border-box; }
+            
+            /* Header */
+            .header {
+                padding: 16px;
+                border-bottom: 2px solid #d2d209;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                background: #001a33;
+            }
+            .header h2 {
+                margin: 0;
+                font-size: 18px;
+                color: #d2d209;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            .close-btn {
+                background: none;
+                border: none;
+                color: rgba(255,255,255,0.7);
+                font-size: 24px;
+                cursor: pointer;
+                line-height: 1;
+            }
+            .close-btn:hover { color: white; }
+
+            /* Content Area */
+            .content {
+                flex: 1;
+                overflow-y: auto;
+                padding: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                background: #0e2f56; /* Slightly lighter blue */
+                position: relative;
+            }
+
+            /* Messages */
+            .message {
+                max-width: 85%;
+                padding: 10px 14px;
+                border-radius: 12px;
+                font-size: 14px;
+                line-height: 1.4;
+                word-wrap: break-word;
+            }
+            .message.user {
+                align-self: flex-end;
+                background-color: #d2d209;
+                color: #001a33;
+                border-bottom-right-radius: 2px;
+            }
+            .message.assistant {
+                align-self: flex-start;
+                background-color: white;
+                color: #001a33;
+                border-bottom-left-radius: 2px;
+            }
+            
+            /* Markdown basic styles for assistant */
+            .message.assistant p { margin: 0 0 8px 0; }
+            .message.assistant p:last-child { margin-bottom: 0; }
+            .message.assistant strong { font-weight: 700; }
+            .message.assistant ul { padding-left: 20px; margin: 4px 0; }
+            .message.assistant li { margin-bottom: 4px; }
+
+            /* Input Area */
+            .input-area {
+                padding: 16px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                background: #001a33;
+                display: flex;
+                gap: 8px;
+            }
+            input {
+                flex: 1;
+                padding: 10px;
+                border-radius: 20px;
+                border: 1px solid #d2d209;
+                background: white;
+                color: #001a33;
+                font-size: 14px;
+                outline: none;
+            }
+            button.send-btn {
+                background: #d2d209;
+                color: #001a33;
+                border: none;
+                border-radius: 20px;
+                padding: 0 16px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            button.send-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            /* Lock Screen */
+            .lock-overlay {
+                position: absolute;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0, 26, 51, 0.95);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+                padding: 20px;
+                text-align: center;
+            }
+            .lock-overlay h3 { color: #d2d209; margin-bottom: 12px; }
+            .lock-input { margin-bottom: 12px; width: 100%; text-align: center; }
+            .lock-error { color: #ff6b6b; font-size: 12px; margin-top: 8px; }
+
+            /* Utils */
+            .loading { text-align: center; color: #d2d209; font-size: 12px; margin-top: 8px; }
+            .error-msg { color: #ff6b6b; padding: 10px; text-align: center; background: rgba(0,0,0,0.2); border-radius: 8px; }
+        `;
+        
+        this.shadowRoot.appendChild(style);
+        
+        // Container
+        this.container = document.createElement('div');
+        this.container.style.height = '100%';
+        this.container.style.display = 'flex';
+        this.container.style.flexDirection = 'column';
+        this.shadowRoot.appendChild(this.container);
+
+        document.body.appendChild(this.sidebarHost);
+        this.render(); // Initial render structure
+    }
+
+    render() {
+        if (!this.shadowRoot) return;
+
+        // Header
+        const header = `
+            <div class="header">
+                <h2>HemingwAI</h2>
+                <button class="close-btn">×</button>
+            </div>
+        `;
+
+        // Determine content state
+        let contentInner = '';
+        
+        if (!this.newsData && !this.isLoading) {
+             contentInner = `<div class="loading">Cargando contexto...</div>`;
+        } else if (this.messages.length > 0) {
+            contentInner = this.messages.map(m => {
+                // Simple markdown-ish render for assistant
+                let htmlContent = m.content;
+                if (m.role === 'assistant') {
+                    htmlContent = htmlContent
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br>');
+                }
+                return `<div class="message ${m.role}">${htmlContent}</div>`;
+            }).join('');
+        }
+
+        if (this.isLoading) {
+            contentInner += `<div class="loading">HemingwAI está escribiendo...</div>`;
+        }
+
+        const chatArea = `
+            <div class="content" id="chat-content">
+                ${contentInner}
+                ${!this.isUnlocked ? this.getLockScreenHTML() : ''}
+            </div>
+            <div class="input-area">
+                <input type="text" id="chat-input" placeholder="Pregunta sobre la noticia..." ${!this.isUnlocked ? 'disabled' : ''}>
+                <button class="send-btn" id="send-btn" ${!this.isUnlocked ? 'disabled' : ''}>Enviar</button>
+            </div>
+        `;
+
+        this.container.innerHTML = header + chatArea;
+
+        // Bind Events
+        this.shadowRoot.querySelector('.close-btn').onclick = () => this.close();
+        
+        const input = this.shadowRoot.querySelector('#chat-input');
+        const sendBtn = this.shadowRoot.querySelector('#send-btn');
+        const contentDiv = this.shadowRoot.querySelector('#chat-content');
+
+        // Scroll to bottom
+        contentDiv.scrollTop = contentDiv.scrollHeight;
+
+        if (this.isUnlocked) {
+            const handleSend = () => {
+                const text = input.value.trim();
+                if (text) {
+                    this.sendMessage(text);
+                    input.value = '';
+                }
+            };
+            
+            sendBtn.onclick = handleSend;
+            input.onkeydown = (e) => {
+                if (e.key === 'Enter') handleSend();
+            };
+        } else {
+            // Lock screen events
+            const lockBtn = this.shadowRoot.querySelector('#lock-btn');
+            const lockInput = this.shadowRoot.querySelector('#lock-input');
+            if (lockBtn && lockInput) {
+                const handleUnlock = () => {
+                    this.unlock(lockInput.value);
+                };
+                lockBtn.onclick = handleUnlock;
+                lockInput.onkeydown = (e) => { if (e.key === 'Enter') handleUnlock(); };
+            }
+        }
+    }
+
+    getLockScreenHTML() {
+        return `
+            <div class="lock-overlay">
+                <h3>🔒 Chat Privado</h3>
+                <p style="font-size:13px; margin-bottom:16px;">Introduce la contraseña para acceder al asistente.</p>
+                <input type="password" id="lock-input" class="lock-input" placeholder="Contraseña...">
+                <button id="lock-btn" class="send-btn">Desbloquear</button>
+                <div id="lock-error" class="lock-error"></div>
+            </div>
+        `;
+    }
+
+    renderLoading() {
+        if (!this.container) return;
+        const content = this.shadowRoot.querySelector('.content');
+        if (content) {
+            content.innerHTML += `<div class="loading">Cargando...</div>`;
+        }
+    }
+
+    renderError(msg) {
+        if (!this.container) return;
+        const content = this.shadowRoot.querySelector('.content');
+        if (content) {
+            content.innerHTML = `<div class="error-msg">${msg}</div>`;
+        }
+    }
+
+    async unlock(password) {
+        const errorEl = this.shadowRoot.querySelector('#lock-error');
+        if (errorEl) errorEl.textContent = "Verificando...";
+
+        const response = await chrome.runtime.sendMessage({ 
+            type: "VERIFY_PASSWORD", 
+            password: password 
+        });
+
+        if (response && response.ok) {
+            this.isUnlocked = true;
+            this.render(); // Re-render to remove lock screen
+        } else {
+            if (errorEl) errorEl.textContent = response.error || "Contraseña incorrecta";
+        }
+    }
+
+    async sendMessage(text) {
+        this.messages.push({ role: 'user', content: text });
+        this.isLoading = true;
+        this.render(); // Update UI immediately
+
+        const response = await chrome.runtime.sendMessage({
+            type: "NEWS_CHAT_MESSAGE",
+            newsId: this.newsId,
+            userMessage: text,
+            previousMessages: this.messages.slice(0, -1) // Send history excluding current user msg (optional, or send all)
+            // Note: server expects previousMessages to exclude the current one which is passed in 'userMessage'
+        });
+
+        this.isLoading = false;
+
+        if (response && response.ok) {
+            this.messages.push({ role: 'assistant', content: response.assistantMessage });
+        } else {
+            const error = response.error === "AUTH_REQUIRED" 
+                ? "Sesión expirada. Por favor desbloquea de nuevo." 
+                : "Error al conectar con HemingwAI.";
+            
+            this.messages.push({ role: 'assistant', content: `⚠️ ${error}` });
+            
+            if (response.error === "AUTH_REQUIRED") {
+                this.isUnlocked = false;
+            }
+        }
+        this.render();
     }
 }
 
@@ -510,6 +912,10 @@ function isNewsArticle() {
 async function processArticlePage() {
     console.log("HemingwAI: Artículo detectado. Consultando API...");
     
+    // Inicializar Sidebar SI es noticia
+    const sidebar = new HemingwaiSidebar();
+    sidebar.init();
+
     const currentUrl = window.location.href;
     const currentUrlNorm = normalizeUrl(currentUrl);
 
