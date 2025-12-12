@@ -191,7 +191,7 @@ function createPopoverElement(data) {
             <div class="hemingwai-section">
                 <span class="hemingwai-label">ESTADO</span>
                 <div class="hemingwai-text">
-                    Noticia registrada en la base de datos de HemingwAI, pero aún no ha sido analizada automáticamente.
+                    Noticia registrada en la base de datos de Newscore, pero aún no ha sido analizada automáticamente.
                 </div>
             </div>
             <div class="hemingwai-section">
@@ -206,7 +206,7 @@ function createPopoverElement(data) {
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
         
         contentHtml = `
-            <h4>Análisis HemingwAI</h4>
+            <h4>Análisis Newscore</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
                 <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/100</span>
@@ -345,12 +345,12 @@ function updateHemingwaiBadge(badge, data) {
     if (hasScore) {
         scoreSpan.textContent = String(score);
         scoreSpan.style.display = 'inline-block';
-        badge.title = `Puntuación HemingwAI: ${score}/100`;
+        badge.title = `Puntuación Newscore: ${score}/100`;
         badge.classList.remove('hemingwai-badge-pending');
     } else {
         scoreSpan.textContent = '';
         scoreSpan.style.display = 'none';
-        badge.title = "HemingwAI: Pendiente de análisis";
+        badge.title = "Newscore: Pendiente de análisis";
         badge.classList.add('hemingwai-badge-pending');
     }
 
@@ -372,7 +372,7 @@ function createHemingwaiBadge(data) {
 
     const img = document.createElement('img');
     img.className = 'hemingwai-badge-logo';
-    img.alt = 'HemingwAI';
+    img.alt = 'Newscore';
     badge.appendChild(img);
 
     const scoreSpan = document.createElement('span');
@@ -713,15 +713,43 @@ class HemingwaiSidebar {
                 top: 0; left: 0; right: 0; bottom: 0;
                 background: rgba(0, 26, 51, 0.95);
                 display: flex;
-                flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 z-index: 10;
                 padding: 20px;
-                text-align: center;
             }
-            .lock-overlay h3 { color: #d2d209; margin-bottom: 12px; }
-            .lock-input { margin-bottom: 12px; width: 100%; text-align: center; }
+            .lock-card {
+                background: #0e2f56;
+                padding: 24px;
+                border-radius: 16px;
+                border: 1px solid rgba(210, 210, 9, 0.5);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 90%;
+                max-width: 280px;
+                text-align: center;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            }
+            .lock-card h3 { 
+                color: #d2d209; 
+                margin: 0 0 12px 0;
+                font-size: 18px;
+            }
+            .lock-card p {
+                font-size: 13px;
+                margin: 0 0 16px 0;
+                color: rgba(255,255,255,0.9);
+                line-height: 1.4;
+            }
+            .lock-input { 
+                flex: 0 0 auto; /* Override generic flex:1 */
+                height: 38px;
+                width: 100%;
+                max-width: 240px;
+                margin-bottom: 12px; 
+                text-align: center; 
+            }
             .lock-error { color: #ff6b6b; font-size: 12px; margin-top: 8px; }
 
             /* Utils */
@@ -828,11 +856,13 @@ class HemingwaiSidebar {
     getLockScreenHTML() {
         return `
             <div class="lock-overlay">
-                <h3>🔒 Chat Privado</h3>
-                <p style="font-size:13px; margin-bottom:16px;">Introduce la contraseña para acceder al asistente.</p>
-                <input type="password" id="lock-input" class="lock-input" placeholder="Contraseña...">
-                <button id="lock-btn" class="send-btn">Desbloquear</button>
-                <div id="lock-error" class="lock-error"></div>
+                <div class="lock-card">
+                    <h3>🔒 Chat Privado</h3>
+                    <p>Introduce la contraseña para acceder al asistente.</p>
+                    <input type="password" id="lock-input" class="lock-input" placeholder="Contraseña...">
+                    <button id="lock-btn" class="send-btn">Desbloquear</button>
+                    <div id="lock-error" class="lock-error"></div>
+                </div>
             </div>
         `;
     }
