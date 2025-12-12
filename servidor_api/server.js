@@ -157,6 +157,26 @@ app.post('/api/verify-password', (req, res) => {
 });
 
 /**
+ * POST /api/chat/validate-password
+ * Endpoint específico para validar la contraseña desde la extensión.
+ * body: { password: string }
+ */
+app.post('/api/chat/validate-password', (req, res) => {
+    const { password } = req.body;
+
+    // Misma lógica de validación que /api/verify-password pero con respuesta estandarizada para la extensión
+    if (CHATBOT_PASSWORD) {
+        if (password === CHATBOT_PASSWORD) {
+            return res.json({ ok: true });
+        } else {
+            return res.status(401).json({ ok: false, error: "invalid_password" });
+        }
+    } else {
+        return res.json({ ok: true });
+    }
+});
+
+/**
  * POST /api/chatbot
  * Recibe una pregunta y un contexto sobre una noticia y devuelve la respuesta de un LLM.
  * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object }, password: string }
