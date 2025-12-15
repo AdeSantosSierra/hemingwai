@@ -224,8 +224,9 @@ function createPopoverElement(data) {
 
     if (id) {
         contentHtml += `
-            <div class="hemingwai-footer">
+            <div class="hemingwai-footer" style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                  <a href="${linkUrl}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
+                 <a href="#" class="hemingwai-link hemingwai-chat-link">Abrir chat &rarr;</a>
             </div>
         `;
     }
@@ -234,6 +235,19 @@ function createPopoverElement(data) {
     popover.className = 'hemingwai-popover';
     popover.innerHTML = contentHtml;
     
+    // Attach listener for chat
+    const chatLink = popover.querySelector('.hemingwai-chat-link');
+    if (chatLink) {
+        chatLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const targetUrl = data.url || window.location.href;
+            const sidebar = ensureHemingwaiSidebar();
+            sidebar.openWithUrl(targetUrl);
+        });
+    }
+
     popover.addEventListener('mouseenter', () => {
          // Keep open logic
     });
@@ -459,6 +473,16 @@ function markLinkDebugState(element, state) {
 // SIDEBAR (CHAT) UI & LOGIC
 // ========================================================
 
+let hemingwaiSidebarInstance = null;
+
+function ensureHemingwaiSidebar() {
+    if (!hemingwaiSidebarInstance) {
+        hemingwaiSidebarInstance = new HemingwaiSidebar();
+        hemingwaiSidebarInstance.init();
+    }
+    return hemingwaiSidebarInstance;
+}
+
 class HemingwaiSidebar {
     constructor() {
         this.isOpen = false;
@@ -474,9 +498,14 @@ class HemingwaiSidebar {
         this.isResizing = false;
         this._onResizeMouseMove = null;
         this._onResizeMouseUp = null;
+        this._initialized = false;
+        this.currentContextUrl = null;
     }
 
     async init() {
+        if (this._initialized) return;
+        this._initialized = true;
+
         // Load width from storage
         chrome.storage.local.get("hemingwaiSidebarWidth", (result) => {
             if (result && typeof result.hemingwaiSidebarWidth === "number") {
@@ -547,6 +576,29 @@ class HemingwaiSidebar {
         }
     }
 
+    openWithUrl(url) {
+        if (this.currentContextUrl !== url) {
+            this.currentContextUrl = url;
+            // Reset state
+            this.newsId = null;
+            this.newsData = null;
+            this.messages = [];
+            this.isLoading = false;
+        }
+        
+        this.open();
+        
+        // Focus input
+        setTimeout(() => {
+            if (this.shadowRoot) {
+                const input = this.shadowRoot.querySelector('#chat-input');
+                if (input && !input.disabled) {
+                    input.focus();
+                }
+            }
+        }, 100);
+    }
+
     async open() {
         if (this.isOpen) return;
         
@@ -563,11 +615,13 @@ class HemingwaiSidebar {
         document.documentElement.style.marginRight = `${this.sidebarWidth}px`;
 
         // If not loaded, fetch context
+        const targetUrl = this.currentContextUrl || window.location.href;
+
         if (!this.newsData) {
             this.renderLoading();
             const response = await sendMessageAsync({ 
                 type: "NEWS_CONTEXT_REQUEST", 
-                url: window.location.href 
+                url: targetUrl 
             });
 
             if (response && response.ok && response.news) {
@@ -1088,8 +1142,7 @@ async function processArticlePage() {
     console.log("HemingwAI: Artículo detectado. Consultando API...");
     
     // Inicializar Sidebar SI es noticia
-    const sidebar = new HemingwaiSidebar();
-    sidebar.init();
+    const sidebar = ensureHemingwaiSidebar();
 
     const currentUrl = window.location.href;
     const currentUrlNorm = normalizeUrl(currentUrl);
