@@ -472,6 +472,8 @@ class HemingwaiSidebar {
         this.isLoading = false;
         this.sidebarWidth = 350; // default width
         this.isResizing = false;
+        this._onResizeMouseMove = null;
+        this._onResizeMouseUp = null;
     }
 
     async init() {
@@ -837,27 +839,27 @@ class HemingwaiSidebar {
         document.documentElement.style.transition = 'none';
         
         // Bind global listeners
-        this._resizeHandler = (ev) => this.resize(ev);
-        this._stopResizeHandler = () => this.stopResizing();
+        this._onResizeMouseMove = (ev) => this.handleResizeMouseMove(ev);
+        this._onResizeMouseUp = (ev) => this.handleResizeMouseUp(ev);
         
-        window.addEventListener('mousemove', this._resizeHandler);
-        window.addEventListener('mouseup', this._stopResizeHandler);
+        window.addEventListener('mousemove', this._onResizeMouseMove, { capture: true });
+        window.addEventListener('mouseup', this._onResizeMouseUp, { capture: true });
         
         // Add a class to body to force cursor everywhere
         document.body.style.cursor = 'col-resize';
     }
 
-    resize(e) {
+    handleResizeMouseMove(e) {
         if (!this.isResizing) return;
         
-        const MIN_WIDTH = 280;
-        const MAX_WIDTH = 600;
         const viewportWidth = window.innerWidth;
         const mouseX = e.clientX;
         
+        const MIN_WIDTH = 280;
+        const MAX_WIDTH = 600;
+        
         // Sidebar is on the right, so width is distance from right edge
         let newWidth = viewportWidth - mouseX;
-        
         newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth));
         
         this.sidebarWidth = newWidth;
@@ -865,18 +867,34 @@ class HemingwaiSidebar {
         document.documentElement.style.marginRight = `${newWidth}px`;
     }
 
-    stopResizing() {
+    handleResizeMouseUp(e) {
+        if (!this.isResizing) return;
+
         this.isResizing = false;
         
         // Re-enable smooth transition for future open/close actions
         document.documentElement.style.transition = 'margin-right 0.3s ease';
         
-        window.removeEventListener('mousemove', this._resizeHandler);
-        window.removeEventListener('mouseup', this._stopResizeHandler);
+        // Remove global listeners
+        if (this._onResizeMouseMove) {
+            window.removeEventListener('mousemove', this._onResizeMouseMove, { capture: true });
+            this._onResizeMouseMove = null;
+        }
+        if (this._onResizeMouseUp) {
+            window.removeEventListener('mouseup', this._onResizeMouseUp, { capture: true });
+            this._onResizeMouseUp = null;
+        }
+        
         document.body.style.cursor = '';
 
         // Save preference
-        chrome.storage.local.set({ hemingwaiSidebarWidth: this.sidebarWidth });
+        if (chrome && chrome.storage && chrome.storage.local) {
+            chrome.storage.local.set({ hemingwaiSidebarWidth: this.sidebarWidth });
+        }
+        
+        if (e) {
+            e.stopPropagation();
+        }
     }
 
     render() {
