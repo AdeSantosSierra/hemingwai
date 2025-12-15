@@ -2,7 +2,7 @@
 // Detecta noticias y muestra su valoración de calidad.
 
 // Configuración
-const DEBUG_MODE = false; // Set to true to enable visual debug outlines
+const DEBUG_MODE = true; // Set to true to enable visual debug outlines
 const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
 const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
@@ -470,9 +470,18 @@ class HemingwaiSidebar {
         this.shadowRoot = null;
         this.toggleButton = null;
         this.isLoading = false;
+        this.sidebarWidth = 350; // default width
+        this.isResizing = false;
     }
 
     async init() {
+        // Load width from storage
+        chrome.storage.local.get("hemingwaiSidebarWidth", (result) => {
+            if (result && typeof result.hemingwaiSidebarWidth === "number") {
+                this.sidebarWidth = result.hemingwaiSidebarWidth;
+            }
+        });
+
         // Create Toggle Button
         this.createToggleButton();
 
@@ -548,9 +557,8 @@ class HemingwaiSidebar {
         this.toggleButton.style.display = 'none'; // Hide toggle when open
 
         // Shift page content
-        const sidebarWidth = 350;
         document.documentElement.style.transition = 'margin-right 0.3s ease';
-        document.documentElement.style.marginRight = `${sidebarWidth}px`;
+        document.documentElement.style.marginRight = `${this.sidebarWidth}px`;
 
         // If not loaded, fetch context
         if (!this.newsData) {
@@ -590,7 +598,7 @@ class HemingwaiSidebar {
             position: 'fixed',
             top: '0',
             right: '0',
-            width: '350px',
+            width: `${this.sidebarWidth}px`,
             height: '100vh',
             zIndex: '2147483647',
             backgroundColor: '#001a33', // Fallback
@@ -603,6 +611,7 @@ class HemingwaiSidebar {
         const stopEvents = (e) => {
             e.stopPropagation();
         };
+        // Exclude mousedown from here for the resize handle, handled separately or inside
         ['click', 'mousedown', 'mouseup', 'pointerdown', 'pointerup'].forEach(evt => {
             this.sidebarHost.addEventListener(evt, stopEvents, { capture: false });
         });
@@ -624,6 +633,24 @@ class HemingwaiSidebar {
             }
             * { box-sizing: border-box; }
             
+            /* Resize Handle */
+            .resize-handle {
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 6px;
+                background-color: #d2d209;
+                cursor: col-resize;
+                z-index: 999;
+                opacity: 0.6;
+                transition: opacity 0.2s;
+            }
+            .resize-handle:hover {
+                opacity: 1;
+                box-shadow: 0 0 4px #d2d209;
+            }
+
             /* Header */
             .header {
                 padding: 16px;
@@ -779,15 +806,77 @@ class HemingwaiSidebar {
         
         this.shadowRoot.appendChild(style);
         
+        // Resize Handle
+        const resizeHandle = document.createElement('div');
+        resizeHandle.className = 'resize-handle';
+        resizeHandle.addEventListener('mousedown', (e) => this.startResizing(e));
+        // Prevent click propagation on handle too
+        resizeHandle.addEventListener('click', (e) => e.stopPropagation());
+
+        this.shadowRoot.appendChild(resizeHandle);
+
         // Container
         this.container = document.createElement('div');
         this.container.style.height = '100%';
         this.container.style.display = 'flex';
         this.container.style.flexDirection = 'column';
+        // Add padding left to avoid content overlapping with handle
+        this.container.style.paddingLeft = '6px'; 
         this.shadowRoot.appendChild(this.container);
 
         document.body.appendChild(this.sidebarHost);
         this.render(); // Initial render structure
+    }
+
+    startResizing(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.isResizing = true;
+        
+        // Disable transition during drag for instant responsiveness
+        document.documentElement.style.transition = 'none';
+        
+        // Bind global listeners
+        this._resizeHandler = (ev) => this.resize(ev);
+        this._stopResizeHandler = () => this.stopResizing();
+        
+        window.addEventListener('mousemove', this._resizeHandler);
+        window.addEventListener('mouseup', this._stopResizeHandler);
+        
+        // Add a class to body to force cursor everywhere
+        document.body.style.cursor = 'col-resize';
+    }
+
+    resize(e) {
+        if (!this.isResizing) return;
+        
+        const MIN_WIDTH = 280;
+        const MAX_WIDTH = 600;
+        const viewportWidth = window.innerWidth;
+        const mouseX = e.clientX;
+        
+        // Sidebar is on the right, so width is distance from right edge
+        let newWidth = viewportWidth - mouseX;
+        
+        newWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, newWidth));
+        
+        this.sidebarWidth = newWidth;
+        this.sidebarHost.style.width = `${newWidth}px`;
+        document.documentElement.style.marginRight = `${newWidth}px`;
+    }
+
+    stopResizing() {
+        this.isResizing = false;
+        
+        // Re-enable smooth transition for future open/close actions
+        document.documentElement.style.transition = 'margin-right 0.3s ease';
+        
+        window.removeEventListener('mousemove', this._resizeHandler);
+        window.removeEventListener('mouseup', this._stopResizeHandler);
+        document.body.style.cursor = '';
+
+        // Save preference
+        chrome.storage.local.set({ hemingwaiSidebarWidth: this.sidebarWidth });
     }
 
     render() {

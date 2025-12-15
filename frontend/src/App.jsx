@@ -24,6 +24,7 @@ import ResultadoBusqueda from './components/ResultadoBusqueda';
 import HistoryPanel from './components/HistoryPanel';
 import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
+import TerminalSectionTitle from './components/TerminalSectionTitle';
 import BackgroundParticles from './components/BackgroundParticles';
 
 /*  
@@ -251,6 +252,7 @@ function App() {
           <GlitchTitle 
             text="La IA que evalúa la calidad de las noticias" 
             className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4"
+            intensity="subtle"
           />
 
           <p className="text-sm sm:text-base text-gray-200 max-w-2xl mx-auto">
@@ -280,7 +282,7 @@ function App() {
                 ${isIdle ? 'px-8 sm:px-12 py-12' : 'px-6 sm:px-8 py-6'}
               `}>
                 <h2 className={`
-                  font-semibold text-[#001a33] flex items-center gap-2 transition-all duration-300
+                  font-semibold text-[#001a33] flex items-center gap-2 transition-all duration-300 hw-terminal-font
                   ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center' : 'text-lg sm:text-xl mb-5'}
                 `}>
                   <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-8 h-8' : 'w-5 h-5'}`} />
@@ -346,7 +348,7 @@ function App() {
                 className="w-full mt-0 mb-8"
               >
                 <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2 hw-terminal-font">
                     <Code className="w-5 h-5 text-lima" />
                     Resultado del análisis
                   </h3>
@@ -363,9 +365,11 @@ function App() {
         {/* Sección: ¿Cómo analiza HemingwAI tus noticias? */}
         <section className="w-full mt-10 mb-12">
           <RevealOnScroll>
-            <h2 className="text-xl sm:text-2xl font-semibold text-center mb-10 text-white font-heading">
-              ¿Cómo analiza HemingwAI tus noticias?
-            </h2>
+            <div className="flex justify-center mb-10">
+              <TerminalSectionTitle className="text-xl sm:text-2xl font-bold">
+                I. ¿Cómo analiza HemingwAI las noticias?
+              </TerminalSectionTitle>
+            </div>
           </RevealOnScroll>
 
           <div className="grid gap-6 md:grid-cols-3">

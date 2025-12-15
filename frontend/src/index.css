@@ -7,21 +7,18 @@
  @tailwind utilities;
  
  /*   ------
-  * REGLAS GLOBALES (Opcional, pero bueno para la fuente)
+  * REGLAS GLOBALES
   *   ------ */
  @layer base {
-   /* Usar Arimo como fuente principal */
    html {
      font-family: 'Arimo', sans-serif;
    }
    
-   /* Usar SUSE para todos los headings por defecto */
    h1, h2, h3, h4, h5, h6 {
      font-family: 'SUSE', sans-serif;
    }
  }
  
- /* Opcional: Estilo de fondo para el body */
  body {
    margin: 0;
    min-height: 100vh;
@@ -39,14 +36,20 @@
      border-color: #d2d209;
    }
    .hover\:bg-lima-dark:hover {
-    background-color: #d2d209; /* Un poco más oscuro para el hover */
+    background-color: #d2d209;
   }
  }
 
- /* Efecto Glitch Suave */
+ /* --- TIPOGRAFÍA TERMINAL GLOBAL --- */
+ .hw-terminal-font {
+   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+   letter-spacing: 0.02em;
+ }
+
+ /* --- GLITCH EFECTO (OLD/MEDIUM) --- */
  .glitch {
    position: relative;
-   color: white; /* Color base */
+   color: white;
  }
 
  .glitch::before,
@@ -57,90 +60,182 @@
    left: 0;
    width: 100%;
    height: 100%;
-   background: #001a33; /* Mismo fondo que el body para ocultar el texto original temporalmente en los cortes */
+   background: #001a33;
  }
 
  .glitch::before {
    left: 2px;
-   text-shadow: -1px 0 #d2d209; /* Color Lima */
+   text-shadow: -1px 0 #d2d209;
    clip: rect(44px, 450px, 56px, 0);
    animation: glitch-anim-1 3s infinite linear alternate-reverse;
  }
 
  .glitch::after {
    left: -2px;
-   text-shadow: -1px 0 #00ffff; /* Cian para contraste */
+   text-shadow: -1px 0 #00ffff;
    clip: rect(44px, 450px, 56px, 0);
    animation: glitch-anim-2 2.5s infinite linear alternate-reverse;
  }
 
- /* Keyframes para glitch suave */
+ /* --- NEW SUBTLE GLITCH (.hw-glitch) REWORKED --- */
+ /* Always active, subtle, never hidden */
+ .hw-glitch {
+   position: relative;
+   display: inline-block;
+   color: white;
+   /* Ensure main text is always visible and on top of backgrounds but below pseudo-effects if they were covering, 
+      but here we want pseudo to be behind or blended. 
+      Actually, standard glitch puts pseudo on top usually but with mix-blend-mode or behind. 
+      Let's put them on top but transparent. */
+   z-index: 1;
+ }
+
+ .hw-glitch::before,
+ .hw-glitch::after {
+   content: attr(data-text);
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background: transparent; /* No background to avoid hiding text */
+   opacity: 0.16; /* Visible but subtle */
+   pointer-events: none;
+   z-index: -1; /* Behind the main text so readability is perfect */
+ }
+
+ /* Red channel / Left shift */
+ .hw-glitch::before {
+   text-shadow: -1px 0 #d2d209; /* Lime shadow */
+   animation: hw-glitch-continuous 8s infinite linear alternate-reverse;
+ }
+
+ /* Blue/Cyan channel / Right shift */
+ .hw-glitch::after {
+   text-shadow: 1px 0 #00ffff;
+   animation: hw-glitch-continuous 10s infinite linear alternate-reverse; 
+   /* Different duration to desync */
+ }
+
+ /* Occasional twitch on top of continuous movement */
+ /* We can add a second animation or use a wrapper. 
+    Simplest is to bake the twitch into the keyframes or use the wrapper approach if we had one.
+    Let's bake a twitch into a separate animation applied to a pseudo if possible, 
+    or just use a complex keyframe. 
+    Better: Use the 'continuous' keyframe to have long quiet periods and sudden jumps. 
+ */
+
+ /* --- TERMINAL SECTION TITLE --- */
+ .hw-terminal-title {
+   position: relative;
+   display: inline-block;
+   padding: 0.5rem 1rem;
+   overflow: hidden; 
+ }
+
+ .hw-terminal-bar {
+   position: absolute;
+   left: 0;
+   top: 0;
+   bottom: 0;
+   width: 4px;
+   background-color: #d2d209;
+   box-shadow: 0 0 10px #d2d209;
+   animation: hw-bar-glow 4s ease-in-out infinite;
+ }
+
+ .hw-terminal-scanline {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 20%; 
+   background: linear-gradient(
+     to bottom,
+     transparent,
+     rgba(210, 210, 9, 0.1) 50%,
+     transparent
+   );
+   opacity: 0.3;
+   pointer-events: none;
+   animation: hw-scanline 6s linear infinite;
+ }
+
+ /* --- KEYFRAMES --- */
+
  @keyframes glitch-anim-1 {
-   0% {
-     clip: rect(20px, 9999px, 15px, 0);
-     transform: skew(0.6deg);
-   }
-   5% {
-     clip: rect(70px, 9999px, 85px, 0);
-     transform: skew(0.6deg);
-   }
-   10% {
-     clip: rect(35px, 9999px, 15px, 0);
-     transform: skew(0.3deg);
-   }
-   15% {
-     clip: rect(85px, 9999px, 90px, 0);
-     transform: skew(0.1deg);
-   }
-   20% {
-     clip: rect(10px, 9999px, 55px, 0);
-     transform: skew(0.5deg);
-   }
-   100% {
-     clip: rect(55px, 9999px, 20px, 0);
-     transform: skew(0.2deg);
-   }
+   0% { clip: rect(20px, 9999px, 15px, 0); transform: skew(0.6deg); }
+   5% { clip: rect(70px, 9999px, 85px, 0); transform: skew(0.6deg); }
+   10% { clip: rect(35px, 9999px, 15px, 0); transform: skew(0.3deg); }
+   15% { clip: rect(85px, 9999px, 90px, 0); transform: skew(0.1deg); }
+   20% { clip: rect(10px, 9999px, 55px, 0); transform: skew(0.5deg); }
+   100% { clip: rect(55px, 9999px, 20px, 0); transform: skew(0.2deg); }
  }
 
  @keyframes glitch-anim-2 {
+   0% { clip: rect(65px, 9999px, 100px, 0); transform: skew(0.6deg); }
+   5% { clip: rect(30px, 9999px, 15px, 0); transform: skew(0.6deg); }
+   10% { clip: rect(95px, 9999px, 45px, 0); transform: skew(0.3deg); }
+   15% { clip: rect(15px, 9999px, 30px, 0); transform: skew(0.1deg); }
+   20% { clip: rect(55px, 9999px, 85px, 0); transform: skew(0.5deg); }
+   100% { clip: rect(40px, 9999px, 70px, 0); transform: skew(0.2deg); }
+ }
+
+ /* 
+    Continuous subtle movement + occasional twitch.
+    0-90%: Slow drift
+    90-92%: Sharp twitch
+    92-100%: Slow drift back
+ */
+ @keyframes hw-glitch-continuous {
    0% {
-     clip: rect(65px, 9999px, 100px, 0);
-     transform: skew(0.6deg);
+     transform: translate(0, 0);
+     clip-path: inset(0 0 0 0);
    }
-   5% {
-     clip: rect(30px, 9999px, 15px, 0);
-     transform: skew(0.6deg);
+   40% {
+     transform: translate(-1px, 0);
+     clip-path: inset(10% 0 80% 0); /* Slight slice */
    }
-   10% {
-     clip: rect(95px, 9999px, 45px, 0);
-     transform: skew(0.3deg);
+   80% {
+     transform: translate(1px, 0);
+     clip-path: inset(80% 0 5% 0);
    }
-   15% {
-     clip: rect(15px, 9999px, 30px, 0);
-     transform: skew(0.1deg);
+   /* The Twitch */
+   96% {
+     transform: translate(-2px, 1px);
+     clip-path: inset(20% 0 50% 0);
+     opacity: 0.8; /* Spike opacity */
    }
-   20% {
-     clip: rect(55px, 9999px, 85px, 0);
-     transform: skew(0.5deg);
+   97% {
+     transform: translate(2px, -1px);
+     clip-path: inset(50% 0 10% 0);
    }
    100% {
-     clip: rect(40px, 9999px, 70px, 0);
-     transform: skew(0.2deg);
+     transform: translate(0, 0);
+     opacity: 0.16; /* Return to base opacity */
+     clip-path: inset(0 0 0 0);
    }
  }
 
-/* --- NUEVO: Fondo estático y grid para partículas --- */
+ @keyframes hw-bar-glow {
+   0%, 100% { opacity: 0.8; box-shadow: 0 0 5px #d2d209; }
+   50% { opacity: 1; box-shadow: 0 0 15px #d2d209; }
+ }
 
-.bg-animated {
+ @keyframes hw-scanline {
+   0% { top: -20%; }
+   100% { top: 120%; }
+ }
+
+ /* --- BACKGROUND & PARTICLES --- */
+ .bg-animated {
   position: relative;
   min-height: 100vh;
-  background-color: #001a33; /* Azul corporativo base */
+  background-color: #001a33;
   overflow-x: hidden;
-  /* El canvas de partículas se encargará del movimiento */
   isolation: isolate;
 }
 
-/* Grid overlay estático - Z-index 0 */
 .bg-animated::before {
   content: "";
   position: fixed;
@@ -149,28 +244,49 @@
   background-image:
     linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 60px 60px; /* Debe coincidir con GRID_SIZE en BackgroundParticles.jsx */
+  background-size: 60px 60px;
   opacity: 0.6;
   mix-blend-mode: soft-light;
   z-index: 0;
 }
 
-/* 
-   Asegurar que el contenido principal (header, main, footer) 
-   esté por encima de las partículas (que tendrán z-index 1) 
-   
-   Usamos selectores específicos para no afectar al canvas u otros elementos
-*/
 .bg-animated > header,
 .bg-animated > main,
 .bg-animated > footer {
   position: relative;
-  z-index: 2; /* Contenido encima de todo (Grid=0, Particles=1, Content=2) */
+  z-index: 2;
 }
 
-/* Ajuste específico para el toast de Sonner para que siempre esté encima de todo */
 [data-sonner-toaster] {
   position: fixed !important;
   z-index: 9999 !important;
   pointer-events: auto;
+}
+
+/* --- ACCESSIBILITY --- */
+@media (prefers-reduced-motion: reduce) {
+  /* Stop animations but do not hide elements */
+  .glitch::before,
+  .glitch::after,
+  .hw-glitch::before,
+  .hw-glitch::after,
+  .hw-terminal-bar,
+  .hw-terminal-scanline {
+    animation: none !important;
+  }
+  
+  /* For glitch pseudos, we might want to hide them entirely if they are just visual noise */
+  .glitch::before,
+  .glitch::after,
+  .hw-glitch::before,
+  .hw-glitch::after,
+  .hw-terminal-scanline {
+    opacity: 0 !important;
+  }
+
+  /* Keep the bar visible */
+  .hw-terminal-bar {
+    opacity: 1 !important;
+    box-shadow: none !important; /* Remove glow pulse */
+  }
 }
