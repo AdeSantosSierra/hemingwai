@@ -244,7 +244,12 @@ function createPopoverElement(data) {
             
             const targetUrl = data.url || window.location.href;
             const sidebar = ensureHemingwaiSidebar();
+            
+            // Open sidebar with URL
             sidebar.openWithUrl(targetUrl);
+            
+            // Close popover immediately
+            closeAllHemingwaiPopovers();
         });
     }
 
@@ -576,9 +581,12 @@ class HemingwaiSidebar {
         }
     }
 
-    openWithUrl(url) {
-        if (this.currentContextUrl !== url) {
-            this.currentContextUrl = url;
+    async openWithUrl(url) {
+        const targetUrl = url || window.location.href;
+        const contextChanged = (this.currentContextUrl !== targetUrl);
+        
+        if (contextChanged) {
+            this.currentContextUrl = targetUrl;
             // Reset state
             this.newsId = null;
             this.newsData = null;
@@ -586,7 +594,11 @@ class HemingwaiSidebar {
             this.isLoading = false;
         }
         
-        this.open();
+        if (this.isOpen && contextChanged) {
+             this.close();
+        }
+        
+        await this.open();
         
         // Focus input
         setTimeout(() => {
@@ -596,7 +608,7 @@ class HemingwaiSidebar {
                     input.focus();
                 }
             }
-        }, 100);
+        }, 0);
     }
 
     async open() {
