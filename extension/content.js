@@ -3,9 +3,9 @@
 
 // Configuración
 const DEBUG_MODE = true; // Set to true to enable visual debug outlines
-const API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
+const API_BASE = "https://hemingwai-backend.onrender.com";
 const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
-const ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com/analisis/";
+const ANALYSIS_BASE_URL = "https://hemingwai-frontend.onrender.com";
 const MAX_URLS_PER_PAGE = 100; 
 
 // Logos
