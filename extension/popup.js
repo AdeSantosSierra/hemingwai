@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btnProd = document.getElementById('btn-prod');
     const btnDev = document.getElementById('btn-dev');
     const chkDebug = document.getElementById('chk-debug');
+    const debugContainer = document.getElementById('debug-container');
     const btnReload = document.getElementById('btn-reload');
 
     // Función para obtener configuración actual
@@ -34,11 +35,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             label.className = "env-dev";
             btnDev.classList.add('active');
             btnProd.classList.remove('active');
+            
+            // Show Debug option in DEV
+            debugContainer.style.display = 'flex';
         } else {
             label.textContent = "PROD";
             label.className = "env-prod";
             btnProd.classList.add('active');
             btnDev.classList.remove('active');
+            
+            // Hide Debug option in PROD
+            debugContainer.style.display = 'none';
         }
         
         // Render Debug
