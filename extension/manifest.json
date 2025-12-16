@@ -3,7 +3,10 @@
   "name": "HemingwAI - Analizador de Noticias",
   "version": "2.1",
   "description": "Verifica la calidad de las noticias que lees con inteligencia artificial.",
-  "permissions": ["scripting", "storage"],
+  "permissions": ["scripting", "storage", "activeTab"],
+  "action": {
+    "default_popup": "popup.html"
+  },
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"

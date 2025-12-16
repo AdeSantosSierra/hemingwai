@@ -56,11 +56,16 @@ function App() {
     // Detectar ruta /analisis/:id al montar
     const path = window.location.pathname;
     const match = path.match(/^\/analisis\/([^/]+)/);
-    if (match) {
-      const id = match[1];
-      if (id) {
-        // Ejecutar búsqueda automáticamente
-        handleBuscarNoticia(id);
+    
+    if (match && match[1]) {
+      // Prioridad 1: ID en ruta
+      handleBuscarNoticia(match[1]);
+    } else {
+      // Prioridad 2: Query param ?url=
+      const searchParams = new URLSearchParams(window.location.search);
+      const urlParam = searchParams.get('url');
+      if (urlParam) {
+        handleBuscarNoticia(urlParam);
       }
     }
   }, []);

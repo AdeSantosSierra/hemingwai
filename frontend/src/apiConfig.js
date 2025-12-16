@@ -1,10 +1,11 @@
 // Este archivo centraliza la configuración de la URL base de la API
 // para facilitar el cambio entre entornos de desarrollo y producción.
 
-// En desarrollo, Vite usa el proxy configurado en vite.config.js,
-// por lo que las peticiones a '/api' son suficientes.
-// En producción, VITE_API_BASE_URL será definida por el entorno de Render
-// y apuntará a la URL pública del servicio backend.
-const API_BASE_URL = import.meta.env.PROD ? import.meta.env.VITE_API_BASE_URL || '' : '';
+// Priorizamos VITE_API_BASE si está definida (nueva convención para Render DEV/PROD).
+// Mantenemos compatibilidad con VITE_API_BASE_URL o string vacío (proxy en local).
 
-export default API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE || 
+                     (import.meta.env.PROD ? import.meta.env.VITE_API_BASE_URL || '' : '');
+
+export const API_BASE = API_BASE_URL; // Named export as requested
+export default API_BASE_URL;          // Default export for backward compatibility

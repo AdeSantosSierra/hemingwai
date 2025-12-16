@@ -3,9 +3,30 @@
 
 // Configuración
 const DEBUG_MODE = false; // Set to true to enable visual debug outlines
-const API_BASE = "https://hemingwai-backend.onrender.com";
-const API_ENDPOINT_BATCH = `${API_BASE}/api/check-urls`;
-const ANALYSIS_BASE_URL = "https://hemingwai-frontend.onrender.com";
+
+const ENV = {
+    API_BASE: "https://hemingwai-backend.onrender.com",
+    ANALYSIS_BASE_URL: "https://hemingwai-frontend.onrender.com"
+};
+
+// Promise para asegurar que la configuración de entorno esté lista antes de init()
+const envReadyPromise = new Promise((resolve) => {
+    try {
+        chrome.storage.local.get("hemingwaiEnv", (result) => {
+            if (result && result.hemingwaiEnv === 'dev') {
+                ENV.API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
+                ENV.ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com";
+                console.log("[HemingwAI] Environment switched to DEV (backend-5vw6).");
+            }
+            resolve();
+        });
+    } catch (e) {
+        // Contexto no válido o error de API, resolvemos igual para no bloquear
+        resolve();
+    }
+});
+
+const getApiEndpointBatch = () => `${ENV.API_BASE}/api/check-urls`;
 const MAX_URLS_PER_PAGE = 100; 
 
 // Logos
@@ -176,8 +197,24 @@ function showPopoverForBadge(badgeEl, popoverEl) {
 
 function createPopoverElement(data) {
     const isPending = (data.puntuacion === undefined || data.puntuacion === null || String(data.puntuacion).trim() === '');
-    const id = data.id || '';
-    const linkUrl = `${ANALYSIS_BASE_URL}${id}`;
+    const id = data.id || data._id || '';
+    
+    let linkUrl;
+    try {
+        if (id) {
+            // Construcción robusta para /analisis/:id/
+            const u = new URL(`/analisis/${id}/`, ENV.ANALYSIS_BASE_URL);
+            linkUrl = u.href;
+        } else {
+            // Construcción robusta para /analisis/?url=...
+            const u = new URL('/analisis/', ENV.ANALYSIS_BASE_URL);
+            u.searchParams.set("url", data.url || window.location.href);
+            linkUrl = u.href;
+        }
+    } catch (e) {
+        linkUrl = "#";
+        console.error("HemingwAI: Error constructing URL", e);
+    }
     
     let contentHtml = '';
 
@@ -222,7 +259,7 @@ function createPopoverElement(data) {
         `;
     }
 
-    if (id) {
+    if (linkUrl && linkUrl !== "#") {
         contentHtml += `
             <div class="hemingwai-footer" style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
                  <a href="${linkUrl}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
@@ -1160,7 +1197,7 @@ async function processArticlePage() {
     const currentUrlNorm = normalizeUrl(currentUrl);
 
     try {
-        const response = await fetch(API_ENDPOINT_BATCH, {
+        const response = await fetch(getApiEndpointBatch(), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ urls: [currentUrl] })
@@ -1173,7 +1210,7 @@ async function processArticlePage() {
         
         const match = resultados.find(r => normalizeUrl(r.url) === currentUrlNorm);
 
-        if (match && match.id) {
+        if (match && (match.id || match._id)) {
             console.log("HemingwAI: Resultado encontrado", match);
             renderArticleUI(match);
         }
@@ -1255,7 +1292,7 @@ async function scanListingPage() {
     console.log(`HemingwAI: Consultando batch para ${uniqueUrlsToQuery.length} URLs únicas...`);
 
     try {
-        const response = await fetch(API_ENDPOINT_BATCH, {
+        const response = await fetch(getApiEndpointBatch(), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ urls: uniqueUrlsToQuery })
@@ -1268,7 +1305,7 @@ async function scanListingPage() {
 
         let foundCount = 0;
         for (const res of resultados) {
-            if (res.id) { 
+            if (res.id || res._id) { 
                 const resUrlDedup = normalizeUrlForDedup(res.url);
                 const anchor = urlToAnchorMap.get(resUrlDedup);
                 
@@ -1294,6 +1331,9 @@ async function scanListingPage() {
 }
 
 async function init() {
+    // Esperar a que se cargue la configuración de entorno
+    await envReadyPromise;
+
     const isNews = isNewsArticle();
     console.log("HemingwAI: isNewsArticle ->", isNews, window.location.href);
 

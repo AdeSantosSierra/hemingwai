@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HemingwAI Settings</title>
+    <style>
+        body {
+            background-color: #001a33;
+            color: white;
+            font-family: system-ui, -apple-system, sans-serif;
+            width: 250px;
+            padding: 16px;
+            margin: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h2 {
+            margin: 0 0 16px 0;
+            font-size: 16px;
+            color: #d2d209;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #d2d209;
+            padding-bottom: 8px;
+        }
+        .status-container {
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .status-label {
+            color: #a0a0a0;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+        #current-env {
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .env-prod { color: #28a745; }
+        .env-dev { color: #d2d209; }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        button {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            flex: 1;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        button.active {
+            background: #d2d209;
+            color: #001a33;
+            font-weight: bold;
+            border-color: #d2d209;
+        }
+        
+        .reload-section {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 16px;
+        }
+        #btn-reload {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #d2d209;
+            color: #d2d209;
+        }
+        #btn-reload:hover {
+            background: rgba(210, 210, 9, 0.1);
+        }
+        .hint {
+            margin-top: 8px;
+            font-size: 11px;
+            color: #8899a6;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h2>Configuración</h2>
+    
+    <div class="status-container">
+        <div class="status-label">ENTORNO ACTUAL</div>
+        <div id="current-env">Cargando...</div>
+    </div>
+
+    <div class="button-group">
+        <button id="btn-prod">PROD</button>
+        <button id="btn-dev">DEV</button>
+    </div>
+
+    <div class="reload-section">
+        <button id="btn-reload">↻ Recargar página</button>
+        <div class="hint">Recarga para aplicar cambios</div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
