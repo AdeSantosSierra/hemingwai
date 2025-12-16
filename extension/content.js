@@ -2,7 +2,10 @@
 // Detecta noticias y muestra su valoración de calidad.
 
 // Configuración
-const DEBUG_MODE = false; // Set to true to enable visual debug outlines
+const SETTINGS = {
+    env: "prod",
+    debug: false
+};
 
 const ENV = {
     API_BASE: "https://hemingwai-backend.onrender.com",
@@ -12,11 +15,19 @@ const ENV = {
 // Promise para asegurar que la configuración de entorno esté lista antes de init()
 const envReadyPromise = new Promise((resolve) => {
     try {
-        chrome.storage.local.get("hemingwaiEnv", (result) => {
-            if (result && result.hemingwaiEnv === 'dev') {
-                ENV.API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
-                ENV.ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com";
-                console.log("[HemingwAI] Environment switched to DEV (backend-5vw6).");
+        chrome.storage.local.get(["hemingwaiEnv", "hemingwaiDebug"], (result) => {
+            if (result) {
+                if (result.hemingwaiEnv === 'dev') {
+                    SETTINGS.env = 'dev';
+                    ENV.API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
+                    ENV.ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com";
+                    console.log("[HemingwAI] Environment switched to DEV (backend-5vw6).");
+                }
+                
+                if (result.hemingwaiDebug === true) {
+                    SETTINGS.debug = true;
+                    console.log("[HemingwAI] Debug Mode ENABLED.");
+                }
             }
             resolve();
         });
@@ -490,7 +501,7 @@ function renderListBadge(anchor, data) {
 }
 
 function markLinkDebugState(element, state) {
-    if (!DEBUG_MODE) return;
+    if (!SETTINGS.debug) return;
     if (!element) return;
     element.style.outline = 'none';
 
@@ -1259,7 +1270,7 @@ async function scanListingPage() {
                 top: absoluteTop
             });
 
-            if (DEBUG_MODE) {
+            if (SETTINGS.debug) {
                 markLinkDebugState(a, 'candidate');
             }
 
@@ -1314,7 +1325,7 @@ async function scanListingPage() {
                     foundCount++;
                     
                     const hasScore = (res.puntuacion !== undefined && res.puntuacion !== null);
-                    if (DEBUG_MODE) {
+                    if (SETTINGS.debug) {
                         markLinkDebugState(anchor, hasScore ? 'analyzed' : 'no_score');
                     }
 
