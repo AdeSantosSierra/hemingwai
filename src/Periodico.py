@@ -1,5 +1,5 @@
 import re
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 import requests
 from bs4 import BeautifulSoup
 from newspaper import Article
@@ -7,6 +7,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import hashlib
 import os
+import sys
 from dotenv import load_dotenv
 from MongoDB import *
 from Utils import *
@@ -18,8 +19,23 @@ class Periodico:
         load_dotenv()
         self.nombre = nombre
         self.url = url
-        mongodb_uri = os.getenv('MONGODB_URI')
+        # Prioritize NEW_MONGODB_URI, fall back to MONGODB_URI
+        mongodb_uri = os.getenv('NEW_MONGODB_URI') or os.getenv('MONGODB_URI')
         self.db = MongoDBService(uri=mongodb_uri, db_name='Base_de_datos_noticias')
+
+    @staticmethod
+    def deducir_fuente(url):
+        try:
+            parsed = urlparse(url)
+            domain = parsed.netloc
+            if domain.startswith("www."):
+                domain = domain[4:]
+            parts = domain.split('.')
+            if parts:
+                return parts[0].capitalize()
+            return "Desconocido"
+        except:
+            return "Desconocido"
 
     def extraer_noticia(self, url) -> dict:
         """
@@ -52,23 +68,29 @@ class Periodico:
             return None
 
     # Función para guardar una noticia en MongoDB
-    def guardar_noticia(self, noticia) -> None:
+    def guardar_noticia(self, noticia):
         """
         Guarda una noticia en la base de datos MongoDB.
         :param noticia: Un diccionario con la noticia a guardar.
+        :return: El ID de la noticia guardada o encontrada, o None si falló.
         """
         collection = self.db.get_collection('Noticias')
         try:
             if noticia and noticia['cuerpo']:
-                if not collection.find_one({"url": noticia['url']}):  # Evitar duplicados
-                    collection.insert_one(noticia)
-                    # print(f"Noticia guardada con éxito: {noticia['titulo']}")
-                # else:
-                    # print(f"La noticia ya existe en la base de datos: {noticia['url']}")
-            # else:
-                # print("Noticia vacía o incompleta. No se guarda.")
+                existente = collection.find_one({"url": noticia['url']})
+                if not existente:  # Evitar duplicados
+                    result = collection.insert_one(noticia)
+                    print(f"Noticia guardada con éxito: {noticia['titulo']}")
+                    return result.inserted_id
+                else:
+                    print(f"La noticia ya existe en la base de datos: {noticia['url']}")
+                    return existente['_id']
+            else:
+                print("Noticia vacía o incompleta. No se guarda.")
+                return None
         except Exception as e:
             print(f"Error al guardar la noticia en MongoDB: {e}")
+            return None
 
     # Función para filtrar enlaces que parecen ser noticias y descartar los que no lo son
     def filtrar_enlaces_noticias(self, enlaces) -> set:
@@ -201,4 +223,26 @@ def menu_principal():
     #     print("Opción no válida. Intente nuevamente.")
 # Ejecutar menú principal
 if __name__ == "__main__":
-    menu_principal()
+    if len(sys.argv) > 1:
+        # Modo single-url
+        url_arg = sys.argv[1]
+        print(f"Modo de extracción individual para URL: {url_arg}")
+        
+        # Deducir fuente y crear instancia temporal
+        fuente_deducida = Periodico.deducir_fuente(url_arg)
+        # Usamos la misma URL como base, aunque no se usará para procesar_periodico
+        periodico = Periodico(fuente_deducida, "https://" + urlparse(url_arg).netloc)
+        
+        noticia = periodico.extraer_noticia(url_arg)
+        if noticia:
+            print(f"Noticia extraída correctamente: {noticia.get('titulo')}")
+            inserted_id = periodico.guardar_noticia(noticia)
+            if inserted_id:
+                print(f"ID_NOTICIA: {inserted_id}")
+            else:
+                print("No se pudo obtener un ID para la noticia.")
+        else:
+            print("Fallo al extraer la noticia.")
+    else:
+        # Modo original (menú / batch hardcodeado)
+        menu_principal()

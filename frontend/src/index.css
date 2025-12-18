@@ -242,19 +242,88 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 60px 60px;
-  opacity: 0.6;
+    linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.15;
   mix-blend-mode: soft-light;
+  z-index: 1;
+  -webkit-mask-image: radial-gradient(circle at 50% 35%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 35%, black 100%);
+  mask-image: radial-gradient(circle at 50% 35%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 35%, black 100%);
+}
+
+/* --- HERO GLASS PANEL (PREMIUM) --- */
+.hw-glass {
+  position: relative;
+  isolation: isolate;
+  /* Multi-layer background: Sheen (moved here) + Radial + Linear + Base */
+  background:
+    linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 58%),
+    radial-gradient(1200px 500px at 20% 0%, rgba(255,255,255,0.06), rgba(255,255,255,0) 55%),
+    linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.0) 45%),
+    rgba(6, 18, 33, 0.36);
+  background-blend-mode: screen, normal, normal, normal;
+  
+  /* Double border effect: 
+     1. Outer: very subtle lime (rgba(210, 210, 9, 0.15))
+     2. Inner: extremely subtle cool white (rgba(255, 255, 255, 0.03)) via box-shadow ring
+     + Inner highlight/shadows for depth
+  */
+  border: 1px solid rgba(210, 210, 9, 0.15);
+  box-shadow: 
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03), /* Inner subtle cool white border */
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.08), /* Top edge highlight */
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.2), /* Bottom edge shadow */
+    0 12px 28px rgba(0, 0, 0, 0.22); /* Deep drop shadow */
+  
+  overflow: hidden; /* For noise containment */
+}
+
+/* Ensure content stays above overlays */
+.hw-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Blur + Noise overlay */
+.hw-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.05; 
+  pointer-events: none;
   z-index: 0;
+  background: rgba(255,255,255,0.02); /* Slight tint for filter */
+  /* Combined Noise */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-blend-mode: soft-light;
+  mix-blend-mode: soft-light;
+  
+  backdrop-filter: blur(12px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
+}
+
+/* Edge-only Blur Layer */
+.hw-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent;
+  
+  backdrop-filter: blur(18px) saturate(130%);
+  -webkit-backdrop-filter: blur(18px) saturate(130%);
+  
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, transparent 0%, transparent 55%, black 80%);
+  mask-image: radial-gradient(circle at 50% 40%, transparent 0%, transparent 55%, black 80%);
 }
 
 .bg-animated > header,
 .bg-animated > main,
 .bg-animated > footer {
   position: relative;
-  z-index: 2;
+  z-index: 10;
 }
 
 [data-sonner-toaster] {

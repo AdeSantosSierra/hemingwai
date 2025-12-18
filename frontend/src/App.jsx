@@ -185,8 +185,10 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-animated text-gray-100 font-sans overflow-x-hidden">
-      {/* Capa de Partículas (Z-Index 1, entre Grid y Contenido) */}
-      <BackgroundParticles />
+      {/* Capa de Partículas (Z-Index 0, detrás del grid y contenido) */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <BackgroundParticles />
+      </div>
       
       <Toaster position="top-center" richColors />
       
@@ -282,23 +284,23 @@ function App() {
               className={`w-full transition-all duration-500 ease-in-out ${isIdle ? 'max-w-4xl' : 'max-w-5xl mb-2'}`}
             >
               <div className={`
-                bg-white/95 backdrop-blur-lg shadow-2xl rounded-2xl border border-lima 
-                transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(210,210,9,0.35)]
+                hw-glass rounded-[24px]
+                transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl
                 ${isIdle ? 'px-8 sm:px-12 py-12' : 'px-6 sm:px-8 py-6'}
               `}>
                 <h2 className={`
-                  font-semibold text-[#001a33] flex items-center gap-2 transition-all duration-300 hw-terminal-font
-                  ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center' : 'text-lg sm:text-xl mb-5'}
+                  font-bold text-gray-100 flex items-center gap-3 transition-all duration-300
+                  ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center tracking-tight' : 'text-lg sm:text-xl mb-5'}
                 `}>
-                  <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-8 h-8' : 'w-5 h-5'}`} />
-                  Analizar noticia desde URL
+                  <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-7 h-7' : 'w-5 h-5'}`} />
+                  {isIdle ? 'ANALIZAR NOTICIA DESDE URL' : 'Analizar noticia desde URL'}
                 </h2>
 
-                <div className={`space-y-4 ${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
+                <div className={`space-y-5 ${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
                   <div className="relative group">
                     <Search className={`
-                      absolute left-4 text-gray-400 group-focus-within:text-lima transition-all duration-300
-                      ${isIdle ? 'top-5 w-7 h-7' : 'top-3 w-5 h-5'}
+                      absolute left-5 text-gray-500 group-focus-within:text-lima transition-all duration-300
+                      ${isIdle ? 'top-5 w-6 h-6' : 'top-3 w-5 h-5'}
                     `} />
                     <input
                       type="text"
@@ -307,10 +309,11 @@ function App() {
                       onChange={(e) => setIdentificador(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleBuscarNoticia()}
                       className={`
-                        w-full bg-gray-100 border border-gray-300 rounded-lg
-                        focus:ring-2 focus:ring-lima-300 focus:border-lima
-                        transition-all shadow-sm text-gray-900 
-                        ${isIdle ? 'pl-14 pr-4 py-5 text-xl' : 'pl-10 pr-3 py-3 text-sm'}
+                        w-full bg-[#050f1e]/60 border border-gray-600/70 text-gray-100 placeholder-gray-400
+                        rounded-[14px]
+                        focus:outline-none focus:ring-2 focus:ring-lima/20 focus:border-lima/40
+                        transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+                        ${isIdle ? 'pl-14 pr-4 py-5 text-lg' : 'pl-10 pr-3 py-3 text-sm'}
                       `}
                       disabled={estadoBusqueda === 'loading'}
                       autoFocus={isIdle}
@@ -321,12 +324,14 @@ function App() {
                     onClick={() => handleBuscarNoticia()}
                     disabled={estadoBusqueda === 'loading'}
                     className={`
-                      w-full flex items-center justify-center font-bold rounded-lg 
-                      hover:bg-[#001a33] hover:text-lima hover:scale-[1.01] active:scale-[0.99]
-                      transition-all duration-200 shadow-md 
-                      disabled:bg-gray-400 disabled:text-gray-100 disabled:cursor-not-allowed
-                      bg-lima text-[#001a33]
-                      ${isIdle ? 'px-8 py-5 text-xl mt-6' : 'px-4 py-3 text-base'}
+                      w-full flex items-center justify-center font-bold
+                      rounded-[14px]
+                      hover:brightness-110 hover:scale-[1.005] active:scale-[0.99]
+                      transition-all duration-200
+                      disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed
+                      bg-gradient-to-r from-[#e3e30a] to-[#c4c408] text-[#001a33]
+                      shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(210,210,9,0.2)]
+                      ${isIdle ? 'px-8 py-4 text-lg mt-6' : 'px-4 py-3 text-base'}
                     `}
                   >
                     {estadoBusqueda === 'loading' && (
