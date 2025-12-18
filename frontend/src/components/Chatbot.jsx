@@ -14,7 +14,7 @@ const renderMarkdown = (text) => {
     // --- Formato Markdown Básico ---
     
     // Títulos (### Título) -> <h3>
-    html = html.replace(/^### (.*$)/gim, '<h3 class="font-bold mt-3 mb-1 text-lg border-b border-gray-200 pb-1">$1</h3>');
+    html = html.replace(/^### (.*$)/gim, '<h3 class="font-bold mt-3 mb-1 text-lg border-b border-white/10 pb-1">$1</h3>');
     // Títulos (## Título) -> <h2>
     html = html.replace(/^## (.*$)/gim, '<h2 class="font-bold mt-3 mb-1 text-xl">$1</h2>');
     
@@ -61,12 +61,12 @@ const renderMarkdown = (text) => {
 // Estilos con la paleta corporativa (Azul Oscuro y #d2d209)
 const styles = {
     chatbotContainer: {
-        border: '1px solid #d2d209', // Borde #d2d209
+        // border: '1px solid #d2d209', // Borde removido para integrarse con glass
         borderRadius: '10px',
         padding: '8px',
         marginTop: '0',
         fontFamily: 'Inter, sans-serif', 
-        backgroundColor: '#001a33', // Azul oscuro de fondo
+        backgroundColor: 'transparent', // Transparente para permitir glass del padre
         color: '#ffffff', // Texto base blanco
         // maxWidth eliminada para que llene la columna
         width: '100%',
@@ -79,7 +79,7 @@ const styles = {
     title: {
         margin: '0 0 20px 0',
         paddingBottom: '15px',
-        borderBottom: '1px solid #d2d209', // Línea separadora #d2d209
+        borderBottom: '1px solid rgba(210, 210, 9, 0.3)', // Línea separadora sutil
         textAlign: 'center',
         color: '#d2d209', // Título en #d2d209
         fontSize: '1.25rem',
@@ -88,28 +88,37 @@ const styles = {
         flex: '1', // Ocupa el espacio restante
         minHeight: '400px',
         overflowY: 'auto',
-        border: '1px solid #1c3d6e',
+        border: '1px solid rgba(255,255,255,0.10)',
         padding: '16px',
         marginBottom: '16px',
-        backgroundColor: '#0e2f56', // Azul ligeramente más claro para el área de mensajes
+        backgroundColor: 'rgba(255,255,255,0.03)', // Glass-like surface
+        backdropFilter: 'blur(10px) saturate(130%)',
+        WebkitBackdropFilter: 'blur(10px) saturate(130%)',
         borderRadius: '6px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
     },
     message: {
         marginBottom: '10px',
-        padding: '8px 12px',
+        padding: '10px 14px', // Increased padding
         borderRadius: '18px',
         maxWidth: '80%',
         wordWrap: 'break-word',
+        lineHeight: '1.5',
     },
     userMessage: {
         backgroundColor: '#d2d209', // Fondo #d2d209
         color: '#001a33', // Texto oscuro para contraste
         alignSelf: 'flex-end',
         marginLeft: 'auto',
+        boxShadow: '0 8px 18px rgba(0,0,0,0.25)', // Tiny shadow
     },
     botMessage: {
-        backgroundColor: '#ffffff', // Fondo blanco
-        color: '#001a33', // Texto oscuro
+        backgroundColor: 'rgba(255,255,255,0.04)', // Glass message
+        border: '1px solid rgba(255,255,255,0.10)',
+        backdropFilter: 'blur(8px)',
+        color: '#ffffff', // Texto blanco
         alignSelf: 'flex-start',
     },
     form: {
@@ -119,10 +128,11 @@ const styles = {
         flex: '1',
         padding: '10px',
         borderRadius: '20px',
-        border: '1px solid #d2d209',
+        border: '1px solid rgba(210, 210, 9, 0.5)',
         marginRight: '10px',
-        backgroundColor: '#ffffff', // Fondo blanco para escribir
-        color: '#000000', // Texto negro explícito
+        backgroundColor: 'rgba(5, 15, 30, 0.6)', // Fondo oscuro transparente
+        color: '#ffffff', // Texto blanco
+        outline: 'none',
     },
     button: {
         padding: '10px 20px',
@@ -132,11 +142,13 @@ const styles = {
         color: '#001a33', // Texto botón oscuro
         cursor: 'pointer',
         fontWeight: 'bold',
+        boxShadow: '0 10px 24px rgba(210,210,9,0.18)',
     },
     buttonDisabled: {
-        backgroundColor: '#555',
-        color: '#888',
+        backgroundColor: 'rgba(210, 210, 9, 0.3)', // Lower opacity lime
+        color: 'rgba(255, 255, 255, 0.5)',
         cursor: 'not-allowed',
+        boxShadow: 'none',
     },
     error: {
         color: '#ff6b6b', // Un rojo suave que se lea bien sobre azul oscuro
@@ -154,7 +166,10 @@ const styles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(10, 35, 66, 0.98)', // Azul oscuro semi-opaco
+        backgroundColor: 'rgba(6, 18, 33, 0.55)', // Glass-like overlay
+        backdropFilter: 'blur(14px) saturate(130%)',
+        WebkitBackdropFilter: 'blur(14px) saturate(130%)',
+        border: '1px solid rgba(210, 210, 9, 0.18)',
         zIndex: 10,
         display: 'flex',
         flexDirection: 'column',
@@ -174,11 +189,12 @@ const styles = {
         borderRadius: '20px',
         border: '1px solid #d2d209',
         marginBottom: '15px',
-        backgroundColor: '#ffffff',
-        color: '#000000',
+        backgroundColor: 'rgba(5, 15, 30, 0.6)', // Dark background
+        color: '#fff',
         width: '80%',
         maxWidth: '300px',
         textAlign: 'center',
+        outline: 'none',
     }
 };
 
@@ -368,6 +384,8 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                     placeholder="Escribe tu pregunta aquí..."
                     style={styles.input}
                     disabled={cargando || !isAuthenticated}
+                    // Adding focus class via className prop
+                    className="focus:shadow-[0_0_0_2px_rgba(210,210,9,0.2)] transition-shadow duration-200 placeholder-gray-400"
                 />
                 <button 
                     type="submit" 

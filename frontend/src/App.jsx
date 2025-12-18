@@ -357,8 +357,8 @@ function App() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="w-full mt-0 mb-8"
               >
-                <div className="bg-white/90 backdrop-blur-lg rounded-2xl shadow-xl border border-gray-200 p-6 transition-all duration-500">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[#001a33] flex items-center gap-2 hw-terminal-font">
+                <div className="bg-transparent p-6 transition-all duration-500">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-100 flex items-center gap-2 hw-terminal-font">
                     <Code className="w-5 h-5 text-lima" />
                     Resultado del análisis
                   </h3>

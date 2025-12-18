@@ -146,7 +146,7 @@ const formatearFuentes = (fuentes) => {
 const PuntuacionIndicador = ({ puntuacion }) => {
   const score = Number(puntuacion);
   const getColor = (s) => {
-    if (s >= 75) return 'bg-green-500';
+    if (s >= 75) return 'bg-lime-500';
     if (s >= 60) return 'bg-yellow-500';
     if (s >= 45) return 'bg-orange-500';
     return 'bg-red-500';
@@ -155,7 +155,7 @@ const PuntuacionIndicador = ({ puntuacion }) => {
   return (
     <div className="flex items-center gap-2">
       <div className={`w-3 h-3 rounded-full ${getColor(score)}`} />
-      <span className="font-bold text-gray-700">{isNaN(score) ? 'N/A' : score}</span>
+      <span className="font-bold text-gray-200">{isNaN(score) ? 'N/A' : score}</span>
     </div>
   );
 };
@@ -268,32 +268,32 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         <div className="space-y-6">
         {/* Información básica */}
         <RevealOnScroll delay={0}>
-        <div className="p-6 bg-white/95 shadow-xl rounded-xl border-l-4 border-lima">
+        <div className="p-6 hw-glass rounded-2xl border-l-4 border-lima">
         <div className="flex flex-col md:flex-row gap-4 md:items-start">
 
             {/* Columna izquierda: Título y Metadatos */}
             <div className="flex-1">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              <h3 className="text-2xl font-bold text-white mb-4">
                 {resultado.titulo}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-semibold text-gray-600">
+                  <span className="font-semibold text-gray-300">
                     Fecha de publicación:
                   </span>
-                  <p className="text-gray-900">
+                  <p className="text-gray-200">
                     {resultado.fecha_publicacion
                       ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
                       : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-600">Fuente:</span>
-                  <p className="text-gray-900">{resultado.fuente || 'N/A'}</p>
+                  <span className="font-semibold text-gray-300">Fuente:</span>
+                  <p className="text-gray-200">{resultado.fuente || 'N/A'}</p>
                 </div>
                 <div className="col-span-1 sm:col-span-2">
-                  <span className="font-semibold text-gray-600">Autor(es):</span>
-                  <p className="text-gray-900">
+                  <span className="font-semibold text-gray-300">Autor(es):</span>
+                  <p className="text-gray-200">
                     {resultado.autor && resultado.autor.length > 0
                       ? resultado.autor.join(', ')
                       : 'N/A'}
@@ -303,7 +303,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 <div className="col-span-1 sm:col-span-2 mt-2">
                   <button
                     onClick={() => setMostrarResumen(!mostrarResumen)}
-                    className="bg-[#001a33] text-lima px-4 py-2 rounded-md shadow-md hover:bg-[#0f2e52] transition-colors font-medium text-sm"
+                    className="bg-[#001a33]/50 border border-lima text-lima px-4 py-2 rounded-md hover:bg-[#001a33]/80 transition-colors font-medium text-sm"
                   >
                     Resumen del análisis
                   </button>
@@ -315,21 +315,21 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="col-span-1 sm:col-span-2 space-y-4 overflow-hidden border-t border-gray-100 pt-4 mt-2"
+                    className="col-span-1 sm:col-span-2 space-y-4 overflow-hidden border-t border-gray-600/30 pt-4 mt-2"
                   >
                     <div>
-                      <span className="font-semibold text-gray-600 block mb-1">
+                      <span className="font-semibold text-gray-300 block mb-1">
                         Resumen valoración:
                       </span>
-                      <p className="text-gray-900 leading-relaxed">
+                      <p className="text-gray-200 leading-relaxed">
                         {resultado.resumen_valoracion || 'No disponible'}
                       </p>
                     </div>
                     <div>
-                      <span className="font-semibold text-gray-600 block mb-1">
+                      <span className="font-semibold text-gray-300 block mb-1">
                         Resumen valoración del titular:
                       </span>
-                      <p className="text-gray-900 leading-relaxed">
+                      <p className="text-gray-200 leading-relaxed">
                         {resultado.resumen_valoracion_titular || 'No disponible'}
                       </p>
                     </div>
@@ -344,7 +344,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
               {/* Puntuación General */}
               <div className="text-center">
-                <div className="text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                <div className="text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">
                   Puntuación general
                 </div>
                 <div className="flex flex-col items-center justify-center">
@@ -373,12 +373,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
-                    className="w-24 h-24 rounded-lg hover:bg-gray-50 transition-colors p-1 border border-transparent hover:border-gray-200"
+                    className="w-24 h-24 rounded-lg hover:bg-white/10 transition-colors p-1 border border-transparent hover:border-gray-500"
                     title="Ver desglose de criterios"
                   >
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
-                        <PolarGrid stroke="#E5E7EB" />
+                        <PolarGrid stroke="#4B5563" />
                         <PolarAngleAxis
                           dataKey="seccion"
                           tick={false}
@@ -388,7 +388,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                           angle={90}
                           domain={[0, 100]}
                           tick={{
-                            fill: '#6B7280',   
+                            fill: '#9CA3AF',   
                             fontSize: 0       
                           }}
                           tickLine={false}      
@@ -414,9 +414,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="mt-6 border-t border-gray-100 pt-6"
+                className="mt-6 border-t border-gray-600/30 pt-6"
             >
-              <h4 className="text-xl font-bold text-gray-900 mb-4 text-center">
+              <h4 className="text-xl font-bold text-white mb-4 text-center">
                 Análisis visual de calidad
               </h4>
               <div style={{ width: '100%', height: 400 }}>
@@ -426,16 +426,16 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     outerRadius="100%" 
                     margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
                   >
-                    <PolarGrid stroke="#E5E7EB" />
+                    <PolarGrid stroke="#4B5563" />
                     <PolarAngleAxis
                       dataKey="seccion"
-                      tick={{ fill: '#111827', fontSize: 14 }}
+                      tick={{ fill: '#E5E7EB', fontSize: 14 }}
                     />
                     <PolarRadiusAxis
                     angle={90}
                     domain={[0, 100]}
                     tick={{
-                      fill: '#6B7280',   // color de las etiquetas
+                      fill: '#9CA3AF',   // color de las etiquetas
                       fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
                     }}
                     tickLine={false}
@@ -459,8 +459,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
         {/* Otras secciones (Análisis adicional) */}
         <RevealOnScroll delay={100}>
-        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-gray-900 mb-4">
+        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+          <h4 className="text-xl font-bold text-white mb-4">
             Análisis general
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -471,9 +471,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 abrirModal('Valoración general', resultado.valoracion_general)
               }
               disabled={!resultado.valoracion_general}
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
             >
-              <div className="font-semibold text-gray-800">Valoración general</div>
+              <div className="font-semibold text-gray-100">Valoración general</div>
               {!resultado.valoracion_general && (
                 <p className="text-xs text-gray-400 mt-1">No disponible</p>
               )}
@@ -489,9 +489,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 )
               }
               disabled={!resultado.valoracion_titular?.titular}
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
             >
-              <div className="font-semibold text-gray-800">
+              <div className="font-semibold text-gray-100">
                 Valoración del titular
               </div>
               {!resultado.valoracion_titular?.titular && (
@@ -506,9 +506,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
               }
               disabled={!resultado.fact_check_analisis}
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
             >
-              <div className="font-semibold text-gray-800">
+              <div className="font-semibold text-gray-100">
                 Análisis de Fact-Checking
               </div>
               {!resultado.fact_check_analisis && (
@@ -530,9 +530,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 !resultado.fact_check_fuentes ||
                 resultado.fact_check_fuentes.length === 0
               }
-              className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
             >
-              <div className="font-semibold text-gray-800">
+              <div className="font-semibold text-gray-100">
                 Fuentes de Fact-Checking
               </div>
               {(!resultado.fact_check_fuentes ||
@@ -546,11 +546,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
         <RevealOnScroll delay={200}>
-        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-gray-900 mb-2">
+        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+          <h4 className="text-xl font-bold text-white mb-2">
             Pregúntale al chatbot
           </h4>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-gray-300 mb-4">
              Haz clic en una sección para preguntar automáticamente al chatbot sobre su calificación.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -560,9 +560,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     key={key}
                     whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                     onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
-                    className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left bg-white flex items-center justify-between group"
+                    className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left bg-[#001a33]/35 flex items-center justify-between group"
                   >
-                    <span className="text-sm font-semibold text-gray-800 group-hover:text-[#001a33]">
+                    <span className="text-sm font-semibold text-gray-200 group-hover:text-white">
                       {nombresSecciones[key]}
                     </span>
                     <MessageSquare className="w-4 h-4 text-gray-400 group-hover:text-lima" />
@@ -575,8 +575,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
         {/* Valoraciones individuales */}
         <RevealOnScroll delay={300}>
-        <div className="bg-white/95 shadow-xl rounded-xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-gray-900 mb-4 hw-terminal-font">
+        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+          <h4 className="text-xl font-bold text-white mb-4 hw-terminal-font">
             Valoraciones por sección
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -596,11 +596,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                         valoracion || 'Contenido no disponible'
                       )
                     }
-                    className="p-4 border-2 border-gray-200 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-white"
+                    className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
                     disabled={!valoracion}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-gray-800">
+                      <span className="text-sm font-semibold text-gray-200">
                         {nombresSecciones[key]}
                       </span>
                       {puntuacion ? (
@@ -624,7 +624,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         <div className="md:sticky md:top-4">
           <RevealOnScroll delay={150}>
           {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
-              <div className="bg-white/95 shadow-xl rounded-xl p-6">
+              <div className="hw-glass rounded-2xl p-6">
                   <Chatbot 
                       ref={chatbotRef}
                       noticiaContexto={{

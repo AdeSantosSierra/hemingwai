@@ -13,7 +13,7 @@ const BackgroundParticles = () => {
     
     // Configuración
     const GRID_SIZE = 60; // Debe coincidir con el background-size del CSS
-    const PARTICLE_COUNT = 4; // Cantidad de partículas
+    const PARTICLE_COUNT = 5; // Cantidad de partículas
     const PARTICLE_COLOR = '#d2d209'; // Lima
     const SPEED = 0.5; // Velocidad de movimiento
     const TRAIL_LENGTH = 300; // Longitud de la estela
