@@ -1,7 +1,6 @@
 services:
-  # Backend - API Node.js + Python
   - type: web
-    name: hemingwai-backend
+    name: hemingwai-backend-v1
     plan: free
     runtime: docker
     dockerfilePath: ./Dockerfile
@@ -15,12 +14,9 @@ services:
         sync: false
       - key: CHATBOT_PASSWORD
         sync: false
-      - key: PORT
-        value: 3000
 
-  # Frontend - Sitio estático
   - type: web
-    name: hemingwai-frontend
+    name: hemingwai-frontend-v1
     runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
@@ -30,4 +26,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://hemingwai-backend-5vw6.onrender.com
+        sync: false
