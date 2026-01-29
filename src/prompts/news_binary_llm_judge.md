@@ -1,5 +1,6 @@
-# News Genre Binary Classifier (LLM Judge) — v0.2
+# News Genre Binary Classifier (LLM Judge) — v0.3
 ## Output: NOTICIA vs OTRA
+
 **Goal:** Decide if a text is **NOTICIA** (straight news) or **OTRA** (any non-straight-news: opinion, commentary, analysis framed with author voice, persuasive rhetoric, insinuation, etc.).
 
 This judge is designed to be **robust internationally** (Spanish/English/Catalan; mixed language possible) and **NLP-first**: the **text itself** is the primary evidence. **Metadata/URL** is only used for **rare hard overrides**.
@@ -16,16 +17,17 @@ You will receive a markdown packet per document:
 
 ### Important
 - If `body` exists and has meaningful content, **base the decision mainly on body**.
-- If only `title` is available (or body is garbage), decide using title but **lower confidence** and require stronger evidence to label OTRA.
+- If `body` does not exist, is too short, or is not related to a news article, **mark it as OTRA** (e.g., category pages, unrelated pages, boilerplate).
 
 ---
 
 ## 1) Definitions (strict but realistic)
+
 ### NOTICIA (straight news)
 A piece is **NOTICIA** if:
 - The author voice is **neutral/descriptive**.
 - The text mainly reports: **what happened / who said what / when / where / what is known**.
-- Any subjective language appears **only inside attributed quotes** (someone said it) or is clearly a **reported claim** (e.g., “X called it a victory”).
+- Subjective language appears **only inside attributed quotes** (someone said it) or is clearly a **reported claim** (e.g., “X called it a victory”).
 
 **Key principle (very important):**
 > If the text contains **no author framing / no second-intention verbs / no evaluative stance**, then it can be NOTICIA **even if it lacks sources, numbers, or documents**.  
@@ -34,17 +36,25 @@ A piece is **NOTICIA** if:
 ### OTRA (non-straight-news umbrella)
 A piece is **OTRA** if it contains author-driven elements such as:
 - Interpretation or evaluation by the writer (not merely reporting someone else’s evaluation)
-- Persuasion / moralizing / calls to action
+- Hard persuasion / moralizing / calls to action
 - Rhetorical questions, sarcasm, insinuation, “second intention”
 - Metaphors used to frame, loaded verbs, emotionally manipulative language
 - “This proves”, “everyone knows”, “we must”, “it’s obvious”, etc.
 - Unattributed allegations or suggestive claims presented as narrative truth
 
-OTRA includes: **opinion columns, editorials, op-eds, commentary, analysis written with author stance**, and also **news-like articles that add clear author framing**.
+OTRA includes: **opinion columns, editorials, op-eds, commentary, analysis written with author stance**.
+
+It is very important to tell the difference between:
+- a news piece with small writing mistakes (minor style leakage), and
+- texts where the author intentionally expresses opinion or tries to shape the reader’s beliefs.
+
+**Rule (author stance vs evidence):**
+> Even if a claim is based on facts, the text is OTRA only when the author adopts an evaluative stance or persuasive framing in their own voice (outside clearly attributed statements/quotes).
 
 ---
 
 ## 2) Priority rules (do NOT overuse metadata)
+
 ### 2.1 Hard overrides (rare, only when unequivocal)
 If any of the following is true, output **OTRA** immediately:
 
@@ -52,7 +62,7 @@ If any of the following is true, output **OTRA** immediately:
 - `OpinionNewsArticle` (or an equivalent clearly-opinion schema)
 
 2) Metadata section/breadcrumb clearly indicates opinion/editorial/column:
-- Section names like: “Opinion”, “Opinión”, “Editorial”, “Column”, “Columns”, “Columna”, “Tribuna”, “Comment”, “Commentary”, “Comment is Free”, “Op-Ed”, “Views”, “Viewpoint”, “Letters to the Editor”.
+- Section names like: “Opinion”, “Opinión”, “Opinió”, “Editorial”, “Column”, “Columns”, “Columna”, “Tribuna”, “Comment”, “Commentary”, “Comment is Free”, “Op-Ed”, “Views”, “Viewpoint”, “Letters to the Editor”.
 
 3) URL path is explicitly opinion/editorial (very strong tokens):
 - `/opinion/`, `/editorial/`, `/columna/`, `/tribuna/`, `/commentisfree/`, `/op-ed/`, `/commentary/`, `/letters-to-the-editor/`
@@ -65,6 +75,7 @@ If no hard override triggers, decide using **text-only signals** below.
 ---
 
 ## 3) NLP decision logic (core)
+
 ### 3.1 Step A — Determine if the author voice is neutral
 Ask:
 
@@ -79,16 +90,17 @@ Ask:
 If YES → candidate for NOTICIA.
 
 **A2) Are there author-driven framing signals outside quotes?**
-Look for **outside** direct quotations and outside clearly attributed speech.
+Look for signals **outside** direct quotations and outside clearly attributed speech.
 
 If you find **strong framing**, lean OTRA.
-If you find only **minor style leaks**, still allow NOTICIA.
+If you find only **minor style leakage**, still allow NOTICIA.
 
 ---
 
 ## 4) What counts as “author framing” (signals for OTRA)
+
 ### 4.1 Strong OTRA signals (any one can be enough)
-If present **outside attributed quotes**, classify **OTRA**:
+If present and repeated **outside attributed quotes**, classify **OTRA**:
 
 - **Calls to action / prescriptions**
   - ES: “hay que”, “debemos”, “no podemos permitir”, “urge”, “basta ya”, “exijamos”
@@ -117,22 +129,14 @@ If present **outside attributed quotes**, classify **OTRA**:
 - **Metaphors framing the narrative**
   - “cortina de humo”, “caza de brujas”, “tormenta perfecta”, “battlefield”, “witch hunt”
 
-If any of these are present and are **not merely quoted/attributed**, output **OTRA**.
+If any of these are present repeatedly and are **not merely quoted/attributed**, output **OTRA**.
 
-### 4.2 Moderate OTRA signals (need accumulation or context)
-These alone do not force OTRA unless they are **repeated** or clearly authorial:
-
-- One-off intensifiers (“muy”, “extremely”, “deeply”) without clear evaluation
-- One mildly evaluative adjective used casually (a “style leak”)
-- A slightly dramatic headline if body remains neutral
-
-Rule of thumb:
-- **1 isolated mild leak** → still NOTICIA possible.
-- **2–3+ leaks** or a consistent tone → OTRA.
+If in doubt, consider it **NOTICIA** with possible mistakes and let it be evaluated later. Only mark as **OTRA** when you are clearly sure.
 
 ---
 
 ## 5) What is allowed in NOTICIA (do NOT misclassify)
+
 ### 5.1 Attributed evaluation is allowed
 If evaluation is clearly attributed, it can still be NOTICIA:
 - “X called it ‘a victory’”
@@ -152,6 +156,9 @@ You should only require evidence/attribution **when** the text contains:
 - allegations or insinuation presented as narrative truth
 - persuasion/moral framing
 
+### 5.3 Neutral but harsh factual reporting is allowed
+Harsh factual terms can be NOTICIA when used descriptively (e.g., “killed”, “arrested”, “rape”, “attack”) and not as author moralizing or persuasive framing.
+
 ---
 
 ## 6) Handling “analysis / explainer” formats
@@ -169,16 +176,13 @@ Only label OTRA if analysis becomes **author stance** or **persuasion**.
 ---
 
 ## 7) Title vs Body (important)
+
 ### 7.1 If body exists and is readable
 - Decide mainly from body.
 - If title is dramatic but body is neutral reporting → still NOTICIA.
 
 ### 7.2 If body is missing/garbage and only title is available
-- Be conservative: only label OTRA if title has **strong OTRA signals**:
-  - direct call to action
-  - overt moralizing (“shameful”, “disgrace”, “inadmisible”) **without attribution**
-  - rhetorical question framing
-  - explicit opinion-section URL/metadata (hard overrides)
+- Classify as **OTRA** and explain: the body is too short/missing/noisy.
 
 Otherwise, default to NOTICIA with lower confidence.
 
@@ -191,7 +195,9 @@ Return **exactly one** label:
 - `OTRA`
 
 Also provide (briefly):
-- 1–3 bullet “reasons” citing the specific signals you saw (e.g., “call-to-action outside quotes”, “author stance ‘obviously’ outside quotes”, “neutral reporting; evaluative language only inside attributed quotes”).
+- 1–3 sentences collecting reasons and citing the specific signals you saw (e.g., “call-to-action outside quotes”, “author stance ‘obviously’ outside quotes”, “neutral reporting; evaluative language only inside attributed quotes”).
+
+Do not use emojis. Keep the reasoning professional and fair.
 
 ---
 
@@ -199,12 +205,13 @@ Also provide (briefly):
 1) Any hard override? → OTRA
 2) Is the body neutral reporting? → likely NOTICIA
 3) Any strong author framing outside quotes? → OTRA
-4) Only minor style leak and otherwise neutral? → NOTICIA
+4) Only minor style leakage and otherwise neutral? → NOTICIA
 5) No interpretation present? → do NOT demand sources → NOTICIA
 
 ---
 
 ## 10) Examples (for calibration)
+
 ### NOTICIA
 - “X said Y”, “The ministry announced…”, “According to the report…”
 - “Z called it ‘a victory’” (attributed)
@@ -216,4 +223,3 @@ Also provide (briefly):
 - “How is it possible that…?”
 - “A witch hunt / smokescreen” framing
 - “Everything suggests…” without careful attribution
-
