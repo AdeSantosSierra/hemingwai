@@ -1,14 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  ResponsiveContainer
-} from 'recharts';
-import {
   XCircle,
   MessageSquare,
   Search,
@@ -29,10 +21,11 @@ import RevealOnScroll from './RevealOnScroll';
 // Emoticono según puntuación
 const getEmoticonoPuntuacion = (puntuacion) => {
   const p = Number(puntuacion) || 0;
-  if (p >= 85) return '🤩';
-  if (p >= 75) return '😊';
-  if (p >= 60) return '🙂';
-  if (p >= 45) return '😐';
+  // Escala 0–10
+  if (p >= 8.5) return '🤩';
+  if (p >= 7.5) return '😊';
+  if (p >= 6) return '🙂';
+  if (p >= 4.5) return '😐';
   return '😢';
 };
 
@@ -146,9 +139,10 @@ const formatearFuentes = (fuentes) => {
 const PuntuacionIndicador = ({ puntuacion }) => {
   const score = Number(puntuacion);
   const getColor = (s) => {
-    if (s >= 75) return 'bg-lime-500';
-    if (s >= 60) return 'bg-yellow-500';
-    if (s >= 45) return 'bg-orange-500';
+    // Escala 0–10
+    if (s >= 7.5) return 'bg-lime-500';
+    if (s >= 6) return 'bg-yellow-500';
+    if (s >= 4.5) return 'bg-orange-500';
     return 'bg-red-500';
   };
 
@@ -164,7 +158,6 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarRadarGrande, setMostrarRadarGrande] = useState(false);
   const [mostrarResumen, setMostrarResumen] = useState(false);
   
   // Referencia al chatbot
@@ -220,22 +213,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   }
 
   const nombresSecciones = {
-    '1': 'Interpretación del periodista',
-    '2': 'Opiniones',
-    '3': 'Cita de fuentes',
-    '4': 'Confiabilidad de fuentes',
-    '5': 'Trascendencia',
-    '6': 'Relevancia de los datos',
-    '7': 'Precisión y claridad',
-    '8': 'Enfoque',
-    '9': 'Contexto',
-    '10': 'Ética'
+    '1': 'Fiabilidad',
+    '2': 'Adecuación',
+    '3': 'Claridad',
+    '4': 'Profundidad',
+    '5': 'Enfoque'
   };
-
-  const datosRadar = Object.keys(nombresSecciones).map((key) => ({
-    seccion: nombresSecciones[key],
-    puntuacion: resultado.puntuacion_individual?.[key] ?? 0
-  }));
 
   const abrirModal = (titulo, contenido, tipoContenido = 'markdown') => {
     setSeccionSeleccionada({ titulo, contenido, tipoContenido });
@@ -352,11 +335,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-3 h-3 rounded-full ${
-                        resultado.puntuacion >= 75
+                        resultado.puntuacion >= 7.5
                           ? 'bg-green-500'
-                          : resultado.puntuacion >= 60
+                          : resultado.puntuacion >= 6
                           ? 'bg-yellow-500'
-                          : resultado.puntuacion >= 45
+                          : resultado.puntuacion >= 4.5
                           ? 'bg-orange-500'
                           : 'bg-red-500'
                       }`}
@@ -366,94 +349,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 </div>
               </div>
 
-              {/* Mini Radar (Botón) */}
-              {resultado.puntuacion_individual && (
-                <div className="flex flex-col items-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
-                    className="w-24 h-24 rounded-lg hover:bg-white/10 transition-colors p-1 border border-transparent hover:border-gray-500"
-                    title="Ver desglose de criterios"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
-                        <PolarGrid stroke="#4B5563" />
-                        <PolarAngleAxis
-                          dataKey="seccion"
-                          tick={false}
-                          axisLine={false}
-                        />
-                        <PolarRadiusAxis
-                          angle={90}
-                          domain={[0, 100]}
-                          tick={{
-                            fill: '#9CA3AF',   
-                            fontSize: 0       
-                          }}
-                          tickLine={false}      
-                        />
-                        <Radar
-                          name="Puntuación"
-                          dataKey="puntuacion"
-                          stroke="#D2D209"
-                          fill="#D2D209"
-                          fillOpacity={0.5}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </motion.button>
-                </div>
-              )}
+              {/* Gráfico de araña eliminado: se mantiene solo la puntuación numérica */}
             </div>
           </div>
 
-          {/* Radar chart Expandido */}
-          {mostrarRadarGrande && resultado.puntuacion_individual && (
-            <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-6 border-t border-gray-600/30 pt-6"
-            >
-              <h4 className="text-xl font-bold text-white mb-4 text-center">
-                Análisis visual de calidad
-              </h4>
-              <div style={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart 
-                    data={datosRadar} 
-                    outerRadius="100%" 
-                    margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
-                  >
-                    <PolarGrid stroke="#4B5563" />
-                    <PolarAngleAxis
-                      dataKey="seccion"
-                      tick={{ fill: '#E5E7EB', fontSize: 14 }}
-                    />
-                    <PolarRadiusAxis
-                    angle={90}
-                    domain={[0, 100]}
-                    tick={{
-                      fill: '#9CA3AF',   // color de las etiquetas
-                      fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
-                    }}
-                    tickLine={false}
-                    
-                    />
-
-                    <Radar
-                      name="Puntuación"
-                      dataKey="puntuacion"
-                      stroke="#D2D209"
-                      fill="#D2D209"
-                      fillOpacity={0.5}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            </motion.div>
-          )}
+          {/* Gráfico de araña expandido eliminado */}
         </div>
         </RevealOnScroll>
 

@@ -4,14 +4,6 @@ import re
 import ast
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from datetime import datetime
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.patches import Circle, RegularPolygon
-from matplotlib.path import Path
-from matplotlib.projections.polar import PolarAxes
-from matplotlib.projections import register_projection
-from matplotlib.spines import Spine
-from matplotlib.transforms import Affine2D
 from dotenv import load_dotenv
 import glob
 import subprocess
@@ -243,25 +235,6 @@ def clean_dict_recursive(obj):
     else:
         return obj
 
-def generar_grafico_arania(valores, etiquetas, nombre_archivo):
-    N = len(etiquetas)
-    valores_escalados = [v / 10 for v in valores]
-    valores_escalados += valores_escalados[:1]
-    angulos = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
-    angulos += angulos[:1]
-    fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(polar=True))
-    ax.plot(angulos, valores_escalados, color='blue', linewidth=2)
-    ax.fill(angulos, valores_escalados, color='skyblue', alpha=0.4)
-    ax.set_xticks(angulos[:-1])
-    ax.set_xticklabels(etiquetas, fontsize=10)
-    ax.set_ylim(0, 10)
-    ax.set_yticks([0, 2, 4, 6, 8, 10])
-    ax.set_yticklabels(['0', '2', '4', '6', '8', '10'])
-    ax.set_title("Puntuaciones Individuales", size=15, pad=20)
-    plt.tight_layout()
-    plt.savefig(nombre_archivo)
-    plt.close()
-
 def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/PDF hemingwAI"):
     """
     Sube un archivo a MEGA usando mega-cmd con manejo robusto de errores y verificación.
@@ -468,25 +441,9 @@ if __name__ == "__main__":
     filename_base = safe_filename(titulo)
     output_tex_file = os.path.join(output_dir, f"{filename_base}.tex")
     output_pdf_file = os.path.join(output_dir, f"{filename_base}.pdf")
-    spider_chart_file = os.path.join(output_dir, "spider_chart.png")
-
-    # Generate spider chart image if data exists
-    puntuacion_individual_data = news_item_data.get("puntuacion_individual")
-    if isinstance(puntuacion_individual_data, dict) and puntuacion_individual_data:
-        CAMPOS_FIJOS = [
-            "Interpretación del periodista", "Opiniones", "Cita de fuentes", 
-            "Confiabilidad de las fuentes", "Trascendencia", "Relevancia de los datos", 
-            "Precisión y claridad", "Enfoque", "Contexto", "Ética"
-        ]
-        valores = [float(puntuacion_individual_data.get(str(i), 0)) for i in range(1, 11)]
-        generar_grafico_arania(valores, CAMPOS_FIJOS, spider_chart_file)
-        print(f"Gráfico generado correctamente: {spider_chart_file}")
-    else:
-        print("No 'puntuacion_individual' data for spider chart.")
 
     context = {
         "news_item": news_item_data,
-        "spider_chart_file": spider_chart_file,
         "fact_check_analisis": fact_check_analisis,
         "fact_check_fuentes": fact_check_fuentes
     }
@@ -497,12 +454,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
-
-    # Generar el gráfico de araña siempre antes de compilar el PDF
-    subprocess.run([
-        sys.executable,
-        os.path.join(ROOT_DIR, "src", "generar_grafico_arania.py")
-    ], check=True)
 
     # Compilar el PDF automáticamente
     try:

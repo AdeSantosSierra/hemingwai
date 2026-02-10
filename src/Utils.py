@@ -9,47 +9,97 @@ import numpy as np  # Asegúrate de tener numpy instalado: pip install numpy
 class Utils:
 
     criterios = {
-        1: {
-            "nombre": "Interpretación del periodista",
-            "instruccion": "Analiza si hay interpretaciones explícitas del periodista. Si aparecen interpretaciones explícitas del periodista, puntúa negativa y proporcionalmente a cuántas haya. Si no hay interpretaciones explícitas en el texto, puntúa positivamente. Las interpretaciones explícitas aparecen en el texto reflejadas como adjetivos calificativos, verbos cargados de connotaciones mayormente negativas o hiperbólicas y afirmaciones tendenciosas con tópicos, categorizaciones."
-        },
-        2: {
-            "nombre": "Opiniones",
-            "instruccion": "Identifica y contabiliza las opiniones explícitas del periodista. Si hay opiniones explícitas del periodista, señala concretamente cuántas y cuáles en la columna de justificación y razones y puntúa negativamente. Si no hay opiniones explícitas puntúa positivamente."
-        },
-        3: {
-            "nombre": "Cita de fuentes",
-            "instruccion": "Evalúa la citación de fuentes. Si el periodista cita la fuente antes o después de hacer una afirmación sobre una información puntúa positivamente, si no hay cita, puntúa negativamente y señala en qué parte del texto hay ausencia de esa cita o citas donde debería haberla. Si el periodista no cita ninguna fuente en toda la noticia, puntuar negativamente e indicarlo en la justificación o razón. Si cita, al menos, dos o tres fuentes, puntuar positivamente."
-        },
-        4: {
-            "nombre": "Confiabilidad de las fuentes",
-            "instruccion": "Analiza la confiabilidad de las fuentes citadas. Si la fuente que cita resulta confiable y adecuada para la afirmación o información que se está dando, puntuar positivamente, si no, puntuar negativamente, señalarlo y expresar dónde y en qué afirmación literal la cita o citas no son confiables y por qué no lo son en la categoría de justificación."
-        },
-        5: {
-            "nombre": "Trascendencia",
-            "instruccion": "el acontecimiento o acción humana o de la naturaleza que relata la noticia es importante porque sus consecuencias afectan a la vida de las personas siendo 0 muy poco trascendente y 10 muy trascendente. Para establecer el criterio de trascendencia se ha de tener en cuenta el bien o el mal humano que generan las consecuencias del acontecimiento relatado. De esta manera, el acontecimiento con mayor trascendencia será el que mayor bien o mayor mal cause al mayor número de personas según su naturaleza humana, anhelos y aspiraciones vitales de felicidad, plenitud y de alcanzar el bien mayor. La evaluación deberás hacerla atendiendo al público al que podría ir dirigida esa noticia y al bien común que supone para la sociedad o el público objetivo conocer esa noticia. Señala la razón o justificación concreta que te lleva a evaluar la noticia como trascendente o intrascendente."
-        },
-        6: {
-            "nombre": "Relevancia de los datos",
-            "instruccion": "Relevancia de los datos proporcionados en el relato noticioso. Hay que evaluar si los datos elegidos son los más relevantes del acontecimiento de entre todos los que se podrían escoger señalando en la columna de la justificación las ausencias de datos importantes que puedan faltar en la noticia."
-        },
-        7: {
-            "nombre": "Precisión y claridad",
-            "instruccion": "Evalúa la precisión y claridad de los conceptos y palabras utilizadas. Se puntúa positivamente si las palabras utilizadas son las más adecuadas y negativamente si las palabras o proposiciones son poco precisas para relatar el acontecimiento o si tienen un significado ambiguo. Ten en cuenta si hay un lenguaje muy técnico o por el contrario hay un estilo de escritura claro y conciso para que los lectores puedan entender fácilmente la información."
-        },
-        8: {
-            "nombre": "Enfoque",
-            "instruccion": "Valora si los aspectos destacados son adecuados para comprender el acontecimiento. Puntúa positivamente si el aspecto o aspectos del acontecimiento del que se informa son los adecuados para comprender lo que ha ocurrido o si no lo son. En el caso de no serlo, expresa en la columna de justificación de tu evaluación cuál sería un mejor enfoque o que podría haberse destacado para que el enfoque fuera menos parcial."
-        },
-        9: {
-            "nombre": "Contexto",
-            "instruccion": "Verifica si la noticia proporciona contexto suficiente mediante párrafos introductorios, aclaraciones o complementos informativos. Puntúa positivamente si hay un Tie-in o párrafo de contexto al principio o al final de la noticia o aparecen aclaraciones pertinentes cuando es necesario contextualizar algún aspecto del acontecimiento y puntúa negativamente si la noticia carece de ellos."
-        },
-        10: {
-            "nombre": "Ética",
-            "instruccion": "Examina si la noticia respeta la privacidad, dignidad y derechos humanos. Puntúa positivamente si la noticia respeta la privacidad, la dignidad, los derechos humanos de las personas involucradas en las noticias y los lectores que la van a recibir y puntúa negativamente si hay ausencia de todo ello o difamación, calumnia y sensacionalismo. Señala en las observaciones y comentarios dónde se hacen esos ataques en la noticia si es que los hubiere. Finalmente haz un sumatorio de la evaluación final en la última fila de la tabla."
-        }
+    1: {
+        "nombre": "Fiabilidad",
+        "instruccion": (
+            "Evalúa si la noticia ofrece garantías internas suficientes para considerar sus afirmaciones "
+            "como fiables (sin certificar 'verdad externa' si no hay grounding). Puntúa positivamente si:\n"
+            "- Las afirmaciones relevantes están atribuidas (quién lo dice / de dónde sale).\n"
+            "- Hay citas o referencias claras a fuentes (instituciones, documentos, datos, testigos, etc.).\n"
+            "- Hay diversidad mínima de fuentes cuando el tema lo requiere (ideal: 2–3 o más, si el caso lo amerita).\n"
+            "- Los datos (fechas, cifras, nombres, lugares) están presentados con precisión y sin saltos inferenciales.\n\n"
+            "Puntúa negativamente si:\n"
+            "- Se hacen afirmaciones importantes sin atribución o sin fuente identificable.\n"
+            "- Hay lenguaje de certeza donde el texto no aporta base ('está demostrado', 'sin duda', etc.).\n"
+            "- Se usan fuentes débiles/inadecuadas para la afirmación (p. ej., 'se dice', 'en redes', 'expertos' sin identificar).\n"
+            "- Hay contradicciones internas (datos incompatibles dentro del propio texto).\n\n"
+            "En la justificación, cita fragmentos concretos del texto y señala dónde faltan fuentes o atribuciones."
+        )
+    },
+    2: {
+        "nombre": "Adecuación",
+        "instruccion": (
+            "Evalúa el ajuste del relato a los hechos narrados y la separación correcta entre "
+            "hecho, opinión e inferencia NO atribuida (sustituye el enfoque de 'objetividad' por 'ajuste relato/hecho'). "
+            "Aquí se integra lo que antes era 'interpretación del periodista' + 'opiniones'.\n\n"
+            "Puntúa negativamente si detectas:\n"
+            "- Opiniones explícitas del periodista presentadas como hechos.\n"
+            "- Interpretaciones o juicios no atribuidos (adjetivación connotativa, verbos cargados, hipérboles) "
+            "que cambian el sentido del hecho.\n"
+            "- Afirmaciones tendenciosas con tópicos/categorizaciones sin base en datos o sin atribución.\n"
+            "- Eufemismos o encuadres que oculten información relevante (cuando afecten al ajuste del relato).\n\n"
+            "Puntúa positivamente si:\n"
+            "- Se distingue claramente entre lo que ocurrió, lo que se interpreta y lo que se opina, "
+            "y las inferencias están señalizadas o atribuidas.\n"
+            "- El tono es prudente y no 'contamina' los hechos con valoración no atribuida.\n\n"
+            "En la justificación, enumera ejemplos literales (qué frases) y explica por qué son mezcla hecho/opinión "
+            "o por qué están bien separadas."
+        )
+    },
+    3: {
+        "nombre": "Claridad",
+        "instruccion": (
+            "Evalúa si el texto se entiende y comunica con precisión narrativa: orden lógico, definiciones, "
+            "ausencia de ambigüedad y redacción comprensible para el público objetivo.\n\n"
+            "Puntúa positivamente si:\n"
+            "- La estructura es clara (qué pasó, a quién, cuándo, dónde, por qué/para qué si aplica).\n"
+            "- Los conceptos y términos están usados con precisión y sin ambigüedad.\n"
+            "- El estilo facilita la comprensión (no excesivamente técnico sin explicación; frases claras).\n\n"
+            "Puntúa negativamente si:\n"
+            "- Hay vaguedad ('algunos', 'muchos', 'expertos', 'fuentes') sin concreción.\n"
+            "- Hay saltos lógicos, falta de hilo conductor o exceso de tecnicismos sin aclaración.\n"
+            "- Se generan interpretaciones por mala redacción, pronombres ambiguos o términos imprecisos.\n\n"
+            "En la justificación, indica qué partes no se entienden bien y cómo deberían reformularse."
+        )
+    },
+    4: {
+        "nombre": "Profundidad",
+        "instruccion": (
+            "Evalúa si la noticia aporta comprensión más allá del dato superficial: causas, implicaciones, "
+            "proyección y alcance del asunto. Aquí se integra parte de lo que antes era 'contexto' y "
+            "la dimensión de consecuencias.\n\n"
+            "Puntúa positivamente si:\n"
+            "- Explica antecedentes necesarios (qué venía pasando) o consecuencias plausibles (qué puede cambiar).\n"
+            "- Ofrece implicaciones para el público afectado (sin moralizar, pero con sentido informativo).\n"
+            "- Incluye datos o comparaciones que ayudan a dimensionar el hecho (magnitud, frecuencia, impacto).\n\n"
+            "Puntúa negativamente si:\n"
+            "- Se limita a enunciar sin explicar causas/implicaciones cuando el tema lo exige.\n"
+            "- Falta contexto mínimo que el lector necesita para entender por qué importa.\n"
+            "- Presenta detalles accesorios pero omite lo esencial para comprender el fenómeno.\n\n"
+            "En la justificación, señala qué información contextual o explicativa faltaría para aumentar la comprensión."
+        )
+    },
+    5: {
+        "nombre": "Enfoque",
+        "instruccion": (
+            "Evalúa si la noticia destaca lo más relevante para comprender el acontecimiento y su sentido social "
+            "(lo importante vs lo accesorio). La 'trascendencia' se considera aquí de forma operativa junto con Profundidad "
+            "(consecuencias humanas y bien común), sin convertirlo en moralización.\n\n"
+            "Puntúa positivamente si:\n"
+            "- Selecciona los aspectos clave del hecho y los jerarquiza bien.\n"
+            "- Evita enfoques parciales que distorsionen lo central del acontecimiento.\n"
+            "- El encuadre ayuda a entender por qué el tema importa para el público objetivo.\n\n"
+            "Puntúa negativamente si:\n"
+            "- Enfatiza lo llamativo/sensacionalista por encima de lo relevante.\n"
+            "- El enfoque omite el núcleo del hecho o lo relega a favor de elementos secundarios.\n"
+            "- Hay sesgo de enfoque (elige ángulos que inducen una lectura tendenciosa sin base suficiente).\n\n"
+            "Nota ética (V2): la ética no es categoría separada; si hay sensacionalismo, difamación, "
+            "ataques a dignidad/privacidad o daños injustificados, reflejarlo aquí como problema de enfoque "
+            "y señalarlo explícitamente en la justificación (y/o como alerta si tu sistema lo soporta)."
+        )
     }
+}
+
 
     # Función para codificar la URL en sha256
     @staticmethod
@@ -249,8 +299,8 @@ class Utils:
         Y la valoración final:
         {resultado_final}
 
-        Asigna una puntuación numérica entre 1 y 100, a la calidad informativa de la noticia, donde 1 es la más baja y 100 la más alta.
-        Responde únicamente con el número.
+        Asigna una puntuación numérica entre 0 y 10 (permitiendo hasta dos decimales) a la calidad informativa de la noticia, donde 0 es la más baja y 10 la más alta.
+        Responde únicamente con el número, sin texto adicional.
         """
 
         response = cliente_openai.chat.completions.create(
@@ -263,9 +313,15 @@ class Utils:
         )
 
         respuesta = response.choices[0].message.content
-        match = re.search(r'\b(\d{1,3})\b', respuesta)
+        match = re.search(r'\b(\d+(?:\.\d{1,2})?)\b', respuesta)
         if match:
-            return int(match.group(1))
+            try:
+                valor = float(match.group(1))
+                # Limitar al rango 0–10 y a dos decimales
+                if 0 <= valor <= 10:
+                    return round(valor, 2)
+            except ValueError:
+                pass
         return None
     
     @staticmethod
@@ -757,19 +813,14 @@ class Utils:
     @staticmethod
     def obtener_resumen_valoracion(openai_client, valoracion_general):
         criterios = [
-            "Interpretación del periodista",
-            "Opiniones",
-            "Cita de fuentes",
-            "Confiabilidad de las fuentes",
-            "Trascendencia",
-            "Relevancia de los datos",
-            "Precisión y claridad",
-            "Enfoque",
-            "Contexto",
-            "Ética"
+            "Fiabilidad",
+            "Adecuación",
+            "Claridad",
+            "Profundidad",
+            "Enfoque"
         ]
         prompt = (
-            "Genera un resumen del siguiente campo valoracion_general de menos de veinte palabras en el que se recoja de manera profesional, aséptica y sin emoticonos los puntos más importantes de los diez criterios de evaluación: "
+            "Genera un resumen del siguiente campo valoracion_general de menos de veinte palabras en el que se recoja de manera profesional, aséptica y sin emoticonos los puntos más importantes de los cinco criterios de evaluación: "
             + ", ".join(criterios) + ". "
             "No tiene que ser un resumen de la noticia ni de su contenido, sino de la calidad periodística de la misma. "
             "Campo valoracion_general: " + str(valoracion_general)
@@ -913,21 +964,28 @@ Noticia: {noticia}
 Y la valoración final:
 {respuesta}
 
-Asigna una puntuación numérica entre 1 y 100 a la calidad informativa de la noticia según este criterio, donde 1 es la más baja y 100 la más alta.
-Responde únicamente con el número.
+Asigna una puntuación numérica entre 0 y 10 (permitiendo hasta dos decimales) a la calidad informativa de la noticia según este criterio, donde 0 es la más baja y 10 la más alta.
+Responde únicamente con el número, sin texto adicional.
 """
             inputs_punt = tokenizer(prompt_puntuacion, return_tensors="pt").to(device)
             outputs_punt = model.generate(**inputs_punt, max_new_tokens=10)
             respuesta_punt = tokenizer.decode(outputs_punt[0], skip_special_tokens=True)
-            match = re.search(r"\b(\d{1,3})\b", respuesta_punt)
-            if match and 1 <= int(match.group(1)) <= 100:
-                punt = int(match.group(1))
+            match = re.search(r"\b(\d+(?:\.\d{1,2})?)\b", respuesta_punt)
+            if match:
+                try:
+                    punt_val = float(match.group(1))
+                    if 0 <= punt_val <= 10:
+                        punt = round(punt_val, 2)
+                    else:
+                        punt = None
+                except ValueError:
+                    punt = None
             else:
                 punt = None
             puntuacion_individual_deepseek[nombre_criterio] = punt
             if punt is not None:
                 puntuaciones.append(punt)
-        puntuacion_global_deepseek = int(sum(puntuaciones) / len(puntuaciones)) if puntuaciones else None
+        puntuacion_global_deepseek = round(sum(puntuaciones) / len(puntuaciones), 2) if puntuaciones else None
         return {
             "valoraciones": valoraciones_deepseek,
             "puntuacion_individual": puntuacion_individual_deepseek,

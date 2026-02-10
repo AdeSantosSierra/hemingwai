@@ -114,17 +114,13 @@ const openai = new OpenAI({
 const CHATBOT_PASSWORD = process.env.CHATBOT_PASSWORD;
 
 // Nombres de los parámetros de evaluación para dar contexto al modelo
+// Actualizados a los 5 criterios vigentes en Utils.criterios
 const NOMBRES_PARAMETROS = {
-    1: "Interpretación del periodista",
-    2: "Opiniones",
-    3: "Cita de fuentes",
-    4: "Confiabilidad de las fuentes",
-    5: "Trascendencia",
-    6: "Relevancia de los datos",
-    7: "Precisión y claridad",
-    8: "Enfoque",
-    9: "Contexto",
-    10: "Ética",
+    1: "Fiabilidad",
+    2: "Adecuación",
+    3: "Claridad",
+    4: "Profundidad",
+    5: "Enfoque",
 };
 
 // =======================================================
@@ -210,7 +206,7 @@ app.post('/api/chatbot', async (req, res) => {
             contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }
@@ -443,7 +439,7 @@ app.post('/api/chat/news', async (req, res) => {
             }
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }
