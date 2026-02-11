@@ -9,6 +9,7 @@ from Utils import Utils
 from dotenv import load_dotenv
 load_dotenv()
 from MongoDB import MongoDBService
+from deterministic_engine import compute_evaluation_result
 
 
 def procesar_noticias():
@@ -132,7 +133,7 @@ def procesar_noticias():
             puntuacion_individual[ks] = punt
             if punt is not None:
                 puntuaciones.append(punt)
-        puntuacion_global = int(sum(puntuaciones) / len(puntuaciones)) if puntuaciones else None
+        puntuacion_global = round(sum(puntuaciones) / len(puntuaciones), 1) if puntuaciones else None
         texto_referencia = Utils.generar_texto_referencia(openai, titulo, noticia, valoraciones_texto)
         texto_referencia_diccionario = Utils.crear_diccionario_citas(texto_referencia)
         valoracion_general = Utils.obtener_valoracion_general(openai, titulo, noticia, valoraciones_texto)
@@ -140,6 +141,61 @@ def procesar_noticias():
         valoraciones_html = {}
         for key, md in valoraciones_texto.items():
             valoraciones_html[key] = Utils.convertir_markdown_a_html(md)
+        
+        # --- V2 Deterministic Engine Integration ---
+        # Map legacy keys (1-5) to V2 keys
+        key_mapping = {
+            "1": "fiabilidad",
+            "2": "adecuacion",
+            "3": "claridad",
+            "4": "profundidad",
+            "5": "enfoque"
+        }
+        
+        # Construct model_scores for engine
+        v2_scores = {}
+        missing_scores = []
+        for old_key, new_key in key_mapping.items():
+            val = puntuacion_individual.get(old_key)
+            if val is None:
+                missing_scores.append(new_key)
+            v2_scores[new_key] = {
+                "value": val,
+                "justification": valoraciones_texto.get(old_key, "")
+            }
+            
+        model_scores = {
+            "scores": v2_scores,
+            "alerts": [] # Pending implementation of alert extraction from LLM
+        }
+        
+        meta_info = {
+            "url": doc_to_analyze.get("url", ""),
+            "title": titulo,
+            "date": str(doc_to_analyze.get("fecha_publicacion", "")),
+            "source": doc_to_analyze.get("fuente", ""),
+            "author": autor
+        }
+        
+        if missing_scores:
+            print(f"Warning: Missing scores for {missing_scores}. Skipping deterministic engine calculation.")
+            evaluation_result = {
+                "meta": meta_info,
+                "scores": model_scores["scores"], 
+                "alerts": [],
+                "error": {
+                    "code": "INCOMPLETE_MODEL_SCORES",
+                    "message": f"Missing numeric score for: {', '.join(missing_scores)}",
+                    "missing": missing_scores,
+                    "raw_scores_available": [k for k in v2_scores if k not in missing_scores]
+                }
+            }
+            # Keep legacy puntuacion_global (calculated as mean of available scores)
+        else:
+            evaluation_result = compute_evaluation_result(model_scores, meta_info)
+            # Update global score with the V2 derived global score
+            puntuacion_global = evaluation_result["derived"]["global_score"]
+
         print(f"Procesando titular: {titulo}")
         resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)
         titular_reformulado = resultados_titular.get("titular_reformulado")
@@ -156,7 +212,8 @@ def procesar_noticias():
             "resumen_valoracion_titular": resumen_valoracion_titular,
             "valoraciones_html": valoraciones_html,
             "es_clickbait": es_clickbait,
-            "embedding": noticia_embedding
+            "embedding": noticia_embedding,
+            "evaluation_result": evaluation_result # V2 field
         }
         if puntuacion_global is not None:
             update_fields["puntuacion"] = puntuacion_global

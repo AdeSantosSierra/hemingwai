@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  10 FEB 2026 19:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  11 FEB 2026 21:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/home/roberto/hemingwai/output_temporal/US_beef_Hormone-treated_food_will_not
-_enter_UK_after_US_deal.tex
+**/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to
+_celebrate_power_of_nat.tex
 
-(/home/roberto/hemingwai/output_temporal/US_beef_Hormone-treated_food_will_not_
-enter_UK_after_US_deal.tex
+(/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to_
+celebrate_power_of_nat.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -664,8 +664,8 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count323
 \l__pdf_internal_box=\box68
 )
-No file US_beef_Hormone-treated_food_will_not_enter_UK_after_US_deal.aux.
-\openout1 = `US_beef_Hormone-treated_food_will_not_enter_UK_after_US_deal.aux'.
+No file Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.aux.
+\openout1 = `Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -689,7 +689,7 @@ LaTeX Info: Redefining \. on input line 29.
 LaTeX Info: Redefining \% on input line 29.
 Package hyperref Info: Link coloring OFF on input line 29.
 \@outlinefile=\write4
-\openout4 = `US_beef_Hormone-treated_food_will_not_enter_UK_after_US_deal.out'.
+\openout4 = `Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.out'.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -747,12 +747,18 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for U+msa on input line 77.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 6
+2.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+)
+LaTeX Font Info:    Trying to load font information for U+msa on input line 62.
+
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 77.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 62.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -763,313 +769,223 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-di
 st/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 8
-6.
+LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 9
+8.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
 )
+LaTeX Font Info:    Font shape `OMS/ptm/b/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/b/n' tried instead on input line 98.
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 98.
+
 
 [2]
+Overfull \hbox (10.8265pt too wide) in paragraph at lines 120--121
+[]\OT1/ptm/m/n/10 The BBC News ar-ti-cle pre-sents in-for-ma-tion about a newly
+ na-med ro-se cul-ti-var de-sig-na-ted as []atherine's Rose,[]reated
+ []
+
+
 
 [3]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+40.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
 
 [4]
 
 [5]
-Overfull \hbox (23.0321pt too wide) in paragraph at lines 222--223
-[][]$\OT1/pcr/m/n/10 https : / / www . dtnpf . com / agriculture / web / ag / b
-logs / ag-[]policy-[]blog / blog-[]post / 2025 /
+Overfull \hbox (19.02754pt too wide) in paragraph at lines 190--191
+[]\OT1/ptm/m/n/10 The ar-ti-cle's iden-ti-fi-ca-tion of Hark-ness Ro-ses as the
+ bree-der is con-fir-med, though the cha-rac-te-ri-za-tion as "Hertfordshire-
  []
 
 
-Overfull \hbox (188.5321pt too wide) in paragraph at lines 223--224
-[][]$\OT1/pcr/m/n/10 https : / / www . cattlerange . com / articles / 2025 / 05
- / hormone-[]treated-[]beef-[]will-[]not-[]enter-[]uk-[]after-[]us-[]trade-[]de
-al/$[] 
- []
-
-
-Overfull \hbox (144.5321pt too wide) in paragraph at lines 224--225
-[][]$\OT1/pcr/m/n/10 https : / / www . venable . com / insights / publications 
-/ 2025 / 05 / america-[]firsts-[]first-[]trade-[]deal-[]white-[]house$[] 
+Overfull \hbox (29.0321pt too wide) in paragraph at lines 199--200
+[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / plants / 537873 / rosa-
+[]catherine % E2 % 80 % 99s-[]rose-[](harzenith )
  []
 
 
 
 [6]
-Overfull \hbox (80.0321pt too wide) in paragraph at lines 226--227
-[][]$\OT1/pcr/m/n/10 https : / / www . soilassociation . org / causes-[]campaig
-ns / top-[]10-[]risks-[]from-[]a-[]uk-[]us-[]trade-[]deal /
+Overfull \hbox (107.0321pt too wide) in paragraph at lines 200--201
+[][]$\OT1/pcr/m/n/10 https : / / www . housebeautiful . com / lifestyle / garde
+ning / a64733653 / kate-[]middleton-[]catherine-[]rose/$[] 
  []
 
 
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 228--229
-[][]$\OT1/pcr/m/n/10 https : / / www . supplychainbrain . com / articles / 4175
-6-[]trade-[]deal-[]uk-[]will-[]not-[]allow-[]import-[]of-[]american-[]hormone-[
-]treated-[]beef$[] 
+Overfull \hbox (222.5321pt too wide) in paragraph at lines 205--206
+[][]$\OT1/pcr/m/n/10 https : / / www . harpersbazaar . com / celebrity / latest
+ / a63420125 / kate-[]middleton-[]london-[]hospital-[]visit-[]cancer-[]patients
+/$[] 
  []
 
 
-Overfull \hbox (54.5321pt too wide) in paragraph at lines 230--231
-[][]$\OT1/pcr/m/n/10 https : / / www . food . gov . uk / business-[]guidance / 
-importing-[]products-[]of-[]animal-[]origin-[]poao$[] 
+Overfull \hbox (147.5321pt too wide) in paragraph at lines 207--208
+[][]$\OT1/pcr/m/n/10 https : / / www . curetoday . com / view / with-[]cancer-[
+]in-[]remission-[]what-[]is-[]the-[]new-[]normal-[]for-[]princess-[]kate-[]$[] 
+
  []
 
 
-Overfull \hbox (188.5321pt too wide) in paragraph at lines 231--232
-[][]$\OT1/pcr/m/n/10 https : / / www . cattlerange . com / articles / 2025 / 05
- / hormone-[]treated-[]beef-[]will-[]not-[]enter-[]uk-[]after-[]us-[]trade-[]de
-al/$[] 
+Overfull \hbox (289.0321pt too wide) in paragraph at lines 215--216
+[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
+ition / a60013219 / kate-[]middleton-[]abdominal-[]surgery-[]recovery-[]health-
+[]news-[]2024/$[] 
  []
 
 
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 234--235
-[][]$\OT1/pcr/m/n/10 https : / / www . supplychainbrain . com / articles / 4175
-6-[]trade-[]deal-[]uk-[]will-[]not-[]allow-[]import-[]of-[]american-[]hormone-[
-]treated-[]beef$[] 
+Overfull \hbox (116.5321pt too wide) in paragraph at lines 216--217
+[][]$\OT1/pcr/m/n/10 https : / / www . moffitt . org / taking-[]care-[]of-[]you
+r-[]health / taking-[]care-[]of-[]your-[]health-[]story-[]archive /
  []
 
 
-Overfull \hbox (110.0321pt too wide) in paragraph at lines 236--237
-[][]$\OT1/pcr/m/n/10 https : / / www . gov . uk / guidance / importing-[]live-[
-]animals-[]or-[]animal-[]products-[]from-[]non-[]eu-[]countries$[] 
+Overfull \hbox (41.5321pt too wide) in paragraph at lines 217--218
+[][]$\OT1/pcr/m/n/10 https : / / www . veranda . com / outdoor-[]garden / a6481
+4965 / harkness-[]roses-[]catherines-[]rose/$[] 
  []
 
 
-Overfull \hbox (104.0321pt too wide) in paragraph at lines 237--238
-[][]$\OT1/pcr/m/n/10 https : / / www . foodsafetynews . com / 2025 / 05 / uk-[]
-says-[]food-[]standards-[]protected-[]in-[]u-[]s-[]trade-[]deal/$[] 
+Overfull \hbox (363.0321pt too wide) in paragraph at lines 218--219
+[][]$\OT1/pcr/m/n/10 https : / / www . latimes . com / entertainment-[]arts / s
+tory / 2024-[]01-[]17 / kate-[]middleton-[]hospitalized-[]abdominal-[]surgery-[
+]catherine-[]princess-[]of-[]wales$[] 
  []
 
 
-Overfull \hbox (27.5321pt too wide) in paragraph at lines 238--239
-[][]$\OT1/pcr/m/n/10 https : / / uknowledge . uky . edu / cgi / viewcontent . c
-gi ? article = 1013 & context = animalsci _
+Overfull \hbox (144.5321pt too wide) in paragraph at lines 221--222
+[][]$\OT1/pcr/m/n/10 https : / / www . opb . org / article / 2024 / 09 / 09 / p
+rincess-[]kate-[]completes-[]chemotherapy-[]treatment-[]for-[]cancer/$[] 
  []
 
 
-Overfull \hbox (103.5321pt too wide) in paragraph at lines 239--240
-[][]$\OT1/pcr/m/n/10 https : / / www . food . gov . uk / business-[]guidance / 
-chapter-[]3-[]imported-[]and-[]exported-[]meat-[]and-[]animals$[] 
+Overfull \hbox (17.0321pt too wide) in paragraph at lines 222--223
+[][]$\OT1/pcr/m/n/10 https : / / abcnews . go . com / GMA / Culture / kate-[]mi
+ddleton-[]cancer-[]remission / story ? id =
  []
 
 
-Overfull \hbox (159.0321pt too wide) in paragraph at lines 240--241
-[][]$\OT1/pcr/m/n/10 https : / / www . farmersjournal . ie / beef / news / uk-[
-]gains-[]reciprocal-[]access-[]for-[]13-[]000t-[]of-[]beef-[]to-[]us-[]899333$[
-] 
+Overfull \hbox (426.5321pt too wide) in paragraph at lines 230--231
+[][]$\OT1/pcr/m/n/10 https : / / www . royalmarsden . org / news / the-[]rhs-[]
+announces-[]catherines-[]rose-[]bred-[]by-[]harkness-[]roses-[]named-[]for-[]he
+r-[]royal-[]highness-[]the-[]princess-[]of-[]wales-[]2$[] 
  []
 
 
-Overfull \hbox (243.0321pt too wide) in paragraph at lines 241--242
-[][]$\OT1/pcr/m/n/10 https : / / www . sciencemediacentre . org / expert-[]reac
-tion-[]to-[]the-[]debate-[]on-[]hormone-[]treated-[]beef-[]and-[]chlorinated-[]
-chicken/$[] 
+Overfull \hbox (41.5321pt too wide) in paragraph at lines 231--232
+[][]$\OT1/pcr/m/n/10 https : / / www . veranda . com / outdoor-[]garden / a6481
+4965 / harkness-[]roses-[]catherines-[]rose/$[] 
  []
 
 
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 246--247
-[][]$\OT1/pcr/m/n/10 https : / / www . supplychainbrain . com / articles / 4175
-6-[]trade-[]deal-[]uk-[]will-[]not-[]allow-[]import-[]of-[]american-[]hormone-[
-]treated-[]beef$[] 
+Overfull \hbox (240.0321pt too wide) in paragraph at lines 233--234
+[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
+ition / a60282131 / kate-[]middleton-[]cancer-[]diagnosis-[]treatment-[]timelin
+e/$[] 
  []
 
 
-Overfull \hbox (168.5321pt too wide) in paragraph at lines 247--248
-[][]$\OT1/pcr/m/n/10 https : / / www . dtnpf . com / agriculture / web / ag / n
-ews / article / 2025 / 05 / 09 / behind-[]us-[]uk-[]trade-[]deal-[]hormone-[]be
-ef$[] 
+Overfull \hbox (121.5321pt too wide) in paragraph at lines 234--235
+[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / about-[]us / pdfs / abo
+ut-[]the-[]rhs / mission-[]and-[]strategy / rhs-[]strategy-[]to-[]2030 .
  []
 
 
-Overfull \hbox (36.5321pt too wide) in paragraph at lines 248--249
-[][]$\OT1/pcr/m/n/10 https : / / www . usa-[]beef . org / for-[]distributors / 
-non-[]hormone-[]treated-[]cattle-[]programme/$[] 
- []
-
-
-Overfull \hbox (49.5321pt too wide) in paragraph at lines 249--250
-[][]$\OT1/pcr/m/n/10 https : / / ielp . worldtradelaw . net / 2025 / 05 / the-[
-]general-[]terms-[]of-[]the-[]us-[]uk-[]trade-[]deal/$[] 
- []
-
-
-Overfull \hbox (315.0321pt too wide) in paragraph at lines 250--251
-[][]$\OT1/pcr/m/n/10 https : / / www . farmersguide . co . uk / business / poli
-tics / government-[]pledges-[]food-[]standards-[]will-[]not-[]be-[]compromised-
-[]in-[]us-[]trade-[]talks/$[] 
- []
-
-
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 252--253
-[][]$\OT1/pcr/m/n/10 https : / / www . supplychainbrain . com / articles / 4175
-6-[]trade-[]deal-[]uk-[]will-[]not-[]allow-[]import-[]of-[]american-[]hormone-[
-]treated-[]beef$[] 
- []
-
-
-Overfull \hbox (51.5321pt too wide) in paragraph at lines 253--254
-[][]$\OT1/pcr/m/n/10 https : / / apps . fas . usda . gov / newgainapi / api / R
-eport / DownloadReportByFileName ? fileName =
- []
-
-
-Overfull \hbox (188.5321pt too wide) in paragraph at lines 254--255
-[][]$\OT1/pcr/m/n/10 https : / / www . cattlerange . com / articles / 2025 / 05
- / hormone-[]treated-[]beef-[]will-[]not-[]enter-[]uk-[]after-[]us-[]trade-[]de
-al/$[] 
- []
-
-
-Overfull \hbox (212.5321pt too wide) in paragraph at lines 255--256
-[][]$\OT1/pcr/m/n/10 https : / / www . gov . uk / government / publications / u
-k-[]australia-[]fta-[]report-[]under-[]section-[]42-[]of-[]agriculture-[]act-[]
-2020 /
- []
-
-
-Overfull \hbox (54.0321pt too wide) in paragraph at lines 256--257
-[][]$\OT1/pcr/m/n/10 https : / / www . gov . uk / government / statistics / uni
-ted-[]kingdom-[]food-[]security-[]digest-[]2025 /
- []
-
-
-Overfull \hbox (168.5321pt too wide) in paragraph at lines 258--259
-[][]$\OT1/pcr/m/n/10 https : / / www . dtnpf . com / agriculture / web / ag / n
-ews / article / 2025 / 05 / 09 / behind-[]us-[]uk-[]trade-[]deal-[]hormone-[]be
-ef$[] 
- []
-
-
-Overfull \hbox (243.0321pt too wide) in paragraph at lines 259--260
-[][]$\OT1/pcr/m/n/10 https : / / www . sciencemediacentre . org / expert-[]reac
-tion-[]to-[]the-[]debate-[]on-[]hormone-[]treated-[]beef-[]and-[]chlorinated-[]
-chicken/$[] 
+Overfull \hbox (225.0321pt too wide) in paragraph at lines 235--236
+[][]$\OT1/pcr/m/n/10 https : / / news . cancerresearchuk . org / 2025 / 06 / 27
+ / health-[]is-[]wealth-[]tackling-[]the-[]cost-[]of-[]cancer-[]to-[]grow-[]the
+-[]economy/$[] 
  []
 
 
 
 [7]
-Overfull \hbox (163.5321pt too wide) in paragraph at lines 260--261
-[][]$\OT1/pcr/m/n/10 https : / / www . gov . uk / government / publications / n
-otice-[]to-[]traders-[]0126-[]usa-[]beef-[]preferential-[]tariff-[]quota$[] 
+Overfull \hbox (17.5321pt too wide) in paragraph at lines 236--237
+[][]$\OT1/pcr/m/n/10 https : / / abcnews . com / GMA / Culture / kate-[]middlet
+on-[]surgery-[]photo-[]timeline / story ?
  []
 
 
-Overfull \hbox (188.5321pt too wide) in paragraph at lines 261--262
-[][]$\OT1/pcr/m/n/10 https : / / www . cattlerange . com / articles / 2025 / 05
- / hormone-[]treated-[]beef-[]will-[]not-[]enter-[]uk-[]after-[]us-[]trade-[]de
-al/$[] 
+Overfull \hbox (85.0321pt too wide) in paragraph at lines 240--241
+[][]$\OT1/pcr/m/n/10 https : / / abc7chicago . com / post / princess-[]of-[]wal
+es-[]kate-[]middleton-[]cancer-[]kensington-[]palace /
  []
 
 
-Overfull \hbox (104.0321pt too wide) in paragraph at lines 262--263
-[][]$\OT1/pcr/m/n/10 https : / / www . foodsafetynews . com / 2025 / 05 / uk-[]
-says-[]food-[]standards-[]protected-[]in-[]u-[]s-[]trade-[]deal/$[] 
+Overfull \hbox (11.0321pt too wide) in paragraph at lines 241--242
+[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / press / releases / the-
+[]rhs-[]announces-[] % E2 % 80 % 98catherine %
  []
 
 
-Overfull \hbox (98.5321pt too wide) in paragraph at lines 263--264
-[][]$\OT1/pcr/m/n/10 https : / / www . thebeefsite . com / news / eu-[]moves-[]
-to-[]tighten-[]import-[]checks-[]on-[]food-[]and-[]farm-[]goods$[] 
+Overfull \hbox (5.5321pt too wide) in paragraph at lines 242--243
+[][]$\OT1/pcr/m/n/10 https : / / www . jacksonandperkins . com / blog / rose-[]
+blogs / what-[]is-[]floribunda-[]rose /
  []
 
 
-Overfull \hbox (47.5321pt too wide) in paragraph at lines 265--266
-[][]$\OT1/pcr/m/n/10 https : / / food . ec . europa . eu / document / download 
-/ f9e332dd-[]6cc7-[]4346-[]ba5a-[]3785969e256e _
+Overfull \hbox (217.0321pt too wide) in paragraph at lines 243--244
+[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
+ition / a60280647 / why-[]didnt-[]palace-[]say-[]kate-[]middleton-[]had-[]cance
+r/$[] 
  []
 
 
-Overfull \hbox (261.5321pt too wide) in paragraph at lines 266--267
-[][]$\OT1/pcr/m/n/10 https : / / www . supplychainbrain . com / articles / 4175
-6-[]trade-[]deal-[]uk-[]will-[]not-[]allow-[]import-[]of-[]american-[]hormone-[
-]treated-[]beef$[] 
+Overfull \hbox (11.0321pt too wide) in paragraph at lines 245--246
+[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / press / releases / the-
+[]rhs-[]announces-[] % E2 % 80 % 98catherine %
  []
 
 
-Overfull \hbox (36.5321pt too wide) in paragraph at lines 267--268
-[][]$\OT1/pcr/m/n/10 https : / / www . usa-[]beef . org / for-[]distributors / 
-non-[]hormone-[]treated-[]cattle-[]programme/$[] 
+Overfull \hbox (144.5321pt too wide) in paragraph at lines 246--247
+[][]$\OT1/pcr/m/n/10 https : / / www . marieclaire . com / celebrity / royals /
+ princess-[]kate-[]wellbeing-[]walk-[]outdoor-[]nature-[]hobbies/$[] 
  []
 
 
-Overfull \hbox (315.0321pt too wide) in paragraph at lines 269--270
-[][]$\OT1/pcr/m/n/10 https : / / www . farmersguide . co . uk / business / poli
-tics / government-[]pledges-[]food-[]standards-[]will-[]not-[]be-[]compromised-
-[]in-[]us-[]trade-[]talks/$[] 
+Overfull \hbox (59.0321pt too wide) in paragraph at lines 247--248
+[][]$\OT1/pcr/m/n/10 https : / / patientinfolibrary . royalmarsden . nhs . uk /
+ royal-[]mile-[]prehabilitation-[]programme$[] 
  []
 
 
-Overfull \hbox (49.5321pt too wide) in paragraph at lines 270--271
-[][]$\OT1/pcr/m/n/10 https : / / ielp . worldtradelaw . net / 2025 / 05 / the-[
-]general-[]terms-[]of-[]the-[]us-[]uk-[]trade-[]deal/$[] 
+Overfull \hbox (181.0321pt too wide) in paragraph at lines 248--249
+[][]$\OT1/pcr/m/n/10 https : / / www . telegraph . co . uk / royal-[]family / 2
+025 / 05 / 09 / catherine-[]rose-[]princess-[]wales-[]nature-[]healing-[]power/
+$[] 
  []
 
 
-Overfull \hbox (110.0321pt too wide) in paragraph at lines 271--272
-[][]$\OT1/pcr/m/n/10 https : / / www . whitehouse . gov / fact-[]sheets / 2025 
-/ 05 / fact-[]sheet-[]u-[]s-[]uk-[]reach-[]historic-[]trade-[]deal/$[] 
+Overfull \hbox (402.0321pt too wide) in paragraph at lines 250--251
+[][]$\OT1/pcr/m/n/10 https : / / www . royalmarsden . org / news / why-[]is-[]p
+rehabilitation-[]so-[]important-[]during-[]cancer-[]treatment-[]a-[]q-[]a-[]wit
+h-[]two-[]experts-[]from-[]the-[]royal-[]marsden$[] 
  []
 
 
-Overfull \hbox (30.0321pt too wide) in paragraph at lines 272--273
-[][]$\OT1/pcr/m/n/10 https : / / www . gov . uk / government / publications / u
-s-[]uk-[]economic-[]prosperity-[]deal-[]epd /
+Overfull \hbox (158.0321pt too wide) in paragraph at lines 251--252
+[][]$\OT1/pcr/m/n/10 https : / / www . esneft . nhs . uk / welcoming-[]the-[]pr
+incess-[]of-[]wales-[]to-[]colchester-[]hospitals-[]wellbeing-[]garden/$[] 
  []
 
 
-Overfull \hbox (465.0321pt too wide) in paragraph at lines 272--273
-\OT1/pcr/m/n/10 general-[]terms-[]for-[]the-[]united-[]states-[]of-[]america-[]
-and-[]the-[]united-[]kingdom-[]of-[]great-[]britain-[]and-[]northern-[]ireland-
-[]economic-[]prosperity-[]deal-[]web-[]accessible-[]v$[] 
- []
-
-
-Overfull \hbox (97.5321pt too wide) in paragraph at lines 273--274
-[][]$\OT1/pcr/m/n/10 https : / / www . expanamarkets . com / insights / article
- / global-[]effects-[]of-[]new-[]us-[]and-[]uk-[]beef-[]deal/$[] 
- []
-
-
-Overfull \hbox (248.5321pt too wide) in paragraph at lines 274--275
-[][]$\OT1/pcr/m/n/10 https : / / ustr . gov / about / policy-[]offices / press-
-[]office / fact-[]sheets / 2025 / may / fact-[]sheet-[]us-[]uk-[]reach-[]histor
-ic-[]trade-[]deal$[] 
- []
-
-
-Overfull \hbox (334.5321pt too wide) in paragraph at lines 275--276
-[][]$\OT1/pcr/m/n/10 https : / / www . whitehouse . gov / fact-[]sheets / 2025 
-/ 06 / fact-[]sheet-[]implementing-[]the-[]general-[]terms-[]of-[]the-[]u-[]s-[
-]uk-[]economic-[]prosperity-[]deal/$[] 
- []
-
-
-Overfull \hbox (243.0321pt too wide) in paragraph at lines 276--277
-[][]$\OT1/pcr/m/n/10 https : / / www . sciencemediacentre . org / expert-[]reac
-tion-[]to-[]the-[]debate-[]on-[]hormone-[]treated-[]beef-[]and-[]chlorinated-[]
-chicken/$[] 
- []
-
-
-Overfull \hbox (92.0321pt too wide) in paragraph at lines 277--278
-[][]$\OT1/pcr/m/n/10 https : / / www . thebeefsite . com / news / britain-[]sta
-rts-[]checks-[]on-[]fresh-[]food-[]imports-[]from-[]the-[]eu$[] 
- []
-
-
-Overfull \hbox (103.5321pt too wide) in paragraph at lines 280--281
-[][]$\OT1/pcr/m/n/10 https : / / www . food . gov . uk / business-[]guidance / 
-chapter-[]3-[]imported-[]and-[]exported-[]meat-[]and-[]animals$[] 
+Overfull \hbox (455.5321pt too wide) in paragraph at lines 254--255
+[][]$\OT1/pcr/m/n/10 https : / / news3lv . com / news / entertainment / kate-[]
+middleton-[]makes-[]rare-[]and-[]candid-[]comments-[]about-[]her-[]cancer-[]bat
+tle-[]princess-[]of-[]wales-[]prince-[]william-[]royals$[] 
  []
 
 
 
 [8]
-(/home/roberto/hemingwai/output_temporal/US_beef_Hormone-treated_food_will_not_
-enter_UK_after_US_deal.aux
+(/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to_
+celebrate_power_of_nat.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -1079,33 +995,35 @@ L3 programming layer <2025-01-18>
  ***********
 
 
-Package rerunfilecheck Warning: File `US_beef_Hormone-treated_food_will_not_ent
-er_UK_after_US_deal.out' has changed.
+Package rerunfilecheck Warning: File `Rose_named_after_Princess_of_Wales_to_cel
+ebrate_power_of_nat.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
-Package rerunfilecheck Info: Checksums for `US_beef_Hormone-treated_food_will_n
-ot_enter_UK_after_US_deal.out':
+Package rerunfilecheck Info: Checksums for `Rose_named_after_Princess_of_Wales_
+to_celebrate_power_of_nat.out':
 (rerunfilecheck)             Before: <no file>
 (rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 22787 strings out of 474511
- 416615 string characters out of 5746820
- 821183 words of memory out of 5000000
- 45390 multiletter control sequences out of 15000+600000
- 574408 words of font info for 64 fonts, out of 8000000 for 9000
+ 22833 strings out of 474511
+ 417382 string characters out of 5746820
+ 818183 words of memory out of 5000000
+ 45430 multiletter control sequences out of 15000+600000
+ 573392 words of font info for 64 fonts, out of 8000000 for 9000
  376 hyphenation exceptions out of 8191
- 102i,6n,107p,1156b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/US_beef_Hormone-treat
-ed_food_will_not_enter_UK_after_US_deal.pdf (8 pages, 94344 bytes).
+ 102i,6n,107p,1317b,600s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></u
+sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
+re/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/te
+xmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/
+type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
+/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Rose_named_after_Prin
+cess_of_Wales_to_celebrate_power_of_nat.pdf (8 pages, 110025 bytes).
 PDF statistics:
- 223 PDF objects out of 1000 (max. 8388607)
- 202 compressed objects within 3 object streams
- 78 named destinations out of 1000 (max. 500000)
+ 232 PDF objects out of 1000 (max. 8388607)
+ 207 compressed objects within 3 object streams
+ 77 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

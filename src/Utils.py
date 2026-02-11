@@ -572,6 +572,8 @@ class Utils:
             return out
         if isinstance(obj, list):
             return [Utils.sanitize(v) for v in obj]
+        if obj is None:
+            return None
         if not isinstance(obj, (str, int, float, bool, type(None))):
             return str(obj)
         return obj
