@@ -9,96 +9,96 @@ import numpy as np  # Asegúrate de tener numpy instalado: pip install numpy
 class Utils:
 
     criterios = {
-    1: {
-        "nombre": "Fiabilidad",
-        "instruccion": (
-            "Evalúa si la noticia ofrece garantías internas suficientes para considerar sus afirmaciones "
-            "como fiables (sin certificar 'verdad externa' si no hay grounding). Puntúa positivamente si:\n"
-            "- Las afirmaciones relevantes están atribuidas (quién lo dice / de dónde sale).\n"
-            "- Hay citas o referencias claras a fuentes (instituciones, documentos, datos, testigos, etc.).\n"
-            "- Hay diversidad mínima de fuentes cuando el tema lo requiere (ideal: 2–3 o más, si el caso lo amerita).\n"
-            "- Los datos (fechas, cifras, nombres, lugares) están presentados con precisión y sin saltos inferenciales.\n\n"
-            "Puntúa negativamente si:\n"
-            "- Se hacen afirmaciones importantes sin atribución o sin fuente identificable.\n"
-            "- Hay lenguaje de certeza donde el texto no aporta base ('está demostrado', 'sin duda', etc.).\n"
-            "- Se usan fuentes débiles/inadecuadas para la afirmación (p. ej., 'se dice', 'en redes', 'expertos' sin identificar).\n"
-            "- Hay contradicciones internas (datos incompatibles dentro del propio texto).\n\n"
-            "En la justificación, cita fragmentos concretos del texto y señala dónde faltan fuentes o atribuciones."
-        )
-    },
-    2: {
-        "nombre": "Adecuación",
-        "instruccion": (
-            "Evalúa el ajuste del relato a los hechos narrados y la separación correcta entre "
-            "hecho, opinión e inferencia NO atribuida (sustituye el enfoque de 'objetividad' por 'ajuste relato/hecho'). "
-            "Aquí se integra lo que antes era 'interpretación del periodista' + 'opiniones'.\n\n"
-            "Puntúa negativamente si detectas:\n"
-            "- Opiniones explícitas del periodista presentadas como hechos.\n"
-            "- Interpretaciones o juicios no atribuidos (adjetivación connotativa, verbos cargados, hipérboles) "
-            "que cambian el sentido del hecho.\n"
-            "- Afirmaciones tendenciosas con tópicos/categorizaciones sin base en datos o sin atribución.\n"
-            "- Eufemismos o encuadres que oculten información relevante (cuando afecten al ajuste del relato).\n\n"
-            "Puntúa positivamente si:\n"
-            "- Se distingue claramente entre lo que ocurrió, lo que se interpreta y lo que se opina, "
-            "y las inferencias están señalizadas o atribuidas.\n"
-            "- El tono es prudente y no 'contamina' los hechos con valoración no atribuida.\n\n"
-            "En la justificación, enumera ejemplos literales (qué frases) y explica por qué son mezcla hecho/opinión "
-            "o por qué están bien separadas."
-        )
-    },
-    3: {
-        "nombre": "Claridad",
-        "instruccion": (
-            "Evalúa si el texto se entiende y comunica con precisión narrativa: orden lógico, definiciones, "
-            "ausencia de ambigüedad y redacción comprensible para el público objetivo.\n\n"
-            "Puntúa positivamente si:\n"
-            "- La estructura es clara (qué pasó, a quién, cuándo, dónde, por qué/para qué si aplica).\n"
-            "- Los conceptos y términos están usados con precisión y sin ambigüedad.\n"
-            "- El estilo facilita la comprensión (no excesivamente técnico sin explicación; frases claras).\n\n"
-            "Puntúa negativamente si:\n"
-            "- Hay vaguedad ('algunos', 'muchos', 'expertos', 'fuentes') sin concreción.\n"
-            "- Hay saltos lógicos, falta de hilo conductor o exceso de tecnicismos sin aclaración.\n"
-            "- Se generan interpretaciones por mala redacción, pronombres ambiguos o términos imprecisos.\n\n"
-            "En la justificación, indica qué partes no se entienden bien y cómo deberían reformularse."
-        )
-    },
-    4: {
-        "nombre": "Profundidad",
-        "instruccion": (
-            "Evalúa si la noticia aporta comprensión más allá del dato superficial: causas, implicaciones, "
-            "proyección y alcance del asunto. Aquí se integra parte de lo que antes era 'contexto' y "
-            "la dimensión de consecuencias.\n\n"
-            "Puntúa positivamente si:\n"
-            "- Explica antecedentes necesarios (qué venía pasando) o consecuencias plausibles (qué puede cambiar).\n"
-            "- Ofrece implicaciones para el público afectado (sin moralizar, pero con sentido informativo).\n"
-            "- Incluye datos o comparaciones que ayudan a dimensionar el hecho (magnitud, frecuencia, impacto).\n\n"
-            "Puntúa negativamente si:\n"
-            "- Se limita a enunciar sin explicar causas/implicaciones cuando el tema lo exige.\n"
-            "- Falta contexto mínimo que el lector necesita para entender por qué importa.\n"
-            "- Presenta detalles accesorios pero omite lo esencial para comprender el fenómeno.\n\n"
-            "En la justificación, señala qué información contextual o explicativa faltaría para aumentar la comprensión."
-        )
-    },
-    5: {
-        "nombre": "Enfoque",
-        "instruccion": (
-            "Evalúa si la noticia destaca lo más relevante para comprender el acontecimiento y su sentido social "
-            "(lo importante vs lo accesorio). La 'trascendencia' se considera aquí de forma operativa junto con Profundidad "
-            "(consecuencias humanas y bien común), sin convertirlo en moralización.\n\n"
-            "Puntúa positivamente si:\n"
-            "- Selecciona los aspectos clave del hecho y los jerarquiza bien.\n"
-            "- Evita enfoques parciales que distorsionen lo central del acontecimiento.\n"
-            "- El encuadre ayuda a entender por qué el tema importa para el público objetivo.\n\n"
-            "Puntúa negativamente si:\n"
-            "- Enfatiza lo llamativo/sensacionalista por encima de lo relevante.\n"
-            "- El enfoque omite el núcleo del hecho o lo relega a favor de elementos secundarios.\n"
-            "- Hay sesgo de enfoque (elige ángulos que inducen una lectura tendenciosa sin base suficiente).\n\n"
-            "Nota ética (V2): la ética no es categoría separada; si hay sensacionalismo, difamación, "
-            "ataques a dignidad/privacidad o daños injustificados, reflejarlo aquí como problema de enfoque "
-            "y señalarlo explícitamente en la justificación (y/o como alerta si tu sistema lo soporta)."
-        )
+        1: {
+            "nombre": "Fiabilidad",
+            "instruccion": (
+                "Evalúa si la noticia ofrece garantías internas suficientes para considerar sus afirmaciones "
+                "como fiables (sin certificar 'verdad externa' si no hay grounding). Puntúa positivamente si:\n"
+                "- Las afirmaciones relevantes están atribuidas (quién lo dice / de dónde sale).\n"
+                "- Hay citas o referencias claras a fuentes (instituciones, documentos, datos, testigos, etc.).\n"
+                "- Hay diversidad mínima de fuentes cuando el tema lo requiere (ideal: 2–3 o más, si el caso lo amerita).\n"
+                "- Los datos (fechas, cifras, nombres, lugares) están presentados con precisión y sin saltos inferenciales.\n\n"
+                "Puntúa negativamente si:\n"
+                "- Se hacen afirmaciones importantes sin atribución o sin fuente identificable.\n"
+                "- Hay lenguaje de certeza donde el texto no aporta base ('está demostrado', 'sin duda', etc.).\n"
+                "- Se usan fuentes débiles/inadecuadas para la afirmación (p. ej., 'se dice', 'en redes', 'expertos' sin identificar).\n"
+                "- Hay contradicciones internas (datos incompatibles dentro del propio texto).\n\n"
+                "En la justificación, cita fragmentos concretos del texto y señala dónde faltan fuentes o atribuciones."
+            )
+        },
+        2: {
+            "nombre": "Adecuación",
+            "instruccion": (
+                "Evalúa el ajuste del relato a los hechos narrados y la separación correcta entre "
+                "hecho, opinión e inferencia NO atribuida (sustituye el enfoque de 'objetividad' por 'ajuste relato/hecho'). "
+                "Aquí se integra lo que antes era 'interpretación del periodista' + 'opiniones'.\n\n"
+                "Puntúa negativamente si detectas:\n"
+                "- Opiniones explícitas del periodista presentadas como hechos.\n"
+                "- Interpretaciones o juicios no atribuidos (adjetivación connotativa, verbos cargados, hipérboles) "
+                "que cambian el sentido del hecho.\n"
+                "- Afirmaciones tendenciosas con tópicos/categorizaciones sin base en datos o sin atribución.\n"
+                "- Eufemismos o encuadres que oculten información relevante (cuando afecten al ajuste del relato).\n\n"
+                "Puntúa positivamente si:\n"
+                "- Se distingue claramente entre lo que ocurrió, lo que se interpreta y lo que se opina, "
+                "y las inferencias están señalizadas o atribuidas.\n"
+                "- El tono es prudente y no 'contamina' los hechos con valoración no atribuida.\n\n"
+                "En la justificación, enumera ejemplos literales (qué frases) y explica por qué son mezcla hecho/opinión "
+                "o por qué están bien separadas."
+            )
+        },
+        3: {
+            "nombre": "Claridad",
+            "instruccion": (
+                "Evalúa si el texto se entiende y comunica con precisión narrativa: orden lógico, definiciones, "
+                "ausencia de ambigüedad y redacción comprensible para el público objetivo.\n\n"
+                "Puntúa positivamente si:\n"
+                "- La estructura es clara (qué pasó, a quién, cuándo, dónde, por qué/para qué si aplica).\n"
+                "- Los conceptos y términos están usados con precisión y sin ambigüedad.\n"
+                "- El estilo facilita la comprensión (no excesivamente técnico sin explicación; frases claras).\n\n"
+                "Puntúa negativamente si:\n"
+                "- Hay vaguedad ('algunos', 'muchos', 'expertos', 'fuentes') sin concreción.\n"
+                "- Hay saltos lógicos, falta de hilo conductor o exceso de tecnicismos sin aclaración.\n"
+                "- Se generan interpretaciones por mala redacción, pronombres ambiguos o términos imprecisos.\n\n"
+                "En la justificación, indica qué partes no se entienden bien y cómo deberían reformularse."
+            )
+        },
+        4: {
+            "nombre": "Profundidad",
+            "instruccion": (
+                "Evalúa si la noticia aporta comprensión más allá del dato superficial: causas, implicaciones, "
+                "proyección y alcance del asunto. Aquí se integra parte de lo que antes era 'contexto' y "
+                "la dimensión de consecuencias.\n\n"
+                "Puntúa positivamente si:\n"
+                "- Explica antecedentes necesarios (qué venía pasando) o consecuencias plausibles (qué puede cambiar).\n"
+                "- Ofrece implicaciones para el público afectado (sin moralizar, pero con sentido informativo).\n"
+                "- Incluye datos o comparaciones que ayudan a dimensionar el hecho (magnitud, frecuencia, impacto).\n\n"
+                "Puntúa negativamente si:\n"
+                "- Se limita a enunciar sin explicar causas/implicaciones cuando el tema lo exige.\n"
+                "- Falta contexto mínimo que el lector necesita para entender por qué importa.\n"
+                "- Presenta detalles accesorios pero omite lo esencial para comprender el fenómeno.\n\n"
+                "En la justificación, señala qué información contextual o explicativa faltaría para aumentar la comprensión."
+            )
+        },
+        5: {
+            "nombre": "Enfoque",
+            "instruccion": (
+                "Evalúa si la noticia destaca lo más relevante para comprender el acontecimiento y su sentido social "
+                "(lo importante vs lo accesorio). La 'trascendencia' se considera aquí de forma operativa junto con Profundidad "
+                "(consecuencias humanas y bien común), sin convertirlo en moralización.\n\n"
+                "Puntúa positivamente si:\n"
+                "- Selecciona los aspectos clave del hecho y los jerarquiza bien.\n"
+                "- Evita enfoques parciales que distorsionen lo central del acontecimiento.\n"
+                "- El encuadre ayuda a entender por qué el tema importa para el público objetivo.\n\n"
+                "Puntúa negativamente si:\n"
+                "- Enfatiza lo llamativo/sensacionalista por encima de lo relevante.\n"
+                "- El enfoque omite el núcleo del hecho o lo relega a favor de elementos secundarios.\n"
+                "- Hay sesgo de enfoque (elige ángulos que inducen una lectura tendenciosa sin base suficiente).\n\n"
+                "Nota ética (V2): la ética no es categoría separada; si hay sensacionalismo, difamación, "
+                "ataques a dignidad/privacidad o daños injustificados, reflejarlo aquí como problema de enfoque "
+                "y señalarlo explícitamente en la justificación (y/o como alerta si tu sistema lo soporta)."
+            )
+        }
     }
-}
 
 
     # Función para codificar la URL en sha256
@@ -417,6 +417,76 @@ class Utils:
 
         return diccionario_citas
 
+    # V2: map legacy criterion keys to engine categories (for alert extraction)
+    _LEGACY_KEY_TO_CATEGORY = {
+        "1": "fiabilidad",
+        "2": "adecuacion",
+        "3": "claridad",
+        "4": "profundidad",
+        "5": "enfoque"
+    }
+
+    @staticmethod
+    def extract_alerts_from_valoraciones(valoraciones_texto, puntuacion_individual):
+        """
+        Heuristic extraction of model alerts from LLM justification text.
+        Returns a list of alert dicts compatible with deterministic_engine (code, category,
+        severity, message, origin, evidence_refs). Used to populate model_scores["alerts"].
+        """
+        alerts = []
+        if not isinstance(valoraciones_texto, dict) or not isinstance(puntuacion_individual, dict):
+            return alerts
+
+        # Patterns that suggest verification/source issues (high severity for F/A)
+        unverified_patterns = [
+            r"no\s+hay\s+fuentes", r"sin\s+fuentes", r"no\s+se\s+puede\s+verificar",
+            r"sin\s+evidencia", r"falta\s+de\s+atribuci[oó]n", r"sin\s+atribuci[oó]n",
+            r"afirmaciones\s+sin\s+(?:fuente|base)", r"no\s+aporta\s+base"
+        ]
+        contradiction_patterns = [
+            r"contradicci[oó]n", r"contradictorio", r"datos\s+incompatibles",
+            r"incoherente"
+        ]
+
+        for leg_key, category in Utils._LEGACY_KEY_TO_CATEGORY.items():
+            text = valoraciones_texto.get(leg_key)
+            if isinstance(text, dict) and "mensaje" in text:
+                text = text.get("mensaje", "")
+            text = (text or "").lower()
+            score = puntuacion_individual.get(leg_key)
+            try:
+                score_f = float(score) if score is not None else None
+            except (TypeError, ValueError):
+                score_f = None
+
+            for pattern in unverified_patterns:
+                if re.search(pattern, text, re.IGNORECASE):
+                    # fiabilidad/adecuacion => high; resto => medium
+                    severity = "high" if category in ("fiabilidad", "adecuacion") else "medium"
+                    alerts.append({
+                        "code": "UNVERIFIED_CLAIM",
+                        "category": category,
+                        "severity": severity,
+                        "message": "Justificación indica falta de fuentes o verificación.",
+                        "origin": "model",
+                        "evidence_refs": []
+                    })
+                    break
+
+            for pattern in contradiction_patterns:
+                if re.search(pattern, text, re.IGNORECASE):
+                    alerts.append({
+                        "code": "INTERNAL_CONTRADICTION",
+                        "category": category,
+                        "severity": "medium",
+                        "message": "Justificación indica posible contradicción interna.",
+                        "origin": "model",
+                        "evidence_refs": []
+                    })
+                    break
+
+        return alerts
+
     @staticmethod
     def convertir_markdown_a_html(markdown_input):
         # Si se recibe un diccionario, se recorre cada par clave/valor
@@ -432,9 +502,9 @@ class Utils:
         # Preprocesamiento: unir líneas de listas ordenadas separadas por líneas en blanco
         markdown_text = re.sub(r'\n\s*\n(?=\d+\.\s+)', '\n', markdown_text)
 
-        # Bloques de código (triple backticks)
+        # Bloques de código (triple backticks): soporta ```lang\n...``` y ```...```
         def sustituir_bloque_codigo(match):
-            code = match.group(3)
+            code = match.group(3) if match.lastindex >= 3 else match.group(2)
             return f'<pre><code>{code}</code></pre>'
 
         markdown_text = re.sub(r'(^|\n)```(\w*\n)(.*?)```', sustituir_bloque_codigo, markdown_text, flags=re.DOTALL)
@@ -805,10 +875,27 @@ class Utils:
 
         resultados["historial"] = historial
 
+        # Explicit clickbait decision: only True when the model rejected the headline (not "Aprobada")
+        resultados["approved"] = consenso
+        is_clickbait = not consenso
+        resultados["is_clickbait"] = is_clickbait
+        if consenso:
+            resultados["reason"] = "Aprobada"
+        elif not consenso and historial:
+            # Optional short reason from last Claude evaluation
+            last_claude = next(
+                (h["contenido"] for h in reversed(historial) if h.get("rol") == "Claude"),
+                None
+            )
+            resultados["reason"] = (last_claude[:200] + "…") if last_claude and len(str(last_claude)) > 200 else (last_claude or "No se alcanzó consenso.")
+
         if titular_reformulado:
             resultados["titular_reformulado"] = titular_reformulado
-        elif not consenso:
+        if not consenso:
             resultados["mensaje"] = "No se alcanzó consenso tras múltiples iteraciones."
+
+        resultados["model"] = "claude+gpt"
+        resultados["raw"] = historial  # full interaction for debugging; excluded from resumen string
 
         return resultados
     
@@ -892,9 +979,12 @@ class Utils:
             "Relevancia",
             "Grado de clickbait"
         ]
-        # Convertir el diccionario valoracion_titular a un string legible
+        # Convertir el diccionario valoracion_titular a un string legible (excluir historial y raw)
         if isinstance(valoracion_titular, dict):
-            valoracion_titular_str = "\n".join(f"{k}: {v}" for k, v in valoracion_titular.items() if k != "historial")
+            skip_keys = {"historial", "raw"}
+            valoracion_titular_str = "\n".join(
+                f"{k}: {v}" for k, v in valoracion_titular.items() if k not in skip_keys
+            )
         else:
             valoracion_titular_str = str(valoracion_titular)
         prompt = (
@@ -1133,10 +1223,10 @@ Responde únicamente con el número, sin texto adicional.
                 print(f"[CRITICAL] Todas las fake news de la noticia {doc['_id']} fallaron en embedding batch. Marcando para revisión manual.")
                 write_col.update_one({'_id': doc['_id']}, {'$set': {'embedding_fake_news_failed': True}}, upsert=True)
 
-# Helper para mostrar ObjectId como string
-
-def _id_str(doc):
-    return str(doc['_id']) if '_id' in doc else str(doc.get('id_original','?'))
+    @staticmethod
+    def _id_str(doc):
+        """Helper para mostrar ObjectId como string."""
+        return str(doc['_id']) if '_id' in doc else str(doc.get('id_original', '?'))
 
     @staticmethod
     def copy_basic_fields_to_new_db(doc, old_collection, new_collection):

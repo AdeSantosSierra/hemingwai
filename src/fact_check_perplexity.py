@@ -66,6 +66,7 @@ def verificar_noticia(noticia_id: str) -> dict:
         mongo_service.close()
         return {"error": f"Error: No se encontró la noticia con ID '{noticia_id}' o no tiene campo 'cuerpo'."}
 
+    run_id = (noticia_doc.get("pipeline") or {}).get("run_id")
     cuerpo_noticia = noticia_doc["cuerpo"]
     print("Noticia encontrada. Procediendo a la verificación de hechos.")
 
@@ -129,14 +130,24 @@ def verificar_noticia(noticia_id: str) -> dict:
         else:
             print("No se encontraron fuentes en la respuesta de la API.")
         
-        # Guardar el análisis y las fuentes en MongoDB
+        # Guardar el análisis y las fuentes en MongoDB y actualizar pipeline.steps
+        from datetime import datetime, timezone
+        fact_check_step = {
+            "ok": True,
+            "at": datetime.now(timezone.utc).isoformat(),
+            "provider": "perplexity",
+            "artifact": "output_temporal/fact_check_analisis.json"
+        }
         try:
+            update_doc = {
+                "fact_check_analisis": analisis,
+                "fact_check_fuentes": fuentes,
+                "pipeline.status": "fact_checked",
+                "pipeline.steps.fact_check": fact_check_step
+            }
             update_result = collection.update_one(
                 {"_id": obj_id},
-                {"$set": {
-                    "fact_check_analisis": analisis,
-                    "fact_check_fuentes": fuentes
-                }}
+                {"$set": update_doc}
             )
             if update_result.modified_count > 0:
                 print("Análisis y fuentes guardados exitosamente en MongoDB.")
@@ -145,8 +156,10 @@ def verificar_noticia(noticia_id: str) -> dict:
         except Exception as e:
             print(f"Error al guardar en MongoDB: {e}")
 
-
-        return {"analisis": analisis, "fuentes": fuentes}
+        result = {"noticia_id": noticia_id, "analisis": analisis, "fuentes": fuentes}
+        if run_id:
+            result["run_id"] = run_id
+        return result
         
     except Exception as e:
         return {"error": f"Error al contactar con la API de Perplexity: {e}"}

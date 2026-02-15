@@ -1,44 +1,94 @@
+"""
+render_latex.py: Genera PDF desde noticia + fact-check y sube a MEGA.
+
+Dependencias:
+  - TeX Live (pdflatex) o equivalente.
+  - MEGA: se usa mega-cmd (CLI). Instalación recomendada: snap install mega-cmd
+  - No se usa mega.py (incompatibilidades con Python 3.11+ en algunos entornos).
+
+Variables de entorno:
+  - MEGA_EMAIL, MEGA_PASSWORD: credenciales MEGA.
+  - LATEX_BUILD_TIMEOUT: segundos máximos para pdflatex (default 60).
+  - NEW_MONGODB_URI: opcional, para actualizar pipeline.steps.pdf.
+
+Prueba local:
+  1. Poner un JSON de noticia válido en output_temporal/retrieved_news_item.txt
+  2. Opcional: output_temporal/fact_check_analisis.json con analisis/fuentes
+  3. Desde repo root: .venv/bin/python src/render_latex.py
+  4. PDF en output_temporal/<titulo_safe>.pdf; log en output_temporal/latex_build.log
+"""
 import json
 import os
 import re
-import ast
-from jinja2 import Environment, FileSystemLoader, select_autoescape
-from datetime import datetime
-from dotenv import load_dotenv
-import glob
 import subprocess
 import sys
 import time
-import socket
+import unicodedata
+from datetime import datetime
+from dotenv import load_dotenv
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 # --- Unicode Character Handling ---
+# Emojis/símbolos: reemplazo por texto o eliminación. Comillas tipográficas -> ASCII.
+# Códigos explícitos para evitar bugs de escape (\U para codepoints > U+FFFF).
+_UNICODE_REPLACEMENTS = (
+    ("\u26A0", "[Atención]"),       # ⚠
+    ("\u2B50", "[Estrella]"),       # ⭐
+    ("\U0001F6A9", "[Bandera]"),    # 🚩 (correct: \U0001F6A9, not \u1F6A9)
+    ("\u201C", '"'), ("\u201D", '"'), ("\u201E", '"'), ("\u201F", '"'),  # left/right double
+    ("\u2018", "'"), ("\u2019", "'"), ("\u201A", "'"), ("\u201B", "'"),  # left/right single
+    ("\u00AB", '"'), ("\u00BB", '"'), ("\u2039", "'"), ("\u203A", "'"), # « » ‹ ›
+)
+
 def strip_or_replace_problematic_unicode(text):
+    """Normaliza Unicode, aplica reemplazos (emojis, comillas) y elimina caracteres no imprimibles/problemáticos para LaTeX."""
     if not isinstance(text, str):
         return text
-
-    # Reemplazos específicos de algunos emojis comunes
-    replacements = {
-        '\u26A0': '[Atención]',  # ⚠ Warning sign
-        '\u2B50': '[Estrella]',  # ⭐ Star
-        '\u1F6A9': '[Bandera]', # 🚩 Triangular Flag
-        # Comillas tipográficas y angulares a comillas rectas
-        '"': '"', '"': '"', '„': '"', '‟': '"',
-        ''': "'", ''': "'", '‚': "'", '‛': "'",
-        '«': '"', '»': '"',
-        '‹': "'", '›': "'",
-    }
-    for char_unicode, replacement_text in replacements.items():
-        text = text.replace(char_unicode, replacement_text)
-
-    # Eliminar solo emojis y símbolos fuera de los rangos de texto común (mantener letras acentuadas, ñ, etc.)
+    text = unicodedata.normalize("NFKC", text)
+    for char, replacement in _UNICODE_REPLACEMENTS:
+        text = text.replace(char, replacement)
+    # Permitir: ASCII imprimible, Latin-1 supplement, Latin Extended-A, saltos de línea/tab
     def is_allowed(char):
         code = ord(char)
-        if (0x20 <= code <= 0x7E) or (0xA1 <= code <= 0xFF) or (0x100 <= code <= 0x17F):
+        if (0x20 <= code <= 0x7E) or (0xA0 <= code <= 0xFF) or (0x100 <= code <= 0x17F):
             return True
-        if code in (0x0A, 0x0D, 0x09):  # \n, \r, \t
+        if code in (0x0A, 0x0D, 0x09):
             return True
         return False
-    return ''.join(c if is_allowed(c) else '' for c in text)
+    return "".join(c if is_allowed(c) else "" for c in text)
+
+
+def _run_unicode_sanity_tests():
+    """Tests mínimos para strip_or_replace_problematic_unicode (ñ, acentos, comillas, emojis)."""
+    samples = [
+        ("ñaño", "ñaño"),
+        ("café", "café"),
+        ("Über", "Über"),
+        ("¿Qué? ¡Sí!", "¿Qué? ¡Sí!"),
+        ("\u201Cfoo\u201D and \u2018bar\u2019", "\"foo\" and 'bar'"),
+        ("«guillemets»", '"guillemets"'),
+        ("\U0001F6A9 flag", "[Bandera] flag"),
+        ("\u26A0 warn \u2B50", "[Atención] warn [Estrella]"),
+    ]
+    for input_s, expected in samples:
+        got = strip_or_replace_problematic_unicode(input_s)
+        assert got == expected, "Unicode test: %r -> %r != %r" % (input_s, got, expected)
+    print("Unicode sanity tests OK.")
+
+
+def _run_format_tests():
+    """Tests mínimos para format_analysis_text (headings con acentos, párrafos con doble salto)."""
+    # Heading con acentos
+    t1 = "## Análisis rápido\n\nPárrafo uno.\n\nPárrafo dos."
+    out1 = format_analysis_text(t1)
+    assert "\\subsection*{" in out1, "Debe haber subsection"
+    assert "\\par" in out1 or "medskip" in out1, "Párrafos con \\par\\medskip"
+    # Solo párrafos
+    t2 = "A\n\nB"
+    out2 = format_analysis_text(t2)
+    assert "\\par" in out2 or "medskip" in out2, "Doble salto preservado"
+    print("Format/analysis tests OK.")
+
 
 # --- LaTeX Special Character Escaping ---
 CORE_TEX_SPECIAL_CHARS_NO_BS = {
@@ -114,45 +164,61 @@ def escape_tex_special_chars(text):
 def format_analysis_text(text):
     """
     Filtro de Jinja2 para formatear el texto del análisis de Perplexity.
-    - Escapa caracteres especiales de LaTeX.
-    - Convierte los títulos de markdown (## Título) a secciones de LaTeX.
-    - Mantiene los saltos de párrafo.
+    Detecta ## heading línea a línea (antes de tocar saltos), convierte a \\subsection*{...}.
+    El resto se escapa con escape_tex_special_chars por párrafos (sin escapar las líneas de subsection).
     """
     if not isinstance(text, str):
         return ""
+    text = text.strip().replace("\r\n", "\n")
+    lines = text.split("\n")
 
-    # 1. Escapar caracteres especiales de LaTeX
-    text = escape_tex_chars_in_plain_text_segment(text)
+    # 1. Separar en bloques: cada bloque es o bien una línea ## (heading) o bien líneas de texto
+    blocks = []
+    current_para = []
+    for line in lines:
+        heading_match = re.match(r"^##\s*(.*)$", line)
+        if heading_match:
+            if current_para:
+                blocks.append(("\n".join(current_para), "para"))
+                current_para = []
+            title_content = escape_tex_inline(heading_match.group(1).strip())
+            blocks.append(("\\subsection*{%s}" % title_content, "raw"))
+        else:
+            current_para.append(line)
+    if current_para:
+        blocks.append(("\n".join(current_para), "para"))
 
-    # 2. Convertir títulos markdown a \subsection*
-    # Usamos una función de reemplazo para escapar el contenido del título
-    def replace_heading(match):
-        title_content = escape_tex_inline(match.group(1))
-        return f"\\subsection*{{{title_content}}}"
-    text = re.sub(r'##\s*(.*)', replace_heading, text)
-
-    # 3. Convertir saltos de línea dobles en párrafos de LaTeX
-    text = text.replace('\n\n', '\n\\par\\medskip\n')
-    
-    return text
+    # 2. Escapar solo los bloques de párrafo (conservar \par\medskip); raw se deja tal cual
+    out = []
+    for content, kind in blocks:
+        if kind == "raw":
+            out.append(content)
+        else:
+            out.append(escape_tex_special_chars(content))
+    return "\n\n".join(out)
 
 def sanitize_and_format_fact_check(text):
     """
-    A more robust filter specifically for the fact-checking analysis text.
-    - Preserves markdown-like structures like lists and bolding.
-    - Wraps list items in a valid LaTeX itemize environment to prevent compiler hangs.
-    - Escapes LaTeX special characters.
+    Filter for fact-checking analysis: bold **...** (contenido escapado con escape_tex_inline),
+    listas -/* en itemize balanceado, resto escapado. No genera LaTeX inválido por _ % # \\ dentro de bold.
     """
     if not isinstance(text, str):
         return ""
 
-    # 1. Basic cleaning, LaTeX escaping, and bolding
     text = text.strip().replace("\r\n", "\n")
-    escaped_text = escape_tex_chars_in_plain_text_segment(text)
-    escaped_text = re.sub(r'\*\*(.*?)\*\*', r'\\textbf{\1}', escaped_text)
 
-    # 2. Process lines to handle lists correctly
-    lines = escaped_text.split('\n')
+    # 1. Bold: partir por **...**; escapar solo los segmentos (bold con escape_tex_inline, resto con plain)
+    parts = re.split(r"\*\*(.*?)\*\*", text, flags=re.DOTALL)
+    built = []
+    for i, seg in enumerate(parts):
+        if i % 2 == 1:
+            built.append("\\textbf{" + escape_tex_inline(seg) + "}")
+        else:
+            built.append(escape_tex_chars_in_plain_text_segment(seg))
+    escaped_text = "".join(built)
+
+    # 2. Process lines: listas en itemize balanceado
+    lines = escaped_text.split("\n")
     processed_lines = []
     in_list = False
     list_item_pattern = re.compile(r'^\s*[\*\-]\s+(.*)')
@@ -235,159 +301,242 @@ def clean_dict_recursive(obj):
     else:
         return obj
 
+
+def compile_latex_to_pdf(tex_path, output_dir, log_path, timeout_sec=60):
+    """
+    Compila .tex a PDF con pdflatex. No bloquea: timeout y flags -interaction=nonstopmode -halt-on-error.
+    Escribe stdout/stderr en log_path. Opcionalmente ejecuta dos pasadas para referencias.
+    Returns (success: bool, error_message: str or None).
+    """
+    if not os.path.isfile(tex_path):
+        return False, f"Archivo no encontrado: {tex_path}"
+    pdflatex_cmd = [
+        "pdflatex",
+        "-interaction=nonstopmode",
+        "-halt-on-error",
+        "-file-line-error",
+        "-output-directory", output_dir,
+        os.path.abspath(tex_path),
+    ]
+    log_lines = []
+    try:
+        with open(log_path, "w", encoding="utf-8") as logf:
+            for run in (1, 2):
+                logf.write(f"\n--- pdflatex pass {run} ---\n")
+                try:
+                    result = subprocess.run(
+                        pdflatex_cmd,
+                        capture_output=True,
+                        text=True,
+                        timeout=timeout_sec,
+                        encoding="utf-8",
+                        errors="replace",
+                    )
+                except subprocess.TimeoutExpired:
+                    logf.write(f"TIMEOUT after {timeout_sec}s\n")
+                    log_lines.append(f"TIMEOUT after {timeout_sec}s")
+                    return False, f"pdflatex se colgó (timeout {timeout_sec}s). Ver {log_path}"
+                except FileNotFoundError:
+                    return False, "pdflatex no encontrado. Instala TeX Live (o equivalente)."
+                out, err = result.stdout or "", result.stderr or ""
+                logf.write(out)
+                logf.write(err)
+                log_lines.extend((out + err).splitlines())
+                if result.returncode != 0:
+                    tail = "\n".join(log_lines[-80:]) if len(log_lines) > 80 else "\n".join(log_lines)
+                    print("--- Error pdflatex (últimas líneas del log) ---")
+                    print(tail)
+                    print("---")
+                    return False, f"pdflatex falló (código {result.returncode}). Ver {log_path}"
+        return True, None
+    except OSError as e:
+        return False, f"No se pudo escribir log o ejecutar pdflatex: {e}"
+
+
+def detect_mega_cmd():
+    """
+    Detecta cómo invocar mega-cmd: "direct" (mega-* en PATH) o "snap" (snap run mega-cmd.*).
+    Returns (mode: "direct"|"snap", error_message: str or None).
+    """
+    # 1) Ejecutable directo en PATH
+    try:
+        r = subprocess.run(
+            ["mega-version"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if r.returncode == 0:
+            return "direct", None
+    except FileNotFoundError:
+        pass
+    except subprocess.TimeoutExpired:
+        pass
+
+    # 2) Snap
+    try:
+        r = subprocess.run(
+            ["snap", "run", "mega-cmd.mega-version"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        if r.returncode == 0:
+            return "snap", None
+        # snap existe pero mega-cmd falló (permisos, no instalado, etc.)
+        err = (r.stderr or r.stdout or "").strip() or "sin salida"
+        return None, "snap run mega-cmd falló: %s. Comprueba: snap list mega-cmd y permisos." % err[:200]
+    except FileNotFoundError:
+        return None, (
+            "mega-cmd no encontrado. Instala con: snap install mega-cmd "
+            "o añade mega-version al PATH."
+        )
+    except subprocess.TimeoutExpired:
+        return None, "snap run mega-cmd no respondió (timeout). Comprueba que mega-cmd esté instalado."
+    except Exception as e:
+        return None, "mega-cmd: %s" % e
+
+
+def run_mega_cmd(mode, command, args=None, timeout=15):
+    """
+    Ejecuta un comando mega-cmd. mode "direct" -> [command, ...args]; mode "snap" -> [snap, run, mega-cmd.<command>, ...args].
+    Returns (stdout, stderr, returncode).
+    """
+    if mode == "snap":
+        cmd = ["snap", "run", "mega-cmd.%s" % command]
+    else:
+        cmd = [command]
+    if args:
+        cmd.extend(args)
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+        return (result.stdout or "", result.stderr or "", result.returncode)
+    except subprocess.TimeoutExpired:
+        return "", "Timeout después de %ds" % timeout, -1
+    except FileNotFoundError:
+        return "", "Comando no encontrado (revisa PATH o snap).", -1
+    except Exception as e:
+        return "", str(e), -1
+
+
 def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/PDF hemingwAI"):
     """
-    Sube un archivo a MEGA usando mega-cmd con manejo robusto de errores y verificación.
-    
-    Args:
-        pdf_path: Ruta al archivo PDF a subir
-        email: Email de MEGA
-        password: Contraseña de MEGA
-        carpeta_destino: Ruta de la carpeta en MEGA (formato: "Carpeta/Subcarpeta")
-    
-    Returns:
-        str: Link del archivo subido o None si falla
+    Sube un archivo a MEGA usando mega-cmd (CLI). No usa mega.py; compatible con Python 3.11+.
+    Requiere mega-cmd instalado (p. ej. snap install mega-cmd).
     """
     print("\n" + "="*60)
     print("INICIANDO SUBIDA A MEGA.NZ")
     print("="*60)
 
-    # Verificar que el archivo existe
     if not os.path.exists(pdf_path):
-        print(f"❌ ERROR: El archivo {pdf_path} no existe")
+        print("ERROR: El archivo no existe:", pdf_path)
         return None
 
     file_size = os.path.getsize(pdf_path)
-    print(f"📄 Archivo: {os.path.basename(pdf_path)}")
-    print(f"📊 Tamaño: {file_size / 1024:.2f} KB")
+    print("Archivo:", os.path.basename(pdf_path), "Tamaño: %.2f KB" % (file_size / 1024))
 
-    # Función para ejecutar comandos de mega-cmd
-    def run_mega_cmd(command, args=None, input_data=None):
-        try:
-            cmd = ['snap', 'run', f'mega-cmd.{command}']
-            if args:
-                cmd.extend(args)
-            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            stdout, stderr = process.communicate(input=input_data)
-            return stdout, stderr, process.returncode
-        except FileNotFoundError:
-            return None, "Comando snap no encontrado. Verifica que snapd esté instalado.", 1
-        except Exception as e:
-            return None, f"Error ejecutando comando: {e}", 1
+    mode, detect_err = detect_mega_cmd()
+    if mode is None:
+        print("ERROR:", detect_err)
+        return None
+
+    def run(cmd_name, *a, **kw):
+        return run_mega_cmd(mode, cmd_name, args=list(a) if a else None, **kw)
 
     for intento in range(3):
-        print(f"\n🔄 Intento {intento + 1}/3")
+        print("\nIntento %d/3" % (intento + 1))
         try:
-            # Verifica si mega-cmd está disponible
-            stdout, stderr, rc = run_mega_cmd("mega-version")
+            stdout, stderr, rc = run("mega-version")
             if rc != 0:
-                print(f"❌ Error: No se pudo ejecutar mega-cmd: {stderr}")
+                print("ERROR: mega-cmd no respondió:", stderr or stdout or "sin salida")
                 return None
+            print("mega-cmd OK:", (stdout or "").strip()[:80])
 
-            print(f"✅ mega-cmd detectado! Versión: {stdout.strip()}")
+            stdout, stderr, rc = run("mega-whoami")
+            logged_in = rc == 0 and email in (stdout or "")
 
-            # Verifica si hay una sesión activa
-            stdout, stderr, rc = run_mega_cmd("mega-whoami")
-            if rc != 0 or email not in stdout:
-                # Cierra cualquier sesión existente
-                stdout, stderr, rc_logout = run_mega_cmd("mega-logout")
-                if rc_logout == 0 or "Not logged in" in stderr:
-                    print("Sesión anterior cerrada o no existía.")
-                else:
-                    print(f"❌ Error al cerrar sesión: {stderr}")
-                    return None
-
-                # Intenta login
-                stdout, stderr, rc = run_mega_cmd("mega-login", args=[email, password])
+            if not logged_in:
+                run("mega-logout")
+                stdout, stderr, rc = run("mega-login", email, password, timeout=20)
                 if rc != 0:
-                    print(f"❌ Error en login: {stderr}")
+                    print("ERROR en login MEGA:", stderr or stdout or "sin salida")
+                    if intento < 2:
+                        time.sleep(2 ** intento)
+                        continue
                     return None
-                print("✅ Login exitoso!")
+                print("Login MEGA OK")
             else:
-                print(f"✅ Sesión ya activa para {email}")
+                print("Sesión MEGA ya activa")
 
-            # Crear carpeta destino si no existe
-            print(f"\n🔍 Creando/verificando carpeta: {carpeta_destino}")
-            carpeta_parts = carpeta_destino.split("/")
-            current_path = ""
-            for carpeta in carpeta_parts:
-                if not carpeta:
-                    continue
-                current_path = f"{current_path}/{carpeta}" if current_path else carpeta
-                stdout, stderr, rc = run_mega_cmd("mega-ls", args=[current_path])
+            # Carpetas
+            parts = [p for p in carpeta_destino.split("/") if p]
+            current = ""
+            for p in parts:
+                current = (current + "/" + p) if current else p
+                stdout, stderr, rc = run("mega-ls", current)
                 if rc != 0:
-                    print(f"   ⚠️ Carpeta '{current_path}' no existe, creándola...")
-                    stdout, stderr, rc = run_mega_cmd("mega-mkdir", args=[current_path])
+                    stdout, stderr, rc = run("mega-mkdir", current)
                     if rc != 0:
-                        print(f"   ❌ Error al crear carpeta {current_path}: {stderr}")
+                        print("ERROR al crear carpeta:", current, stderr or stdout)
                         return None
-                    print(f"   ✅ Carpeta creada: {current_path}")
-                else:
-                    print(f"   ✅ Carpeta encontrada: {current_path}")
 
-            # Subir el archivo
-            print(f"\n⬆️ Subiendo archivo a MEGA...")
-            print(f"   Destino: {carpeta_destino}")
-            stdout, stderr, rc = run_mega_cmd("mega-put", args=[pdf_path, carpeta_destino])
+            # Subir
+            stdout, stderr, rc = run("mega-put", pdf_path, carpeta_destino, timeout=120)
             if rc != 0:
-                print(f"❌ Error al subir archivo: {stderr}")
+                print("ERROR al subir archivo:", stderr or stdout)
                 return None
-            print("✅ Archivo subido correctamente")
+            print("Archivo subido OK")
 
-            # Obtener el enlace público
-            print("\n🔗 Generando enlace público...")
-            stdout, stderr, rc = run_mega_cmd("mega-export", args=["-a", f"{carpeta_destino}/{os.path.basename(pdf_path)}"])
+            # Exportar enlace
+            remote_path = carpeta_destino.rstrip("/") + "/" + os.path.basename(pdf_path)
+            stdout, stderr, rc = run("mega-export", "-a", remote_path, timeout=15)
             if rc != 0:
-                print(f"❌ Error al generar enlace: {stderr}")
+                print("ERROR al generar enlace:", stderr or stdout)
                 return None
-            
-            # Extraer el enlace real del output (ej: "Exported ...: https://mega.nz/file/...#key")
-            link_match = re.search(r'https://mega\.nz/[^ ]+', stdout.strip())
-            if link_match:
-                link = link_match.group(0)
-            else:
-                print(f"❌ No se pudo extraer el enlace del output: {stdout.strip()}")
-                return None
-            
-            if not link.startswith("https://mega.nz"):
-                print(f"❌ Enlace inválido: {link}")
-                return None
-            
-            print("✅ Enlace generado")
 
-            # Verificación final
-            print("\n🔍 Verificando que el archivo existe en MEGA...")
-            stdout, stderr, rc = run_mega_cmd("mega-ls", args=[f"{carpeta_destino}/{os.path.basename(pdf_path)}"])
+            link_match = re.search(r"https://mega\.nz/[^\s\)\]]+", stdout or "")
+            if not link_match:
+                print("ERROR: no se encontró URL en la salida de mega-export:")
+                print(stdout or "(vacío)")
+                return None
+            link = link_match.group(0).rstrip(".,;")
+            if not link.startswith("https://mega.nz/"):
+                print("ERROR: enlace inválido:", link)
+                return None
+
+            # Verificación
+            stdout, stderr, rc = run("mega-ls", remote_path)
             if rc != 0:
-                print(f"❌ Error: El archivo no aparece en MEGA: {stderr}")
-                return None
-            print(f"✅ Archivo verificado en MEGA: {carpeta_destino}/{os.path.basename(pdf_path)}")
+                print("Advertencia: no se pudo verificar el archivo en MEGA:", stderr or stdout)
 
-            print("\n" + "="*60)
-            print("✅ SUBIDA COMPLETADA EXITOSAMENTE")
             print("="*60)
-            print(f"Link: {link}")
-            print("="*60 + "\n")
+            print("SUBIDA COMPLETADA. Link:", link)
+            print("="*60)
             return link
 
         except Exception as e:
-            print(f"\n❌ ERROR en intento {intento + 1}: {e}")
+            print("ERROR intento %d:" % (intento + 1), e)
             if intento < 2:
-                wait_time = 2 ** intento
-                print(f"⏳ Esperando {wait_time} segundos antes de reintentar...")
-                time.sleep(wait_time)
+                time.sleep(2 ** intento)
             else:
-                print("\n❌ Todos los intentos fallaron")
                 import traceback
-                print("\n📋 Detalles del error:")
                 traceback.print_exc()
                 return None
 
 if __name__ == "__main__":
-    # Definir el directorio raíz del proyecto (un nivel arriba de 'src')
+    if os.getenv("RENDER_LATEX_TEST_UNICODE"):
+        _run_unicode_sanity_tests()
+        sys.exit(0)
+    if os.getenv("RENDER_LATEX_TEST_FORMAT"):
+        _run_format_tests()
+        sys.exit(0)
+
     ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    
-    # Cargar variables de entorno desde el .env en el directorio raíz
     load_dotenv(os.path.join(ROOT_DIR, ".env"))
     
     # Construir rutas basadas en ROOT_DIR
@@ -410,6 +559,10 @@ if __name__ == "__main__":
         sys.exit(1)
     
     news_item_data = clean_dict_recursive(news_item_data)
+
+    noticia_id = news_item_data.get("_id", "")
+    run_id = (news_item_data.get("pipeline") or {}).get("run_id", "")
+    print(f"noticia_id: {noticia_id}  run_id: {run_id}")
 
     # Cargar el análisis de fact-checking y las fuentes desde el archivo JSON
     fact_check_file = os.path.join(output_dir, "fact_check_analisis.json")
@@ -453,19 +606,14 @@ if __name__ == "__main__":
     except Exception:
         sys.exit(1)
 
-    print(f"\nTo compile the LaTeX file, run: pdflatex {output_tex_file}")
-
-    # Compilar el PDF automáticamente
-    try:
-        subprocess.run([
-            "pdflatex",
-            "-output-directory", output_dir,
-            output_tex_file
-        ], check=True)
-        print(f"PDF generado: {output_pdf_file}")
-    except Exception as e:
-        print(f"Error al compilar el PDF: {e}")
+    # Compilar el PDF con timeout y log (no bloquea)
+    latex_log = os.path.join(output_dir, "latex_build.log")
+    timeout_sec = int(os.getenv("LATEX_BUILD_TIMEOUT", "60"))
+    ok, err = compile_latex_to_pdf(output_tex_file, output_dir, latex_log, timeout_sec=timeout_sec)
+    if not ok:
+        print(f"Error al compilar el PDF: {err}")
         sys.exit(1)
+    print(f"PDF generado: {output_pdf_file}")
 
     # Subir el PDF a Mega.nz automáticamente
     MEGA_EMAIL = os.getenv("MEGA_EMAIL")
@@ -474,8 +622,35 @@ if __name__ == "__main__":
     
     if MEGA_EMAIL and MEGA_PASSWORD:
         link = subir_a_mega_mejorado(output_pdf_file, MEGA_EMAIL, MEGA_PASSWORD, MEGA_FOLDER_PATH)
-        
+
         if link:
+            # Optional: update MongoDB pipeline step for traceability
+            import os as _os
+            from pymongo import MongoClient
+            from bson import ObjectId
+            mongo_uri = _os.getenv("NEW_MONGODB_URI")
+            if mongo_uri and noticia_id:
+                try:
+                    _client = MongoClient(mongo_uri)
+                    _col = _client["Base_de_datos_noticias"]["Noticias"]
+                    _oid = ObjectId(noticia_id) if isinstance(noticia_id, str) and len(noticia_id) == 24 else noticia_id
+                    from datetime import datetime, timezone
+                    _col.update_one(
+                        {"_id": _oid},
+                        {"$set": {
+                            "pipeline.status": "pdf_generated",
+                            "pipeline.steps.pdf": {
+                                "ok": True,
+                                "at": datetime.now(timezone.utc).isoformat(),
+                                "artifact": output_pdf_file,
+                                "mega_link": link
+                            }
+                        }}
+                    )
+                    _client.close()
+                except Exception as _e:
+                    print(f"Advertencia: no se pudo actualizar pipeline en MongoDB: {_e}")
+
             # IMPORTANTE: Formato específico para que analiza_y_guarda.py pueda capturarlo
             print(f"\n✅ PDF subido exitosamente a Mega.nz")
             print(f"Link: {link}")

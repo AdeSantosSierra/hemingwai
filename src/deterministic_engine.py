@@ -1,7 +1,11 @@
 from typing import Dict, Any, Optional
+from datetime import datetime, timezone
 
 # --- Constants & Configuration ---
+# Optional MongoDB indexes for querying: pipeline.run_id, evaluation_meta.evaluated_at,
+# evaluation_result.status.label (add via migration or shell if needed).
 
+ENGINE_VERSION = "v2.0.0"
 CATEGORIES_V2 = ["fiabilidad", "adecuacion", "claridad", "profundidad", "enfoque"]
 
 WEIGHTS = {
@@ -61,16 +65,16 @@ def normalize_model_scores(model_scores: Dict[str, Any]) -> Dict[str, Any]:
             "justification": entry.get("justification", "")
         }
 
-    # Normalize alerts
+    # Normalize alerts (copy dicts to avoid mutating input)
     normalized_alerts = []
     raw_alerts = model_scores.get("alerts", [])
     if isinstance(raw_alerts, list):
         for alert in raw_alerts:
             if isinstance(alert, dict):
-                # Ensure origin exists
-                if "origin" not in alert:
-                    alert["origin"] = "model"
-                normalized_alerts.append(alert)
+                alert_copy = dict(alert)
+                if "origin" not in alert_copy:
+                    alert_copy["origin"] = "model"
+                normalized_alerts.append(alert_copy)
 
     return {
         "scores": normalized_scores,
@@ -232,9 +236,12 @@ def compute_evaluation_result(model_scores: Dict[str, Any], meta: Optional[Dict[
         "author": meta.get("author", "")
     }
 
-    # Include G_raw in extras for full transparency/debugging
+    # Include engine_version, computed_at and G_raw in extras for traceability
+    computed_at = datetime.now(timezone.utc).isoformat()
     extras = {
-        "raw_global_score": G_raw
+        "raw_global_score": G_raw,
+        "engine_version": ENGINE_VERSION,
+        "computed_at": computed_at
     }
 
     return {
@@ -246,7 +253,7 @@ def compute_evaluation_result(model_scores: Dict[str, Any], meta: Optional[Dict[
             "short_text": STATUS_LABELS.get(status_label, status_label.capitalize())
         },
         "alerts": final_alerts,
-        "recommendations": {"items": []}, # Placeholder for future logic
+        "recommendations": {"items": []},  # Placeholder for future logic
         "audit": audit,
         "extras": extras
     }

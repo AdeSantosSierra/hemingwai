@@ -1,12 +1,12 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  11 FEB 2026 21:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  15 FEB 2026 23:36
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to
-_celebrate_power_of_nat.tex
+**/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Ameri
+ca_name_change.tex
 
-(/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to_
-celebrate_power_of_nat.tex
+(/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Americ
+a_name_change.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -664,8 +664,8 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count323
 \l__pdf_internal_box=\box68
 )
-No file Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.aux.
-\openout1 = `Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.aux'.
+No file Mexico_sues_Google_over_Gulf_of_America_name_change.aux.
+\openout1 = `Mexico_sues_Google_over_Gulf_of_America_name_change.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -689,7 +689,7 @@ LaTeX Info: Redefining \. on input line 29.
 LaTeX Info: Redefining \% on input line 29.
 Package hyperref Info: Link coloring OFF on input line 29.
 \@outlinefile=\write4
-\openout4 = `Rose_named_after_Princess_of_Wales_to_celebrate_power_of_nat.out'.
+\openout4 = `Mexico_sues_Google_over_Gulf_of_America_name_change.out'.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -769,223 +769,221 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-di
 st/fonts/enc/dvips/base/8r.enc}]
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 9
-8.
-
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/b/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/b/n' tried instead on input line 98.
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 98.
-
 
 [2]
-Overfull \hbox (10.8265pt too wide) in paragraph at lines 120--121
-[]\OT1/ptm/m/n/10 The BBC News ar-ti-cle pre-sents in-for-ma-tion about a newly
- na-med ro-se cul-ti-var de-sig-na-ted as []atherine's Rose,[]reated
- []
-
+LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
+20.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
+File: omsptm.fd 
+)
+LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 120.
 
 
 [3]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
-40.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
-File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
-)
-
-[4]
-
-[5]
-Overfull \hbox (19.02754pt too wide) in paragraph at lines 190--191
-[]\OT1/ptm/m/n/10 The ar-ti-cle's iden-ti-fi-ca-tion of Hark-ness Ro-ses as the
- bree-der is con-fir-med, though the cha-rac-te-ri-za-tion as "Hertfordshire-
+Overfull \hbox (23.69806pt too wide) in paragraph at lines 150--151
+[]\OT1/ptm/m/n/10 Respecto a la se-cuen-cia tem-po-ral, la no-ti-cia men-cio-na
+ que "Shein-baum es-cri-bi[]o una car-ta a Goo-gle en enero"(Sheinbaum
  []
 
 
-Overfull \hbox (29.0321pt too wide) in paragraph at lines 199--200
-[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / plants / 537873 / rosa-
-[]catherine % E2 % 80 % 99s-[]rose-[](harzenith )
+
+[4]
+Overfull \hbox (171.0321pt too wide) in paragraph at lines 186--187
+[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
+-[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
+$[] 
+ []
+
+
+Overfull \hbox (181.5321pt too wide) in paragraph at lines 189--190
+[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
+roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
+
+ []
+
+
+Overfull \hbox (171.0321pt too wide) in paragraph at lines 190--191
+[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
+-[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
+$[] 
+ []
+
+
+Overfull \hbox (48.0321pt too wide) in paragraph at lines 191--192
+[][]$\OT1/pcr/m/n/10 https : / / www . whitehouse . gov / presidential-[]action
+s / 2025 / 02 / gulf-[]of-[]america-[]day-[]2025/$[] 
+ []
+
+
+Overfull \hbox (280.5321pt too wide) in paragraph at lines 193--194
+[][]$\OT1/pcr/m/n/10 https : / / www . latimes . com / world-[]nation / story /
+ 2025-[]05-[]09 / mexico-[]sues-[]google-[]for-[]labeling-[]gulf-[]of-[]mexico-
+[]as-[]gulf-[]of-[]america$[] 
+ []
+
+
+Overfull \hbox (217.5321pt too wide) in paragraph at lines 194--195
+[][]$\OT1/pcr/m/n/10 https : / / www . presidency . ucsb . edu / documents / ex
+ecutive-[]order-[]14172-[]restoring-[]names-[]that-[]honor-[]american-[]greatne
+ss$[] 
+ []
+
+
+Overfull \hbox (11.5321pt too wide) in paragraph at lines 199--200
+[][]$\OT1/pcr/m/n/10 https : / / nauticalcharts . noaa . gov / data / us-[]mari
+time-[]limits-[]and-[]boundaries . html$[] 
+ []
+
+
+Overfull \hbox (129.0321pt too wide) in paragraph at lines 200--201
+[][]$\OT1/pcr/m/n/10 https : / / hiteshcsoni . in / blogs / f / legality-[]of-[
+]renaming-[]the-[]gulf-[]of-[]mexico-[]to-[]the-[]gulf-[]of-[]america ?
+ []
+
+
+Overfull \hbox (181.5321pt too wide) in paragraph at lines 204--205
+[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
+roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
+
+ []
+
+
+Overfull \hbox (92.0321pt too wide) in paragraph at lines 205--206
+[][]$\OT1/pcr/m/n/10 https : / / www . adexchanger . com / antitrust / 2025-[]t
+he-[]year-[]google-[]lost-[]in-[]court-[]and-[]won-[]anyway/$[] 
+ []
+
+
+
+[5]
+Overfull \hbox (315.0321pt too wide) in paragraph at lines 208--209
+[][]$\OT1/pcr/m/n/10 https : / / www . lemonde . fr / en / international / arti
+cle / 2025 / 05 / 09 / mexico-[]sues-[]google-[]for-[]labeling-[]gulf-[]of-[]me
+xico-[]as-[]gulf-[]of-[]america _
+ []
+
+
+Overfull \hbox (86.0321pt too wide) in paragraph at lines 211--212
+[][]$\OT1/pcr/m/n/10 https : / / www . courthousenews . com / mexico-[]says-[]i
+ts-[]suing-[]google-[]over-[]gulf-[]of-[]america-[]label/$[] 
+ []
+
+
+Overfull \hbox (214.0321pt too wide) in paragraph at lines 214--215
+[][]$\OT1/pcr/m/n/10 https : / / san . com / cc / appeals-[]court-[]to-[]weigh-
+[]trump-[]administrations-[]punishment-[]of-[]ap-[]in-[]gulf-[]of-[]america-[]d
+ispute/$[] 
+ []
+
+
+Overfull \hbox (181.5321pt too wide) in paragraph at lines 216--217
+[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
+roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
+
+ []
+
+
+Overfull \hbox (456.0321pt too wide) in paragraph at lines 217--218
+[][]$\OT1/pcr/m/n/10 https : / / www . aclu . org / press-[]releases / aclu-[]t
+o-[]federal-[]appeals-[]court-[]white-[]house-[]retaliation-[]against-[]disfavo
+red-[]reporters-[]puts-[]u-[]s-[]in-[]dangerous-[]company$[] 
+ []
+
+
+Overfull \hbox (206.0321pt too wide) in paragraph at lines 219--220
+[][]$\OT1/pcr/m/n/10 https : / / globalnews . ca / news / 11022996 / mexico-[]p
+resident-[]claudia-[]sheinbaum-[]google-[]gulf-[]of-[]america-[]legal-[]action/
+$[] 
+ []
+
+
+Overfull \hbox (686.5321pt too wide) in paragraph at lines 220--221
+[][]$\OT1/pcr/m/n/10 https : / / today . yougov . com / politics / articles / 5
+1525-[]donald-[]trump-[]policies-[]actions-[]elon-[]musk-[]robert-[]f-[]kennedy
+-[]jr-[]federal-[]agencies-[]national-[]mood-[]flying-[]february-[]2-[]4-[]2025
+-[]economist-[]yougov-[]poll$[] 
+ []
+
+
+Overfull \hbox (37.0321pt too wide) in paragraph at lines 221--222
+[][]$\OT1/pcr/m/n/10 https : / / abcnews . com / Politics / trump-[]claims-[]he
+ll-[]rename-[]gulf-[]mexico-[]gulf-[]america /
+ []
+
+
+Overfull \hbox (497.5321pt too wide) in paragraph at lines 223--224
+[][]$\OT1/pcr/m/n/10 https : / / www . marquette . edu / news-[]center / 2025 /
+ new-[]marquette-[]law-[]poll-[]national-[]survey-[]finds-[]public-[]strongly-[
+]favors-[]some-[]trump-[]policies-[]strongly-[]opposes-[]others .
+ []
+
+
+Overfull \hbox (448.5321pt too wide) in paragraph at lines 224--225
+[][]$\OT1/pcr/m/n/10 https : / / biologicaldiversity . org / w / news / press-[
+]releases / trump-[]again-[]unlawfully-[]rolls-[]back-[]protections-[]for-[]nor
+theast-[]canyons-[]and-[]seamounts-[]2026-[]02-[]06/$[] 
+ []
+
+
+Overfull \hbox (181.5321pt too wide) in paragraph at lines 226--227
+[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
+roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
+
+ []
+
+
+Overfull \hbox (195.0321pt too wide) in paragraph at lines 227--228
+[][]$\OT1/pcr/m/n/10 https : / / geographical . co . uk / news / digital-[]cart
+ography-[]on-[]trial-[]mexico-[]sues-[]google-[]for-[]gulf-[]of-[]america-[]lab
+el$[] 
+ []
+
+
+Overfull \hbox (12.0321pt too wide) in paragraph at lines 228--229
+[][]$\OT1/pcr/m/n/10 https : / / www . aol . com / articles / donald-[]trumps-[
+]gulf-[]america-[]name-[]205000369 . html$[] 
+ []
+
+
+Overfull \hbox (199.0321pt too wide) in paragraph at lines 229--230
+[][]$\OT1/pcr/m/n/10 https : / / www . tampabay . com / news / education / 2026
+ / 02 / 12 / who-[]pays-[]florida-[]schools-[]change-[]materials-[]gulf-[]ameri
+ca/$[] 
+ []
+
+
+Overfull \hbox (171.0321pt too wide) in paragraph at lines 230--231
+[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
+-[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
+$[] 
+ []
+
+
+Overfull \hbox (267.0321pt too wide) in paragraph at lines 233--234
+[][]$\OT1/pcr/m/n/10 https : / / www . chathamhouse . org / 2026 / 01 / preside
+nt-[]trump-[]may-[]disregard-[]international-[]law-[]other-[]countries-[]want-[
+]make-[]use-[]it$[] 
+ []
+
+
+Overfull \hbox (286.0321pt too wide) in paragraph at lines 235--236
+[][]$\OT1/pcr/m/n/10 https : / / www . techdirt . com / 2025 / 02 / 13 / the-[]
+real-[]gulf-[]of-[]america-[]is-[]between-[]the-[]news-[]outlets-[]that-[]cover
+-[]this-[]administration/$[] 
+ []
+
+
+Overfull \hbox (24.0321pt too wide) in paragraph at lines 236--237
+[][]$\OT1/pcr/m/n/10 https : / / www . politico . com / news / 2025 / 02 / 13 /
+ mexico-[]google-[]gulf-[]of-[]america-[]017780$[] 
  []
 
 
 
 [6]
-Overfull \hbox (107.0321pt too wide) in paragraph at lines 200--201
-[][]$\OT1/pcr/m/n/10 https : / / www . housebeautiful . com / lifestyle / garde
-ning / a64733653 / kate-[]middleton-[]catherine-[]rose/$[] 
- []
-
-
-Overfull \hbox (222.5321pt too wide) in paragraph at lines 205--206
-[][]$\OT1/pcr/m/n/10 https : / / www . harpersbazaar . com / celebrity / latest
- / a63420125 / kate-[]middleton-[]london-[]hospital-[]visit-[]cancer-[]patients
-/$[] 
- []
-
-
-Overfull \hbox (147.5321pt too wide) in paragraph at lines 207--208
-[][]$\OT1/pcr/m/n/10 https : / / www . curetoday . com / view / with-[]cancer-[
-]in-[]remission-[]what-[]is-[]the-[]new-[]normal-[]for-[]princess-[]kate-[]$[] 
-
- []
-
-
-Overfull \hbox (289.0321pt too wide) in paragraph at lines 215--216
-[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
-ition / a60013219 / kate-[]middleton-[]abdominal-[]surgery-[]recovery-[]health-
-[]news-[]2024/$[] 
- []
-
-
-Overfull \hbox (116.5321pt too wide) in paragraph at lines 216--217
-[][]$\OT1/pcr/m/n/10 https : / / www . moffitt . org / taking-[]care-[]of-[]you
-r-[]health / taking-[]care-[]of-[]your-[]health-[]story-[]archive /
- []
-
-
-Overfull \hbox (41.5321pt too wide) in paragraph at lines 217--218
-[][]$\OT1/pcr/m/n/10 https : / / www . veranda . com / outdoor-[]garden / a6481
-4965 / harkness-[]roses-[]catherines-[]rose/$[] 
- []
-
-
-Overfull \hbox (363.0321pt too wide) in paragraph at lines 218--219
-[][]$\OT1/pcr/m/n/10 https : / / www . latimes . com / entertainment-[]arts / s
-tory / 2024-[]01-[]17 / kate-[]middleton-[]hospitalized-[]abdominal-[]surgery-[
-]catherine-[]princess-[]of-[]wales$[] 
- []
-
-
-Overfull \hbox (144.5321pt too wide) in paragraph at lines 221--222
-[][]$\OT1/pcr/m/n/10 https : / / www . opb . org / article / 2024 / 09 / 09 / p
-rincess-[]kate-[]completes-[]chemotherapy-[]treatment-[]for-[]cancer/$[] 
- []
-
-
-Overfull \hbox (17.0321pt too wide) in paragraph at lines 222--223
-[][]$\OT1/pcr/m/n/10 https : / / abcnews . go . com / GMA / Culture / kate-[]mi
-ddleton-[]cancer-[]remission / story ? id =
- []
-
-
-Overfull \hbox (426.5321pt too wide) in paragraph at lines 230--231
-[][]$\OT1/pcr/m/n/10 https : / / www . royalmarsden . org / news / the-[]rhs-[]
-announces-[]catherines-[]rose-[]bred-[]by-[]harkness-[]roses-[]named-[]for-[]he
-r-[]royal-[]highness-[]the-[]princess-[]of-[]wales-[]2$[] 
- []
-
-
-Overfull \hbox (41.5321pt too wide) in paragraph at lines 231--232
-[][]$\OT1/pcr/m/n/10 https : / / www . veranda . com / outdoor-[]garden / a6481
-4965 / harkness-[]roses-[]catherines-[]rose/$[] 
- []
-
-
-Overfull \hbox (240.0321pt too wide) in paragraph at lines 233--234
-[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
-ition / a60282131 / kate-[]middleton-[]cancer-[]diagnosis-[]treatment-[]timelin
-e/$[] 
- []
-
-
-Overfull \hbox (121.5321pt too wide) in paragraph at lines 234--235
-[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / about-[]us / pdfs / abo
-ut-[]the-[]rhs / mission-[]and-[]strategy / rhs-[]strategy-[]to-[]2030 .
- []
-
-
-Overfull \hbox (225.0321pt too wide) in paragraph at lines 235--236
-[][]$\OT1/pcr/m/n/10 https : / / news . cancerresearchuk . org / 2025 / 06 / 27
- / health-[]is-[]wealth-[]tackling-[]the-[]cost-[]of-[]cancer-[]to-[]grow-[]the
--[]economy/$[] 
- []
-
-
-
-[7]
-Overfull \hbox (17.5321pt too wide) in paragraph at lines 236--237
-[][]$\OT1/pcr/m/n/10 https : / / abcnews . com / GMA / Culture / kate-[]middlet
-on-[]surgery-[]photo-[]timeline / story ?
- []
-
-
-Overfull \hbox (85.0321pt too wide) in paragraph at lines 240--241
-[][]$\OT1/pcr/m/n/10 https : / / abc7chicago . com / post / princess-[]of-[]wal
-es-[]kate-[]middleton-[]cancer-[]kensington-[]palace /
- []
-
-
-Overfull \hbox (11.0321pt too wide) in paragraph at lines 241--242
-[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / press / releases / the-
-[]rhs-[]announces-[] % E2 % 80 % 98catherine %
- []
-
-
-Overfull \hbox (5.5321pt too wide) in paragraph at lines 242--243
-[][]$\OT1/pcr/m/n/10 https : / / www . jacksonandperkins . com / blog / rose-[]
-blogs / what-[]is-[]floribunda-[]rose /
- []
-
-
-Overfull \hbox (217.0321pt too wide) in paragraph at lines 243--244
-[][]$\OT1/pcr/m/n/10 https : / / www . townandcountrymag . com / society / trad
-ition / a60280647 / why-[]didnt-[]palace-[]say-[]kate-[]middleton-[]had-[]cance
-r/$[] 
- []
-
-
-Overfull \hbox (11.0321pt too wide) in paragraph at lines 245--246
-[][]$\OT1/pcr/m/n/10 https : / / www . rhs . org . uk / press / releases / the-
-[]rhs-[]announces-[] % E2 % 80 % 98catherine %
- []
-
-
-Overfull \hbox (144.5321pt too wide) in paragraph at lines 246--247
-[][]$\OT1/pcr/m/n/10 https : / / www . marieclaire . com / celebrity / royals /
- princess-[]kate-[]wellbeing-[]walk-[]outdoor-[]nature-[]hobbies/$[] 
- []
-
-
-Overfull \hbox (59.0321pt too wide) in paragraph at lines 247--248
-[][]$\OT1/pcr/m/n/10 https : / / patientinfolibrary . royalmarsden . nhs . uk /
- royal-[]mile-[]prehabilitation-[]programme$[] 
- []
-
-
-Overfull \hbox (181.0321pt too wide) in paragraph at lines 248--249
-[][]$\OT1/pcr/m/n/10 https : / / www . telegraph . co . uk / royal-[]family / 2
-025 / 05 / 09 / catherine-[]rose-[]princess-[]wales-[]nature-[]healing-[]power/
-$[] 
- []
-
-
-Overfull \hbox (402.0321pt too wide) in paragraph at lines 250--251
-[][]$\OT1/pcr/m/n/10 https : / / www . royalmarsden . org / news / why-[]is-[]p
-rehabilitation-[]so-[]important-[]during-[]cancer-[]treatment-[]a-[]q-[]a-[]wit
-h-[]two-[]experts-[]from-[]the-[]royal-[]marsden$[] 
- []
-
-
-Overfull \hbox (158.0321pt too wide) in paragraph at lines 251--252
-[][]$\OT1/pcr/m/n/10 https : / / www . esneft . nhs . uk / welcoming-[]the-[]pr
-incess-[]of-[]wales-[]to-[]colchester-[]hospitals-[]wellbeing-[]garden/$[] 
- []
-
-
-Overfull \hbox (455.5321pt too wide) in paragraph at lines 254--255
-[][]$\OT1/pcr/m/n/10 https : / / news3lv . com / news / entertainment / kate-[]
-middleton-[]makes-[]rare-[]and-[]candid-[]comments-[]about-[]her-[]cancer-[]bat
-tle-[]princess-[]of-[]wales-[]prince-[]william-[]royals$[] 
- []
-
-
-
-[8]
-(/home/roberto/hemingwai/output_temporal/Rose_named_after_Princess_of_Wales_to_
-celebrate_power_of_nat.aux
+(/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Americ
+a_name_change.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -995,35 +993,34 @@ L3 programming layer <2025-01-18>
  ***********
 
 
-Package rerunfilecheck Warning: File `Rose_named_after_Princess_of_Wales_to_cel
-ebrate_power_of_nat.out' has changed.
+Package rerunfilecheck Warning: File `Mexico_sues_Google_over_Gulf_of_America_n
+ame_change.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
-Package rerunfilecheck Info: Checksums for `Rose_named_after_Princess_of_Wales_
-to_celebrate_power_of_nat.out':
+Package rerunfilecheck Info: Checksums for `Mexico_sues_Google_over_Gulf_of_Ame
+rica_name_change.out':
 (rerunfilecheck)             Before: <no file>
 (rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 22833 strings out of 474511
- 417382 string characters out of 5746820
- 818183 words of memory out of 5000000
- 45430 multiletter control sequences out of 15000+600000
- 573392 words of font info for 64 fonts, out of 8000000 for 9000
+ 22790 strings out of 474511
+ 416704 string characters out of 5746820
+ 819165 words of memory out of 5000000
+ 45400 multiletter control sequences out of 15000+600000
+ 574408 words of font info for 64 fonts, out of 8000000 for 9000
  376 hyphenation exceptions out of 8191
- 102i,6n,107p,1317b,600s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></u
-sr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/
-type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times
-/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Rose_named_after_Prin
-cess_of_Wales_to_celebrate_power_of_nat.pdf (8 pages, 110025 bytes).
+ 102i,6n,107p,941b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texli
+ve/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/f
+onts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
+times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Mexico_sues_Google_ov
+er_Gulf_of_America_name_change.pdf (6 pages, 92431 bytes).
 PDF statistics:
- 232 PDF objects out of 1000 (max. 8388607)
- 207 compressed objects within 3 object streams
- 77 named destinations out of 1000 (max. 500000)
+ 195 PDF objects out of 1000 (max. 8388607)
+ 175 compressed objects within 2 object streams
+ 68 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

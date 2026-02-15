@@ -1,7 +1,11 @@
 import anthropic
 import openai
-import re, os, sys
+import re
+import os
+import sys
+import uuid
 import pymongo
+from datetime import datetime, timezone
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -10,6 +14,10 @@ from dotenv import load_dotenv
 load_dotenv()
 from MongoDB import MongoDBService
 from deterministic_engine import compute_evaluation_result
+
+# Pipeline metadata constants (V2 traceability)
+ENGINE_VERSION = "v2.0.0"
+PIPELINE_VERSION = os.getenv("GIT_SHA", "pipeline.2026-02-15")
 
 
 def procesar_noticias():
@@ -69,6 +77,11 @@ def procesar_noticias():
         if not doc_to_analyze:
             print("No se encontró ninguna noticia para procesar.")
             return
+
+        # --- Pipeline run metadata (traceability) ---
+        RUN_ID = str(uuid.uuid4())
+        NOW_ISO = datetime.now(timezone.utc).isoformat()
+        print(f"Run ID: {RUN_ID}")
 
         # --- Lógica de análisis (común para ambos casos) ---
         print(f"ID de la noticia a analizar: {doc_to_analyze['_id']}")
@@ -164,9 +177,10 @@ def procesar_noticias():
                 "justification": valoraciones_texto.get(old_key, "")
             }
             
+        collected_alerts = Utils.extract_alerts_from_valoraciones(valoraciones_texto, puntuacion_individual)
         model_scores = {
             "scores": v2_scores,
-            "alerts": [] # Pending implementation of alert extraction from LLM
+            "alerts": collected_alerts
         }
         
         meta_info = {
@@ -181,8 +195,8 @@ def procesar_noticias():
             print(f"Warning: Missing scores for {missing_scores}. Skipping deterministic engine calculation.")
             evaluation_result = {
                 "meta": meta_info,
-                "scores": model_scores["scores"], 
-                "alerts": [],
+                "scores": model_scores["scores"],
+                "alerts": collected_alerts,
                 "error": {
                     "code": "INCOMPLETE_MODEL_SCORES",
                     "message": f"Missing numeric score for: {', '.join(missing_scores)}",
@@ -190,17 +204,37 @@ def procesar_noticias():
                     "raw_scores_available": [k for k in v2_scores if k not in missing_scores]
                 }
             }
+            pipeline_status = "scored_with_missing"
             # Keep legacy puntuacion_global (calculated as mean of available scores)
         else:
             evaluation_result = compute_evaluation_result(model_scores, meta_info)
             # Update global score with the V2 derived global score
             puntuacion_global = evaluation_result["derived"]["global_score"]
+            pipeline_status = "scored"
+
+        # Pipeline and evaluation_meta for traceability (always stored)
+        pipeline_meta = {
+            "run_id": RUN_ID,
+            "pipeline_version": PIPELINE_VERSION,
+            "engine_version": ENGINE_VERSION,
+            "status": pipeline_status,
+            "steps": {
+                "scoring": {"ok": not bool(missing_scores), "at": NOW_ISO}
+            }
+        }
+        evaluation_meta = {
+            "run_id": RUN_ID,
+            "evaluated_at": NOW_ISO,
+            "engine_version": ENGINE_VERSION,
+            "pipeline_version": PIPELINE_VERSION
+        }
 
         print(f"Procesando titular: {titulo}")
         resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)
-        titular_reformulado = resultados_titular.get("titular_reformulado")
-        es_clickbait = bool(titular_reformulado)
         resumen_valoracion_titular = Utils.obtener_resumen_valoracion_titular(anthropic_client, resultados_titular)
+        es_clickbait = bool(resultados_titular.get("is_clickbait", False))
+        titular_reformulado = resultados_titular.get("titular_reformulado") if es_clickbait else None
+
         update_fields = {
             "valoraciones": valoraciones_texto,
             "puntuacion_individual": puntuacion_individual,
@@ -213,7 +247,9 @@ def procesar_noticias():
             "valoraciones_html": valoraciones_html,
             "es_clickbait": es_clickbait,
             "embedding": noticia_embedding,
-            "evaluation_result": evaluation_result # V2 field
+            "evaluation_result": evaluation_result,
+            "pipeline": pipeline_meta,
+            "evaluation_meta": evaluation_meta
         }
         if puntuacion_global is not None:
             update_fields["puntuacion"] = puntuacion_global
