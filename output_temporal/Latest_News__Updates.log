@@ -1,12 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  15 FEB 2026 23:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.10.17)  16 FEB 2026 00:23
 entering extended mode
  restricted \write18 enabled.
+ file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Ameri
-ca_name_change.tex
-
-(/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Americ
-a_name_change.tex
+**/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -664,8 +662,11 @@ File: l3backend-pdftex.def 2024-05-08 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count323
 \l__pdf_internal_box=\box68
 )
-No file Mexico_sues_Google_over_Gulf_of_America_name_change.aux.
-\openout1 = `Mexico_sues_Google_over_Gulf_of_America_name_change.aux'.
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux
+LaTeX Info: Redefining \. on input line 11.
+LaTeX Info: Redefining \% on input line 11.
+)
+\openout1 = `Latest_News__Updates.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
 LaTeX Font Info:    ... okay on input line 29.
@@ -688,8 +689,12 @@ LaTeX Font Info:    ... okay on input line 29.
 LaTeX Info: Redefining \. on input line 29.
 LaTeX Info: Redefining \% on input line 29.
 Package hyperref Info: Link coloring OFF on input line 29.
+
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
 \@outlinefile=\write4
-\openout4 = `Mexico_sues_Google_over_Gulf_of_America_name_change.out'.
+\openout4 = `Latest_News__Updates.out'.
+
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -747,18 +752,18 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 6
-2.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 5
+4.
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 62.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 54.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 62.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 54.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -771,219 +776,162 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 st/fonts/enc/dvips/base/8r.enc}]
 
 [2]
-LaTeX Font Info:    Trying to load font information for OMS+ptm on input line 1
-20.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 120.
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 126--127
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+ []
+
+
+Overfull \hbox (77.5321pt too wide) in paragraph at lines 128--129
+[][]$\OT1/pcr/m/n/10 https : / / www . digitalspy . com / soaps / casualty / a2
+99115 / taylor-[]reveals-[]casualty-[]plot-[]nerves/$[] 
+ []
+
+
+Overfull \hbox (5.5321pt too wide) in paragraph at lines 130--131
+[][]$\OT1/pcr/m/n/10 https : / / www . webmd . com / schizophrenia / mental-[]h
+ealth-[]brief-[]psychotic-[]disorder$[] 
+ []
+
+
+Overfull \hbox (201.5321pt too wide) in paragraph at lines 131--132
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / many-[]georgians-[]still-[]
+struggling-[]to-[]access-[]care-[]despite-[]2022-[]mental-[]health-[]parity-[]a
+ct/$[] 
+ []
+
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 135--136
+[][]$\OT1/pcr/m/n/10 http : / / theartsdesk . com / tv / david-[]harewood-[]psy
+chosis-[]and-[]me-[]bbc-[]two-[]review-[]actor-[]confronts-[]his-[]painful-[]pa
+st$[] 
+ []
+
+
+Overfull \hbox (341.0321pt too wide) in paragraph at lines 138--139
+[][]$\OT1/pcr/m/n/10 https : / / www . vpm . org / npr-[]news / npr-[]news / 20
+25-[]12-[]31 / his-[]brothers-[]mental-[]illness-[]isolated-[]his-[]family-[]no
+w-[]hes-[]helping-[]other-[]caregivers$[] 
+ []
+
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 143--144
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+ []
+
+
+Overfull \hbox (40.5321pt too wide) in paragraph at lines 148--149
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / sites / 
+default / files / Time % 20to % 20Change % 20WMHD %
+ []
+
+
+Overfull \hbox (182.5321pt too wide) in paragraph at lines 150--151
+[][]$\OT1/pcr/m/n/10 https : / / www . rethink . org / news-[]and-[]stories / b
+logs / 2024 / 11 / psychosis-[]is-[]like-[]a-[]foreign-[]country-[]tom-[]s-[]st
+ory/$[] 
+ []
+
+
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 151--152
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+ []
+
 
 
 [3]
-Overfull \hbox (23.69806pt too wide) in paragraph at lines 150--151
-[]\OT1/ptm/m/n/10 Respecto a la se-cuen-cia tem-po-ral, la no-ti-cia men-cio-na
- que "Shein-baum es-cri-bi[]o una car-ta a Goo-gle en enero"(Sheinbaum
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 157--158
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+ []
+
+
+Overfull \hbox (24.5321pt too wide) in paragraph at lines 161--162
+[][]$\OT1/pcr/m/n/10 https : / / activeminds . org / blog / how-[]active-[]mind
+s-[]interns-[]champion-[]mental-[]health/$[] 
+ []
+
+
+Overfull \hbox (232.5321pt too wide) in paragraph at lines 162--163
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / mental-[]health-[]advocates
+-[]fight-[]stigma-[]to-[]curb-[]conditions-[]that-[]can-[]kill-[]new-[]moms-[]i
+n-[]georgia/$[] 
+ []
+
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 167--168
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+ []
+
+
+Overfull \hbox (114.5321pt too wide) in paragraph at lines 168--169
+[][]$\OT1/pcr/m/n/10 https : / / library . samhsa . gov / sites / default / fil
+es / national-[]guidelines-[]crisis-[]care-[]pep24-[]01-[]037 .
+ []
+
+
+Overfull \hbox (416.5321pt too wide) in paragraph at lines 169--170
+[][]$\OT1/pcr/m/n/10 https : / / www . lsc . ohio . gov / assets / legislation 
+/ 136 / hb96 / psc / files / hb96-[]comparison-[]document-[]as-[]pending-[]in-[
+]senate-[]committee-[]136th-[]general-[]assembly .
+ []
+
+
+Overfull \hbox (424.0321pt too wide) in paragraph at lines 171--172
+[][]$\OT1/pcr/m/n/10 https : / / www . milbank . org / publications / building-
+[]state-[]capacity-[]to-[]address-[]behavioral-[]health-[]needs-[]through-[]cri
+sis-[]services-[]and-[]early-[]intervention/$[] 
+ []
+
+
+Overfull \hbox (183.5321pt too wide) in paragraph at lines 175--176
+[][]$\OT1/pcr/m/n/10 https : / / www . azahcccs . gov / Resources / Downloads /
+ EQR / 2022 / CYE2022ExternalQualityReviewAnnualReportEPDandDDD .
+ []
+
+
+Overfull \hbox (315.0321pt too wide) in paragraph at lines 176--177
+[][]$\OT1/pcr/m/n/10 https : / / www . nami . org / Blogs / NAMI-[]Blog / Decem
+ber-[]2022 / Emotional-[]Recovery-[]from-[]Psychosis-[]Trusting-[]and-[]Believi
+ng-[]in-[]Yourself-[]Again$[] 
+ []
+
+
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 178--179
+[][]$\OT1/pcr/m/n/10 https : / / www . frontiersin . org / journals / psychiatr
+y / articles / 10 . 3389 / fpsyt . 2023 .
+ []
+
+
+Overfull \hbox (10.0321pt too wide) in paragraph at lines 180--181
+[][]$\OT1/pcr/m/n/10 https : / / www . accc . gov . au / system / files / ACCC 
++ commissioned + report + -[] + The + impact +
+ []
+
+
+Overfull \hbox (58.0321pt too wide) in paragraph at lines 180--181
+\OT1/pcr/m/n/10 of + digital + platforms + on + news + and + journalistic + con
+tent ,[] +Centre + for + Media + Transition +
+ []
+
+
+Overfull \hbox (4.0321pt too wide) in paragraph at lines 181--182
+[][]$\OT1/pcr/m/n/10 https : / / vera-[]institute . files . svdcdn . com / prod
+uction / downloads / publications /
+ []
+
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 181--182
+\OT1/pcr/m/n/10 crisis-[]response-[]services-[]for-[]people-[]with-[]mental-[]i
+llnesses-[]or-[]intellectual-[]and-[]developmental-[]disabilities .
  []
 
 
 
-[4]
-Overfull \hbox (171.0321pt too wide) in paragraph at lines 186--187
-[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
--[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
-$[] 
- []
-
-
-Overfull \hbox (181.5321pt too wide) in paragraph at lines 189--190
-[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
-roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
-
- []
-
-
-Overfull \hbox (171.0321pt too wide) in paragraph at lines 190--191
-[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
--[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
-$[] 
- []
-
-
-Overfull \hbox (48.0321pt too wide) in paragraph at lines 191--192
-[][]$\OT1/pcr/m/n/10 https : / / www . whitehouse . gov / presidential-[]action
-s / 2025 / 02 / gulf-[]of-[]america-[]day-[]2025/$[] 
- []
-
-
-Overfull \hbox (280.5321pt too wide) in paragraph at lines 193--194
-[][]$\OT1/pcr/m/n/10 https : / / www . latimes . com / world-[]nation / story /
- 2025-[]05-[]09 / mexico-[]sues-[]google-[]for-[]labeling-[]gulf-[]of-[]mexico-
-[]as-[]gulf-[]of-[]america$[] 
- []
-
-
-Overfull \hbox (217.5321pt too wide) in paragraph at lines 194--195
-[][]$\OT1/pcr/m/n/10 https : / / www . presidency . ucsb . edu / documents / ex
-ecutive-[]order-[]14172-[]restoring-[]names-[]that-[]honor-[]american-[]greatne
-ss$[] 
- []
-
-
-Overfull \hbox (11.5321pt too wide) in paragraph at lines 199--200
-[][]$\OT1/pcr/m/n/10 https : / / nauticalcharts . noaa . gov / data / us-[]mari
-time-[]limits-[]and-[]boundaries . html$[] 
- []
-
-
-Overfull \hbox (129.0321pt too wide) in paragraph at lines 200--201
-[][]$\OT1/pcr/m/n/10 https : / / hiteshcsoni . in / blogs / f / legality-[]of-[
-]renaming-[]the-[]gulf-[]of-[]mexico-[]to-[]the-[]gulf-[]of-[]america ?
- []
-
-
-Overfull \hbox (181.5321pt too wide) in paragraph at lines 204--205
-[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
-roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
-
- []
-
-
-Overfull \hbox (92.0321pt too wide) in paragraph at lines 205--206
-[][]$\OT1/pcr/m/n/10 https : / / www . adexchanger . com / antitrust / 2025-[]t
-he-[]year-[]google-[]lost-[]in-[]court-[]and-[]won-[]anyway/$[] 
- []
-
-
-
-[5]
-Overfull \hbox (315.0321pt too wide) in paragraph at lines 208--209
-[][]$\OT1/pcr/m/n/10 https : / / www . lemonde . fr / en / international / arti
-cle / 2025 / 05 / 09 / mexico-[]sues-[]google-[]for-[]labeling-[]gulf-[]of-[]me
-xico-[]as-[]gulf-[]of-[]america _
- []
-
-
-Overfull \hbox (86.0321pt too wide) in paragraph at lines 211--212
-[][]$\OT1/pcr/m/n/10 https : / / www . courthousenews . com / mexico-[]says-[]i
-ts-[]suing-[]google-[]over-[]gulf-[]of-[]america-[]label/$[] 
- []
-
-
-Overfull \hbox (214.0321pt too wide) in paragraph at lines 214--215
-[][]$\OT1/pcr/m/n/10 https : / / san . com / cc / appeals-[]court-[]to-[]weigh-
-[]trump-[]administrations-[]punishment-[]of-[]ap-[]in-[]gulf-[]of-[]america-[]d
-ispute/$[] 
- []
-
-
-Overfull \hbox (181.5321pt too wide) in paragraph at lines 216--217
-[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
-roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
-
- []
-
-
-Overfull \hbox (456.0321pt too wide) in paragraph at lines 217--218
-[][]$\OT1/pcr/m/n/10 https : / / www . aclu . org / press-[]releases / aclu-[]t
-o-[]federal-[]appeals-[]court-[]white-[]house-[]retaliation-[]against-[]disfavo
-red-[]reporters-[]puts-[]u-[]s-[]in-[]dangerous-[]company$[] 
- []
-
-
-Overfull \hbox (206.0321pt too wide) in paragraph at lines 219--220
-[][]$\OT1/pcr/m/n/10 https : / / globalnews . ca / news / 11022996 / mexico-[]p
-resident-[]claudia-[]sheinbaum-[]google-[]gulf-[]of-[]america-[]legal-[]action/
-$[] 
- []
-
-
-Overfull \hbox (686.5321pt too wide) in paragraph at lines 220--221
-[][]$\OT1/pcr/m/n/10 https : / / today . yougov . com / politics / articles / 5
-1525-[]donald-[]trump-[]policies-[]actions-[]elon-[]musk-[]robert-[]f-[]kennedy
--[]jr-[]federal-[]agencies-[]national-[]mood-[]flying-[]february-[]2-[]4-[]2025
--[]economist-[]yougov-[]poll$[] 
- []
-
-
-Overfull \hbox (37.0321pt too wide) in paragraph at lines 221--222
-[][]$\OT1/pcr/m/n/10 https : / / abcnews . com / Politics / trump-[]claims-[]he
-ll-[]rename-[]gulf-[]mexico-[]gulf-[]america /
- []
-
-
-Overfull \hbox (497.5321pt too wide) in paragraph at lines 223--224
-[][]$\OT1/pcr/m/n/10 https : / / www . marquette . edu / news-[]center / 2025 /
- new-[]marquette-[]law-[]poll-[]national-[]survey-[]finds-[]public-[]strongly-[
-]favors-[]some-[]trump-[]policies-[]strongly-[]opposes-[]others .
- []
-
-
-Overfull \hbox (448.5321pt too wide) in paragraph at lines 224--225
-[][]$\OT1/pcr/m/n/10 https : / / biologicaldiversity . org / w / news / press-[
-]releases / trump-[]again-[]unlawfully-[]rolls-[]back-[]protections-[]for-[]nor
-theast-[]canyons-[]and-[]seamounts-[]2026-[]02-[]06/$[] 
- []
-
-
-Overfull \hbox (181.5321pt too wide) in paragraph at lines 226--227
-[][]$\OT1/pcr/m/n/10 https : / / blog . google / products-[]and-[]platforms / p
-roducts / maps / united-[]states-[]geographic-[]name-[]change-[]feb-[]2025/$[] 
-
- []
-
-
-Overfull \hbox (195.0321pt too wide) in paragraph at lines 227--228
-[][]$\OT1/pcr/m/n/10 https : / / geographical . co . uk / news / digital-[]cart
-ography-[]on-[]trial-[]mexico-[]sues-[]google-[]for-[]gulf-[]of-[]america-[]lab
-el$[] 
- []
-
-
-Overfull \hbox (12.0321pt too wide) in paragraph at lines 228--229
-[][]$\OT1/pcr/m/n/10 https : / / www . aol . com / articles / donald-[]trumps-[
-]gulf-[]america-[]name-[]205000369 . html$[] 
- []
-
-
-Overfull \hbox (199.0321pt too wide) in paragraph at lines 229--230
-[][]$\OT1/pcr/m/n/10 https : / / www . tampabay . com / news / education / 2026
- / 02 / 12 / who-[]pays-[]florida-[]schools-[]change-[]materials-[]gulf-[]ameri
-ca/$[] 
- []
-
-
-Overfull \hbox (171.0321pt too wide) in paragraph at lines 230--231
-[][]$\OT1/pcr/m/n/10 https : / / www . tpr . org / government-[]politics / 2025
--[]05-[]12 / mexico-[]sues-[]google-[]for-[]renaming-[]the-[]gulf-[]of-[]mexico
-$[] 
- []
-
-
-Overfull \hbox (267.0321pt too wide) in paragraph at lines 233--234
-[][]$\OT1/pcr/m/n/10 https : / / www . chathamhouse . org / 2026 / 01 / preside
-nt-[]trump-[]may-[]disregard-[]international-[]law-[]other-[]countries-[]want-[
-]make-[]use-[]it$[] 
- []
-
-
-Overfull \hbox (286.0321pt too wide) in paragraph at lines 235--236
-[][]$\OT1/pcr/m/n/10 https : / / www . techdirt . com / 2025 / 02 / 13 / the-[]
-real-[]gulf-[]of-[]america-[]is-[]between-[]the-[]news-[]outlets-[]that-[]cover
--[]this-[]administration/$[] 
- []
-
-
-Overfull \hbox (24.0321pt too wide) in paragraph at lines 236--237
-[][]$\OT1/pcr/m/n/10 https : / / www . politico . com / news / 2025 / 02 / 13 /
- mexico-[]google-[]gulf-[]of-[]america-[]017780$[] 
- []
-
-
-
-[6]
-(/home/roberto/hemingwai/output_temporal/Mexico_sues_Google_over_Gulf_of_Americ
-a_name_change.aux
+[4] (/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux
 LaTeX Info: Redefining \. on input line 11.
 LaTeX Info: Redefining \% on input line 11.
 )
@@ -991,36 +939,26 @@ LaTeX Info: Redefining \% on input line 11.
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-Package rerunfilecheck Warning: File `Mexico_sues_Google_over_Gulf_of_America_n
-ame_change.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Mexico_sues_Google_over_Gulf_of_Ame
-rica_name_change.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+Package rerunfilecheck Info: File `Latest_News__Updates.out' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 22790 strings out of 474511
- 416704 string characters out of 5746820
- 819165 words of memory out of 5000000
- 45400 multiletter control sequences out of 15000+600000
- 574408 words of font info for 64 fonts, out of 8000000 for 9000
+ 22770 strings out of 474511
+ 416335 string characters out of 5746820
+ 816178 words of memory out of 5000000
+ 45372 multiletter control sequences out of 15000+600000
+ 571238 words of font info for 60 fonts, out of 8000000 for 9000
  376 hyphenation exceptions out of 8191
- 102i,6n,107p,941b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texli
-ve/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/
-times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Mexico_sues_Google_ov
-er_Gulf_of_America_name_change.pdf (6 pages, 92431 bytes).
+ 102i,5n,107p,1019b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Latest_News__Updates.
+pdf (4 pages, 76742 bytes).
 PDF statistics:
- 195 PDF objects out of 1000 (max. 8388607)
- 175 compressed objects within 2 object streams
- 68 named destinations out of 1000 (max. 500000)
+ 205 PDF objects out of 1000 (max. 8388607)
+ 189 compressed objects within 2 object streams
+ 75 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

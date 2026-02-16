@@ -1,0 +1,608 @@
+
+--- pdflatex pass 1 ---
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-spanish/spanish.ldf))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered
+.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/sectsty/sectsty.sty
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file Latest_News__Updates.aux.
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+[2]
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 126--127
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (77.5321pt too wide) in paragraph at lines 128--129
+[][]$\OT1/pcr/m/n/10 https : / / www . digitalspy . com / soaps / casualty / a2
+99115 / taylor-[]reveals-[]casualty-[]plot-[]nerves/$[] 
+
+Overfull \hbox (5.5321pt too wide) in paragraph at lines 130--131
+[][]$\OT1/pcr/m/n/10 https : / / www . webmd . com / schizophrenia / mental-[]h
+ealth-[]brief-[]psychotic-[]disorder$[] 
+
+Overfull \hbox (201.5321pt too wide) in paragraph at lines 131--132
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / many-[]georgians-[]still-[]
+struggling-[]to-[]access-[]care-[]despite-[]2022-[]mental-[]health-[]parity-[]a
+ct/$[] 
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 135--136
+[][]$\OT1/pcr/m/n/10 http : / / theartsdesk . com / tv / david-[]harewood-[]psy
+chosis-[]and-[]me-[]bbc-[]two-[]review-[]actor-[]confronts-[]his-[]painful-[]pa
+st$[] 
+
+Overfull \hbox (341.0321pt too wide) in paragraph at lines 138--139
+[][]$\OT1/pcr/m/n/10 https : / / www . vpm . org / npr-[]news / npr-[]news / 20
+25-[]12-[]31 / his-[]brothers-[]mental-[]illness-[]isolated-[]his-[]family-[]no
+w-[]hes-[]helping-[]other-[]caregivers$[] 
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 143--144
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (40.5321pt too wide) in paragraph at lines 148--149
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / sites / 
+default / files / Time % 20to % 20Change % 20WMHD %
+
+Overfull \hbox (182.5321pt too wide) in paragraph at lines 150--151
+[][]$\OT1/pcr/m/n/10 https : / / www . rethink . org / news-[]and-[]stories / b
+logs / 2024 / 11 / psychosis-[]is-[]like-[]a-[]foreign-[]country-[]tom-[]s-[]st
+ory/$[] 
+
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 151--152
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+
+[3]
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 157--158
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+
+Overfull \hbox (24.5321pt too wide) in paragraph at lines 161--162
+[][]$\OT1/pcr/m/n/10 https : / / activeminds . org / blog / how-[]active-[]mind
+s-[]interns-[]champion-[]mental-[]health/$[] 
+
+Overfull \hbox (232.5321pt too wide) in paragraph at lines 162--163
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / mental-[]health-[]advocates
+-[]fight-[]stigma-[]to-[]curb-[]conditions-[]that-[]can-[]kill-[]new-[]moms-[]i
+n-[]georgia/$[] 
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 167--168
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (114.5321pt too wide) in paragraph at lines 168--169
+[][]$\OT1/pcr/m/n/10 https : / / library . samhsa . gov / sites / default / fil
+es / national-[]guidelines-[]crisis-[]care-[]pep24-[]01-[]037 .
+
+Overfull \hbox (416.5321pt too wide) in paragraph at lines 169--170
+[][]$\OT1/pcr/m/n/10 https : / / www . lsc . ohio . gov / assets / legislation 
+/ 136 / hb96 / psc / files / hb96-[]comparison-[]document-[]as-[]pending-[]in-[
+]senate-[]committee-[]136th-[]general-[]assembly .
+
+Overfull \hbox (424.0321pt too wide) in paragraph at lines 171--172
+[][]$\OT1/pcr/m/n/10 https : / / www . milbank . org / publications / building-
+[]state-[]capacity-[]to-[]address-[]behavioral-[]health-[]needs-[]through-[]cri
+sis-[]services-[]and-[]early-[]intervention/$[] 
+
+Overfull \hbox (183.5321pt too wide) in paragraph at lines 175--176
+[][]$\OT1/pcr/m/n/10 https : / / www . azahcccs . gov / Resources / Downloads /
+ EQR / 2022 / CYE2022ExternalQualityReviewAnnualReportEPDandDDD .
+
+Overfull \hbox (315.0321pt too wide) in paragraph at lines 176--177
+[][]$\OT1/pcr/m/n/10 https : / / www . nami . org / Blogs / NAMI-[]Blog / Decem
+ber-[]2022 / Emotional-[]Recovery-[]from-[]Psychosis-[]Trusting-[]and-[]Believi
+ng-[]in-[]Yourself-[]Again$[] 
+
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 178--179
+[][]$\OT1/pcr/m/n/10 https : / / www . frontiersin . org / journals / psychiatr
+y / articles / 10 . 3389 / fpsyt . 2023 .
+
+Overfull \hbox (10.0321pt too wide) in paragraph at lines 180--181
+[][]$\OT1/pcr/m/n/10 https : / / www . accc . gov . au / system / files / ACCC 
++ commissioned + report + -[] + The + impact +
+
+Overfull \hbox (58.0321pt too wide) in paragraph at lines 180--181
+\OT1/pcr/m/n/10 of + digital + platforms + on + news + and + journalistic + con
+tent ,[] +Centre + for + Media + Transition +
+
+Overfull \hbox (4.0321pt too wide) in paragraph at lines 181--182
+[][]$\OT1/pcr/m/n/10 https : / / vera-[]institute . files . svdcdn . com / prod
+uction / downloads / publications /
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 181--182
+\OT1/pcr/m/n/10 crisis-[]response-[]services-[]for-[]people-[]with-[]mental-[]i
+llnesses-[]or-[]intellectual-[]and-[]developmental-[]disabilities .
+
+[4] (/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux)
+
+Package rerunfilecheck Warning: File `Latest_News__Updates.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Latest_News__Updates.
+pdf (4 pages, 76742 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Latest_News__Upda
+tes.log.
+
+--- pdflatex pass 2 ---
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo))
+(/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+(/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+(/usr/share/texlive/texmf-dist/tex/generic/babel-spanish/spanish.ldf))
+(/usr/share/texlive/texmf-dist/tex/generic/babel/locale/es/babel-spanish.tex)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+(/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+(/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+(/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+(/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/stringenc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def)
+(/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def)
+(/usr/share/texlive/texmf-dist/tex/latex/url/url.sty)
+(/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+(/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+(/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+(/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))
+(/usr/share/texlive/texmf-dist/tex/latex/enumitem/enumitem.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/pgf.revision.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfiltered
+.code.tex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-pdftex.def
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-pdf.de
+f)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.code.
+tex)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg)
+(/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigonomet
+ric.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.random.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.comparison
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
+thmetics.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconstruct.
+code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicstate.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransformation
+s.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathprocessing
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.code.te
+x)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransparency.c
+ode.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.code.
+tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.tex))
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-0-65
+.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version-1-18
+.sty)) (/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+(/usr/share/texlive/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.code.tex
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothandlers
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.code.tex
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgf/frontendlayer/tikz/libraries/tik
+zlibrarytopaths.code.tex)))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amsfonts.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/amssymb.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+(/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty))
+(/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/sectsty/sectsty.sty
+
+LaTeX Warning: Command \underbar  has changed.
+               Check if current package is valid.
+
+
+LaTeX Warning: Command \underline  has changed.
+               Check if current package is valid.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux)
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
+(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
+(/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+(/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
+[2]
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 126--127
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (77.5321pt too wide) in paragraph at lines 128--129
+[][]$\OT1/pcr/m/n/10 https : / / www . digitalspy . com / soaps / casualty / a2
+99115 / taylor-[]reveals-[]casualty-[]plot-[]nerves/$[] 
+
+Overfull \hbox (5.5321pt too wide) in paragraph at lines 130--131
+[][]$\OT1/pcr/m/n/10 https : / / www . webmd . com / schizophrenia / mental-[]h
+ealth-[]brief-[]psychotic-[]disorder$[] 
+
+Overfull \hbox (201.5321pt too wide) in paragraph at lines 131--132
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / many-[]georgians-[]still-[]
+struggling-[]to-[]access-[]care-[]despite-[]2022-[]mental-[]health-[]parity-[]a
+ct/$[] 
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 135--136
+[][]$\OT1/pcr/m/n/10 http : / / theartsdesk . com / tv / david-[]harewood-[]psy
+chosis-[]and-[]me-[]bbc-[]two-[]review-[]actor-[]confronts-[]his-[]painful-[]pa
+st$[] 
+
+Overfull \hbox (341.0321pt too wide) in paragraph at lines 138--139
+[][]$\OT1/pcr/m/n/10 https : / / www . vpm . org / npr-[]news / npr-[]news / 20
+25-[]12-[]31 / his-[]brothers-[]mental-[]illness-[]isolated-[]his-[]family-[]no
+w-[]hes-[]helping-[]other-[]caregivers$[] 
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 143--144
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (40.5321pt too wide) in paragraph at lines 148--149
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / sites / 
+default / files / Time % 20to % 20Change % 20WMHD %
+
+Overfull \hbox (182.5321pt too wide) in paragraph at lines 150--151
+[][]$\OT1/pcr/m/n/10 https : / / www . rethink . org / news-[]and-[]stories / b
+logs / 2024 / 11 / psychosis-[]is-[]like-[]a-[]foreign-[]country-[]tom-[]s-[]st
+ory/$[] 
+
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 151--152
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+
+[3]
+Overfull \hbox (30.5321pt too wide) in paragraph at lines 157--158
+[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
+ / blog / school ,[] -[]college-[]and-[]university$[] 
+
+Overfull \hbox (24.5321pt too wide) in paragraph at lines 161--162
+[][]$\OT1/pcr/m/n/10 https : / / activeminds . org / blog / how-[]active-[]mind
+s-[]interns-[]champion-[]mental-[]health/$[] 
+
+Overfull \hbox (232.5321pt too wide) in paragraph at lines 162--163
+[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / mental-[]health-[]advocates
+-[]fight-[]stigma-[]to-[]curb-[]conditions-[]that-[]can-[]kill-[]new-[]moms-[]i
+n-[]georgia/$[] 
+
+Overfull \hbox (175.5321pt too wide) in paragraph at lines 167--168
+[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
+eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+
+Overfull \hbox (114.5321pt too wide) in paragraph at lines 168--169
+[][]$\OT1/pcr/m/n/10 https : / / library . samhsa . gov / sites / default / fil
+es / national-[]guidelines-[]crisis-[]care-[]pep24-[]01-[]037 .
+
+Overfull \hbox (416.5321pt too wide) in paragraph at lines 169--170
+[][]$\OT1/pcr/m/n/10 https : / / www . lsc . ohio . gov / assets / legislation 
+/ 136 / hb96 / psc / files / hb96-[]comparison-[]document-[]as-[]pending-[]in-[
+]senate-[]committee-[]136th-[]general-[]assembly .
+
+Overfull \hbox (424.0321pt too wide) in paragraph at lines 171--172
+[][]$\OT1/pcr/m/n/10 https : / / www . milbank . org / publications / building-
+[]state-[]capacity-[]to-[]address-[]behavioral-[]health-[]needs-[]through-[]cri
+sis-[]services-[]and-[]early-[]intervention/$[] 
+
+Overfull \hbox (183.5321pt too wide) in paragraph at lines 175--176
+[][]$\OT1/pcr/m/n/10 https : / / www . azahcccs . gov / Resources / Downloads /
+ EQR / 2022 / CYE2022ExternalQualityReviewAnnualReportEPDandDDD .
+
+Overfull \hbox (315.0321pt too wide) in paragraph at lines 176--177
+[][]$\OT1/pcr/m/n/10 https : / / www . nami . org / Blogs / NAMI-[]Blog / Decem
+ber-[]2022 / Emotional-[]Recovery-[]from-[]Psychosis-[]Trusting-[]and-[]Believi
+ng-[]in-[]Yourself-[]Again$[] 
+
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 178--179
+[][]$\OT1/pcr/m/n/10 https : / / www . frontiersin . org / journals / psychiatr
+y / articles / 10 . 3389 / fpsyt . 2023 .
+
+Overfull \hbox (10.0321pt too wide) in paragraph at lines 180--181
+[][]$\OT1/pcr/m/n/10 https : / / www . accc . gov . au / system / files / ACCC 
++ commissioned + report + -[] + The + impact +
+
+Overfull \hbox (58.0321pt too wide) in paragraph at lines 180--181
+\OT1/pcr/m/n/10 of + digital + platforms + on + news + and + journalistic + con
+tent ,[] +Centre + for + Media + Transition +
+
+Overfull \hbox (4.0321pt too wide) in paragraph at lines 181--182
+[][]$\OT1/pcr/m/n/10 https : / / vera-[]institute . files . svdcdn . com / prod
+uction / downloads / publications /
+
+Overfull \hbox (195.5321pt too wide) in paragraph at lines 181--182
+\OT1/pcr/m/n/10 crisis-[]response-[]services-[]for-[]people-[]with-[]mental-[]i
+llnesses-[]or-[]intellectual-[]and-[]developmental-[]disabilities .
+
+[4] (/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux) )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Latest_News__Updates.
+pdf (4 pages, 76742 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Latest_News__Upda
+tes.log.

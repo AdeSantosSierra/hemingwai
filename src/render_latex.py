@@ -35,6 +35,11 @@ _UNICODE_REPLACEMENTS = (
     ("\u26A0", "[Atención]"),       # ⚠
     ("\u2B50", "[Estrella]"),       # ⭐
     ("\U0001F6A9", "[Bandera]"),    # 🚩 (correct: \U0001F6A9, not \u1F6A9)
+    ("\u20AC", " EUR"),             # €
+    ("\u2014", "-"),                # — (em dash)
+    ("\u2013", "-"),                # – (en dash)
+    ("\u2026", "..."),              # … (ellipsis)
+    ("\u2022", "-"),                # • (bullet)
     ("\u201C", '"'), ("\u201D", '"'), ("\u201E", '"'), ("\u201F", '"'),  # left/right double
     ("\u2018", "'"), ("\u2019", "'"), ("\u201A", "'"), ("\u201B", "'"),  # left/right single
     ("\u00AB", '"'), ("\u00BB", '"'), ("\u2039", "'"), ("\u203A", "'"), # « » ‹ ›
@@ -69,11 +74,41 @@ def _run_unicode_sanity_tests():
         ("«guillemets»", '"guillemets"'),
         ("\U0001F6A9 flag", "[Bandera] flag"),
         ("\u26A0 warn \u2B50", "[Atención] warn [Estrella]"),
+        ("Precio: 30€", "Precio: 30 EUR"),
+        ("A — B – C", "A - B - C"),
+        ("Hola…", "Hola..."),
+        ("• item", "- item"),
     ]
     for input_s, expected in samples:
         got = strip_or_replace_problematic_unicode(input_s)
         assert got == expected, "Unicode test: %r -> %r != %r" % (input_s, got, expected)
     print("Unicode sanity tests OK.")
+
+def _run_url_tests():
+    """Tests para detección y formateo de URLs."""
+    samples = [
+        ("Visita https://google.com para más.", r"Visita \url{https://google.com} para m\'{a}s."),
+        ("Click https://example.org.", r"Click \url{https://example.org}."),
+        ("Mira (https://site.com/foo)", r"Mira (\url{https://site.com/foo})"),
+        ("https://simple.com", r"\url{https://simple.com}"),
+        ("Text https://a.com, https://b.com end", r"Text \url{https://a.com}, \url{https://b.com} end"),
+        # New robust tests
+        ("https://a.com/x_y", r"\url{https://a.com/x_y}"), # No italic
+        ("**https://a.com**", r"\textbf{\url{https://a.com}}"), # Bold url
+        ("Check https://a.com/foo.", r"Check \url{https://a.com/foo}."),
+        ("Check https://a.com/foo;", r"Check \url{https://a.com/foo};"),
+        ("(https://a.com/foo)", r"(\url{https://a.com/foo})"),
+        ("https://a.com/foo)", r"\url{https://a.com/foo})"), # Unbalanced ) stripped
+        ("[https://a.com/foo]", r"[\url{https://a.com/foo}]"),
+        ("https://a.com/foo]", r"\url{https://a.com/foo}]"), # Unbalanced ] stripped
+        ("https://a.com/foo?q=1&b=2", r"\url{https://a.com/foo?q=1&b=2}"), # Query params
+        # Our regex strictly stops at {, }, <, >, ", ', so URLs cannot contain braces at all.
+        ("https://a.com/foo{bar}", r"\url{https://a.com/foo}\{bar\}"), 
+    ]
+    for input_s, expected in samples:
+        got = escape_tex_special_chars(input_s)
+        assert got == expected, "URL test: %r -> %r != %r" % (input_s, got, expected)
+    print("URL tests OK.")
 
 
 def _run_format_tests():
@@ -107,13 +142,58 @@ CORE_TEX_SPECIAL_CHARS_NO_BS = {
     "Ù": r"\`{U}", "Ú": r"\'{U}", "Û": r"\^{U}", "Ü": r"\"{U}",
     "ñ": r"\~{n}", "Ñ": r"\~{N}", "¿": r"?`", "¡": r"!`",
 }
-UNIQUE_PARAGRAPH_BREAK_STRING = "UNIQUEPARABREAKSTRING"
+# Stable token without underscores/asterisks to avoid triggering markdown parser (bold/italic)
+UNIQUE_PARAGRAPH_BREAK_STRING = "PARABREAKTOKENXYZ123"
 
 def escape_tex_chars_in_plain_text_segment(text_segment):
     if not text_segment: return ""
+    # Note: URLs are already extracted/replaced by placeholders before calling this.
     text_segment = strip_or_replace_problematic_unicode(text_segment)
     processed_segment = text_segment.replace("\\", r"\textbackslash{}")
     return "".join(CORE_TEX_SPECIAL_CHARS_NO_BS.get(char, char) for char in processed_segment)
+
+def _extract_and_replace_urls(text):
+    """
+    Finds URLs, replaces them with a safe placeholder, and returns (processed_text, url_map).
+    Stops at whitespace or < > " ' { } \
+    Handles trailing punctuation intelligently.
+    """
+    if not text: return text, {}
+    
+    # Regex stops at whitespace or specific delimiters.
+    # We capture the full candidate URL string.
+    # Added * to delimiters so markdown bold/italic (**...**) isn't consumed.
+    url_pattern = re.compile(r"(https?://[^\s<>\"'\{\}\\\*]+)")
+    
+    url_map = {}
+    
+    def replacer(match):
+        raw_url = match.group(0)
+        
+        # 1. Strip safe trailing punctuation always
+        # .,;: are almost never end of URL in this context; * stripped defensively
+        clean_url = raw_url.rstrip(".,;:*")
+        trailing = raw_url[len(clean_url):]
+        
+        # 2. Handle trailing ) - strip if unbalanced
+        if clean_url.endswith(")"):
+            if clean_url.count("(") < clean_url.count(")"):
+                clean_url = clean_url[:-1]
+                trailing = ")" + trailing
+        
+        # 3. Handle trailing ] - strip if unbalanced
+        if clean_url.endswith("]"):
+            if clean_url.count("[") < clean_url.count("]"):
+                clean_url = clean_url[:-1]
+                trailing = "]" + trailing
+
+        # Create placeholder
+        placeholder = f"URLPLACEHOLDER{len(url_map)}URLPLACEHOLDER"
+        url_map[placeholder] = clean_url
+        
+        return placeholder + trailing
+
+    return url_pattern.sub(replacer, text), url_map
 
 def escape_tex_inline(text_content):
     r"""For content *inside* LaTeX commands like \textbf{...} or item labels."""
@@ -130,11 +210,16 @@ def escape_tex_special_chars(text):
     """For general text blocks that might contain markdown and newlines."""
     if not isinstance(text, str): return text
 
+    # 1. Extract URLs first to prevent markdown interference (e.g. underscores in URLs)
+    text, url_map = _extract_and_replace_urls(text)
+
+    # 2. Normalize unicode and handle newlines/paragraphs
     text = strip_or_replace_problematic_unicode(text)
     text = text.replace("\r\n", "\n")
     text_with_placeholders = re.sub(r"\n\s*\n+", UNIQUE_PARAGRAPH_BREAK_STRING, text)
     text_with_spaces = text_with_placeholders.replace("\n", " ")
 
+    # 3. Split by Markdown (bold/italic)
     md_regex = re.compile(r'(\*{2}(?:.|\n)+?\*{2})|(\*(?:.|\n)+?\*)|(_(?:.|\n)+?_)')
     parts = md_regex.split(text_with_spaces)
 
@@ -158,7 +243,18 @@ def escape_tex_special_chars(text):
             processed_parts.append(escape_tex_chars_in_plain_text_segment(part))
 
     final_text_segments = "".join(processed_parts)
+    
+    # 4. Restore paragraph breaks
     final_text = final_text_segments.replace(UNIQUE_PARAGRAPH_BREAK_STRING, "\n\\par\\medskip\n")
+    
+    # 5. Restore URLs (wrapped in \url{})
+    # Iterate over map to replace placeholders.
+    # Note: placeholders are plain alphanumeric, so regex replacement is safe.
+    for placeholder, raw_url in url_map.items():
+        # raw_url is put inside \url{} directly; standard LaTeX \url handles chars like % # _ & etc.
+        # We ensure it doesn't contain unbalanced braces via our extraction logic.
+        final_text = final_text.replace(placeholder, f"\\url{{{raw_url}}}")
+        
     return final_text
 
 def format_analysis_text(text):
@@ -169,7 +265,8 @@ def format_analysis_text(text):
     """
     if not isinstance(text, str):
         return ""
-    text = text.strip().replace("\r\n", "\n")
+    # Evitar strip() completo para no comerse saltos iniciales relevantes, pero limpiar final
+    text = text.replace("\r\n", "\n").rstrip()
     lines = text.split("\n")
 
     # 1. Separar en bloques: cada bloque es o bien una línea ## (heading) o bien líneas de texto
@@ -251,6 +348,10 @@ def sanitize_and_format_fact_check(text):
     return final_text
 
 def replace_tex_special_chars_for_url(text):
+    """
+    Used by the Jinja template (news_template.tex.j2) for main article and source URLs.
+    Escapes special LaTeX characters.
+    """
     if not isinstance(text, str): text = str(text)
     text = strip_or_replace_problematic_unicode(text)
     text = text.replace("\\", r"\textbackslash{}")
@@ -343,6 +444,21 @@ def compile_latex_to_pdf(tex_path, output_dir, log_path, timeout_sec=60):
                 logf.write(err)
                 log_lines.extend((out + err).splitlines())
                 if result.returncode != 0:
+                    # Intento de extraer el error específico de LaTeX
+                    print("--- Análisis de error LaTeX ---")
+                    for idx, line in enumerate(log_lines):
+                        if "! LaTeX Error:" in line:
+                            print(line)
+                            # Buscar contexto de línea (l. <num>) en las siguientes líneas
+                            for offset in range(1, 10):
+                                if idx + offset < len(log_lines):
+                                    next_l = log_lines[idx + offset]
+                                    if next_l.strip().startswith("l."):
+                                        print(next_l)
+                                        break
+                            break
+                    print("-----------------------------")
+
                     tail = "\n".join(log_lines[-80:]) if len(log_lines) > 80 else "\n".join(log_lines)
                     print("--- Error pdflatex (últimas líneas del log) ---")
                     print(tail)
@@ -414,6 +530,8 @@ def run_mega_cmd(mode, command, args=None, timeout=15):
             capture_output=True,
             text=True,
             timeout=timeout,
+            encoding="utf-8",
+            errors="replace",
         )
         return (result.stdout or "", result.stderr or "", result.returncode)
     except subprocess.TimeoutExpired:
@@ -531,6 +649,9 @@ def subir_a_mega_mejorado(pdf_path, email, password, carpeta_destino="HemingwAI/
 if __name__ == "__main__":
     if os.getenv("RENDER_LATEX_TEST_UNICODE"):
         _run_unicode_sanity_tests()
+        sys.exit(0)
+    if os.getenv("RENDER_LATEX_TEST_URL"):
+        _run_url_tests()
         sys.exit(0)
     if os.getenv("RENDER_LATEX_TEST_FORMAT"):
         _run_format_tests()
