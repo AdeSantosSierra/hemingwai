@@ -14,10 +14,15 @@ from dotenv import load_dotenv
 load_dotenv()
 from MongoDB import MongoDBService
 from deterministic_engine import compute_evaluation_result
+from llm_alert_extractor import extract_alerts_with_llm
 
 # Pipeline metadata constants (V2 traceability)
 ENGINE_VERSION = "v2.0.0"
 PIPELINE_VERSION = os.getenv("GIT_SHA", "pipeline.2026-02-15")
+try:
+    ALERT_MIN_BODY_CHARS = int(os.getenv("ALERT_MIN_BODY_CHARS", "400"))
+except ValueError:
+    ALERT_MIN_BODY_CHARS = 400
 
 
 def procesar_noticias():
@@ -177,7 +182,16 @@ def procesar_noticias():
                 "justification": valoraciones_texto.get(old_key, "")
             }
             
-        collected_alerts = Utils.extract_alerts_from_valoraciones(valoraciones_texto, puntuacion_individual)
+        collected_alerts = extract_alerts_with_llm(
+            openai,
+            valoraciones_texto,
+            puntuacion_individual,
+            Utils.criterios,
+            texto_referencia=texto_referencia,
+            max_alerts=8,
+        )
+        collected_alerts = Utils.dedupe_alerts(collected_alerts)
+        collected_alerts = Utils.sort_alerts(collected_alerts)
         model_scores = {
             "scores": v2_scores,
             "alerts": collected_alerts
@@ -193,10 +207,19 @@ def procesar_noticias():
         
         if missing_scores:
             print(f"Warning: Missing scores for {missing_scores}. Skipping deterministic engine calculation.")
+            missing_alerts = Utils.dedupe_alerts(collected_alerts)
+            missing_alerts = Utils.sort_alerts(missing_alerts)
             evaluation_result = {
                 "meta": meta_info,
                 "scores": model_scores["scores"],
-                "alerts": collected_alerts,
+                "alerts": missing_alerts,
+                "alerts_summary": Utils.build_alerts_summary(missing_alerts),
+                "audit": {
+                    "rules_fired": [f"RULE:MODEL_OUTPUT_INVALID_SCHEMA:{c}" for c in missing_scores],
+                    "inconsistencies": [],
+                    "inconsistencies_details": [],
+                    "decision_path": ["Missing scores -> deterministic engine skipped"],
+                },
                 "error": {
                     "code": "INCOMPLETE_MODEL_SCORES",
                     "message": f"Missing numeric score for: {', '.join(missing_scores)}",
@@ -207,10 +230,26 @@ def procesar_noticias():
             pipeline_status = "scored_with_missing"
             # Keep legacy puntuacion_global (calculated as mean of available scores)
         else:
-            evaluation_result = compute_evaluation_result(model_scores, meta_info)
+            evaluation_result = compute_evaluation_result(
+                model_scores,
+                meta_info,
+                raw_body=noticia,
+                min_body_chars=ALERT_MIN_BODY_CHARS,
+            )
             # Update global score with the V2 derived global score
             puntuacion_global = evaluation_result["derived"]["global_score"]
             pipeline_status = "scored"
+
+        # Ensure consistent alert/audit shape before persistence
+        final_alerts = Utils.dedupe_alerts(evaluation_result.get("alerts", []))
+        final_alerts = Utils.sort_alerts(final_alerts)
+        evaluation_result["alerts"] = final_alerts
+        evaluation_result["alerts_summary"] = Utils.build_alerts_summary(final_alerts)
+        evaluation_result.setdefault("audit", {})
+        evaluation_result["audit"].setdefault("rules_fired", [])
+        evaluation_result["audit"].setdefault("inconsistencies", [])
+        evaluation_result["audit"].setdefault("inconsistencies_details", [])
+        evaluation_result["audit"].setdefault("decision_path", [])
 
         # Pipeline and evaluation_meta for traceability (always stored)
         pipeline_meta = {

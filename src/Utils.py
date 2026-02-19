@@ -1,9 +1,15 @@
 import hashlib
 from datetime import datetime
 import re
+from collections import Counter
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import numpy as np  # Asegúrate de tener numpy instalado: pip install numpy
+from alerts_catalog import (
+    VALID_CATEGORIES,
+    normalize_alert_shape,
+    severity_rank,
+)
 
 
 class Utils:
@@ -427,65 +433,116 @@ class Utils:
     }
 
     @staticmethod
-    def extract_alerts_from_valoraciones(valoraciones_texto, puntuacion_individual):
+    def _extract_snippet_window(text, start, end, window=140):
+        if not text:
+            return ""
+        left = max(0, start - window)
+        right = min(len(text), end + window)
+        snippet = text[left:right].strip()
+        return re.sub(r"\s+", " ", snippet)
+
+    @staticmethod
+    def _pick_evidence_refs_from_citas(diccionario_citas, category, max_items=3):
+        if not isinstance(diccionario_citas, dict):
+            return []
+        refs = []
+        for fragmento, explicacion in diccionario_citas.items():
+            frag = str(fragmento or "").strip()
+            exp = str(explicacion or "").lower()
+            if not frag:
+                continue
+            if category in exp or len(refs) < max_items:
+                refs.append(frag)
+            if len(refs) >= max_items:
+                break
+        return refs
+
+    @staticmethod
+    def dedupe_alerts(alerts):
+        merged = {}
+        for raw_alert in alerts or []:
+            alert = normalize_alert_shape(raw_alert)
+            key = (alert["code"], alert["category"], alert["severity"], alert["origin"])
+            if key not in merged:
+                merged[key] = alert
+                continue
+            existing = merged[key]
+            refs = existing.get("evidence_refs", []) + alert.get("evidence_refs", [])
+            unique = []
+            seen = set()
+            for ref in refs:
+                txt = str(ref).strip()
+                if txt and txt not in seen:
+                    seen.add(txt)
+                    unique.append(txt)
+            existing["evidence_refs"] = unique[:3]
+            if not existing.get("message") and alert.get("message"):
+                existing["message"] = alert["message"]
+        return list(merged.values())
+
+    @staticmethod
+    def sort_alerts(alerts):
+        category_priority = {c: 3 for c in VALID_CATEGORIES}
+        category_priority["fiabilidad"] = 1
+        category_priority["adecuacion"] = 2
+        return sorted(
+            [normalize_alert_shape(a) for a in (alerts or [])],
+            key=lambda a: (
+                -severity_rank(a.get("severity")),
+                category_priority.get(a.get("category"), 9),
+                a.get("code", ""),
+            ),
+        )
+
+    @staticmethod
+    def enforce_model_alert_limit(alerts, max_items=8):
+        model_alerts = [a for a in (alerts or []) if str(a.get("origin", "")).lower() == "model"]
+        model_alerts = Utils.sort_alerts(model_alerts)
+        model_alerts = model_alerts[:max_items]
+        non_model = [a for a in (alerts or []) if str(a.get("origin", "")).lower() != "model"]
+        return model_alerts + non_model
+
+    @staticmethod
+    def build_alerts_summary(alerts):
+        normalized = [normalize_alert_shape(a) for a in (alerts or [])]
+        counts = {"high": 0, "medium": 0, "low": 0}
+        by_category = {}
+        weighted_codes = Counter()
+        for alert in normalized:
+            sev = alert["severity"]
+            cat = alert["category"]
+            code = alert["code"]
+            counts[sev] = counts.get(sev, 0) + 1
+            by_category[cat] = by_category.get(cat, 0) + 1
+            weighted_codes[code] += severity_rank(sev) + 1
+        top = [code for code, _ in weighted_codes.most_common(3)]
+        return {"counts": counts, "by_category": by_category, "top": top}
+
+    @staticmethod
+    def extract_alerts_from_valoraciones(valoraciones_texto, puntuacion_individual, texto_referencia=None, diccionario_citas=None):
         """
-        Heuristic extraction of model alerts from LLM justification text.
-        Returns a list of alert dicts compatible with deterministic_engine (code, category,
-        severity, message, origin, evidence_refs). Used to populate model_scores["alerts"].
+        Deprecated legacy wrapper. Alert extraction now happens through
+        llm_alert_extractor.extract_alerts_with_llm in the V2 pipeline.
         """
-        alerts = []
-        if not isinstance(valoraciones_texto, dict) or not isinstance(puntuacion_individual, dict):
-            return alerts
+        return []
 
-        # Patterns that suggest verification/source issues (high severity for F/A)
-        unverified_patterns = [
-            r"no\s+hay\s+fuentes", r"sin\s+fuentes", r"no\s+se\s+puede\s+verificar",
-            r"sin\s+evidencia", r"falta\s+de\s+atribuci[oó]n", r"sin\s+atribuci[oó]n",
-            r"afirmaciones\s+sin\s+(?:fuente|base)", r"no\s+aporta\s+base"
-        ]
-        contradiction_patterns = [
-            r"contradicci[oó]n", r"contradictorio", r"datos\s+incompatibles",
-            r"incoherente"
-        ]
+    @staticmethod
+    def extract_alert_codes_by_category(alerts):
+        out = {}
+        for raw in alerts or []:
+            alert = normalize_alert_shape(raw)
+            key = alert["category"]
+            out.setdefault(key, []).append(alert["code"])
+        return out
 
-        for leg_key, category in Utils._LEGACY_KEY_TO_CATEGORY.items():
-            text = valoraciones_texto.get(leg_key)
-            if isinstance(text, dict) and "mensaje" in text:
-                text = text.get("mensaje", "")
-            text = (text or "").lower()
-            score = puntuacion_individual.get(leg_key)
-            try:
-                score_f = float(score) if score is not None else None
-            except (TypeError, ValueError):
-                score_f = None
-
-            for pattern in unverified_patterns:
-                if re.search(pattern, text, re.IGNORECASE):
-                    # fiabilidad/adecuacion => high; resto => medium
-                    severity = "high" if category in ("fiabilidad", "adecuacion") else "medium"
-                    alerts.append({
-                        "code": "UNVERIFIED_CLAIM",
-                        "category": category,
-                        "severity": severity,
-                        "message": "Justificación indica falta de fuentes o verificación.",
-                        "origin": "model",
-                        "evidence_refs": []
-                    })
-                    break
-
-            for pattern in contradiction_patterns:
-                if re.search(pattern, text, re.IGNORECASE):
-                    alerts.append({
-                        "code": "INTERNAL_CONTRADICTION",
-                        "category": category,
-                        "severity": "medium",
-                        "message": "Justificación indica posible contradicción interna.",
-                        "origin": "model",
-                        "evidence_refs": []
-                    })
-                    break
-
-        return alerts
+    @staticmethod
+    def has_high_alert_in_category(alerts, categories):
+        categories = set(categories or [])
+        for raw in alerts or []:
+            alert = normalize_alert_shape(raw)
+            if alert["category"] in categories and alert["severity"] == "high":
+                return True
+        return False
 
     @staticmethod
     def convertir_markdown_a_html(markdown_input):
@@ -1246,6 +1303,3 @@ Responde únicamente con el número, sin texto adicional.
                     update_fields[field] = value
         if update_fields:
             new_collection.update_one({'_id': doc['_id']}, {'$set': update_fields}, upsert=True)
-
-
-

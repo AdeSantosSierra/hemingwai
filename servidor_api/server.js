@@ -396,6 +396,50 @@ app.get('/api/news/context', async (req, res) => {
 });
 
 /**
+ * GET /api/news/:id/alerts
+ * Devuelve alertas V2 y su resumen para una noticia concreta.
+ */
+app.get('/api/news/:id/alerts', async (req, res) => {
+    const { id } = req.params;
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) {
+        return res.status(400).json({ ok: false, error: "El parámetro ':id' debe ser un ObjectId válido." });
+    }
+
+    try {
+        const news = await ejecutarScriptPython('buscar_noticia.py', [id]);
+        if (!news || news.mensaje === "Noticia no encontrada.") {
+            return res.status(404).json({ ok: false, error: "Noticia no encontrada." });
+        }
+
+        const alerts = news?.evaluation_result?.alerts ?? [];
+        const alerts_summary = news?.evaluation_result?.alerts_summary ?? {
+            counts: { high: 0, medium: 0, low: 0 },
+            by_category: {},
+            top: []
+        };
+        const audit = news?.evaluation_result?.audit ?? {
+            rules_fired: [],
+            inconsistencies: [],
+            decision_path: []
+        };
+
+        return res.status(200).json({
+            ok: true,
+            news_id: id,
+            alerts,
+            alerts_summary,
+            audit
+        });
+    } catch (error) {
+        console.error('Error en /api/news/:id/alerts:', error);
+        return res.status(500).json({
+            ok: false,
+            error: error.error || "Error interno del servidor al obtener alertas."
+        });
+    }
+});
+
+/**
  * POST /api/chat/news
  * Chatbot específico para la extensión. Recibe newsId, recupera el contexto del backend y llama a la IA.
  * body: { newsId: string, userMessage: string, password: string, previousMessages: array }
