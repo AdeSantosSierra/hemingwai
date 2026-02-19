@@ -4,9 +4,71 @@
 import os
 import sys
 import json
+from decimal import Decimal, ROUND_HALF_UP
 from pymongo import MongoClient
 from bson import ObjectId
 from dotenv import load_dotenv
+
+
+def round_half_up(value, ndigits):
+    quant = Decimal("1").scaleb(-ndigits)
+    return float(Decimal(str(value)).quantize(quant, rounding=ROUND_HALF_UP))
+
+
+def enrich_global_scores(noticia):
+    """
+    Normaliza los campos de score global para consumidores API/UI:
+    - global_score_raw: máxima precisión disponible
+    - global_score_2dp: nota principal de salida
+    - global_score_1dp: display legacy opcional
+    También mantiene `puntuacion` sincronizada con global_score_2dp para compatibilidad.
+    """
+    if not isinstance(noticia, dict):
+        return noticia
+
+    eval_result = noticia.get("evaluation_result") or {}
+    extras = eval_result.get("extras") or {}
+    derived = eval_result.get("derived") or {}
+
+    raw = (
+        noticia.get("global_score_raw")
+        if noticia.get("global_score_raw") is not None
+        else extras.get("raw_global_score")
+    )
+    if raw is None:
+        raw = extras.get("global_score_raw")
+    if raw is None:
+        raw = derived.get("global_score_raw")
+
+    score_2dp = noticia.get("global_score_2dp")
+    if score_2dp is None:
+        score_2dp = extras.get("global_score_2dp")
+    if score_2dp is None:
+        score_2dp = derived.get("global_score_2dp")
+    if score_2dp is None and raw is not None:
+        score_2dp = round_half_up(raw, 2)
+    if score_2dp is None and derived.get("global_score") is not None:
+        score_2dp = round_half_up(derived.get("global_score"), 2)
+    if score_2dp is None and noticia.get("puntuacion") is not None:
+        score_2dp = round_half_up(noticia.get("puntuacion"), 2)
+
+    score_1dp = noticia.get("global_score_1dp")
+    if score_1dp is None:
+        score_1dp = extras.get("global_score_1dp")
+    if score_1dp is None:
+        score_1dp = derived.get("global_score_1dp")
+    if score_1dp is None and score_2dp is not None:
+        score_1dp = round_half_up(score_2dp, 1)
+
+    if raw is not None:
+        noticia["global_score_raw"] = float(raw)
+    if score_2dp is not None:
+        noticia["global_score_2dp"] = float(score_2dp)
+        noticia["puntuacion"] = float(score_2dp)
+    if score_1dp is not None:
+        noticia["global_score_1dp"] = float(score_1dp)
+
+    return noticia
 
 def buscar_noticia(identificador, solo_antigua=False):
     """
@@ -58,13 +120,13 @@ def buscar_noticia(identificador, solo_antigua=False):
         noticia = new_collection.find_one(query, projection)
         if noticia:
             noticia["_id"] = str(noticia["_id"])
-            return noticia
+            return enrich_global_scores(noticia)
 
     # Búsqueda en la antigua base de datos
     noticia = old_collection.find_one(query, projection)
     if noticia:
         noticia["_id"] = str(noticia["_id"])
-        return noticia
+        return enrich_global_scores(noticia)
 
     return None
 

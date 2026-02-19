@@ -24,6 +24,7 @@ import subprocess
 import sys
 import time
 import unicodedata
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime
 from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -403,6 +404,59 @@ def clean_dict_recursive(obj):
         return obj
 
 
+def round_half_up(value, ndigits):
+    quant = Decimal("1").scaleb(-ndigits)
+    return float(Decimal(str(value)).quantize(quant, rounding=ROUND_HALF_UP))
+
+
+def normalize_global_scores_for_pdf(news_item_data):
+    """
+    Ensure PDF context exposes canonical score fields.
+    """
+    if not isinstance(news_item_data, dict):
+        return news_item_data
+
+    eval_result = news_item_data.get("evaluation_result") or {}
+    extras = eval_result.get("extras") or {}
+    derived = eval_result.get("derived") or {}
+
+    raw = news_item_data.get("global_score_raw")
+    if raw is None:
+        raw = extras.get("raw_global_score")
+    if raw is None:
+        raw = extras.get("global_score_raw")
+    if raw is None:
+        raw = derived.get("global_score_raw")
+
+    score_2dp = news_item_data.get("global_score_2dp")
+    if score_2dp is None:
+        score_2dp = extras.get("global_score_2dp")
+    if score_2dp is None:
+        score_2dp = derived.get("global_score_2dp")
+    if score_2dp is None and raw is not None:
+        score_2dp = round_half_up(raw, 2)
+    if score_2dp is None and news_item_data.get("puntuacion") is not None:
+        score_2dp = round_half_up(news_item_data.get("puntuacion"), 2)
+
+    score_1dp = news_item_data.get("global_score_1dp")
+    if score_1dp is None:
+        score_1dp = extras.get("global_score_1dp")
+    if score_1dp is None:
+        score_1dp = derived.get("global_score_1dp")
+    if score_1dp is None and score_2dp is not None:
+        score_1dp = round_half_up(score_2dp, 1)
+
+    if raw is not None:
+        news_item_data["global_score_raw"] = float(raw)
+    if score_2dp is not None:
+        news_item_data["global_score_2dp"] = float(score_2dp)
+        news_item_data["puntuacion"] = float(score_2dp)  # legacy field
+    if score_1dp is not None:
+        news_item_data["global_score_1dp"] = float(score_1dp)
+
+    return news_item_data
+
+
 def compile_latex_to_pdf(tex_path, output_dir, log_path, timeout_sec=60):
     """
     Compila .tex a PDF con pdflatex. No bloquea: timeout y flags -interaction=nonstopmode -halt-on-error.
@@ -680,6 +734,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     news_item_data = clean_dict_recursive(news_item_data)
+    news_item_data = normalize_global_scores_for_pdf(news_item_data)
 
     noticia_id = news_item_data.get("_id", "")
     run_id = (news_item_data.get("pipeline") or {}).get("run_id", "")

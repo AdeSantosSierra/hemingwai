@@ -8,12 +8,18 @@ import json
 import random
 import sys
 import re
+from env_config import get_env_first, get_env_int
 
 load_dotenv()
 
 # Definir el directorio raíz del proyecto (un nivel arriba de 'src')
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUTPUT_FILENAME = os.path.join(ROOT_DIR, "output_temporal", "retrieved_news_item.txt")
+MONGO_SERVER_SELECTION_TIMEOUT_MS = get_env_int("MONGO_SERVER_SELECTION_TIMEOUT_MS", 5000)
+
+
+def _read_mongo_uri():
+    return get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGO_READ_URI", "OLD_MONGODB_URI", "MONGODB_URI"))
 
 def safe_filename(s, maxlen=60):
     s = re.sub(r'[^\w\- ]', '', s)
@@ -31,13 +37,13 @@ def convert_objectids_to_str(obj):
         return obj
 
 def fetch_news_item(noticia_id):
-    mongodb_uri = os.getenv("NEW_MONGODB_URI")
+    mongodb_uri = _read_mongo_uri()
     if not mongodb_uri:
-        print("Error: NEW_MONGODB_URI not found in .env file.")
+        print("Error: MONGO_WRITE_URI/NEW_MONGODB_URI not found in .env file.")
         return None
-    client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
-    db = client['Base_de_datos_noticias']
-    col = db['Noticias']
+    client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
+    db = client[os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")]
+    col = db[os.getenv("MONGO_COLLECTION_NAME", "Noticias")]
     noticia = col.find_one({'_id': ObjectId(noticia_id)})
     if noticia:
         noticia = convert_objectids_to_str(noticia)
@@ -57,12 +63,12 @@ def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", 
         dict: The fetched news item (with _id as string) or None if not found/error.
     """
     load_dotenv()
-    mongodb_uri = os.getenv("MONGODB_URI")
+    mongodb_uri = _read_mongo_uri()
     if not mongodb_uri:
-        print("Error: MONGODB_URI not found in .env file.")
+        print("Error: Mongo URI not found in .env file.")
         return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
         client.admin.command('ping'); db = client.get_default_database()
         news_item = None; target_object_id = ObjectId(article_id_str)
         query = {"_id": target_object_id}; print(f"Attempting to fetch by ID: {article_id_str}")
@@ -87,10 +93,10 @@ def get_news_item_by_url(url_str, collection_names_to_try=["noticias", "Noticias
     Saves it to a text file.
     """
     load_dotenv()
-    mongodb_uri = os.getenv("MONGODB_URI")
-    if not mongodb_uri: print("Error: MONGODB_URI not found."); return None
+    mongodb_uri = _read_mongo_uri()
+    if not mongodb_uri: print("Error: Mongo URI not found."); return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
         client.admin.command('ping'); db = client.get_default_database()
         news_item = None; query = {"url": url_str}
         print(f"Attempting to fetch article with URL: {url_str}")
@@ -113,10 +119,10 @@ def get_news_item_with_score(exclude_ids_str_list=None, collection_names_to_try=
     optionally excluding a list of specific IDs, and saves it to a text file.
     """
     load_dotenv()
-    mongodb_uri = os.getenv("MONGODB_URI")
-    if not mongodb_uri: print("Error: MONGODB_URI not found."); return None
+    mongodb_uri = _read_mongo_uri()
+    if not mongodb_uri: print("Error: Mongo URI not found."); return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=5000)
+        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
         client.admin.command('ping'); db = client.get_default_database()
         news_item = None; collection_to_use = None
 

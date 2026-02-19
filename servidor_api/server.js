@@ -123,6 +123,52 @@ const NOMBRES_PARAMETROS = {
     5: "Enfoque",
 };
 
+function toFiniteNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function resolveGlobalScores(payload = {}) {
+    const evaluation = payload.evaluation_result || {};
+    const extras = evaluation.extras || {};
+    const derived = evaluation.derived || {};
+
+    const raw =
+        toFiniteNumber(payload.global_score_raw) ??
+        toFiniteNumber(extras.raw_global_score) ??
+        toFiniteNumber(extras.global_score_raw) ??
+        toFiniteNumber(derived.global_score_raw);
+
+    let score2dp =
+        toFiniteNumber(payload.global_score_2dp) ??
+        toFiniteNumber(extras.global_score_2dp) ??
+        toFiniteNumber(derived.global_score_2dp);
+
+    if (score2dp === null && raw !== null) {
+        score2dp = Math.round((raw + Number.EPSILON) * 100) / 100;
+    }
+    if (score2dp === null) {
+        score2dp =
+            toFiniteNumber(derived.global_score) ??
+            toFiniteNumber(payload.puntuacion) ??
+            toFiniteNumber(payload.puntuacion_global) ??
+            toFiniteNumber(payload.puntuacionTotal);
+    }
+
+    const score1dp =
+        toFiniteNumber(payload.global_score_1dp) ??
+        toFiniteNumber(extras.global_score_1dp) ??
+        toFiniteNumber(derived.global_score_1dp) ??
+        (score2dp === null ? null : Math.round((score2dp + Number.EPSILON) * 10) / 10);
+
+    return {
+        global_score_raw: raw,
+        global_score_2dp: score2dp,
+        global_score_1dp: score1dp,
+        principal: score2dp,
+    };
+}
+
 // =======================================================
 // RUTAS DE LA API
 // =======================================================
@@ -206,7 +252,9 @@ app.post('/api/chatbot', async (req, res) => {
             contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/10\n`;
+        const scores = resolveGlobalScores(contexto);
+        const puntuacionTexto = scores.principal === null ? 'N/A' : scores.principal.toFixed(2);
+        contextoParaIA += `\nPuntuación Global: ${puntuacionTexto}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }
@@ -326,11 +374,8 @@ app.post('/api/check-url', async (req, res) => {
 
         // Intentamos mapear posibles nombres de campos de puntuación y resúmenes
         const id = resultado._id || resultado.id || null;
-        const puntuacion =
-            resultado.puntuacion ??
-            resultado.puntuacion_global ??
-            resultado.puntuacionTotal ??
-            null;
+        const scores = resolveGlobalScores(resultado);
+        const puntuacion = scores.principal;
 
         const resumen_valoracion =
             resultado.resumen_valoracion ||
@@ -346,6 +391,9 @@ app.post('/api/check-url', async (req, res) => {
             analizado: true,
             id,
             puntuacion,
+            global_score_raw: scores.global_score_raw,
+            global_score_2dp: scores.global_score_2dp,
+            global_score_1dp: scores.global_score_1dp,
             resumen_valoracion,
             resumen_valoracion_titular
         });
@@ -483,7 +531,9 @@ app.post('/api/chat/news', async (req, res) => {
             }
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/10\n`;
+        const scores = resolveGlobalScores(contexto);
+        const puntuacionTexto = scores.principal === null ? 'N/A' : scores.principal.toFixed(2);
+        contextoParaIA += `\nPuntuación Global: ${puntuacionTexto}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }

@@ -32,7 +32,7 @@
 \begin{center}
     {\Huge\bfseries {{ news_item.titulo | escape_tex_inline | default('Título no disponible') }}\par}
     \vspace{0.5em}
-    {\large\bfseries Puntuación: {{ news_item.puntuacion if news_item.puntuacion is not none else 'N/A' }}\par}
+    {\large\bfseries Puntuación: {{ '%.2f'|format(news_item.global_score_2dp) if news_item.global_score_2dp is not none else 'N/A' }}\par}
 \end{center}
 \vspace{1em}
 

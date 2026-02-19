@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import re
+import time
 from openai import OpenAI
 from dotenv import load_dotenv
 from bson import ObjectId
@@ -16,6 +17,13 @@ sys.path.append(SRC_DIR)
 # --- Importar módulos locales ---
 # Se importa después de haber añadido SRC_DIR al path
 from MongoDB import MongoDBService
+from env_config import (
+    get_env_bool,
+    get_env_first,
+    get_env_int,
+    validate_required,
+    validate_required_any,
+)
 
 # --- Cargar variables de entorno ---
 dotenv_path = os.path.join(ROOT_DIR, '.env')
@@ -26,14 +34,64 @@ load_dotenv(dotenv_path=dotenv_path)
 
 # --- Configuración de variables ---
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
-MONGO_URI = os.getenv("NEW_MONGODB_URI")
-DB_NAME = "Base_de_datos_noticias"
-COLLECTION_NAME = "Noticias"
+PERPLEXITY_BASE_URL = os.getenv("PERPLEXITY_BASE_URL", "https://api.perplexity.ai")
+PERPLEXITY_MODEL_FACT_CHECK = os.getenv("PERPLEXITY_MODEL_FACT_CHECK", "sonar-deep-research")
+PERPLEXITY_TIMEOUT_SECONDS = get_env_int("PERPLEXITY_TIMEOUT_SECONDS", 120)
+PERPLEXITY_RETRIES = get_env_int("PERPLEXITY_RETRIES", 2)
+PERPLEXITY_RETRY_BASE_SECONDS = get_env_int("PERPLEXITY_RETRY_BASE_SECONDS", 2)
+FEATURE_ENABLE_PERPLEXITY = get_env_bool("FEATURE_ENABLE_PERPLEXITY", True)
+FEATURE_FAIL_OPEN_PERPLEXITY = get_env_bool("FEATURE_FAIL_OPEN_PERPLEXITY", False)
+MONGO_URI = get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI"))
+DB_NAME = os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")
+COLLECTION_NAME = os.getenv("MONGO_COLLECTION_NAME", "Noticias")
 
 # --- Validar configuración ---
-if not PERPLEXITY_API_KEY or not MONGO_URI:
-    print("Error: Las variables de entorno PERPLEXITY_API_KEY y MONGO_URI deben estar definidas en .env")
+try:
+    validate_required_any(
+        {"mongo_write_uri": ("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI")},
+        active=FEATURE_ENABLE_PERPLEXITY,
+        context="fact_check_perplexity",
+    )
+    validate_required(
+        ["PERPLEXITY_API_KEY"],
+        active=FEATURE_ENABLE_PERPLEXITY and not FEATURE_FAIL_OPEN_PERPLEXITY,
+        context="fact_check_perplexity",
+    )
+except RuntimeError as e:
+    print(f"Error: {e}")
     sys.exit(1)
+
+
+def _build_perplexity_step(status: str, error: str = None, ok: bool = False) -> dict:
+    from datetime import datetime, timezone
+    step = {
+        "ok": bool(ok),
+        "at": datetime.now(timezone.utc).isoformat(),
+        "provider": "perplexity",
+        "status": status,
+        "artifact": "output_temporal/fact_check_analisis.json",
+    }
+    if error:
+        step["error"] = str(error)[:1000]
+    return step
+
+
+def _persist_perplexity_step(collection, obj_id, status: str, error: str = None, ok: bool = False, analisis: str = None, fuentes=None):
+    if collection is None or obj_id is None:
+        return
+    fuentes = fuentes or []
+    step = _build_perplexity_step(status=status, error=error, ok=ok)
+    update_doc = {
+        "pipeline.steps.perplexity": step,
+        "pipeline.steps.fact_check": step,  # compatibilidad con consumidores actuales
+    }
+    if analisis is not None:
+        update_doc["fact_check_analisis"] = analisis
+    if fuentes is not None:
+        update_doc["fact_check_fuentes"] = fuentes
+    if ok:
+        update_doc["pipeline.status"] = "fact_checked"
+    collection.update_one({"_id": obj_id}, {"$set": update_doc})
 
 def verificar_noticia(noticia_id: str) -> dict:
     """
@@ -45,6 +103,14 @@ def verificar_noticia(noticia_id: str) -> dict:
     Returns:
         dict: Un diccionario con el análisis y las fuentes, o un diccionario de error.
     """
+    if not FEATURE_ENABLE_PERPLEXITY:
+        return {
+            "noticia_id": noticia_id,
+            "analisis": "Fact-check deshabilitado por configuración.",
+            "fuentes": [],
+            "warning": "feature_disabled",
+        }
+
     # --- Conexión a MongoDB ---
     print(f"Conectando a MongoDB en la base de datos '{DB_NAME}'...")
     try:
@@ -72,9 +138,23 @@ def verificar_noticia(noticia_id: str) -> dict:
 
     # --- Cliente de Perplexity AI ---
     try:
+        if not PERPLEXITY_API_KEY:
+            if FEATURE_FAIL_OPEN_PERPLEXITY:
+                _persist_perplexity_step(collection, obj_id, status="degraded", error="missing_api_key", ok=False, analisis="Fact-check no disponible por falta de credenciales.", fuentes=[])
+                result = {
+                    "noticia_id": noticia_id,
+                    "analisis": "Fact-check no disponible por falta de credenciales.",
+                    "fuentes": [],
+                    "warning": "missing_api_key",
+                }
+                if run_id:
+                    result["run_id"] = run_id
+                return result
+            raise RuntimeError("Missing PERPLEXITY_API_KEY")
+
         client = OpenAI(
             api_key=PERPLEXITY_API_KEY,
-            base_url="https://api.perplexity.ai"
+            base_url=PERPLEXITY_BASE_URL
         )
 
         messages = [
@@ -102,10 +182,31 @@ def verificar_noticia(noticia_id: str) -> dict:
 
         # --- Llamada a la API ---
         print("Enviando la noticia a Perplexity AI para su análisis...")
-        response = client.chat.completions.create(
-            model="sonar-deep-research",
-            messages=messages,
-        )
+        response = None
+        last_error = None
+        attempts = max(1, PERPLEXITY_RETRIES)
+        for attempt in range(attempts):
+            try:
+                response = client.chat.completions.create(
+                    model=PERPLEXITY_MODEL_FACT_CHECK,
+                    messages=messages,
+                    timeout=PERPLEXITY_TIMEOUT_SECONDS,
+                )
+                break
+            except Exception as e:
+                last_error = e
+                if attempt < attempts - 1:
+                    time.sleep((2 ** attempt) * PERPLEXITY_RETRY_BASE_SECONDS)
+        if response is None:
+            if FEATURE_FAIL_OPEN_PERPLEXITY:
+                _persist_perplexity_step(collection, obj_id, status="degraded", error=f"provider_unavailable: {last_error}", ok=False, analisis="Fact-check no disponible por error del proveedor Perplexity.", fuentes=[])
+                return {
+                    "noticia_id": noticia_id,
+                    "analisis": "Fact-check no disponible por error del proveedor Perplexity.",
+                    "fuentes": [],
+                    "warning": f"Perplexity unavailable: {last_error}",
+                }
+            raise RuntimeError(f"Perplexity unavailable: {last_error}")
         
         # Convertir la respuesta a un diccionario para un acceso seguro
         response_dict = response.model_dump()
@@ -131,28 +232,9 @@ def verificar_noticia(noticia_id: str) -> dict:
             print("No se encontraron fuentes en la respuesta de la API.")
         
         # Guardar el análisis y las fuentes en MongoDB y actualizar pipeline.steps
-        from datetime import datetime, timezone
-        fact_check_step = {
-            "ok": True,
-            "at": datetime.now(timezone.utc).isoformat(),
-            "provider": "perplexity",
-            "artifact": "output_temporal/fact_check_analisis.json"
-        }
         try:
-            update_doc = {
-                "fact_check_analisis": analisis,
-                "fact_check_fuentes": fuentes,
-                "pipeline.status": "fact_checked",
-                "pipeline.steps.fact_check": fact_check_step
-            }
-            update_result = collection.update_one(
-                {"_id": obj_id},
-                {"$set": update_doc}
-            )
-            if update_result.modified_count > 0:
-                print("Análisis y fuentes guardados exitosamente en MongoDB.")
-            else:
-                print("Advertencia: No se modificó ningún documento en MongoDB.")
+            _persist_perplexity_step(collection, obj_id, status="ok", ok=True, analisis=analisis, fuentes=fuentes)
+            print("Análisis y estado de Perplexity guardados exitosamente en MongoDB.")
         except Exception as e:
             print(f"Error al guardar en MongoDB: {e}")
 
@@ -162,6 +244,15 @@ def verificar_noticia(noticia_id: str) -> dict:
         return result
         
     except Exception as e:
+        if FEATURE_FAIL_OPEN_PERPLEXITY:
+            if 'collection' in locals() and 'obj_id' in locals():
+                _persist_perplexity_step(collection, obj_id, status="degraded", error=f"fact_check_error: {e}", ok=False, analisis="Fact-check no disponible por error inesperado.", fuentes=[])
+            return {
+                "noticia_id": noticia_id,
+                "analisis": "Fact-check no disponible por error inesperado.",
+                "fuentes": [],
+                "warning": f"fact_check_error: {e}",
+            }
         return {"error": f"Error al contactar con la API de Perplexity: {e}"}
     finally:
         # Asegurarse de cerrar la conexión a MongoDB

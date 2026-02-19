@@ -3,27 +3,39 @@ import re
 import os
 import sys
 import json
+from env_config import get_env_bool, get_env_int
 
 
 # Definir directorios base para que el script sea robusto
 SRC_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SRC_DIR)
 
+
+def _resolve_path(path_value, default_path):
+    candidate = path_value if path_value else default_path
+    if os.path.isabs(candidate):
+        return candidate
+    return os.path.join(ROOT_DIR, candidate)
+
+
 # Construir rutas basadas en los directorios base
-RETRIEVED_FILE = os.path.join(ROOT_DIR, 'output_temporal', 'retrieved_news_item.txt')
-VENV_DIR = os.path.join(ROOT_DIR, ".venv")
+OUTPUT_DIR = _resolve_path(os.getenv("PATH_OUTPUT_DIR"), os.path.join(ROOT_DIR, "output_temporal"))
+RETRIEVED_FILE = _resolve_path(os.getenv("PATH_RETRIEVED_FILE"), os.path.join(OUTPUT_DIR, "retrieved_news_item.txt"))
+VENV_DIR = _resolve_path(os.getenv("PATH_VENV_DIR"), os.path.join(ROOT_DIR, ".venv"))
 VENV_PYTHON = os.path.join(VENV_DIR, "bin", "python")
+SUBPROCESS_TIMEOUT_SECONDS = get_env_int("PATH_SUBPROCESS_TIMEOUT_SECONDS", 0)
+FEATURE_ENABLE_PERPLEXITY = get_env_bool("FEATURE_ENABLE_PERPLEXITY", True)
+FEATURE_FAIL_OPEN_PERPLEXITY = get_env_bool("FEATURE_FAIL_OPEN_PERPLEXITY", False)
 
 # --- Preparar directorio de salida ---
-output_dir = os.path.join(ROOT_DIR, "output_temporal")
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
+if not os.path.exists(OUTPUT_DIR):
+    os.makedirs(OUTPUT_DIR)
 else:
     # Limpiar el directorio para asegurar que solo contiene artefactos de esta ejecución
-    print(f"Limpiando directorio: {output_dir}")
-    for f in os.listdir(output_dir):
+    print(f"Limpiando directorio: {OUTPUT_DIR}")
+    for f in os.listdir(OUTPUT_DIR):
         try:
-            os.remove(os.path.join(output_dir, f))
+            os.remove(os.path.join(OUTPUT_DIR, f))
         except Exception as e:
             print(f"No se pudo eliminar {f}: {e}")
 
@@ -52,7 +64,8 @@ proc = subprocess.run(
     cwd=SRC_DIR,
     capture_output=True,
     text=False,
-    env=env_utf8
+    env=env_utf8,
+    timeout=(SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None),
 )
 output = (proc.stdout or b"") + (proc.stderr or b"")
 try:
@@ -73,7 +86,7 @@ print(f"ID de la noticia procesada: {noticia_id}")
 print("Extrayendo noticia procesada...")
 proc2 = subprocess.run([
     VENV_PYTHON, "fetch_news_item.py", noticia_id
-], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8, timeout=(SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None))
 out2 = (proc2.stdout or b"") + (proc2.stderr or b"")
 try:
     out2 = out2.decode("utf-8", errors="replace")
@@ -96,23 +109,31 @@ for campo in CAMPOS_CLAVE:
 print("Todos los campos clave están presentes en la noticia extraída.")
 
 # 3. Ejecutar fact_check_perplexity.py con el ID de la noticia
-print("Ejecutando verificación de hechos con Perplexity AI...")
-proc_fact_check = subprocess.run([
-    VENV_PYTHON, "fact_check_perplexity.py", noticia_id
-], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
-output_fact_check = (proc_fact_check.stdout or b"") + (proc_fact_check.stderr or b"")
-try:
-    output_fact_check = output_fact_check.decode("utf-8", errors="replace")
-except Exception:
-    output_fact_check = output_fact_check.decode("latin1", errors="replace")
-print(output_fact_check)
+if FEATURE_ENABLE_PERPLEXITY:
+    print("Ejecutando verificación de hechos con Perplexity AI...")
+    proc_fact_check = subprocess.run([
+        VENV_PYTHON, "fact_check_perplexity.py", noticia_id
+    ], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8, timeout=(SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None))
+    output_fact_check = (proc_fact_check.stdout or b"") + (proc_fact_check.stderr or b"")
+    try:
+        output_fact_check = output_fact_check.decode("utf-8", errors="replace")
+    except Exception:
+        output_fact_check = output_fact_check.decode("latin1", errors="replace")
+    print(output_fact_check)
 
-# Verificar que el archivo de análisis se ha generado
-fact_check_file = os.path.join(output_dir, "fact_check_analisis.json")
-if not os.path.exists(fact_check_file):
-    print(f"No se encontró el archivo {fact_check_file}. El análisis de Perplexity puede haber fallado. Abortando.")
-    sys.exit(1)
-print("Verificación de hechos completada y archivo de análisis generado.")
+    # Verificar que el archivo de análisis se ha generado
+    fact_check_file = os.path.join(OUTPUT_DIR, "fact_check_analisis.json")
+    if not os.path.exists(fact_check_file):
+        msg = f"No se encontró el archivo {fact_check_file}. El análisis de Perplexity puede haber fallado."
+        if FEATURE_FAIL_OPEN_PERPLEXITY:
+            print(msg + " Continuando por FEATURE_FAIL_OPEN_PERPLEXITY=true.")
+        else:
+            print(msg + " Abortando.")
+            sys.exit(1)
+    else:
+        print("Verificación de hechos completada y archivo de análisis generado.")
+else:
+    print("Paso fact-check omitido: FEATURE_ENABLE_PERPLEXITY=false.")
 
 
 
@@ -120,7 +141,7 @@ print("Verificación de hechos completada y archivo de análisis generado.")
 print("Generando y subiendo PDF...")
 proc3 = subprocess.run([
     VENV_PYTHON, "render_latex.py"
-], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8)
+], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8, timeout=(SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None))
 out3 = (proc3.stdout or b"") + (proc3.stderr or b"")
 try:
     out3 = out3.decode("utf-8", errors="replace")
@@ -130,8 +151,7 @@ print(out3)
 
 # Verificar que el PDF se ha generado
 from glob import glob
-output_dir = os.path.join(ROOT_DIR, "output_temporal")
-pdfs = glob(os.path.join(output_dir, "*.pdf"))
+pdfs = glob(os.path.join(OUTPUT_DIR, "*.pdf"))
 if not pdfs:
     print("No se generó ningún PDF. Abortando.")
     sys.exit(1)

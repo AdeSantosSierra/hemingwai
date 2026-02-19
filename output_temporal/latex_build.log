@@ -3,7 +3,9 @@
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
+
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -171,127 +173,257 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-No file Latest_News__Updates.aux.
+No file La_campaña_política_de_Argüello_molesta_a_los_obispos_Nos_ha.aux.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
-dist/fonts/enc/dvips/base/8r.enc}]
+Overfull \hbox (102.5321pt too wide) in paragraph at lines 82--84
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
+itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
+
 [2]
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 126--127
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
-
-Overfull \hbox (77.5321pt too wide) in paragraph at lines 128--129
-[][]$\OT1/pcr/m/n/10 https : / / www . digitalspy . com / soaps / casualty / a2
-99115 / taylor-[]reveals-[]casualty-[]plot-[]nerves/$[] 
-
-Overfull \hbox (5.5321pt too wide) in paragraph at lines 130--131
-[][]$\OT1/pcr/m/n/10 https : / / www . webmd . com / schizophrenia / mental-[]h
-ealth-[]brief-[]psychotic-[]disorder$[] 
-
-Overfull \hbox (201.5321pt too wide) in paragraph at lines 131--132
-[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / many-[]georgians-[]still-[]
-struggling-[]to-[]access-[]care-[]despite-[]2022-[]mental-[]health-[]parity-[]a
-ct/$[] 
-
-Overfull \hbox (195.5321pt too wide) in paragraph at lines 135--136
-[][]$\OT1/pcr/m/n/10 http : / / theartsdesk . com / tv / david-[]harewood-[]psy
-chosis-[]and-[]me-[]bbc-[]two-[]review-[]actor-[]confronts-[]his-[]painful-[]pa
-st$[] 
-
-Overfull \hbox (341.0321pt too wide) in paragraph at lines 138--139
-[][]$\OT1/pcr/m/n/10 https : / / www . vpm . org / npr-[]news / npr-[]news / 20
-25-[]12-[]31 / his-[]brothers-[]mental-[]illness-[]isolated-[]his-[]family-[]no
-w-[]hes-[]helping-[]other-[]caregivers$[] 
-
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 143--144
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
-
-Overfull \hbox (40.5321pt too wide) in paragraph at lines 148--149
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / sites / 
-default / files / Time % 20to % 20Change % 20WMHD %
-
-Overfull \hbox (182.5321pt too wide) in paragraph at lines 150--151
-[][]$\OT1/pcr/m/n/10 https : / / www . rethink . org / news-[]and-[]stories / b
-logs / 2024 / 11 / psychosis-[]is-[]like-[]a-[]foreign-[]country-[]tom-[]s-[]st
-ory/$[] 
-
-Overfull \hbox (30.5321pt too wide) in paragraph at lines 151--152
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
- / blog / school ,[] -[]college-[]and-[]university$[] 
-
 [3]
-Overfull \hbox (30.5321pt too wide) in paragraph at lines 157--158
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
- / blog / school ,[] -[]college-[]and-[]university$[] 
+[4]
+Overfull \hbox (9.45253pt too wide) in paragraph at lines 178--179
+\OT1/ptm/m/n/10 pa[]noles". Es-ta in-for-ma-ci[]on re-sul-ta co-rro-bo-ra-da po
+r m[]ulti-ples fuen-tes[1][2][3]. Se es-pe-ci-fi-ca adem[]as que es .[]rzobispo
 
-Overfull \hbox (24.5321pt too wide) in paragraph at lines 161--162
-[][]$\OT1/pcr/m/n/10 https : / / activeminds . org / blog / how-[]active-[]mind
-s-[]interns-[]champion-[]mental-[]health/$[] 
 
-Overfull \hbox (232.5321pt too wide) in paragraph at lines 162--163
-[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / mental-[]health-[]advocates
--[]fight-[]stigma-[]to-[]curb-[]conditions-[]that-[]can-[]kill-[]new-[]moms-[]i
-n-[]georgia/$[] 
+Overfull \hbox (7.83804pt too wide) in paragraph at lines 178--179
+\OT1/ptm/m/n/10 de Va-lla-do-lid", in-for-ma-ci[]on que tam-bi[]en apa-re-ce co
+n-fir-ma-da con-sis-ten-te-men-te en los do-cu-men-tos con-sul-ta-dos[4][5].
 
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 167--168
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+[5]
+[6]
+[7]
+Overfull \hbox (35.14929pt too wide) in paragraph at lines 274--276
+[]\OT1/ptm/m/n/10 [1][2][3][4][5][6][7][8][9][10][11][12][13][14][15][16][17][1
+8][19][20][21][22][23][24][25][26][27][28][29][30][31][32]
 
-Overfull \hbox (114.5321pt too wide) in paragraph at lines 168--169
-[][]$\OT1/pcr/m/n/10 https : / / library . samhsa . gov / sites / default / fil
-es / national-[]guidelines-[]crisis-[]care-[]pep24-[]01-[]037 .
+Overfull \hbox (343.5321pt too wide) in paragraph at lines 280--281
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / pr
+esidente-[]conferencia-[]episcopal-[]necesaria-[]cuestion-[]confianza-[]mocion-
+[]censura-[]elecciones _
 
-Overfull \hbox (416.5321pt too wide) in paragraph at lines 169--170
-[][]$\OT1/pcr/m/n/10 https : / / www . lsc . ohio . gov / assets / legislation 
-/ 136 / hb96 / psc / files / hb96-[]comparison-[]document-[]as-[]pending-[]in-[
-]senate-[]committee-[]136th-[]general-[]assembly .
+[8]
+Overfull \hbox (115.0321pt too wide) in paragraph at lines 281--282
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
+itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
 
-Overfull \hbox (424.0321pt too wide) in paragraph at lines 171--172
-[][]$\OT1/pcr/m/n/10 https : / / www . milbank . org / publications / building-
-[]state-[]capacity-[]to-[]address-[]behavioral-[]health-[]needs-[]through-[]cri
-sis-[]services-[]and-[]early-[]intervention/$[] 
+Overfull \hbox (263.5321pt too wide) in paragraph at lines 282--283
+[][]$\OT1/pcr/m/n/10 https : / / alfayomega . es / arguello-[]insiste-[]no-[]so
+y-[]neutral-[]ante-[]el-[]respeto-[]a-[]la-[]vida-[]y-[]su-[]dignidad-[]la-[]li
+bertad-[]religiosa/$[] 
 
-Overfull \hbox (183.5321pt too wide) in paragraph at lines 175--176
-[][]$\OT1/pcr/m/n/10 https : / / www . azahcccs . gov / Resources / Downloads /
- EQR / 2022 / CYE2022ExternalQualityReviewAnnualReportEPDandDDD .
+Overfull \hbox (338.0321pt too wide) in paragraph at lines 283--284
+[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20251214 / arguel
+lo-[]plantea-[]cambiar-[]gobierno-[]sanchez-[]anima-[]presentarse-[]elecciones-
+[]abogados-[]cristianos /
 
-Overfull \hbox (315.0321pt too wide) in paragraph at lines 176--177
-[][]$\OT1/pcr/m/n/10 https : / / www . nami . org / Blogs / NAMI-[]Blog / Decem
-ber-[]2022 / Emotional-[]Recovery-[]from-[]Psychosis-[]Trusting-[]and-[]Believi
-ng-[]in-[]Yourself-[]Again$[] 
+Overfull \hbox (368.5321pt too wide) in paragraph at lines 284--285
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / espana / 20251214 / gob
+ierno-[]revuelve-[]contra-[]arguello-[]pedir-[]elecciones-[]anticipadas-[]tiemp
+o-[]obispos-[]politica-[]acabo _
 
-Overfull \hbox (15.5321pt too wide) in paragraph at lines 178--179
-[][]$\OT1/pcr/m/n/10 https : / / www . frontiersin . org / journals / psychiatr
-y / articles / 10 . 3389 / fpsyt . 2023 .
+Overfull \hbox (350.0321pt too wide) in paragraph at lines 285--286
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / po
+lemica-[]palabras-[]arguello-[]gobierno-[]abstengase-[]romper-[]neutralidad-[]p
+olitica-[]actue-[]respeto _
 
-Overfull \hbox (10.0321pt too wide) in paragraph at lines 180--181
-[][]$\OT1/pcr/m/n/10 https : / / www . accc . gov . au / system / files / ACCC 
-+ commissioned + report + -[] + The + impact +
+Overfull \hbox (601.5321pt too wide) in paragraph at lines 286--287
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 12 / 16 
+/ el-[]arzobispo-[]de-[]oviedo-[]defiende-[]a-[]arguello-[]y-[]carga-[]contra-[
+]los-[]indecentes-[]de-[]saunas-[]y-[]prostibulos-[]que-[]disparan-[]contra-[]l
+a-[]iglesia/$[] 
 
-Overfull \hbox (58.0321pt too wide) in paragraph at lines 180--181
-\OT1/pcr/m/n/10 of + digital + platforms + on + news + and + journalistic + con
-tent ,[] +Centre + for + Media + Transition +
+Overfull \hbox (259.5321pt too wide) in paragraph at lines 287--288
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / gobierno-[]pa
+cta-[]vaticano-[]resignificacion-[]cuelgamuros-[]incluida-[]parte-[]basilica-[]
+abadia _
 
-Overfull \hbox (4.0321pt too wide) in paragraph at lines 181--182
-[][]$\OT1/pcr/m/n/10 https : / / vera-[]institute . files . svdcdn . com / prod
-uction / downloads / publications /
+Overfull \hbox (48.0321pt too wide) in paragraph at lines 288--289
+[][]$\OT1/pcr/m/n/10 https : / / www . catalunyareligio . cat / es / planellas-
+[]marca-[]distancias-[]con-[]arguello-[]sobre$[] 
 
-Overfull \hbox (195.5321pt too wide) in paragraph at lines 181--182
-\OT1/pcr/m/n/10 crisis-[]response-[]services-[]for-[]people-[]with-[]mental-[]i
-llnesses-[]or-[]intellectual-[]and-[]developmental-[]disabilities .
+Overfull \hbox (401.0321pt too wide) in paragraph at lines 289--290
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / espana / 2026-[]01-[]29 / el-[]
+arzobispo-[]de-[]oviedo-[]arremete-[]contra-[]la-[]regularizacion-[]extraordina
+ria-[]de-[]inmigrantes-[]todos-[]no-[]caben .
 
-[4] (/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux)
+Overfull \hbox (426.0321pt too wide) in paragraph at lines 290--291
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 03 / 27 
+/ cobo-[]y-[]parolin-[]blindan-[]la-[]basilica-[]y-[]a-[]los-[]benedictinos-[]d
+el-[]valle-[]de-[]los-[]caidos-[]frente-[]al-[]gobierno/$[] 
 
-Package rerunfilecheck Warning: File `Latest_News__Updates.out' has changed.
+Overfull \hbox (242.5321pt too wide) in paragraph at lines 291--292
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presion-[]vic
+timas-[]fuerza-[]iglesia-[]admitir-[]plan-[]antiabusos-[]gobierno-[]le-[]plante
+o-[]ano _
+
+Overfull \hbox (149.0321pt too wide) in paragraph at lines 292--293
+[][]$\OT1/pcr/m/n/10 https : / / www . lamoncloa . gob . es / serviciosdeprensa
+ / notasprensa / presidencia-[]justicia-[]relaciones-[]cortes /
+
+Overfull \hbox (345.5321pt too wide) in paragraph at lines 293--294
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 06 / 16 
+/ luis-[]arguello-[]ante-[]santiago-[]abascal-[]defiende-[]el-[]concepto-[]de-[
+]patria-[]del-[]papa-[]francisco/$[] 
+
+Overfull \hbox (649.5321pt too wide) in paragraph at lines 294--295
+[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / espana / 2026 / 01 / 12 
+/ alegria-[]y-[]cautela-[]entre-[]las-[]victimas-[]de-[]pederastia-[]tras-[]el-
+[]acuerdo-[]de-[]reparacion-[]entre-[]gobierno-[]e-[]iglesia-[]aplaudire-[]cuan
+do-[]vea-[]resultados/$[] 
+
+Overfull \hbox (58.0321pt too wide) in paragraph at lines 295--296
+[][]$\OT1/pcr/m/n/10 https : / / www . mpr . gob . es / mpr / subse / libertad-
+[]religiosa / Documents / Documentos _ Novedades /
+
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 295--296
+\OT1/pcr/m/n/10 Plan % 20respuesta % 20e % 20implementaci % C3 % B3n % 20inform
+e % 20Defensor % 20Pueblo % 20 .
+
+Overfull \hbox (183.0321pt too wide) in paragraph at lines 296--297
+[][]$\OT1/pcr/m/n/10 https : / / quintanapaz . es / es / presentacion-[]en-[]ma
+drid-[]del-[]libro-[]cosas-[]que-[]he-[]aprendido-[]de-[]gente-[]interesante/$[
+] 
+
+Overfull \hbox (194.5321pt too wide) in paragraph at lines 297--298
+[][]$\OT1/pcr/m/n/10 https : / / www . diocesisdesalamanca . com / noticias / p
+ara-[]comunicar-[]bien-[]hay-[]que-[]ponerse-[]en-[]los-[]zapatos-[]del-[]otro/
+$[] 
+
+Overfull \hbox (538.5321pt too wide) in paragraph at lines 298--299
+[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20250620 / bolano
+s-[]reprocha-[]a-[]conferencia-[]episcopal-[]se-[]aparten-[]neutralidad-[]polit
+ica-[]partidista-[]tras-[]su-[]peticion-[]elecciones-[]anticipadas /
+
+Overfull \hbox (291.0321pt too wide) in paragraph at lines 299--300
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20250917 / a
+rguello-[]ante-[]illa-[]estado-[]no-[]dios-[]iglesia-[]lucha-[]contra-[]idolatr
+ia-[]poder-[]estado _
+
+Overfull \hbox (597.0321pt too wide) in paragraph at lines 300--301
+[][]$\OT1/pcr/m/n/10 https : / / www . libertaddigital . com / espana / politic
+a / 2024-[]01-[]23 / a-[]ver-[]quien-[]la-[]tiene-[]mas-[]larga-[]la-[]ironia-[
+]de-[]un-[]cura-[]para-[]referirse-[]a-[]la-[]cifra-[]de-[]victimas-[]de-[]pede
+rastia-[]7089800/$[] 
+
+Overfull \hbox (132.5321pt too wide) in paragraph at lines 301--302
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / illa-[]argueel
+lo-[]dialogo-[]catolicos-[]sobre-[]polarizacion-[]democracia .
+
+Overfull \hbox (454.5321pt too wide) in paragraph at lines 304--305
+[][]$\OT1/pcr/m/n/10 https : / / www . march . es / es / coleccion / archivo-[]
+linz-[]transicion-[]espanola / ficha / iglesia-[]no-[]puede-[]ser-[]neutral-[]a
+nte-[]problemas-[]morales-[]derechos-[]humanos-[]-[]linz .
+
+Overfull \hbox (531.5321pt too wide) in paragraph at lines 305--306
+[][]$\OT1/pcr/m/n/10 https : / / www . caritas . es / noticias / caritas-[]pide
+-[]comision-[]trabajo-[]congreso-[]apruebe-[]iniciativa-[]legislativa-[]popular
+-[]regularizacion-[]extraordinaria-[]personas-[]extranjeras/$[] 
+
+Overfull \hbox (35.5321pt too wide) in paragraph at lines 306--307
+[][]$\OT1/pcr/m/n/10 https : / / www . religiondigital . org / diocesis / argue
+ello-[]presentar-[]papa-[]semana-[]santa _
+
+Overfull \hbox (429.5321pt too wide) in paragraph at lines 307--308
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / memoria-[]publ
+ica / falangista-[]santiago-[]cantera-[]prior-[]valle-[]caidos-[]intento-[]impe
+dir-[]exhumacion-[]franco-[]relevado-[]cargo .
+
+[9]
+Overfull \hbox (22.0321pt too wide) in paragraph at lines 308--309
+[][]$\OT1/pcr/m/n/10 https : / / www . cidob . org / sites / default / files / 
+2026-[]02 / 868 _ OPINION _ BLANCA % 20GARCE %
+
+Overfull \hbox (292.0321pt too wide) in paragraph at lines 309--310
+[][]$\OT1/pcr/m/n/10 https : / / www . aciprensa . com / noticias / 122159 / pr
+esidente-[]de-[]obispos-[]espanoles-[]propone-[]dos-[]sies-[]y-[]un-[]no-[]para
+-[]vivir-[]en-[]cuaresma$[] 
+
+Overfull \hbox (205.5321pt too wide) in paragraph at lines 310--311
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / santiago-[]ca
+ntera-[]prior-[]boicotear-[]exhumacion-[]franco-[]deja-[]valle-[]cuelgamuros _
+
+Overfull \hbox (450.5321pt too wide) in paragraph at lines 311--312
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / sociedad / 2023-[]10-[]27 / la-
+[]investigacion-[]del-[]defensor-[]del-[]pueblo-[]estima-[]en-[]440000-[]las-[]
+victimas-[]de-[]pederastia-[]en-[]la-[]iglesia-[]espanola .
+
+Overfull \hbox (427.5321pt too wide) in paragraph at lines 313--314
+[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / politica / 20251214
+ / 11360302 / cuestion-[]confianza-[]mocion-[]censura-[]elecciones-[]deberia-[]
+reformar-[]constitucion-[]clarificarla .
+
+Overfull \hbox (260.0321pt too wide) in paragraph at lines 314--315
+[][]$\OT1/pcr/m/n/10 https : / / www . vaticannews . va / es / iglesia / news /
+ 2023-[]10 / espana-[]abusos-[]el-[]informe-[]pederastia-[]tutela-[]menores-[]d
+efensr-[]publo .
+
+Overfull \hbox (169.0321pt too wide) in paragraph at lines 316--317
+[][]$\OT1/pcr/m/n/10 https : / / www . elplural . com / politica / espana / igl
+esia-[]entra-[]campana-[]curas-[]piden-[]mocion-[]censura-[]elecciones _
+
+Overfull \hbox (266.5321pt too wide) in paragraph at lines 317--318
+[][]$\OT1/pcr/m/n/10 https : / / theobjective . com / espana / politica / 2025-
+[]08-[]17 / quintana-[]paz-[]filosofo-[]amigo-[]abascal-[]arguello-[]vox-[]limi
+tes-[]iglesia/$[] 
+
+Overfull \hbox (156.5321pt too wide) in paragraph at lines 318--319
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / regularizacio
+n-[]migrantes-[]enfrenta-[]derechas-[]iglesia-[]demonio-[]pobres _
+
+Overfull \hbox (307.5321pt too wide) in paragraph at lines 320--321
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / sociedad / doctrina-[]soc
+ial-[]cristianismo-[]ultraconservador-[]regularizacion-[]migrantes-[]agita-[]mu
+ndo-[]catolico .
+
+Overfull \hbox (302.5321pt too wide) in paragraph at lines 322--323
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20251215 / a
+rguello-[]responde-[]sanchez-[]ante-[]respeto-[]reglas-[]basicas-[]estado-[]der
+echo-[]no-[]neutral _
+
+Overfull \hbox (723.5321pt too wide) in paragraph at lines 323--324
+[][]$\OT1/pcr/m/n/10 https : / / cadenaser . com / nacional / 2025 / 06 / 20 / 
+el-[]gobierno-[]acusa-[]a-[]los-[]obispos-[]de-[]actuar-[]en-[]comunion-[]con-[
+]la-[]derecha-[]y-[]apartarse-[]del-[]respeto-[]institucional-[]por-[]pedir-[]u
+n-[]adelanto-[]electoral-[]cadena-[]ser/$[] 
+
+Overfull \hbox (279.0321pt too wide) in paragraph at lines 325--326
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / willy-[]toledo
+-[]lalachus-[]noelia-[]asi-[]usa-[]abogados-[]cristianos-[]justicia-[]imponer-[
+]agenda-[]ultra .
+
+Overfull \hbox (21.5321pt too wide) in paragraph at lines 326--327
+[][]$\OT1/pcr/m/n/10 https : / / revistascientificas . us . es / index . php / 
+araucaria / article / download / 27118 /
+
+Overfull \hbox (362.5321pt too wide) in paragraph at lines 327--328
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / programas / lasexta-[]cl
+ave / como-[]abogados-[]cristianos-[]intentan-[]imponer-[]vision-[]retrograda-[
+]base-[]denuncias-[]presiones _
+
+Overfull \hbox (332.5321pt too wide) in paragraph at lines 329--330
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presidente-[]
+obispos-[]pide-[]elecciones-[]anticipadas-[]salida-[]bloqueo-[]institucional-[]
+dar-[]voz-[]ciudadanos _
+
+[10]
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.aux)
+
+Package rerunfilecheck Warning: File `La_campaña_política_de_Argüello_molest
+a_a_los_obispos_Nos_ha.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
@@ -300,16 +432,18 @@ Package rerunfilecheck Warning: File `Latest_News__Updates.out' has changed.
 ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Latest_News__Updates.
-pdf (4 pages, 76742 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/Latest_News__Upda
-tes.log.
+Output written on /home/roberto/hemingwai/output_temporal/La_campaña_política
+_de_Argüello_molesta_a_los_obispos_Nos_ha.pdf (10 pages, 107356 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/La_campaña_polí
+tica_de_Argüello_molesta_a_los_obispos_Nos_ha.log.
 
 --- pdflatex pass 2 ---
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
-(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.tex
+
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -477,132 +611,264 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux)
-(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
-(/home/roberto/hemingwai/output_temporal/Latest_News__Updates.out)
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.aux)
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.out)
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.out)
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
+dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
-[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
-dist/fonts/enc/dvips/base/8r.enc}]
+Overfull \hbox (102.5321pt too wide) in paragraph at lines 82--84
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
+itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
+
 [2]
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 126--127
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
-
-Overfull \hbox (77.5321pt too wide) in paragraph at lines 128--129
-[][]$\OT1/pcr/m/n/10 https : / / www . digitalspy . com / soaps / casualty / a2
-99115 / taylor-[]reveals-[]casualty-[]plot-[]nerves/$[] 
-
-Overfull \hbox (5.5321pt too wide) in paragraph at lines 130--131
-[][]$\OT1/pcr/m/n/10 https : / / www . webmd . com / schizophrenia / mental-[]h
-ealth-[]brief-[]psychotic-[]disorder$[] 
-
-Overfull \hbox (201.5321pt too wide) in paragraph at lines 131--132
-[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / many-[]georgians-[]still-[]
-struggling-[]to-[]access-[]care-[]despite-[]2022-[]mental-[]health-[]parity-[]a
-ct/$[] 
-
-Overfull \hbox (195.5321pt too wide) in paragraph at lines 135--136
-[][]$\OT1/pcr/m/n/10 http : / / theartsdesk . com / tv / david-[]harewood-[]psy
-chosis-[]and-[]me-[]bbc-[]two-[]review-[]actor-[]confronts-[]his-[]painful-[]pa
-st$[] 
-
-Overfull \hbox (341.0321pt too wide) in paragraph at lines 138--139
-[][]$\OT1/pcr/m/n/10 https : / / www . vpm . org / npr-[]news / npr-[]news / 20
-25-[]12-[]31 / his-[]brothers-[]mental-[]illness-[]isolated-[]his-[]family-[]no
-w-[]hes-[]helping-[]other-[]caregivers$[] 
-
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 143--144
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
-
-Overfull \hbox (40.5321pt too wide) in paragraph at lines 148--149
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / sites / 
-default / files / Time % 20to % 20Change % 20WMHD %
-
-Overfull \hbox (182.5321pt too wide) in paragraph at lines 150--151
-[][]$\OT1/pcr/m/n/10 https : / / www . rethink . org / news-[]and-[]stories / b
-logs / 2024 / 11 / psychosis-[]is-[]like-[]a-[]foreign-[]country-[]tom-[]s-[]st
-ory/$[] 
-
-Overfull \hbox (30.5321pt too wide) in paragraph at lines 151--152
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
- / blog / school ,[] -[]college-[]and-[]university$[] 
-
 [3]
-Overfull \hbox (30.5321pt too wide) in paragraph at lines 157--158
-[][]$\OT1/pcr/m/n/10 https : / / www . time-[]to-[]change . org . uk / category
- / blog / school ,[] -[]college-[]and-[]university$[] 
+[4]
+Overfull \hbox (9.45253pt too wide) in paragraph at lines 178--179
+\OT1/ptm/m/n/10 pa[]noles". Es-ta in-for-ma-ci[]on re-sul-ta co-rro-bo-ra-da po
+r m[]ulti-ples fuen-tes[1][2][3]. Se es-pe-ci-fi-ca adem[]as que es .[]rzobispo
 
-Overfull \hbox (24.5321pt too wide) in paragraph at lines 161--162
-[][]$\OT1/pcr/m/n/10 https : / / activeminds . org / blog / how-[]active-[]mind
-s-[]interns-[]champion-[]mental-[]health/$[] 
 
-Overfull \hbox (232.5321pt too wide) in paragraph at lines 162--163
-[][]$\OT1/pcr/m/n/10 https : / / www . wabe . org / mental-[]health-[]advocates
--[]fight-[]stigma-[]to-[]curb-[]conditions-[]that-[]can-[]kill-[]new-[]moms-[]i
-n-[]georgia/$[] 
+Overfull \hbox (7.83804pt too wide) in paragraph at lines 178--179
+\OT1/ptm/m/n/10 de Va-lla-do-lid", in-for-ma-ci[]on que tam-bi[]en apa-re-ce co
+n-fir-ma-da con-sis-ten-te-men-te en los do-cu-men-tos con-sul-ta-dos[4][5].
 
-Overfull \hbox (175.5321pt too wide) in paragraph at lines 167--168
-[][]$\OT1/pcr/m/n/10 https : / / www . wsbtv . com / news / local / atlanta / g
-eorgia-[]family-[]calls-[]mental-[]health-[]system-[]broken-[]asks-[]change /
+[5]
+[6]
+[7]
+Overfull \hbox (35.14929pt too wide) in paragraph at lines 274--276
+[]\OT1/ptm/m/n/10 [1][2][3][4][5][6][7][8][9][10][11][12][13][14][15][16][17][1
+8][19][20][21][22][23][24][25][26][27][28][29][30][31][32]
 
-Overfull \hbox (114.5321pt too wide) in paragraph at lines 168--169
-[][]$\OT1/pcr/m/n/10 https : / / library . samhsa . gov / sites / default / fil
-es / national-[]guidelines-[]crisis-[]care-[]pep24-[]01-[]037 .
+Overfull \hbox (343.5321pt too wide) in paragraph at lines 280--281
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / pr
+esidente-[]conferencia-[]episcopal-[]necesaria-[]cuestion-[]confianza-[]mocion-
+[]censura-[]elecciones _
 
-Overfull \hbox (416.5321pt too wide) in paragraph at lines 169--170
-[][]$\OT1/pcr/m/n/10 https : / / www . lsc . ohio . gov / assets / legislation 
-/ 136 / hb96 / psc / files / hb96-[]comparison-[]document-[]as-[]pending-[]in-[
-]senate-[]committee-[]136th-[]general-[]assembly .
+[8]
+Overfull \hbox (115.0321pt too wide) in paragraph at lines 281--282
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
+itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
 
-Overfull \hbox (424.0321pt too wide) in paragraph at lines 171--172
-[][]$\OT1/pcr/m/n/10 https : / / www . milbank . org / publications / building-
-[]state-[]capacity-[]to-[]address-[]behavioral-[]health-[]needs-[]through-[]cri
-sis-[]services-[]and-[]early-[]intervention/$[] 
+Overfull \hbox (263.5321pt too wide) in paragraph at lines 282--283
+[][]$\OT1/pcr/m/n/10 https : / / alfayomega . es / arguello-[]insiste-[]no-[]so
+y-[]neutral-[]ante-[]el-[]respeto-[]a-[]la-[]vida-[]y-[]su-[]dignidad-[]la-[]li
+bertad-[]religiosa/$[] 
 
-Overfull \hbox (183.5321pt too wide) in paragraph at lines 175--176
-[][]$\OT1/pcr/m/n/10 https : / / www . azahcccs . gov / Resources / Downloads /
- EQR / 2022 / CYE2022ExternalQualityReviewAnnualReportEPDandDDD .
+Overfull \hbox (338.0321pt too wide) in paragraph at lines 283--284
+[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20251214 / arguel
+lo-[]plantea-[]cambiar-[]gobierno-[]sanchez-[]anima-[]presentarse-[]elecciones-
+[]abogados-[]cristianos /
 
-Overfull \hbox (315.0321pt too wide) in paragraph at lines 176--177
-[][]$\OT1/pcr/m/n/10 https : / / www . nami . org / Blogs / NAMI-[]Blog / Decem
-ber-[]2022 / Emotional-[]Recovery-[]from-[]Psychosis-[]Trusting-[]and-[]Believi
-ng-[]in-[]Yourself-[]Again$[] 
+Overfull \hbox (368.5321pt too wide) in paragraph at lines 284--285
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / espana / 20251214 / gob
+ierno-[]revuelve-[]contra-[]arguello-[]pedir-[]elecciones-[]anticipadas-[]tiemp
+o-[]obispos-[]politica-[]acabo _
 
-Overfull \hbox (15.5321pt too wide) in paragraph at lines 178--179
-[][]$\OT1/pcr/m/n/10 https : / / www . frontiersin . org / journals / psychiatr
-y / articles / 10 . 3389 / fpsyt . 2023 .
+Overfull \hbox (350.0321pt too wide) in paragraph at lines 285--286
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / po
+lemica-[]palabras-[]arguello-[]gobierno-[]abstengase-[]romper-[]neutralidad-[]p
+olitica-[]actue-[]respeto _
 
-Overfull \hbox (10.0321pt too wide) in paragraph at lines 180--181
-[][]$\OT1/pcr/m/n/10 https : / / www . accc . gov . au / system / files / ACCC 
-+ commissioned + report + -[] + The + impact +
+Overfull \hbox (601.5321pt too wide) in paragraph at lines 286--287
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 12 / 16 
+/ el-[]arzobispo-[]de-[]oviedo-[]defiende-[]a-[]arguello-[]y-[]carga-[]contra-[
+]los-[]indecentes-[]de-[]saunas-[]y-[]prostibulos-[]que-[]disparan-[]contra-[]l
+a-[]iglesia/$[] 
 
-Overfull \hbox (58.0321pt too wide) in paragraph at lines 180--181
-\OT1/pcr/m/n/10 of + digital + platforms + on + news + and + journalistic + con
-tent ,[] +Centre + for + Media + Transition +
+Overfull \hbox (259.5321pt too wide) in paragraph at lines 287--288
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / gobierno-[]pa
+cta-[]vaticano-[]resignificacion-[]cuelgamuros-[]incluida-[]parte-[]basilica-[]
+abadia _
 
-Overfull \hbox (4.0321pt too wide) in paragraph at lines 181--182
-[][]$\OT1/pcr/m/n/10 https : / / vera-[]institute . files . svdcdn . com / prod
-uction / downloads / publications /
+Overfull \hbox (48.0321pt too wide) in paragraph at lines 288--289
+[][]$\OT1/pcr/m/n/10 https : / / www . catalunyareligio . cat / es / planellas-
+[]marca-[]distancias-[]con-[]arguello-[]sobre$[] 
 
-Overfull \hbox (195.5321pt too wide) in paragraph at lines 181--182
-\OT1/pcr/m/n/10 crisis-[]response-[]services-[]for-[]people-[]with-[]mental-[]i
-llnesses-[]or-[]intellectual-[]and-[]developmental-[]disabilities .
+Overfull \hbox (401.0321pt too wide) in paragraph at lines 289--290
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / espana / 2026-[]01-[]29 / el-[]
+arzobispo-[]de-[]oviedo-[]arremete-[]contra-[]la-[]regularizacion-[]extraordina
+ria-[]de-[]inmigrantes-[]todos-[]no-[]caben .
 
-[4] (/home/roberto/hemingwai/output_temporal/Latest_News__Updates.aux) )
+Overfull \hbox (426.0321pt too wide) in paragraph at lines 290--291
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 03 / 27 
+/ cobo-[]y-[]parolin-[]blindan-[]la-[]basilica-[]y-[]a-[]los-[]benedictinos-[]d
+el-[]valle-[]de-[]los-[]caidos-[]frente-[]al-[]gobierno/$[] 
+
+Overfull \hbox (242.5321pt too wide) in paragraph at lines 291--292
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presion-[]vic
+timas-[]fuerza-[]iglesia-[]admitir-[]plan-[]antiabusos-[]gobierno-[]le-[]plante
+o-[]ano _
+
+Overfull \hbox (149.0321pt too wide) in paragraph at lines 292--293
+[][]$\OT1/pcr/m/n/10 https : / / www . lamoncloa . gob . es / serviciosdeprensa
+ / notasprensa / presidencia-[]justicia-[]relaciones-[]cortes /
+
+Overfull \hbox (345.5321pt too wide) in paragraph at lines 293--294
+[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 06 / 16 
+/ luis-[]arguello-[]ante-[]santiago-[]abascal-[]defiende-[]el-[]concepto-[]de-[
+]patria-[]del-[]papa-[]francisco/$[] 
+
+Overfull \hbox (649.5321pt too wide) in paragraph at lines 294--295
+[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / espana / 2026 / 01 / 12 
+/ alegria-[]y-[]cautela-[]entre-[]las-[]victimas-[]de-[]pederastia-[]tras-[]el-
+[]acuerdo-[]de-[]reparacion-[]entre-[]gobierno-[]e-[]iglesia-[]aplaudire-[]cuan
+do-[]vea-[]resultados/$[] 
+
+Overfull \hbox (58.0321pt too wide) in paragraph at lines 295--296
+[][]$\OT1/pcr/m/n/10 https : / / www . mpr . gob . es / mpr / subse / libertad-
+[]religiosa / Documents / Documentos _ Novedades /
+
+Overfull \hbox (15.5321pt too wide) in paragraph at lines 295--296
+\OT1/pcr/m/n/10 Plan % 20respuesta % 20e % 20implementaci % C3 % B3n % 20inform
+e % 20Defensor % 20Pueblo % 20 .
+
+Overfull \hbox (183.0321pt too wide) in paragraph at lines 296--297
+[][]$\OT1/pcr/m/n/10 https : / / quintanapaz . es / es / presentacion-[]en-[]ma
+drid-[]del-[]libro-[]cosas-[]que-[]he-[]aprendido-[]de-[]gente-[]interesante/$[
+] 
+
+Overfull \hbox (194.5321pt too wide) in paragraph at lines 297--298
+[][]$\OT1/pcr/m/n/10 https : / / www . diocesisdesalamanca . com / noticias / p
+ara-[]comunicar-[]bien-[]hay-[]que-[]ponerse-[]en-[]los-[]zapatos-[]del-[]otro/
+$[] 
+
+Overfull \hbox (538.5321pt too wide) in paragraph at lines 298--299
+[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20250620 / bolano
+s-[]reprocha-[]a-[]conferencia-[]episcopal-[]se-[]aparten-[]neutralidad-[]polit
+ica-[]partidista-[]tras-[]su-[]peticion-[]elecciones-[]anticipadas /
+
+Overfull \hbox (291.0321pt too wide) in paragraph at lines 299--300
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20250917 / a
+rguello-[]ante-[]illa-[]estado-[]no-[]dios-[]iglesia-[]lucha-[]contra-[]idolatr
+ia-[]poder-[]estado _
+
+Overfull \hbox (597.0321pt too wide) in paragraph at lines 300--301
+[][]$\OT1/pcr/m/n/10 https : / / www . libertaddigital . com / espana / politic
+a / 2024-[]01-[]23 / a-[]ver-[]quien-[]la-[]tiene-[]mas-[]larga-[]la-[]ironia-[
+]de-[]un-[]cura-[]para-[]referirse-[]a-[]la-[]cifra-[]de-[]victimas-[]de-[]pede
+rastia-[]7089800/$[] 
+
+Overfull \hbox (132.5321pt too wide) in paragraph at lines 301--302
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / illa-[]argueel
+lo-[]dialogo-[]catolicos-[]sobre-[]polarizacion-[]democracia .
+
+Overfull \hbox (454.5321pt too wide) in paragraph at lines 304--305
+[][]$\OT1/pcr/m/n/10 https : / / www . march . es / es / coleccion / archivo-[]
+linz-[]transicion-[]espanola / ficha / iglesia-[]no-[]puede-[]ser-[]neutral-[]a
+nte-[]problemas-[]morales-[]derechos-[]humanos-[]-[]linz .
+
+Overfull \hbox (531.5321pt too wide) in paragraph at lines 305--306
+[][]$\OT1/pcr/m/n/10 https : / / www . caritas . es / noticias / caritas-[]pide
+-[]comision-[]trabajo-[]congreso-[]apruebe-[]iniciativa-[]legislativa-[]popular
+-[]regularizacion-[]extraordinaria-[]personas-[]extranjeras/$[] 
+
+Overfull \hbox (35.5321pt too wide) in paragraph at lines 306--307
+[][]$\OT1/pcr/m/n/10 https : / / www . religiondigital . org / diocesis / argue
+ello-[]presentar-[]papa-[]semana-[]santa _
+
+Overfull \hbox (429.5321pt too wide) in paragraph at lines 307--308
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / memoria-[]publ
+ica / falangista-[]santiago-[]cantera-[]prior-[]valle-[]caidos-[]intento-[]impe
+dir-[]exhumacion-[]franco-[]relevado-[]cargo .
+
+[9]
+Overfull \hbox (22.0321pt too wide) in paragraph at lines 308--309
+[][]$\OT1/pcr/m/n/10 https : / / www . cidob . org / sites / default / files / 
+2026-[]02 / 868 _ OPINION _ BLANCA % 20GARCE %
+
+Overfull \hbox (292.0321pt too wide) in paragraph at lines 309--310
+[][]$\OT1/pcr/m/n/10 https : / / www . aciprensa . com / noticias / 122159 / pr
+esidente-[]de-[]obispos-[]espanoles-[]propone-[]dos-[]sies-[]y-[]un-[]no-[]para
+-[]vivir-[]en-[]cuaresma$[] 
+
+Overfull \hbox (205.5321pt too wide) in paragraph at lines 310--311
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / santiago-[]ca
+ntera-[]prior-[]boicotear-[]exhumacion-[]franco-[]deja-[]valle-[]cuelgamuros _
+
+Overfull \hbox (450.5321pt too wide) in paragraph at lines 311--312
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / sociedad / 2023-[]10-[]27 / la-
+[]investigacion-[]del-[]defensor-[]del-[]pueblo-[]estima-[]en-[]440000-[]las-[]
+victimas-[]de-[]pederastia-[]en-[]la-[]iglesia-[]espanola .
+
+Overfull \hbox (427.5321pt too wide) in paragraph at lines 313--314
+[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / politica / 20251214
+ / 11360302 / cuestion-[]confianza-[]mocion-[]censura-[]elecciones-[]deberia-[]
+reformar-[]constitucion-[]clarificarla .
+
+Overfull \hbox (260.0321pt too wide) in paragraph at lines 314--315
+[][]$\OT1/pcr/m/n/10 https : / / www . vaticannews . va / es / iglesia / news /
+ 2023-[]10 / espana-[]abusos-[]el-[]informe-[]pederastia-[]tutela-[]menores-[]d
+efensr-[]publo .
+
+Overfull \hbox (169.0321pt too wide) in paragraph at lines 316--317
+[][]$\OT1/pcr/m/n/10 https : / / www . elplural . com / politica / espana / igl
+esia-[]entra-[]campana-[]curas-[]piden-[]mocion-[]censura-[]elecciones _
+
+Overfull \hbox (266.5321pt too wide) in paragraph at lines 317--318
+[][]$\OT1/pcr/m/n/10 https : / / theobjective . com / espana / politica / 2025-
+[]08-[]17 / quintana-[]paz-[]filosofo-[]amigo-[]abascal-[]arguello-[]vox-[]limi
+tes-[]iglesia/$[] 
+
+Overfull \hbox (156.5321pt too wide) in paragraph at lines 318--319
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / regularizacio
+n-[]migrantes-[]enfrenta-[]derechas-[]iglesia-[]demonio-[]pobres _
+
+Overfull \hbox (307.5321pt too wide) in paragraph at lines 320--321
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / sociedad / doctrina-[]soc
+ial-[]cristianismo-[]ultraconservador-[]regularizacion-[]migrantes-[]agita-[]mu
+ndo-[]catolico .
+
+Overfull \hbox (302.5321pt too wide) in paragraph at lines 322--323
+[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20251215 / a
+rguello-[]responde-[]sanchez-[]ante-[]respeto-[]reglas-[]basicas-[]estado-[]der
+echo-[]no-[]neutral _
+
+Overfull \hbox (723.5321pt too wide) in paragraph at lines 323--324
+[][]$\OT1/pcr/m/n/10 https : / / cadenaser . com / nacional / 2025 / 06 / 20 / 
+el-[]gobierno-[]acusa-[]a-[]los-[]obispos-[]de-[]actuar-[]en-[]comunion-[]con-[
+]la-[]derecha-[]y-[]apartarse-[]del-[]respeto-[]institucional-[]por-[]pedir-[]u
+n-[]adelanto-[]electoral-[]cadena-[]ser/$[] 
+
+Overfull \hbox (279.0321pt too wide) in paragraph at lines 325--326
+[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / willy-[]toledo
+-[]lalachus-[]noelia-[]asi-[]usa-[]abogados-[]cristianos-[]justicia-[]imponer-[
+]agenda-[]ultra .
+
+Overfull \hbox (21.5321pt too wide) in paragraph at lines 326--327
+[][]$\OT1/pcr/m/n/10 https : / / revistascientificas . us . es / index . php / 
+araucaria / article / download / 27118 /
+
+Overfull \hbox (362.5321pt too wide) in paragraph at lines 327--328
+[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / programas / lasexta-[]cl
+ave / como-[]abogados-[]cristianos-[]intentan-[]imponer-[]vision-[]retrograda-[
+]base-[]denuncias-[]presiones _
+
+Overfull \hbox (332.5321pt too wide) in paragraph at lines 329--330
+[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presidente-[]
+obispos-[]pide-[]elecciones-[]anticipadas-[]salida-[]bloqueo-[]institucional-[]
+dar-[]voz-[]ciudadanos _
+
+[10]
+(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
+esta_a_los_obispos_Nos_ha.aux) )
 (see the transcript file for additional information)</usr/share/texlive/texmf-d
 ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Latest_News__Updates.
-pdf (4 pages, 76742 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/Latest_News__Upda
-tes.log.
+Output written on /home/roberto/hemingwai/output_temporal/La_campaña_política
+_de_Argüello_molesta_a_los_obispos_Nos_ha.pdf (10 pages, 107356 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/La_campaña_polí
+tica_de_Argüello_molesta_a_los_obispos_Nos_ha.log.

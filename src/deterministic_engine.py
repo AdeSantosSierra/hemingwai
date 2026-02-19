@@ -1,5 +1,6 @@
 from typing import Dict, Any, Optional
 from datetime import datetime, timezone
+from decimal import Decimal, ROUND_HALF_UP
 
 from alerts_catalog import ALERT_DEFS, normalize_alert_shape
 from Utils import Utils
@@ -30,6 +31,14 @@ STATUS_LABELS = {
 
 def clamp(value: float, min_val: float = 0.0, max_val: float = 10.0) -> float:
     return max(min_val, min(value, max_val))
+
+def round_half_up(value: float, ndigits: int) -> float:
+    """
+    Stable ROUND_HALF_UP rounding using Decimal to avoid binary float surprises.
+    """
+    quant = Decimal("1").scaleb(-ndigits)
+    rounded = Decimal(str(value)).quantize(quant, rounding=ROUND_HALF_UP)
+    return float(rounded)
 
 
 def _default_scores() -> Dict[str, Any]:
@@ -204,12 +213,21 @@ def compute_evaluation_result(
     E = scores["enfoque"]["value"]
 
     # 3. Calculate Derived Metrics
-    G_raw = sum(scores[c]["value"] * WEIGHTS[c] for c in CATEGORIES_V2)
+    G_raw_decimal = sum(
+        Decimal(str(scores[c]["value"])) * Decimal(str(WEIGHTS[c]))
+        for c in CATEGORIES_V2
+    )
+    G_raw = float(G_raw_decimal)
+    G_2dp = round_half_up(G_raw, 2)
+    G_1dp = round_half_up(G_raw, 1)
     m_min_fa = min(F, A)
     T_raw = (E + P) / 2
 
     derived = {
-        "global_score": round(G_raw, 1),
+        "global_score": G_2dp,  # Legacy key now points to the definitive 2dp score.
+        "global_score_raw": G_raw,
+        "global_score_2dp": G_2dp,
+        "global_score_1dp": G_1dp,
         "tripod": {"m_min_fa": round(m_min_fa, 2), "T_transcendence": round(T_raw, 2)},
         "gates": {"hard_triggered": False, "soft_cap_triggered": False},
     }
@@ -312,6 +330,9 @@ def compute_evaluation_result(
     computed_at = datetime.now(timezone.utc).isoformat()
     extras = {
         "raw_global_score": G_raw,
+        "global_score_raw": G_raw,
+        "global_score_2dp": G_2dp,
+        "global_score_1dp": G_1dp,
         "engine_version": ENGINE_VERSION,
         "computed_at": computed_at,
     }

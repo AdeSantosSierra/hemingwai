@@ -3,6 +3,7 @@ import os
 import re
 import unicodedata
 from typing import Any, Dict, List
+from env_config import get_env_int
 
 from alerts_catalog import (
     ALLOWED_ALERT_CODES_MODEL,
@@ -76,6 +77,7 @@ def _chat_completion_text(openai_client: Any, system_prompt: str, user_prompt: s
             ],
             temperature=0,
             response_format={"type": "json_object"},
+            timeout=get_env_int("OPENAI_TIMEOUT_SECONDS", 60),
         )
         return response.choices[0].message.content if response and response.choices else ""
     raise ValueError("openai_client no compatible: falta chat.completions.create")

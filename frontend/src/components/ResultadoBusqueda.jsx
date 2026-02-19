@@ -149,7 +149,7 @@ const PuntuacionIndicador = ({ puntuacion }) => {
   return (
     <div className="flex items-center gap-2">
       <div className={`w-3 h-3 rounded-full ${getColor(score)}`} />
-      <span className="font-bold text-gray-200">{isNaN(score) ? 'N/A' : score}</span>
+      <span className="font-bold text-gray-200">{isNaN(score) ? 'N/A' : score.toFixed(2)}</span>
     </div>
   );
 };
@@ -237,6 +237,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         chatbotRef.current.handleQuickQuestion(pregunta);
     }
   };
+
+  const globalScore = Number(resultado.global_score_2dp ?? resultado.puntuacion);
+  const hasGlobalScore = Number.isFinite(globalScore);
+  const globalScoreForUi = hasGlobalScore ? Number(globalScore.toFixed(2)) : 0;
 
   return (
     <>
@@ -331,20 +335,24 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                   Puntuación general
                 </div>
                 <div className="flex flex-col items-center justify-center">
-                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
+                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(globalScoreForUi)}</span>
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-3 h-3 rounded-full ${
-                        resultado.puntuacion >= 7.5
+                        globalScoreForUi >= 7.5
                           ? 'bg-green-500'
-                          : resultado.puntuacion >= 6
+                          : globalScoreForUi >= 6
                           ? 'bg-yellow-500'
-                          : resultado.puntuacion >= 4.5
+                          : globalScoreForUi >= 4.5
                           ? 'bg-orange-500'
                           : 'bg-red-500'
                       }`}
                     />
-                    <ScoreCounter value={resultado.puntuacion ?? 0} className="text-3xl font-extrabold text-lima" />
+                    {hasGlobalScore ? (
+                      <ScoreCounter value={globalScoreForUi} className="text-3xl font-extrabold text-lima" />
+                    ) : (
+                      <span className="text-3xl font-extrabold text-lima">N/A</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -541,7 +549,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                           fuente: resultado.fuente,
                           keywords: resultado.keywords,
                           tags: resultado.tags,
-                          puntuacion: resultado.puntuacion,
+                          puntuacion: hasGlobalScore ? globalScoreForUi : resultado.puntuacion,
                           puntuacion_individual: resultado.puntuacion_individual,
                       }}
                   />

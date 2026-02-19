@@ -1,18 +1,30 @@
 import hashlib
 from datetime import datetime
 import re
+import os
 from collections import Counter
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import numpy as np  # Asegúrate de tener numpy instalado: pip install numpy
+from dotenv import load_dotenv
 from alerts_catalog import (
     VALID_CATEGORIES,
     normalize_alert_shape,
     severity_rank,
 )
+from env_config import get_env_bool, get_env_first
+
+load_dotenv()
 
 
 class Utils:
+    ANTHROPIC_MODEL_MAIN = get_env_first(("ANTHROPIC_MODEL_MAIN", "ANTHROPIC_MODEL"), "claude-3-haiku-20240307")
+    OPENAI_MODEL_MAIN = os.getenv("OPENAI_MODEL_MAIN", "gpt-4o")
+    OPENAI_MODEL_EMBEDDING = os.getenv("OPENAI_MODEL_EMBEDDING", "text-embedding-3-small")
+    FEATURE_ENABLE_ANTHROPIC = get_env_bool("FEATURE_ENABLE_ANTHROPIC", True)
+    FEATURE_FAIL_OPEN_ANTHROPIC = get_env_bool("FEATURE_FAIL_OPEN_ANTHROPIC", False)
+    ANTHROPIC_FALLBACK_USED = False
+    ANTHROPIC_LAST_ERROR = None
 
     criterios = {
         1: {
@@ -111,6 +123,24 @@ class Utils:
     @staticmethod
     def codificar_url_sha256(url):
         return hashlib.sha256(url.encode('utf-8')).hexdigest()
+
+    @staticmethod
+    def _anthropic_available(cliente_anthropic):
+        return Utils.FEATURE_ENABLE_ANTHROPIC and cliente_anthropic is not None
+
+    @staticmethod
+    def _allow_anthropic_degraded_mode():
+        return (not Utils.FEATURE_ENABLE_ANTHROPIC) or Utils.FEATURE_FAIL_OPEN_ANTHROPIC
+
+    @staticmethod
+    def _set_anthropic_fallback(error_message):
+        Utils.ANTHROPIC_FALLBACK_USED = True
+        Utils.ANTHROPIC_LAST_ERROR = str(error_message)[:500]
+
+    @staticmethod
+    def reset_anthropic_runtime_state():
+        Utils.ANTHROPIC_FALLBACK_USED = False
+        Utils.ANTHROPIC_LAST_ERROR = None
     
     # Función para obtener la fecha y hora actual en formato ISO
     @staticmethod
@@ -156,11 +186,23 @@ class Utils:
         desinforman al público. 
         """
 
-        return cliente_anthropic.messages.create(
-            model="claude-3-5-haiku-20241022",
-            max_tokens=1024,
-            messages=[{"role": "user", "content": instruccion}]
-        ).content
+        if not Utils._anthropic_available(cliente_anthropic):
+            if Utils._allow_anthropic_degraded_mode():
+                Utils._set_anthropic_fallback("anthropic_unavailable_main_analysis")
+                return "Anthropic no disponible en esta ejecución; continuar con evaluación OpenAI."
+            raise RuntimeError("Anthropic no disponible y FEATURE_FAIL_OPEN_ANTHROPIC está desactivado.")
+
+        try:
+            return cliente_anthropic.messages.create(
+                model=Utils.ANTHROPIC_MODEL_MAIN,
+                max_tokens=1024,
+                messages=[{"role": "user", "content": instruccion}]
+            ).content
+        except Exception:
+            if Utils._allow_anthropic_degraded_mode():
+                Utils._set_anthropic_fallback("anthropic_runtime_error_main_analysis")
+                return "Anthropic falló durante el análisis; continuar con evaluación OpenAI."
+            raise
 
     @staticmethod
     def generar_salida_gpt(cliente_openai, titulo, noticia, salida_claude, nombre_criterio, instruccion_criterio):
@@ -206,7 +248,7 @@ class Utils:
         """
 
         response = cliente_openai.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un analista experto en noticias."},
                 {"role": "user", "content": instruccion}
@@ -243,8 +285,16 @@ class Utils:
                 historial_completo = "\n".join(
                     [f"{item['rol']} (Iteración {item['iteracion']}): {item['contenido']}" for item in historial]
                 )
+                if not Utils._anthropic_available(cliente_anthropic):
+                    if Utils._allow_anthropic_degraded_mode():
+                        Utils._set_anthropic_fallback("anthropic_unavailable_review_loop")
+                        consenso = True
+                        resultados[key] = salida_gpt
+                        break
+                    raise RuntimeError("Anthropic no disponible y FEATURE_FAIL_OPEN_ANTHROPIC está desactivado.")
+
                 evaluacion_claude = cliente_anthropic.messages.create(
-                    model="claude-3-haiku-20240307",
+                    model=Utils.ANTHROPIC_MODEL_MAIN,
                     max_tokens=1024,
                     messages=[{"role": "user", "content": f"""
                     Basándote en este historial de interacción:
@@ -268,7 +318,7 @@ class Utils:
                 Respuesta anterior de ChatGPT: {historial[-2]['contenido']}
                 """
                 salida_gpt_mejorada = cliente_openai.chat.completions.create(
-                    model="gpt-4o",
+                    model=Utils.OPENAI_MODEL_MAIN,
                     messages=[
                         {"role": "system", "content": "Eres un analista experto en noticias."},
                         {"role": "user", "content": mejora_gpt_instruccion}
@@ -310,7 +360,7 @@ class Utils:
         """
 
         response = cliente_openai.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un analista experto en noticias."},
                 {"role": "user", "content": instruccion}
@@ -348,7 +398,7 @@ class Utils:
         """
 
         response = cliente_openai.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un analista experto en noticias."},
                 {"role": "user", "content": prompt}
@@ -374,7 +424,7 @@ class Utils:
         )
 
         response = openai_client.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un experto en análisis de noticias."},
                 {"role": "user", "content": prompt}
@@ -715,11 +765,22 @@ class Utils:
 
         {instruccion_criterio}
         """
-        return cliente_anthropic.messages.create(
-            model="claude-3-5-haiku-20241022",
-            max_tokens=1024,
-            messages=[{"role": "user", "content": instruccion}]
-        ).content
+        if not Utils._anthropic_available(cliente_anthropic):
+            if Utils._allow_anthropic_degraded_mode():
+                Utils._set_anthropic_fallback("anthropic_unavailable_headline_analysis")
+                return "Anthropic no disponible en esta ejecución; continuar con evaluación OpenAI."
+            raise RuntimeError("Anthropic no disponible y FEATURE_FAIL_OPEN_ANTHROPIC está desactivado.")
+        try:
+            return cliente_anthropic.messages.create(
+                model=Utils.ANTHROPIC_MODEL_MAIN,
+                max_tokens=1024,
+                messages=[{"role": "user", "content": instruccion}]
+            ).content
+        except Exception:
+            if Utils._allow_anthropic_degraded_mode():
+                Utils._set_anthropic_fallback("anthropic_runtime_error_headline_analysis")
+                return "Anthropic falló durante la evaluación de titular; continuar con OpenAI."
+            raise
 
     @staticmethod
     def generar_salida_gpt_titular(cliente_openai, titular, salida_claude, nombre_criterio, instruccion_criterio):
@@ -733,7 +794,7 @@ class Utils:
         {instruccion_criterio}
         """
         return cliente_openai.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un analista experto en titulares de noticias."},
                 {"role": "user", "content": instruccion}
@@ -853,8 +914,16 @@ class Utils:
                 [f"{item['rol']} (Iteración {item['iteracion']}): {item['contenido']}" for item in historial]
             )
 
+            if not Utils._anthropic_available(cliente_anthropic):
+                if Utils._allow_anthropic_degraded_mode():
+                    Utils._set_anthropic_fallback("anthropic_unavailable_headline_loop")
+                    consenso = True
+                    resultados["titular"] = salida_gpt
+                    break
+                raise RuntimeError("Anthropic no disponible y FEATURE_FAIL_OPEN_ANTHROPIC está desactivado.")
+
             evaluacion = cliente_anthropic.messages.create(
-                model="claude-3-haiku-20240307",
+                model=Utils.ANTHROPIC_MODEL_MAIN,
                 max_tokens=1024,
                 messages=[{
                     "role": "user",
@@ -895,7 +964,7 @@ class Utils:
             """
 
             salida_gpt_mejorada = cliente_openai.chat.completions.create(
-                model="gpt-4o",
+                model=Utils.OPENAI_MODEL_MAIN,
                 messages=[
                     {"role": "system", "content": "Eres un analista experto en noticias."},
                     {"role": "user", "content": mejora_gpt_instruccion}
@@ -972,7 +1041,7 @@ class Utils:
             "Campo valoracion_general: " + str(valoracion_general)
         )
         response = openai_client.chat.completions.create(
-            model="gpt-4o",
+            model=Utils.OPENAI_MODEL_MAIN,
             messages=[
                 {"role": "system", "content": "Eres un analista experto en calidad periodística."},
                 {"role": "user", "content": prompt}
@@ -1051,8 +1120,14 @@ class Utils:
             "Campo valoracion_titular: " + valoracion_titular_str + "\n"
             "\nIMPORTANTE: Devuelve únicamente el resumen solicitado, sin ningún tipo de explicación, cita, formato, prefijo, ni información adicional. Solo el texto del resumen, en una sola frase."
         )
+        if not Utils._anthropic_available(anthropic_client):
+            if Utils._allow_anthropic_degraded_mode():
+                Utils._set_anthropic_fallback("anthropic_unavailable_headline_summary")
+                return "Resumen de titular no disponible por fallo o ausencia de Anthropic."
+            raise RuntimeError("Anthropic no disponible y FEATURE_FAIL_OPEN_ANTHROPIC está desactivado.")
+
         response = anthropic_client.messages.create(
-            model="claude-3-5-haiku-20241022",
+            model=Utils.ANTHROPIC_MODEL_MAIN,
             max_tokens=60,
             messages=[{"role": "user", "content": prompt}]
         )
@@ -1228,7 +1303,7 @@ Responde únicamente con el número, sin texto adicional.
                 )
                 try:
                     response = openai_client.chat.completions.create(
-                        model="gpt-4o",
+                        model=Utils.OPENAI_MODEL_MAIN,
                         messages=[
                             {"role": "system", "content": "Eres un generador de fake news plausibles para experimentos de IA."},
                             {"role": "user", "content": prompt}
@@ -1251,7 +1326,7 @@ Responde únicamente con el número, sin texto adicional.
             try:
                 emb_resp = openai_client.embeddings.create(
                     input=fake_news_texts,
-                    model="text-embedding-3-small"
+                    model=Utils.OPENAI_MODEL_EMBEDDING
                 )
                 fake_news_embeddings = [item.embedding for item in emb_resp.data]
             except Exception as e:

@@ -5,6 +5,8 @@ import os
 import sys
 import uuid
 import pymongo
+import time
+from decimal import Decimal, ROUND_HALF_UP
 from datetime import datetime, timezone
 from bson.objectid import ObjectId
 from pymongo.mongo_client import MongoClient
@@ -15,32 +17,79 @@ load_dotenv()
 from MongoDB import MongoDBService
 from deterministic_engine import compute_evaluation_result
 from llm_alert_extractor import extract_alerts_with_llm
+from env_config import (
+    get_env_bool,
+    get_env_first,
+    get_env_int,
+    validate_required,
+    validate_required_any,
+)
 
 # Pipeline metadata constants (V2 traceability)
 ENGINE_VERSION = "v2.0.0"
 PIPELINE_VERSION = os.getenv("GIT_SHA", "pipeline.2026-02-15")
-try:
-    ALERT_MIN_BODY_CHARS = int(os.getenv("ALERT_MIN_BODY_CHARS", "400"))
-except ValueError:
-    ALERT_MIN_BODY_CHARS = 400
+ALERT_MIN_BODY_CHARS = get_env_int("ALERT_MIN_BODY_CHARS", 400)
+ALERT_MAX_ITEMS = get_env_int("ALERT_MAX_ITEMS", 8)
+OPENAI_RETRIES = get_env_int("OPENAI_RETRIES", 3)
+OPENAI_RETRY_BASE_SECONDS = get_env_int("OPENAI_RETRY_BASE_SECONDS", 1)
+OPENAI_TIMEOUT_SECONDS = get_env_int("OPENAI_TIMEOUT_SECONDS", 60)
+FEATURE_ENABLE_ANTHROPIC = get_env_bool("FEATURE_ENABLE_ANTHROPIC", True)
+FEATURE_FAIL_OPEN_ANTHROPIC = get_env_bool("FEATURE_FAIL_OPEN_ANTHROPIC", False)
+OPENAI_MODEL_EMBEDDING = os.getenv("OPENAI_MODEL_EMBEDDING", "text-embedding-3-small")
+MONGO_READ_URI = get_env_first(("MONGO_READ_URI", "OLD_MONGODB_URI", "MONGODB_URI"))
+MONGO_WRITE_URI = get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI"))
+MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")
+MONGO_COLLECTION_NAME = os.getenv("MONGO_COLLECTION_NAME", "Noticias")
+MONGO_SERVER_API_VERSION = os.getenv("MONGO_SERVER_API_VERSION", "1")
+
+
+def round_half_up(value, ndigits):
+    quant = Decimal("1").scaleb(-ndigits)
+    return float(Decimal(str(value)).quantize(quant, rounding=ROUND_HALF_UP))
 
 
 def procesar_noticias():
     try:
-        anthropic_client = anthropic.Anthropic(
-            api_key=os.getenv("ANTHROPIC_API_KEY")
+        Utils.reset_anthropic_runtime_state()
+        validate_required(["OPENAI_API_KEY"], active=True, context="Hemingwai")
+        validate_required(
+            ["ANTHROPIC_API_KEY"],
+            active=FEATURE_ENABLE_ANTHROPIC and not FEATURE_FAIL_OPEN_ANTHROPIC,
+            context="Hemingwai",
         )
+        validate_required_any(
+            {
+                "mongo_read_uri": ("MONGO_READ_URI", "OLD_MONGODB_URI", "MONGODB_URI"),
+                "mongo_write_uri": ("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI"),
+            },
+            active=True,
+            context="Hemingwai",
+        )
+
+        anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+        anthropic_client = None
+        anthropic_step = {"provider": "anthropic", "at": datetime.now(timezone.utc).isoformat()}
+        if not FEATURE_ENABLE_ANTHROPIC:
+            anthropic_step.update({"status": "disabled", "ok": False, "error": "feature_disabled"})
+        elif anthropic_api_key:
+            anthropic_client = anthropic.Anthropic(api_key=anthropic_api_key)
+            anthropic_step.update({"status": "ok", "ok": True})
+        elif not FEATURE_FAIL_OPEN_ANTHROPIC:
+            print("Falta ANTHROPIC_API_KEY en el .env")
+            return
+        else:
+            print("Warning: ANTHROPIC_API_KEY ausente. Se continúa en modo fail-open.")
+            anthropic_step.update({"status": "degraded", "ok": False, "error": "missing_api_key"})
+
         openai.api_key = os.getenv("OPENAI_API_KEY")
-        old_uri = os.getenv("OLD_MONGODB_URI")
-        new_uri = os.getenv("NEW_MONGODB_URI")
-        if not old_uri or not new_uri:
-            print("Faltan OLD_MONGODB_URI o NEW_MONGODB_URI en el .env")
+        if not MONGO_READ_URI or not MONGO_WRITE_URI:
+            print("Faltan MONGO_READ_URI/MONGO_WRITE_URI (o OLD_MONGODB_URI/NEW_MONGODB_URI) en el .env")
             return
         # Conexiones
-        old_client = MongoClient(old_uri, server_api=ServerApi('1'))
-        old_collection = old_client['Base_de_datos_noticias']['Noticias']
-        new_client = MongoClient(new_uri, server_api=ServerApi('1'))
-        new_collection = new_client['Base_de_datos_noticias']['Noticias']
+        old_client = MongoClient(MONGO_READ_URI, server_api=ServerApi(MONGO_SERVER_API_VERSION))
+        old_collection = old_client[MONGO_DB_NAME][MONGO_COLLECTION_NAME]
+        new_client = MongoClient(MONGO_WRITE_URI, server_api=ServerApi(MONGO_SERVER_API_VERSION))
+        new_collection = new_client[MONGO_DB_NAME][MONGO_COLLECTION_NAME]
         
         doc_to_analyze = None
 
@@ -123,20 +172,20 @@ def procesar_noticias():
         print(f"Procesando noticia: {titulo}")
         resultados = Utils.analizar_noticia(anthropic_client, openai, titulo, noticia)
         # --- Generar embedding del cuerpo de la noticia y guardarlo (con reintentos) ---
-        import time
         noticia_embedding = None
-        for intento in range(3):
+        for intento in range(OPENAI_RETRIES):
             try:
                 embedding_response = openai.embeddings.create(
                     input=noticia,
-                    model="text-embedding-3-small"
+                    model=OPENAI_MODEL_EMBEDDING,
+                    timeout=OPENAI_TIMEOUT_SECONDS,
                 )
                 noticia_embedding = embedding_response.data[0].embedding
                 break
             except Exception as e:
-                print(f"Error al generar el embedding (intento {intento+1}/3): {e}")
-                if intento < 2:
-                    time.sleep(2 ** intento)  # 1s, 2s, 4s
+                print(f"Error al generar el embedding (intento {intento+1}/{OPENAI_RETRIES}): {e}")
+                if intento < OPENAI_RETRIES - 1:
+                    time.sleep((2 ** intento) * OPENAI_RETRY_BASE_SECONDS)
         valoraciones_texto = {}
         puntuaciones = []
         puntuacion_individual = {}
@@ -151,7 +200,7 @@ def procesar_noticias():
             puntuacion_individual[ks] = punt
             if punt is not None:
                 puntuaciones.append(punt)
-        puntuacion_global = round(sum(puntuaciones) / len(puntuaciones), 1) if puntuaciones else None
+        puntuacion_global = round_half_up(sum(puntuaciones) / len(puntuaciones), 2) if puntuaciones else None
         texto_referencia = Utils.generar_texto_referencia(openai, titulo, noticia, valoraciones_texto)
         texto_referencia_diccionario = Utils.crear_diccionario_citas(texto_referencia)
         valoracion_general = Utils.obtener_valoracion_general(openai, titulo, noticia, valoraciones_texto)
@@ -188,7 +237,7 @@ def procesar_noticias():
             puntuacion_individual,
             Utils.criterios,
             texto_referencia=texto_referencia,
-            max_alerts=8,
+            max_alerts=ALERT_MAX_ITEMS,
         )
         collected_alerts = Utils.dedupe_alerts(collected_alerts)
         collected_alerts = Utils.sort_alerts(collected_alerts)
@@ -236,8 +285,8 @@ def procesar_noticias():
                 raw_body=noticia,
                 min_body_chars=ALERT_MIN_BODY_CHARS,
             )
-            # Update global score with the V2 derived global score
-            puntuacion_global = evaluation_result["derived"]["global_score"]
+            # Canonical definitive score is always 2dp; keep 1dp only as optional legacy.
+            puntuacion_global = evaluation_result["derived"]["global_score_2dp"]
             pipeline_status = "scored"
 
         # Ensure consistent alert/audit shape before persistence
@@ -258,7 +307,8 @@ def procesar_noticias():
             "engine_version": ENGINE_VERSION,
             "status": pipeline_status,
             "steps": {
-                "scoring": {"ok": not bool(missing_scores), "at": NOW_ISO}
+                "scoring": {"ok": not bool(missing_scores), "at": NOW_ISO},
+                "anthropic": anthropic_step,
             }
         }
         evaluation_meta = {
@@ -271,6 +321,14 @@ def procesar_noticias():
         print(f"Procesando titular: {titulo}")
         resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)
         resumen_valoracion_titular = Utils.obtener_resumen_valoracion_titular(anthropic_client, resultados_titular)
+        if Utils.ANTHROPIC_FALLBACK_USED:
+            pipeline_meta["steps"]["anthropic"] = {
+                "provider": "anthropic",
+                "at": datetime.now(timezone.utc).isoformat(),
+                "status": "degraded",
+                "ok": False,
+                "error": Utils.ANTHROPIC_LAST_ERROR or "anthropic_runtime_fallback",
+            }
         es_clickbait = bool(resultados_titular.get("is_clickbait", False))
         titular_reformulado = resultados_titular.get("titular_reformulado") if es_clickbait else None
 
@@ -290,8 +348,22 @@ def procesar_noticias():
             "pipeline": pipeline_meta,
             "evaluation_meta": evaluation_meta
         }
-        if puntuacion_global is not None:
+        global_score_raw = (
+            (evaluation_result.get("derived") or {}).get("global_score_raw")
+            or (evaluation_result.get("extras") or {}).get("raw_global_score")
+        )
+        global_score_2dp = (evaluation_result.get("derived") or {}).get("global_score_2dp")
+        global_score_1dp = (evaluation_result.get("derived") or {}).get("global_score_1dp")
+
+        if global_score_raw is not None:
+            update_fields["global_score_raw"] = global_score_raw
+        if global_score_2dp is not None:
+            update_fields["global_score_2dp"] = global_score_2dp
+            update_fields["puntuacion"] = global_score_2dp
+        elif puntuacion_global is not None:
             update_fields["puntuacion"] = puntuacion_global
+        if global_score_1dp is not None:
+            update_fields["global_score_1dp"] = global_score_1dp
         if titular_reformulado:
             update_fields["titulo_reformulado"] = titular_reformulado
         # Añadir campos básicos al update final (por si acaso)
