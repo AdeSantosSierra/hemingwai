@@ -4,8 +4,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (prel
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.tex
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -173,277 +173,226 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-No file La_campaña_política_de_Argüello_molesta_a_los_obispos_Nos_ha.aux.
+No file España_se_sitúa_a_la_cola_de_países_de_la_UE_en_accesibilida.aux.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
-Overfull \hbox (102.5321pt too wide) in paragraph at lines 82--84
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
-itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
+Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
+[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
+ / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
 
 [2]
-[3]
+[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
 [4]
-Overfull \hbox (9.45253pt too wide) in paragraph at lines 178--179
-\OT1/ptm/m/n/10 pa[]noles". Es-ta in-for-ma-ci[]on re-sul-ta co-rro-bo-ra-da po
-r m[]ulti-ples fuen-tes[1][2][3]. Se es-pe-ci-fi-ca adem[]as que es .[]rzobispo
+Overfull \hbox (91.0321pt too wide) in paragraph at lines 178--179
+[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / projects / access-[]afforda
+ble-[]and-[]quality-[]housing-[]all-[]people-[]house4all$[] 
 
+Overfull \hbox (212.0321pt too wide) in paragraph at lines 179--180
+[][]$\OT1/pcr/m/n/10 https : / / blog . urbanitae . com / en / 2025 / 12 / 01 /
+ how-[]does-[]spain-[]compare-[]to-[]other-[]countries-[]in-[]housing-[]accessi
+bility/$[] 
 
-Overfull \hbox (7.83804pt too wide) in paragraph at lines 178--179
-\OT1/ptm/m/n/10 de Va-lla-do-lid", in-for-ma-ci[]on que tam-bi[]en apa-re-ce co
-n-fir-ma-da con-sis-ten-te-men-te en los do-cu-men-tos con-sul-ta-dos[4][5].
+Overfull \hbox (69.5321pt too wide) in paragraph at lines 180--181
+[][]$\OT1/pcr/m/n/10 https : / / aecr . org / es / la-[]espana-[]de-[]los-[]50-
+[]millones-[]y-[]el-[]cuello-[]de-[]botella-[]en-[]vivienda/$[] 
 
-[5]
-[6]
-[7]
-Overfull \hbox (35.14929pt too wide) in paragraph at lines 274--276
-[]\OT1/ptm/m/n/10 [1][2][3][4][5][6][7][8][9][10][11][12][13][14][15][16][17][1
-8][19][20][21][22][23][24][25][26][27][28][29][30][31][32]
+Overfull \hbox (41.5321pt too wide) in paragraph at lines 181--182
+[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / publications / house4all-[]
+european-[]compendium-[]housing-[]policies$[] 
 
-Overfull \hbox (343.5321pt too wide) in paragraph at lines 280--281
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / pr
-esidente-[]conferencia-[]episcopal-[]necesaria-[]cuestion-[]confianza-[]mocion-
-[]censura-[]elecciones _
-
-[8]
-Overfull \hbox (115.0321pt too wide) in paragraph at lines 281--282
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
-itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
-
-Overfull \hbox (263.5321pt too wide) in paragraph at lines 282--283
-[][]$\OT1/pcr/m/n/10 https : / / alfayomega . es / arguello-[]insiste-[]no-[]so
-y-[]neutral-[]ante-[]el-[]respeto-[]a-[]la-[]vida-[]y-[]su-[]dignidad-[]la-[]li
-bertad-[]religiosa/$[] 
-
-Overfull \hbox (338.0321pt too wide) in paragraph at lines 283--284
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20251214 / arguel
-lo-[]plantea-[]cambiar-[]gobierno-[]sanchez-[]anima-[]presentarse-[]elecciones-
-[]abogados-[]cristianos /
-
-Overfull \hbox (368.5321pt too wide) in paragraph at lines 284--285
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / espana / 20251214 / gob
-ierno-[]revuelve-[]contra-[]arguello-[]pedir-[]elecciones-[]anticipadas-[]tiemp
-o-[]obispos-[]politica-[]acabo _
-
-Overfull \hbox (350.0321pt too wide) in paragraph at lines 285--286
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / po
-lemica-[]palabras-[]arguello-[]gobierno-[]abstengase-[]romper-[]neutralidad-[]p
-olitica-[]actue-[]respeto _
-
-Overfull \hbox (601.5321pt too wide) in paragraph at lines 286--287
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 12 / 16 
-/ el-[]arzobispo-[]de-[]oviedo-[]defiende-[]a-[]arguello-[]y-[]carga-[]contra-[
-]los-[]indecentes-[]de-[]saunas-[]y-[]prostibulos-[]que-[]disparan-[]contra-[]l
-a-[]iglesia/$[] 
-
-Overfull \hbox (259.5321pt too wide) in paragraph at lines 287--288
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / gobierno-[]pa
-cta-[]vaticano-[]resignificacion-[]cuelgamuros-[]incluida-[]parte-[]basilica-[]
-abadia _
-
-Overfull \hbox (48.0321pt too wide) in paragraph at lines 288--289
-[][]$\OT1/pcr/m/n/10 https : / / www . catalunyareligio . cat / es / planellas-
-[]marca-[]distancias-[]con-[]arguello-[]sobre$[] 
-
-Overfull \hbox (401.0321pt too wide) in paragraph at lines 289--290
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / espana / 2026-[]01-[]29 / el-[]
-arzobispo-[]de-[]oviedo-[]arremete-[]contra-[]la-[]regularizacion-[]extraordina
-ria-[]de-[]inmigrantes-[]todos-[]no-[]caben .
-
-Overfull \hbox (426.0321pt too wide) in paragraph at lines 290--291
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 03 / 27 
-/ cobo-[]y-[]parolin-[]blindan-[]la-[]basilica-[]y-[]a-[]los-[]benedictinos-[]d
-el-[]valle-[]de-[]los-[]caidos-[]frente-[]al-[]gobierno/$[] 
-
-Overfull \hbox (242.5321pt too wide) in paragraph at lines 291--292
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presion-[]vic
-timas-[]fuerza-[]iglesia-[]admitir-[]plan-[]antiabusos-[]gobierno-[]le-[]plante
-o-[]ano _
-
-Overfull \hbox (149.0321pt too wide) in paragraph at lines 292--293
-[][]$\OT1/pcr/m/n/10 https : / / www . lamoncloa . gob . es / serviciosdeprensa
- / notasprensa / presidencia-[]justicia-[]relaciones-[]cortes /
-
-Overfull \hbox (345.5321pt too wide) in paragraph at lines 293--294
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 06 / 16 
-/ luis-[]arguello-[]ante-[]santiago-[]abascal-[]defiende-[]el-[]concepto-[]de-[
-]patria-[]del-[]papa-[]francisco/$[] 
-
-Overfull \hbox (649.5321pt too wide) in paragraph at lines 294--295
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / espana / 2026 / 01 / 12 
-/ alegria-[]y-[]cautela-[]entre-[]las-[]victimas-[]de-[]pederastia-[]tras-[]el-
-[]acuerdo-[]de-[]reparacion-[]entre-[]gobierno-[]e-[]iglesia-[]aplaudire-[]cuan
-do-[]vea-[]resultados/$[] 
-
-Overfull \hbox (58.0321pt too wide) in paragraph at lines 295--296
-[][]$\OT1/pcr/m/n/10 https : / / www . mpr . gob . es / mpr / subse / libertad-
-[]religiosa / Documents / Documentos _ Novedades /
-
-Overfull \hbox (15.5321pt too wide) in paragraph at lines 295--296
-\OT1/pcr/m/n/10 Plan % 20respuesta % 20e % 20implementaci % C3 % B3n % 20inform
-e % 20Defensor % 20Pueblo % 20 .
-
-Overfull \hbox (183.0321pt too wide) in paragraph at lines 296--297
-[][]$\OT1/pcr/m/n/10 https : / / quintanapaz . es / es / presentacion-[]en-[]ma
-drid-[]del-[]libro-[]cosas-[]que-[]he-[]aprendido-[]de-[]gente-[]interesante/$[
+Overfull \hbox (169.5321pt too wide) in paragraph at lines 182--183
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2025 / 08
+ / 06 / spains-[]housing-[]crisis-[]deepens-[]residents-[]anger-[]is-[]rising$[
 ] 
 
-Overfull \hbox (194.5321pt too wide) in paragraph at lines 297--298
-[][]$\OT1/pcr/m/n/10 https : / / www . diocesisdesalamanca . com / noticias / p
-ara-[]comunicar-[]bien-[]hay-[]que-[]ponerse-[]en-[]los-[]zapatos-[]del-[]otro/
-$[] 
+Overfull \hbox (528.0321pt too wide) in paragraph at lines 183--184
+[][]$\OT1/pcr/m/n/10 https : / / spain . representation . ec . europa . eu / no
+ticias-[]eventos / noticias-[]0 / la-[]comision-[]toma-[]medidas-[]para-[]logra
+r-[]una-[]vivienda-[]mas-[]asequible-[]en-[]toda-[]europa-[]2025-[]12-[]16 _
 
-Overfull \hbox (538.5321pt too wide) in paragraph at lines 298--299
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20250620 / bolano
-s-[]reprocha-[]a-[]conferencia-[]episcopal-[]se-[]aparten-[]neutralidad-[]polit
-ica-[]partidista-[]tras-[]su-[]peticion-[]elecciones-[]anticipadas /
+Overfull \hbox (206.5321pt too wide) in paragraph at lines 184--185
+[][]$\OT1/pcr/m/n/10 https : / / dreampropertiesinternational . com / analysis-
+[]real-[]estate-[]market-[]spain-[]2024-[]q3-[]prices-[]are-[]rising-[]again/$[
+] 
 
-Overfull \hbox (291.0321pt too wide) in paragraph at lines 299--300
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20250917 / a
-rguello-[]ante-[]illa-[]estado-[]no-[]dios-[]iglesia-[]lucha-[]contra-[]idolatr
-ia-[]poder-[]estado _
+Overfull \hbox (396.0321pt too wide) in paragraph at lines 185--186
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2024 / 08 / 22 / 818659-[]the-[]effort-[]to-[]buy-[]
+or-[]rent-[]a-[]home-[]in-[]spain-[]continues-[]to-[]grow$[] 
 
-Overfull \hbox (597.0321pt too wide) in paragraph at lines 300--301
-[][]$\OT1/pcr/m/n/10 https : / / www . libertaddigital . com / espana / politic
-a / 2024-[]01-[]23 / a-[]ver-[]quien-[]la-[]tiene-[]mas-[]larga-[]la-[]ironia-[
-]de-[]un-[]cura-[]para-[]referirse-[]a-[]la-[]cifra-[]de-[]victimas-[]de-[]pede
-rastia-[]7089800/$[] 
+Overfull \hbox (127.5321pt too wide) in paragraph at lines 186--187
+[][]$\OT1/pcr/m/n/10 https : / / www . cbre . es / en-[]gb / insights / figures
+ / living-[]market-[]data-[]figures-[]third-[]quarter-[]2024-[]spain$[] 
 
-Overfull \hbox (132.5321pt too wide) in paragraph at lines 301--302
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / illa-[]argueel
-lo-[]dialogo-[]catolicos-[]sobre-[]polarizacion-[]democracia .
+[5]
+Overfull \hbox (271.5321pt too wide) in paragraph at lines 188--189
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
+[]analysis / real-[]estate / spains-[]housing-[]market-[]enters-[]new-[]expansi
+onary-[]phase$[] 
 
-Overfull \hbox (454.5321pt too wide) in paragraph at lines 304--305
-[][]$\OT1/pcr/m/n/10 https : / / www . march . es / es / coleccion / archivo-[]
-linz-[]transicion-[]espanola / ficha / iglesia-[]no-[]puede-[]ser-[]neutral-[]a
-nte-[]problemas-[]morales-[]derechos-[]humanos-[]-[]linz .
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 190--191
+[][]$\OT1/pcr/m/n/10 https : / / www . bde . es / f / webbe / GAP / Secciones /
+ SalaPrensa / IntervencionesPublicas /
 
-Overfull \hbox (531.5321pt too wide) in paragraph at lines 305--306
-[][]$\OT1/pcr/m/n/10 https : / / www . caritas . es / noticias / caritas-[]pide
--[]comision-[]trabajo-[]congreso-[]apruebe-[]iniciativa-[]legislativa-[]popular
--[]regularizacion-[]extraordinaria-[]personas-[]extranjeras/$[] 
+Overfull \hbox (34.0321pt too wide) in paragraph at lines 191--192
+[][]$\OT1/pcr/m/n/10 https : / / ec . europa . eu / eurostat / statistics-[]exp
+lained / index . php / Living _ conditions _
 
-Overfull \hbox (35.5321pt too wide) in paragraph at lines 306--307
-[][]$\OT1/pcr/m/n/10 https : / / www . religiondigital . org / diocesis / argue
-ello-[]presentar-[]papa-[]semana-[]santa _
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 193--194
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2024 / 02 /
 
-Overfull \hbox (429.5321pt too wide) in paragraph at lines 307--308
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / memoria-[]publ
-ica / falangista-[]santiago-[]cantera-[]prior-[]valle-[]caidos-[]intento-[]impe
-dir-[]exhumacion-[]franco-[]relevado-[]cargo .
+Overfull \hbox (31.0321pt too wide) in paragraph at lines 196--197
+[][]$\OT1/pcr/m/n/10 https : / / fuster-[]associates . com / blog / foreign-[]h
+ome-[]purchases-[]sales-[]spain-[]q3-[]2024/$[] 
 
-[9]
-Overfull \hbox (22.0321pt too wide) in paragraph at lines 308--309
-[][]$\OT1/pcr/m/n/10 https : / / www . cidob . org / sites / default / files / 
-2026-[]02 / 868 _ OPINION _ BLANCA % 20GARCE %
+Overfull \hbox (504.5321pt too wide) in paragraph at lines 197--198
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 05 / 29 / 844725-[]spain-[]sees-[]decline-[]i
+n-[]housing-[]affordability-[]as-[]effort-[]to-[]buy-[]or-[]rent-[]rises-[]in$[
+] 
 
-Overfull \hbox (292.0321pt too wide) in paragraph at lines 309--310
-[][]$\OT1/pcr/m/n/10 https : / / www . aciprensa . com / noticias / 122159 / pr
-esidente-[]de-[]obispos-[]espanoles-[]propone-[]dos-[]sies-[]y-[]un-[]no-[]para
--[]vivir-[]en-[]cuaresma$[] 
+Overfull \hbox (498.0321pt too wide) in paragraph at lines 198--199
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 03 / 27 / 833707-[]record-[]breaking-[]year-[
+]foreign-[]buyers-[]purchase-[]nearly-[]93-[]000-[]homes-[]in-[]spain-[]in$[] 
 
-Overfull \hbox (205.5321pt too wide) in paragraph at lines 310--311
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / santiago-[]ca
-ntera-[]prior-[]boicotear-[]exhumacion-[]franco-[]deja-[]valle-[]cuelgamuros _
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 199--200
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2025 / 10 /
 
-Overfull \hbox (450.5321pt too wide) in paragraph at lines 311--312
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / sociedad / 2023-[]10-[]27 / la-
-[]investigacion-[]del-[]defensor-[]del-[]pueblo-[]estima-[]en-[]440000-[]las-[]
-victimas-[]de-[]pederastia-[]en-[]la-[]iglesia-[]espanola .
+Overfull \hbox (273.5321pt too wide) in paragraph at lines 200--201
+[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2025 / 10
+ / 17 / how-[]expensive-[]is-[]housing-[]in-[]spain-[]compared-[]to-[]the-[]res
+t-[]of-[]the-[]world/$[] 
 
-Overfull \hbox (427.5321pt too wide) in paragraph at lines 313--314
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / politica / 20251214
- / 11360302 / cuestion-[]confianza-[]mocion-[]censura-[]elecciones-[]deberia-[]
-reformar-[]constitucion-[]clarificarla .
+Overfull \hbox (6.0321pt too wide) in paragraph at lines 201--202
+[][]$\OT1/pcr/m/n/10 https : / / www . ceicdata . com / en / indicator / spain 
+/ household-[]debt-[]-[]of-[]nominal-[]gdp$[] 
 
-Overfull \hbox (260.0321pt too wide) in paragraph at lines 314--315
-[][]$\OT1/pcr/m/n/10 https : / / www . vaticannews . va / es / iglesia / news /
- 2023-[]10 / espana-[]abusos-[]el-[]informe-[]pederastia-[]tutela-[]menores-[]d
-efensr-[]publo .
+Overfull \hbox (103.0321pt too wide) in paragraph at lines 202--203
+[][]$\OT1/pcr/m/n/10 https : / / www . cbre . com / insights / figures / living
+-[]market-[]data-[]figures-[]fourth-[]quarter-[]2024-[]spain$[] 
 
-Overfull \hbox (169.0321pt too wide) in paragraph at lines 316--317
-[][]$\OT1/pcr/m/n/10 https : / / www . elplural . com / politica / espana / igl
-esia-[]entra-[]campana-[]curas-[]piden-[]mocion-[]censura-[]elecciones _
+Overfull \hbox (229.5321pt too wide) in paragraph at lines 203--204
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
+[]analysis / real-[]estate / rally-[]spains-[]real-[]estate-[]market-[]gathers-
+[]pace$[] 
 
-Overfull \hbox (266.5321pt too wide) in paragraph at lines 317--318
-[][]$\OT1/pcr/m/n/10 https : / / theobjective . com / espana / politica / 2025-
-[]08-[]17 / quintana-[]paz-[]filosofo-[]amigo-[]abascal-[]arguello-[]vox-[]limi
-tes-[]iglesia/$[] 
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 205--206
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2024 / 03 /
 
-Overfull \hbox (156.5321pt too wide) in paragraph at lines 318--319
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / regularizacio
-n-[]migrantes-[]enfrenta-[]derechas-[]iglesia-[]demonio-[]pobres _
+Overfull \hbox (36.0321pt too wide) in paragraph at lines 206--207
+[][]$\OT1/pcr/m/n/10 https : / / www . statista . com / statistics / 1106669 / 
+house-[]price-[]to-[]income-[]ratio-[]europe/$[] 
 
-Overfull \hbox (307.5321pt too wide) in paragraph at lines 320--321
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / sociedad / doctrina-[]soc
-ial-[]cristianismo-[]ultraconservador-[]regularizacion-[]migrantes-[]agita-[]mu
-ndo-[]catolico .
+Overfull \hbox (236.0321pt too wide) in paragraph at lines 207--208
+[][]$\OT1/pcr/m/n/10 https : / / www . abnamro . com / research / en / our-[]re
+search / housing-[]market-[]monitor-[]eu-[]housing-[]markets-[]share-[]common-[
+]problems$[] 
 
-Overfull \hbox (302.5321pt too wide) in paragraph at lines 322--323
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20251215 / a
-rguello-[]responde-[]sanchez-[]ante-[]respeto-[]reglas-[]basicas-[]estado-[]der
-echo-[]no-[]neutral _
+Overfull \hbox (267.0321pt too wide) in paragraph at lines 210--211
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2026 / 01
+ / 21 / housing-[]crisis-[]whos-[]most-[]affected-[]by-[]europes-[]lack-[]of-[]
+affordable-[]housing$[] 
 
-Overfull \hbox (723.5321pt too wide) in paragraph at lines 323--324
-[][]$\OT1/pcr/m/n/10 https : / / cadenaser . com / nacional / 2025 / 06 / 20 / 
-el-[]gobierno-[]acusa-[]a-[]los-[]obispos-[]de-[]actuar-[]en-[]comunion-[]con-[
-]la-[]derecha-[]y-[]apartarse-[]del-[]respeto-[]institucional-[]por-[]pedir-[]u
-n-[]adelanto-[]electoral-[]cadena-[]ser/$[] 
+Overfull \hbox (504.0321pt too wide) in paragraph at lines 211--212
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 07 / 25 / 853538-[]ibiza-[]from-[]mega-[]luxu
+ry-[]to-[]shanty-[]towns-[]the-[]housing-[]crisis-[]gripping-[]the-[]island$[] 
 
-Overfull \hbox (279.0321pt too wide) in paragraph at lines 325--326
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / willy-[]toledo
--[]lalachus-[]noelia-[]asi-[]usa-[]abogados-[]cristianos-[]justicia-[]imponer-[
-]agenda-[]ultra .
 
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 326--327
-[][]$\OT1/pcr/m/n/10 https : / / revistascientificas . us . es / index . php / 
-araucaria / article / download / 27118 /
+Overfull \hbox (165.5321pt too wide) in paragraph at lines 212--213
+[][]$\OT1/pcr/m/n/10 https : / / news . spainhouses . net / 2025 / 10 / where-[
+]is-[]it-[]most-[]expensive-[]and-[]cheapest-[]to-[]buy-[]a-[]home-[]in-[]spain
+/$[] 
 
-Overfull \hbox (362.5321pt too wide) in paragraph at lines 327--328
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / programas / lasexta-[]cl
-ave / como-[]abogados-[]cristianos-[]intentan-[]imponer-[]vision-[]retrograda-[
-]base-[]denuncias-[]presiones _
+Overfull \hbox (170.0321pt too wide) in paragraph at lines 213--214
+[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2024 / 10
+ / 18 / bank-[]of-[]spain-[]says-[]half-[]a-[]million-[]new-[]homes-[]needed/$[
+] 
 
-Overfull \hbox (332.5321pt too wide) in paragraph at lines 329--330
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presidente-[]
-obispos-[]pide-[]elecciones-[]anticipadas-[]salida-[]bloqueo-[]institucional-[]
-dar-[]voz-[]ciudadanos _
+Overfull \hbox (316.5321pt too wide) in paragraph at lines 215--216
+[][]$\OT1/pcr/m/n/10 https : / / alegria-[]realestate . com / en / articles / m
+ost-[]expensive-[]and-[]affordable-[]regions-[]in-[]spain-[]2025-[]real-[]estat
+e-[]and-[]cost-[]of-[]living$[] 
 
-[10]
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.aux)
+Overfull \hbox (304.0321pt too wide) in paragraph at lines 217--218
+[][]$\OT1/pcr/m/n/10 https : / / hatamatata . com / n / skolko-[]let-[]nuzno-[]
+ctoby-[]kupit-[]nedvizimost-[]ploshhadiu-[]100-[]kvadratnyx-[]metrov-[]v-[]ispa
+nii-[]iberian-[]press/$[] 
 
-Package rerunfilecheck Warning: File `La_campaña_política_de_Argüello_molest
-a_a_los_obispos_Nos_ha.out' has changed.
+Overfull \hbox (85.0321pt too wide) in paragraph at lines 218--219
+[][]$\OT1/pcr/m/n/10 https : / / www . lucasfox . com / news-[]and-[]press / ar
+ticles / 2024-[]spanish-[]real-[]estate-[]market-[]report$[] 
+
+Overfull \hbox (102.0321pt too wide) in paragraph at lines 219--220
+[][]$\OT1/pcr/m/n/10 https : / / www . bbvaresearch . com / en / publicaciones 
+/ spain-[]young-[]people-[]emancipation-[]and-[]renting/$[] 
+
+Overfull \hbox (432.5321pt too wide) in paragraph at lines 220--221
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 06 / 17 / 847497-[]the-[]sale-[]of-[]second-[
+]homes-[]to-[]foreigners-[]in-[]spain-[]grew-[]by-[]2-[]in-[]2024$[] 
+
+Overfull \hbox (248.5321pt too wide) in paragraph at lines 221--222
+[][]$\OT1/pcr/m/n/10 https : / / www . realinstitutoelcano . org / en / comment
+aries / the-[]plight-[]of-[]young-[]adults-[]seeking-[]to-[]leave-[]the-[]paren
+tal-[]home/$[] 
+
+[6]
+Overfull \hbox (231.5321pt too wide) in paragraph at lines 222--223
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / business / 2026 / 02 / 
+19 / nearly-[]half-[]of-[]europeans-[]cannot-[]or-[]will-[]not-[]buy-[]a-[]home
+-[]report-[]says$[] 
+
+Overfull \hbox (206.5321pt too wide) in paragraph at lines 223--224
+[][]$\OT1/pcr/m/n/10 https : / / feps-[]europe . eu / wp-[]content / uploads / 
+2025 / 12 / The-[]housing-[]crisis-[]in-[]Greece-[]North-[]Macedonia-[]and-[]Fi
+nland .
+
+Overfull \hbox (350.5321pt too wide) in paragraph at lines 225--226
+[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / topics / en / a
+rticle / 20241014STO24542 / the-[]housing-[]crisis-[]in-[]europe-[]key-[]facts-
+[]and-[]eu-[]action-[]infographics$[] 
+
+[7]
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.aux)
+
+Package rerunfilecheck Warning: File `España_se_sitúa_a_la_cola_de_países_de
+_la_UE_en_accesibilida.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
  )
 (see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
-mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/La_campaña_política
-_de_Argüello_molesta_a_los_obispos_Nos_ha.pdf (10 pages, 107356 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/La_campaña_polí
-tica_de_Argüello_molesta_a_los_obispos_Nos_ha.log.
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
+a_cola_de_países_de_la_UE_en_accesibilida.pdf (7 pages, 100532 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
+_a_la_cola_de_países_de_la_UE_en_accesibilida.log.
 
 --- pdflatex pass 2 ---
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.tex
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -611,264 +560,213 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.aux)
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.out)
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.out)
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.aux)
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.out)
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.out)
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
-Overfull \hbox (102.5321pt too wide) in paragraph at lines 82--84
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
-itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
+Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
+[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
+ / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
 
 [2]
-[3]
+[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
 [4]
-Overfull \hbox (9.45253pt too wide) in paragraph at lines 178--179
-\OT1/ptm/m/n/10 pa[]noles". Es-ta in-for-ma-ci[]on re-sul-ta co-rro-bo-ra-da po
-r m[]ulti-ples fuen-tes[1][2][3]. Se es-pe-ci-fi-ca adem[]as que es .[]rzobispo
+Overfull \hbox (91.0321pt too wide) in paragraph at lines 178--179
+[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / projects / access-[]afforda
+ble-[]and-[]quality-[]housing-[]all-[]people-[]house4all$[] 
 
+Overfull \hbox (212.0321pt too wide) in paragraph at lines 179--180
+[][]$\OT1/pcr/m/n/10 https : / / blog . urbanitae . com / en / 2025 / 12 / 01 /
+ how-[]does-[]spain-[]compare-[]to-[]other-[]countries-[]in-[]housing-[]accessi
+bility/$[] 
 
-Overfull \hbox (7.83804pt too wide) in paragraph at lines 178--179
-\OT1/ptm/m/n/10 de Va-lla-do-lid", in-for-ma-ci[]on que tam-bi[]en apa-re-ce co
-n-fir-ma-da con-sis-ten-te-men-te en los do-cu-men-tos con-sul-ta-dos[4][5].
+Overfull \hbox (69.5321pt too wide) in paragraph at lines 180--181
+[][]$\OT1/pcr/m/n/10 https : / / aecr . org / es / la-[]espana-[]de-[]los-[]50-
+[]millones-[]y-[]el-[]cuello-[]de-[]botella-[]en-[]vivienda/$[] 
 
-[5]
-[6]
-[7]
-Overfull \hbox (35.14929pt too wide) in paragraph at lines 274--276
-[]\OT1/ptm/m/n/10 [1][2][3][4][5][6][7][8][9][10][11][12][13][14][15][16][17][1
-8][19][20][21][22][23][24][25][26][27][28][29][30][31][32]
+Overfull \hbox (41.5321pt too wide) in paragraph at lines 181--182
+[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / publications / house4all-[]
+european-[]compendium-[]housing-[]policies$[] 
 
-Overfull \hbox (343.5321pt too wide) in paragraph at lines 280--281
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / pr
-esidente-[]conferencia-[]episcopal-[]necesaria-[]cuestion-[]confianza-[]mocion-
-[]censura-[]elecciones _
-
-[8]
-Overfull \hbox (115.0321pt too wide) in paragraph at lines 281--282
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / campana-[]pol
-itica-[]arguello-[]molesta-[]obispos-[]vuelto-[]meter-[]lio _
-
-Overfull \hbox (263.5321pt too wide) in paragraph at lines 282--283
-[][]$\OT1/pcr/m/n/10 https : / / alfayomega . es / arguello-[]insiste-[]no-[]so
-y-[]neutral-[]ante-[]el-[]respeto-[]a-[]la-[]vida-[]y-[]su-[]dignidad-[]la-[]li
-bertad-[]religiosa/$[] 
-
-Overfull \hbox (338.0321pt too wide) in paragraph at lines 283--284
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20251214 / arguel
-lo-[]plantea-[]cambiar-[]gobierno-[]sanchez-[]anima-[]presentarse-[]elecciones-
-[]abogados-[]cristianos /
-
-Overfull \hbox (368.5321pt too wide) in paragraph at lines 284--285
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / espana / 20251214 / gob
-ierno-[]revuelve-[]contra-[]arguello-[]pedir-[]elecciones-[]anticipadas-[]tiemp
-o-[]obispos-[]politica-[]acabo _
-
-Overfull \hbox (350.0321pt too wide) in paragraph at lines 285--286
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / noticias / nacional / po
-lemica-[]palabras-[]arguello-[]gobierno-[]abstengase-[]romper-[]neutralidad-[]p
-olitica-[]actue-[]respeto _
-
-Overfull \hbox (601.5321pt too wide) in paragraph at lines 286--287
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 12 / 16 
-/ el-[]arzobispo-[]de-[]oviedo-[]defiende-[]a-[]arguello-[]y-[]carga-[]contra-[
-]los-[]indecentes-[]de-[]saunas-[]y-[]prostibulos-[]que-[]disparan-[]contra-[]l
-a-[]iglesia/$[] 
-
-Overfull \hbox (259.5321pt too wide) in paragraph at lines 287--288
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / gobierno-[]pa
-cta-[]vaticano-[]resignificacion-[]cuelgamuros-[]incluida-[]parte-[]basilica-[]
-abadia _
-
-Overfull \hbox (48.0321pt too wide) in paragraph at lines 288--289
-[][]$\OT1/pcr/m/n/10 https : / / www . catalunyareligio . cat / es / planellas-
-[]marca-[]distancias-[]con-[]arguello-[]sobre$[] 
-
-Overfull \hbox (401.0321pt too wide) in paragraph at lines 289--290
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / espana / 2026-[]01-[]29 / el-[]
-arzobispo-[]de-[]oviedo-[]arremete-[]contra-[]la-[]regularizacion-[]extraordina
-ria-[]de-[]inmigrantes-[]todos-[]no-[]caben .
-
-Overfull \hbox (426.0321pt too wide) in paragraph at lines 290--291
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 03 / 27 
-/ cobo-[]y-[]parolin-[]blindan-[]la-[]basilica-[]y-[]a-[]los-[]benedictinos-[]d
-el-[]valle-[]de-[]los-[]caidos-[]frente-[]al-[]gobierno/$[] 
-
-Overfull \hbox (242.5321pt too wide) in paragraph at lines 291--292
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presion-[]vic
-timas-[]fuerza-[]iglesia-[]admitir-[]plan-[]antiabusos-[]gobierno-[]le-[]plante
-o-[]ano _
-
-Overfull \hbox (149.0321pt too wide) in paragraph at lines 292--293
-[][]$\OT1/pcr/m/n/10 https : / / www . lamoncloa . gob . es / serviciosdeprensa
- / notasprensa / presidencia-[]justicia-[]relaciones-[]cortes /
-
-Overfull \hbox (345.5321pt too wide) in paragraph at lines 293--294
-[][]$\OT1/pcr/m/n/10 https : / / www . vidanuevadigital . com / 2025 / 06 / 16 
-/ luis-[]arguello-[]ante-[]santiago-[]abascal-[]defiende-[]el-[]concepto-[]de-[
-]patria-[]del-[]papa-[]francisco/$[] 
-
-Overfull \hbox (649.5321pt too wide) in paragraph at lines 294--295
-[][]$\OT1/pcr/m/n/10 https : / / www . infobae . com / espana / 2026 / 01 / 12 
-/ alegria-[]y-[]cautela-[]entre-[]las-[]victimas-[]de-[]pederastia-[]tras-[]el-
-[]acuerdo-[]de-[]reparacion-[]entre-[]gobierno-[]e-[]iglesia-[]aplaudire-[]cuan
-do-[]vea-[]resultados/$[] 
-
-Overfull \hbox (58.0321pt too wide) in paragraph at lines 295--296
-[][]$\OT1/pcr/m/n/10 https : / / www . mpr . gob . es / mpr / subse / libertad-
-[]religiosa / Documents / Documentos _ Novedades /
-
-Overfull \hbox (15.5321pt too wide) in paragraph at lines 295--296
-\OT1/pcr/m/n/10 Plan % 20respuesta % 20e % 20implementaci % C3 % B3n % 20inform
-e % 20Defensor % 20Pueblo % 20 .
-
-Overfull \hbox (183.0321pt too wide) in paragraph at lines 296--297
-[][]$\OT1/pcr/m/n/10 https : / / quintanapaz . es / es / presentacion-[]en-[]ma
-drid-[]del-[]libro-[]cosas-[]que-[]he-[]aprendido-[]de-[]gente-[]interesante/$[
+Overfull \hbox (169.5321pt too wide) in paragraph at lines 182--183
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2025 / 08
+ / 06 / spains-[]housing-[]crisis-[]deepens-[]residents-[]anger-[]is-[]rising$[
 ] 
 
-Overfull \hbox (194.5321pt too wide) in paragraph at lines 297--298
-[][]$\OT1/pcr/m/n/10 https : / / www . diocesisdesalamanca . com / noticias / p
-ara-[]comunicar-[]bien-[]hay-[]que-[]ponerse-[]en-[]los-[]zapatos-[]del-[]otro/
-$[] 
+Overfull \hbox (528.0321pt too wide) in paragraph at lines 183--184
+[][]$\OT1/pcr/m/n/10 https : / / spain . representation . ec . europa . eu / no
+ticias-[]eventos / noticias-[]0 / la-[]comision-[]toma-[]medidas-[]para-[]logra
+r-[]una-[]vivienda-[]mas-[]asequible-[]en-[]toda-[]europa-[]2025-[]12-[]16 _
 
-Overfull \hbox (538.5321pt too wide) in paragraph at lines 298--299
-[][]$\OT1/pcr/m/n/10 https : / / www . rtve . es / noticias / 20250620 / bolano
-s-[]reprocha-[]a-[]conferencia-[]episcopal-[]se-[]aparten-[]neutralidad-[]polit
-ica-[]partidista-[]tras-[]su-[]peticion-[]elecciones-[]anticipadas /
+Overfull \hbox (206.5321pt too wide) in paragraph at lines 184--185
+[][]$\OT1/pcr/m/n/10 https : / / dreampropertiesinternational . com / analysis-
+[]real-[]estate-[]market-[]spain-[]2024-[]q3-[]prices-[]are-[]rising-[]again/$[
+] 
 
-Overfull \hbox (291.0321pt too wide) in paragraph at lines 299--300
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20250917 / a
-rguello-[]ante-[]illa-[]estado-[]no-[]dios-[]iglesia-[]lucha-[]contra-[]idolatr
-ia-[]poder-[]estado _
+Overfull \hbox (396.0321pt too wide) in paragraph at lines 185--186
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2024 / 08 / 22 / 818659-[]the-[]effort-[]to-[]buy-[]
+or-[]rent-[]a-[]home-[]in-[]spain-[]continues-[]to-[]grow$[] 
 
-Overfull \hbox (597.0321pt too wide) in paragraph at lines 300--301
-[][]$\OT1/pcr/m/n/10 https : / / www . libertaddigital . com / espana / politic
-a / 2024-[]01-[]23 / a-[]ver-[]quien-[]la-[]tiene-[]mas-[]larga-[]la-[]ironia-[
-]de-[]un-[]cura-[]para-[]referirse-[]a-[]la-[]cifra-[]de-[]victimas-[]de-[]pede
-rastia-[]7089800/$[] 
+Overfull \hbox (127.5321pt too wide) in paragraph at lines 186--187
+[][]$\OT1/pcr/m/n/10 https : / / www . cbre . es / en-[]gb / insights / figures
+ / living-[]market-[]data-[]figures-[]third-[]quarter-[]2024-[]spain$[] 
 
-Overfull \hbox (132.5321pt too wide) in paragraph at lines 301--302
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / illa-[]argueel
-lo-[]dialogo-[]catolicos-[]sobre-[]polarizacion-[]democracia .
+[5]
+Overfull \hbox (271.5321pt too wide) in paragraph at lines 188--189
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
+[]analysis / real-[]estate / spains-[]housing-[]market-[]enters-[]new-[]expansi
+onary-[]phase$[] 
 
-Overfull \hbox (454.5321pt too wide) in paragraph at lines 304--305
-[][]$\OT1/pcr/m/n/10 https : / / www . march . es / es / coleccion / archivo-[]
-linz-[]transicion-[]espanola / ficha / iglesia-[]no-[]puede-[]ser-[]neutral-[]a
-nte-[]problemas-[]morales-[]derechos-[]humanos-[]-[]linz .
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 190--191
+[][]$\OT1/pcr/m/n/10 https : / / www . bde . es / f / webbe / GAP / Secciones /
+ SalaPrensa / IntervencionesPublicas /
 
-Overfull \hbox (531.5321pt too wide) in paragraph at lines 305--306
-[][]$\OT1/pcr/m/n/10 https : / / www . caritas . es / noticias / caritas-[]pide
--[]comision-[]trabajo-[]congreso-[]apruebe-[]iniciativa-[]legislativa-[]popular
--[]regularizacion-[]extraordinaria-[]personas-[]extranjeras/$[] 
+Overfull \hbox (34.0321pt too wide) in paragraph at lines 191--192
+[][]$\OT1/pcr/m/n/10 https : / / ec . europa . eu / eurostat / statistics-[]exp
+lained / index . php / Living _ conditions _
 
-Overfull \hbox (35.5321pt too wide) in paragraph at lines 306--307
-[][]$\OT1/pcr/m/n/10 https : / / www . religiondigital . org / diocesis / argue
-ello-[]presentar-[]papa-[]semana-[]santa _
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 193--194
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2024 / 02 /
 
-Overfull \hbox (429.5321pt too wide) in paragraph at lines 307--308
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / memoria-[]publ
-ica / falangista-[]santiago-[]cantera-[]prior-[]valle-[]caidos-[]intento-[]impe
-dir-[]exhumacion-[]franco-[]relevado-[]cargo .
+Overfull \hbox (31.0321pt too wide) in paragraph at lines 196--197
+[][]$\OT1/pcr/m/n/10 https : / / fuster-[]associates . com / blog / foreign-[]h
+ome-[]purchases-[]sales-[]spain-[]q3-[]2024/$[] 
 
-[9]
-Overfull \hbox (22.0321pt too wide) in paragraph at lines 308--309
-[][]$\OT1/pcr/m/n/10 https : / / www . cidob . org / sites / default / files / 
-2026-[]02 / 868 _ OPINION _ BLANCA % 20GARCE %
+Overfull \hbox (504.5321pt too wide) in paragraph at lines 197--198
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 05 / 29 / 844725-[]spain-[]sees-[]decline-[]i
+n-[]housing-[]affordability-[]as-[]effort-[]to-[]buy-[]or-[]rent-[]rises-[]in$[
+] 
 
-Overfull \hbox (292.0321pt too wide) in paragraph at lines 309--310
-[][]$\OT1/pcr/m/n/10 https : / / www . aciprensa . com / noticias / 122159 / pr
-esidente-[]de-[]obispos-[]espanoles-[]propone-[]dos-[]sies-[]y-[]un-[]no-[]para
--[]vivir-[]en-[]cuaresma$[] 
+Overfull \hbox (498.0321pt too wide) in paragraph at lines 198--199
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 03 / 27 / 833707-[]record-[]breaking-[]year-[
+]foreign-[]buyers-[]purchase-[]nearly-[]93-[]000-[]homes-[]in-[]spain-[]in$[] 
 
-Overfull \hbox (205.5321pt too wide) in paragraph at lines 310--311
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / santiago-[]ca
-ntera-[]prior-[]boicotear-[]exhumacion-[]franco-[]deja-[]valle-[]cuelgamuros _
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 199--200
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2025 / 10 /
 
-Overfull \hbox (450.5321pt too wide) in paragraph at lines 311--312
-[][]$\OT1/pcr/m/n/10 https : / / elpais . com / sociedad / 2023-[]10-[]27 / la-
-[]investigacion-[]del-[]defensor-[]del-[]pueblo-[]estima-[]en-[]440000-[]las-[]
-victimas-[]de-[]pederastia-[]en-[]la-[]iglesia-[]espanola .
+Overfull \hbox (273.5321pt too wide) in paragraph at lines 200--201
+[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2025 / 10
+ / 17 / how-[]expensive-[]is-[]housing-[]in-[]spain-[]compared-[]to-[]the-[]res
+t-[]of-[]the-[]world/$[] 
 
-Overfull \hbox (427.5321pt too wide) in paragraph at lines 313--314
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / politica / 20251214
- / 11360302 / cuestion-[]confianza-[]mocion-[]censura-[]elecciones-[]deberia-[]
-reformar-[]constitucion-[]clarificarla .
+Overfull \hbox (6.0321pt too wide) in paragraph at lines 201--202
+[][]$\OT1/pcr/m/n/10 https : / / www . ceicdata . com / en / indicator / spain 
+/ household-[]debt-[]-[]of-[]nominal-[]gdp$[] 
 
-Overfull \hbox (260.0321pt too wide) in paragraph at lines 314--315
-[][]$\OT1/pcr/m/n/10 https : / / www . vaticannews . va / es / iglesia / news /
- 2023-[]10 / espana-[]abusos-[]el-[]informe-[]pederastia-[]tutela-[]menores-[]d
-efensr-[]publo .
+Overfull \hbox (103.0321pt too wide) in paragraph at lines 202--203
+[][]$\OT1/pcr/m/n/10 https : / / www . cbre . com / insights / figures / living
+-[]market-[]data-[]figures-[]fourth-[]quarter-[]2024-[]spain$[] 
 
-Overfull \hbox (169.0321pt too wide) in paragraph at lines 316--317
-[][]$\OT1/pcr/m/n/10 https : / / www . elplural . com / politica / espana / igl
-esia-[]entra-[]campana-[]curas-[]piden-[]mocion-[]censura-[]elecciones _
+Overfull \hbox (229.5321pt too wide) in paragraph at lines 203--204
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
+[]analysis / real-[]estate / rally-[]spains-[]real-[]estate-[]market-[]gathers-
+[]pace$[] 
 
-Overfull \hbox (266.5321pt too wide) in paragraph at lines 317--318
-[][]$\OT1/pcr/m/n/10 https : / / theobjective . com / espana / politica / 2025-
-[]08-[]17 / quintana-[]paz-[]filosofo-[]amigo-[]abascal-[]arguello-[]vox-[]limi
-tes-[]iglesia/$[] 
+Overfull \hbox (9.5321pt too wide) in paragraph at lines 205--206
+[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
+t / files / content / file / 2024 / 03 /
 
-Overfull \hbox (156.5321pt too wide) in paragraph at lines 318--319
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / regularizacio
-n-[]migrantes-[]enfrenta-[]derechas-[]iglesia-[]demonio-[]pobres _
+Overfull \hbox (36.0321pt too wide) in paragraph at lines 206--207
+[][]$\OT1/pcr/m/n/10 https : / / www . statista . com / statistics / 1106669 / 
+house-[]price-[]to-[]income-[]ratio-[]europe/$[] 
 
-Overfull \hbox (307.5321pt too wide) in paragraph at lines 320--321
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / sociedad / doctrina-[]soc
-ial-[]cristianismo-[]ultraconservador-[]regularizacion-[]migrantes-[]agita-[]mu
-ndo-[]catolico .
+Overfull \hbox (236.0321pt too wide) in paragraph at lines 207--208
+[][]$\OT1/pcr/m/n/10 https : / / www . abnamro . com / research / en / our-[]re
+search / housing-[]market-[]monitor-[]eu-[]housing-[]markets-[]share-[]common-[
+]problems$[] 
 
-Overfull \hbox (302.5321pt too wide) in paragraph at lines 322--323
-[][]$\OT1/pcr/m/n/10 https : / / www . eldebate . com / religion / 20251215 / a
-rguello-[]responde-[]sanchez-[]ante-[]respeto-[]reglas-[]basicas-[]estado-[]der
-echo-[]no-[]neutral _
+Overfull \hbox (267.0321pt too wide) in paragraph at lines 210--211
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2026 / 01
+ / 21 / housing-[]crisis-[]whos-[]most-[]affected-[]by-[]europes-[]lack-[]of-[]
+affordable-[]housing$[] 
 
-Overfull \hbox (723.5321pt too wide) in paragraph at lines 323--324
-[][]$\OT1/pcr/m/n/10 https : / / cadenaser . com / nacional / 2025 / 06 / 20 / 
-el-[]gobierno-[]acusa-[]a-[]los-[]obispos-[]de-[]actuar-[]en-[]comunion-[]con-[
-]la-[]derecha-[]y-[]apartarse-[]del-[]respeto-[]institucional-[]por-[]pedir-[]u
-n-[]adelanto-[]electoral-[]cadena-[]ser/$[] 
+Overfull \hbox (504.0321pt too wide) in paragraph at lines 211--212
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 07 / 25 / 853538-[]ibiza-[]from-[]mega-[]luxu
+ry-[]to-[]shanty-[]towns-[]the-[]housing-[]crisis-[]gripping-[]the-[]island$[] 
 
-Overfull \hbox (279.0321pt too wide) in paragraph at lines 325--326
-[][]$\OT1/pcr/m/n/10 https : / / www . publico . es / politica / willy-[]toledo
--[]lalachus-[]noelia-[]asi-[]usa-[]abogados-[]cristianos-[]justicia-[]imponer-[
-]agenda-[]ultra .
 
-Overfull \hbox (21.5321pt too wide) in paragraph at lines 326--327
-[][]$\OT1/pcr/m/n/10 https : / / revistascientificas . us . es / index . php / 
-araucaria / article / download / 27118 /
+Overfull \hbox (165.5321pt too wide) in paragraph at lines 212--213
+[][]$\OT1/pcr/m/n/10 https : / / news . spainhouses . net / 2025 / 10 / where-[
+]is-[]it-[]most-[]expensive-[]and-[]cheapest-[]to-[]buy-[]a-[]home-[]in-[]spain
+/$[] 
 
-Overfull \hbox (362.5321pt too wide) in paragraph at lines 327--328
-[][]$\OT1/pcr/m/n/10 https : / / www . lasexta . com / programas / lasexta-[]cl
-ave / como-[]abogados-[]cristianos-[]intentan-[]imponer-[]vision-[]retrograda-[
-]base-[]denuncias-[]presiones _
+Overfull \hbox (170.0321pt too wide) in paragraph at lines 213--214
+[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2024 / 10
+ / 18 / bank-[]of-[]spain-[]says-[]half-[]a-[]million-[]new-[]homes-[]needed/$[
+] 
 
-Overfull \hbox (332.5321pt too wide) in paragraph at lines 329--330
-[][]$\OT1/pcr/m/n/10 https : / / www . eldiario . es / sociedad / presidente-[]
-obispos-[]pide-[]elecciones-[]anticipadas-[]salida-[]bloqueo-[]institucional-[]
-dar-[]voz-[]ciudadanos _
+Overfull \hbox (316.5321pt too wide) in paragraph at lines 215--216
+[][]$\OT1/pcr/m/n/10 https : / / alegria-[]realestate . com / en / articles / m
+ost-[]expensive-[]and-[]affordable-[]regions-[]in-[]spain-[]2025-[]real-[]estat
+e-[]and-[]cost-[]of-[]living$[] 
 
-[10]
-(/home/roberto/hemingwai/output_temporal/La_campaña_política_de_Argüello_mol
-esta_a_los_obispos_Nos_ha.aux) )
+Overfull \hbox (304.0321pt too wide) in paragraph at lines 217--218
+[][]$\OT1/pcr/m/n/10 https : / / hatamatata . com / n / skolko-[]let-[]nuzno-[]
+ctoby-[]kupit-[]nedvizimost-[]ploshhadiu-[]100-[]kvadratnyx-[]metrov-[]v-[]ispa
+nii-[]iberian-[]press/$[] 
+
+Overfull \hbox (85.0321pt too wide) in paragraph at lines 218--219
+[][]$\OT1/pcr/m/n/10 https : / / www . lucasfox . com / news-[]and-[]press / ar
+ticles / 2024-[]spanish-[]real-[]estate-[]market-[]report$[] 
+
+Overfull \hbox (102.0321pt too wide) in paragraph at lines 219--220
+[][]$\OT1/pcr/m/n/10 https : / / www . bbvaresearch . com / en / publicaciones 
+/ spain-[]young-[]people-[]emancipation-[]and-[]renting/$[] 
+
+Overfull \hbox (432.5321pt too wide) in paragraph at lines 220--221
+[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
+]for-[]sale-[]in-[]spain / 2025 / 06 / 17 / 847497-[]the-[]sale-[]of-[]second-[
+]homes-[]to-[]foreigners-[]in-[]spain-[]grew-[]by-[]2-[]in-[]2024$[] 
+
+Overfull \hbox (248.5321pt too wide) in paragraph at lines 221--222
+[][]$\OT1/pcr/m/n/10 https : / / www . realinstitutoelcano . org / en / comment
+aries / the-[]plight-[]of-[]young-[]adults-[]seeking-[]to-[]leave-[]the-[]paren
+tal-[]home/$[] 
+
+[6]
+Overfull \hbox (231.5321pt too wide) in paragraph at lines 222--223
+[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / business / 2026 / 02 / 
+19 / nearly-[]half-[]of-[]europeans-[]cannot-[]or-[]will-[]not-[]buy-[]a-[]home
+-[]report-[]says$[] 
+
+Overfull \hbox (206.5321pt too wide) in paragraph at lines 223--224
+[][]$\OT1/pcr/m/n/10 https : / / feps-[]europe . eu / wp-[]content / uploads / 
+2025 / 12 / The-[]housing-[]crisis-[]in-[]Greece-[]North-[]Macedonia-[]and-[]Fi
+nland .
+
+Overfull \hbox (350.5321pt too wide) in paragraph at lines 225--226
+[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / topics / en / a
+rticle / 20241014STO24542 / the-[]housing-[]crisis-[]in-[]europe-[]key-[]facts-
+[]and-[]eu-[]action-[]infographics$[] 
+
+[7]
+(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
+_de_la_UE_en_accesibilida.aux) )
 (see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
-e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
-mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/La_campaña_política
-_de_Argüello_molesta_a_los_obispos_Nos_ha.pdf (10 pages, 107356 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/La_campaña_polí
-tica_de_Argüello_molesta_a_los_obispos_Nos_ha.log.
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
+a_cola_de_países_de_la_UE_en_accesibilida.pdf (7 pages, 100532 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
+_a_la_cola_de_países_de_la_UE_en_accesibilida.log.

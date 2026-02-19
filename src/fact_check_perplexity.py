@@ -36,6 +36,7 @@ load_dotenv(dotenv_path=dotenv_path)
 PERPLEXITY_API_KEY = os.getenv("PERPLEXITY_API_KEY")
 PERPLEXITY_BASE_URL = os.getenv("PERPLEXITY_BASE_URL", "https://api.perplexity.ai")
 PERPLEXITY_MODEL_FACT_CHECK = os.getenv("PERPLEXITY_MODEL_FACT_CHECK", "sonar-deep-research")
+PERPLEXITY_MAX_TOKENS = get_env_int("PERPLEXITY_MAX_TOKENS", 1000)
 PERPLEXITY_TIMEOUT_SECONDS = get_env_int("PERPLEXITY_TIMEOUT_SECONDS", 120)
 PERPLEXITY_RETRIES = get_env_int("PERPLEXITY_RETRIES", 2)
 PERPLEXITY_RETRY_BASE_SECONDS = get_env_int("PERPLEXITY_RETRY_BASE_SECONDS", 2)
@@ -190,6 +191,7 @@ def verificar_noticia(noticia_id: str) -> dict:
                 response = client.chat.completions.create(
                     model=PERPLEXITY_MODEL_FACT_CHECK,
                     messages=messages,
+                    max_tokens=PERPLEXITY_MAX_TOKENS,
                     timeout=PERPLEXITY_TIMEOUT_SECONDS,
                 )
                 break

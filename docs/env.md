@@ -43,6 +43,7 @@ Referencia base: `.env.example`.
 | `OPENAI_RETRIES` | Reintentos embeddings | `1-5` | `3` | `src/Hemingwai.py` |
 | `OPENAI_RETRY_BASE_SECONDS` | Backoff base OpenAI | `1-3` | `1` | `src/Hemingwai.py` |
 | `PERPLEXITY_TIMEOUT_SECONDS` | Timeout Perplexity | `60-180` | `120` | `src/fact_check_perplexity.py` |
+| `PERPLEXITY_MAX_TOKENS` | Máximo tokens de salida Perplexity | `300-1500` | `1000` | `src/fact_check_perplexity.py` |
 | `PERPLEXITY_RETRIES` | Reintentos Perplexity | `1-4` | `2` | `src/fact_check_perplexity.py` |
 | `PERPLEXITY_RETRY_BASE_SECONDS` | Backoff base Perplexity | `1-5` | `2` | `src/fact_check_perplexity.py` |
 | `PATH_SUBPROCESS_TIMEOUT_SECONDS` | Timeout subprocesos (`0`=sin timeout) | `0`, `600` | `0` | `src/analiza_y_guarda.py` |
