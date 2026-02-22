@@ -4,7 +4,6 @@ import {
   XCircle,
   MessageSquare,
   Search,
-  Loader,
   AlertTriangle,
 } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
@@ -133,6 +132,97 @@ const formatearFuentes = (fuentes) => {
   return html;
 };
 
+const toFiniteNumber = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+};
+
+const roundTo = (value, decimals) => {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+};
+
+const resolveGlobalScores = (payload = {}) => {
+  const evaluation = payload.evaluation_result || {};
+  const extras = evaluation.extras || {};
+  const derived = evaluation.derived || {};
+
+  const raw =
+    toFiniteNumber(payload.global_score_raw) ??
+    toFiniteNumber(extras.raw_global_score) ??
+    toFiniteNumber(extras.global_score_raw) ??
+    toFiniteNumber(derived.global_score_raw);
+
+  let score2dp =
+    toFiniteNumber(payload.global_score_2dp) ??
+    toFiniteNumber(extras.global_score_2dp) ??
+    toFiniteNumber(derived.global_score_2dp);
+
+  if (score2dp === null && raw !== null) {
+    score2dp = roundTo(raw, 2);
+  }
+  if (score2dp === null) {
+    score2dp =
+      toFiniteNumber(derived.global_score) ??
+      toFiniteNumber(payload.puntuacion) ??
+      toFiniteNumber(payload.puntuacion_global) ??
+      toFiniteNumber(payload.puntuacionTotal);
+  }
+
+  const score1dp =
+    toFiniteNumber(payload.global_score_1dp) ??
+    toFiniteNumber(extras.global_score_1dp) ??
+    toFiniteNumber(derived.global_score_1dp) ??
+    (score2dp === null ? null : roundTo(score2dp, 1));
+
+  return {
+    global_score_raw: raw,
+    global_score_2dp: score2dp,
+    global_score_1dp: score1dp,
+    principal: score2dp,
+  };
+};
+
+const resolveAlerts = (payload = {}) => {
+  const evaluation = payload.evaluation_result || {};
+  const alerts = Array.isArray(payload.alerts)
+    ? payload.alerts
+    : Array.isArray(evaluation.alerts)
+    ? evaluation.alerts
+    : [];
+  const alertsSummary = payload.alerts_summary || evaluation.alerts_summary || null;
+  return { alerts, alertsSummary };
+};
+
+const normalizeKey = (value) =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+const SEVERITY_UI = {
+  high: {
+    label: 'Alta',
+    badge: 'bg-red-500/20 text-red-200 border border-red-400/40',
+  },
+  medium: {
+    label: 'Media',
+    badge: 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/40',
+  },
+  low: {
+    label: 'Baja',
+    badge: 'bg-sky-500/20 text-sky-200 border border-sky-400/40',
+  },
+};
+
+const CATEGORY_LABELS = {
+  fiabilidad: 'Fiabilidad',
+  adecuacion: 'Adecuación',
+  claridad: 'Claridad',
+  profundidad: 'Profundidad',
+  enfoque: 'Enfoque',
+};
+
 /*  
    PuntuacionIndicador
      */
@@ -149,7 +239,9 @@ const PuntuacionIndicador = ({ puntuacion }) => {
   return (
     <div className="flex items-center gap-2">
       <div className={`w-3 h-3 rounded-full ${getColor(score)}`} />
-      <span className="font-bold text-gray-200">{isNaN(score) ? 'N/A' : score.toFixed(2)}</span>
+      <span className="font-bold text-gray-200">
+        {Number.isFinite(score) ? score.toFixed(2) : 'N/A'}
+      </span>
     </div>
   );
 };
@@ -238,9 +330,51 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     }
   };
 
-  const globalScore = Number(resultado.global_score_2dp ?? resultado.puntuacion);
-  const hasGlobalScore = Number.isFinite(globalScore);
-  const globalScoreForUi = hasGlobalScore ? Number(globalScore.toFixed(2)) : 0;
+  const resolvedScores = resolveGlobalScores(resultado);
+  const globalScore = resolvedScores.principal;
+  const hasGlobalScore = globalScore !== null;
+  const globalScoreForUi = hasGlobalScore ? globalScore : 0;
+  const fallbackScore = toFiniteNumber(resultado.puntuacion);
+  const scoreForChatbot = hasGlobalScore ? globalScore : fallbackScore;
+
+  const { alerts: rawAlerts, alertsSummary } = resolveAlerts(resultado);
+  const alerts = (rawAlerts || [])
+    .filter((alert) => alert && typeof alert === 'object')
+    .map((alert) => {
+      const severityKey = normalizeKey(alert.severity);
+      const categoryKey = normalizeKey(alert.category);
+      const severity = SEVERITY_UI[severityKey] || SEVERITY_UI.medium;
+      const category = CATEGORY_LABELS[categoryKey] || 'General';
+      const evidenceRefs = Array.isArray(alert.evidence_refs)
+        ? alert.evidence_refs.filter(Boolean).slice(0, 3)
+        : [];
+
+      return {
+        code: alert.code || 'UNKNOWN_ALERT',
+        message: alert.message || 'Alerta sin descripción.',
+        origin: normalizeKey(alert.origin) === 'engine' ? 'Motor' : 'Modelo',
+        category,
+        severity,
+        evidenceRefs,
+      };
+    });
+
+  const computedCounts = alerts.reduce(
+    (acc, alert) => {
+      const label = alert.severity.label;
+      if (label === 'Alta') acc.high += 1;
+      if (label === 'Media') acc.medium += 1;
+      if (label === 'Baja') acc.low += 1;
+      return acc;
+    },
+    { high: 0, medium: 0, low: 0 }
+  );
+  const summaryCounts = alertsSummary?.counts || {};
+  const alertCounts = {
+    high: toFiniteNumber(summaryCounts.high) ?? computedCounts.high,
+    medium: toFiniteNumber(summaryCounts.medium) ?? computedCounts.medium,
+    low: toFiniteNumber(summaryCounts.low) ?? computedCounts.low,
+  };
 
   return (
     <>
@@ -325,10 +459,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               </div>
             </div>
 
-            {/* Columna derecha: Puntuación arriba, radar debajo */}
+            {/* Columna derecha: Puntuación */}
             <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
-
-
               {/* Puntuación General */}
               <div className="text-center">
                 <div className="text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">
@@ -356,12 +488,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                   </div>
                 </div>
               </div>
-
-              {/* Gráfico de araña eliminado: se mantiene solo la puntuación numérica */}
             </div>
           </div>
-
-          {/* Gráfico de araña expandido eliminado */}
         </div>
         </RevealOnScroll>
 
@@ -452,8 +580,58 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
         </RevealOnScroll>
 
+        {/* Alertas */}
+        <RevealOnScroll delay={150}>
+        <div className="hw-glass rounded-2xl p-6 border-l-4 border-amber-400">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h4 className="text-xl font-bold text-white">
+              Alertas detectadas
+            </h4>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-400/30">
+                Altas: {alertCounts.high}
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/30">
+                Medias: {alertCounts.medium}
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
+                Bajas: {alertCounts.low}
+              </span>
+            </div>
+          </div>
+
+          {alerts.length === 0 ? (
+            <p className="text-sm text-gray-300">No hay alertas registradas para esta noticia.</p>
+          ) : (
+            <div className="space-y-3">
+              {alerts.map((alert, index) => (
+                <div
+                  key={`${alert.code}-${index}`}
+                  className="rounded-lg border border-white/10 bg-[#001a33]/35 p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${alert.severity.badge}`}>
+                      Severidad {alert.severity.label}
+                    </span>
+                    <span className="text-xs text-gray-300">{alert.category}</span>
+                    <span className="text-xs text-gray-500">{alert.origin}</span>
+                    <span className="text-[11px] text-gray-500 font-mono">{alert.code}</span>
+                  </div>
+                  <p className="text-sm text-gray-100">{alert.message}</p>
+                  {alert.evidenceRefs.length > 0 && (
+                    <p className="text-xs text-gray-400 mt-2">
+                      Evidencias: {alert.evidenceRefs.join(' | ')}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        </RevealOnScroll>
+
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
-        <RevealOnScroll delay={200}>
+        <RevealOnScroll delay={220}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-white mb-2">
             Pregúntale al chatbot
@@ -482,7 +660,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </RevealOnScroll>
 
         {/* Valoraciones individuales */}
-        <RevealOnScroll delay={300}>
+        <RevealOnScroll delay={320}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-white mb-4 hw-terminal-font">
             Valoraciones por sección
@@ -492,6 +670,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               Object.keys(nombresSecciones).map((key) => {
                 const puntuacion = resultado.puntuacion_individual?.[key];
                 const valoracion = resultado.valoraciones?.[key];
+                const puntuacionNumerica = toFiniteNumber(puntuacion);
 
                 return (
                   <motion.button
@@ -511,8 +690,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                       <span className="text-sm font-semibold text-gray-200">
                         {nombresSecciones[key]}
                       </span>
-                      {puntuacion ? (
-                        <PuntuacionIndicador puntuacion={puntuacion} />
+                      {puntuacionNumerica !== null ? (
+                        <PuntuacionIndicador puntuacion={puntuacionNumerica} />
                       ) : (
                         <span className="text-gray-400 text-xs">N/A</span>
                       )}
@@ -549,7 +728,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                           fuente: resultado.fuente,
                           keywords: resultado.keywords,
                           tags: resultado.tags,
-                          puntuacion: hasGlobalScore ? globalScoreForUi : resultado.puntuacion,
+                          puntuacion: scoreForChatbot ?? undefined,
                           puntuacion_individual: resultado.puntuacion_individual,
                       }}
                   />
