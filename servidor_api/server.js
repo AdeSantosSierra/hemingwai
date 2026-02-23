@@ -6,6 +6,7 @@ const { exec, spawn } = require('child_process');
 const cors = require('cors');
 const path = require('path');
 const OpenAI = require('openai');
+const { clerkMiddleware, requireAuth } = require('@clerk/express');
 
 // Cargar variables de entorno desde el archivo .env en el root del proyecto
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
@@ -20,18 +21,54 @@ const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 // El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
 const PYTHON_INTERPRETER = 'python'; 
 
+function normalizeOrigin(origin = '') {
+    return String(origin).trim().replace(/\/+$/, '');
+}
+
+const LOCAL_DEV_ORIGINS = process.env.NODE_ENV === 'production'
+    ? []
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+const ALLOWED_ORIGINS = Array.from(new Set([
+    process.env.FRONTEND_ORIGIN,
+    ...(process.env.FRONTEND_ORIGINS || '')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ...LOCAL_DEV_ORIGINS,
+].map(normalizeOrigin).filter(Boolean)));
+
+const corsOptions = {
+    origin(origin, callback) {
+        // Permitir herramientas sin origin (curl/postman/server-to-server)
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (ALLOWED_ORIGINS.includes(normalizeOrigin(origin))) {
+            return callback(null, true);
+        }
+
+        const corsError = new Error('Not allowed by CORS');
+        corsError.code = 'CORS_ORIGIN_DENIED';
+        corsError.status = 403;
+        corsError.origin = normalizeOrigin(origin);
+        return callback(corsError);
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false,
+};
+
 // Middleware
-// Configuración de CORS global explícita y permisiva
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Handle preflight requests
-app.options('*', cors());
-
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+app.use(clerkMiddleware());
 app.use(express.json()); // Para parsear cuerpos de petición JSON
+
+if (!process.env.CLERK_SECRET_KEY) {
+    console.warn('ADVERTENCIA: CLERK_SECRET_KEY no está definida. requireAuth() rechazará solicitudes autenticadas.');
+}
 
 // Ruta de health check para Render
 app.get('/', (req, res) => {
@@ -48,6 +85,18 @@ app.get('/health', (req, res) => {
         status: 'healthy',
         python: PYTHON_INTERPRETER,
         scriptDir: PYTHON_SCRIPT_DIR
+    });
+});
+
+app.get('/api/me', requireAuth(), (req, res) => {
+    const sessionClaims = req.auth?.sessionClaims || {};
+
+    res.json({
+        userId: req.auth?.userId || null,
+        sessionId: req.auth?.sessionId || null,
+        orgId: req.auth?.orgId || sessionClaims.org_id || null,
+        issuedAt: Number.isFinite(sessionClaims.iat) ? sessionClaims.iat : null,
+        exp: Number.isFinite(sessionClaims.exp) ? sessionClaims.exp : null,
     });
 });
 
@@ -109,9 +158,6 @@ if (!process.env.OPENAI_API_KEY) {
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
-
-// Contraseña maestra para el chatbot
-const CHATBOT_PASSWORD = process.env.CHATBOT_PASSWORD;
 
 // Nombres de los parámetros de evaluación para dar contexto al modelo
 // Actualizados a los 5 criterios vigentes en Utils.criterios
@@ -175,61 +221,34 @@ function resolveGlobalScores(payload = {}) {
 
 /**
  * POST /api/verify-password
- * Verifica si la contraseña proporcionada coincide con la variable de entorno.
- * body: { password: string }
+ * Endpoint deprecado tras migración a Clerk.
  */
 app.post('/api/verify-password', (req, res) => {
-    const { password } = req.body;
-
-    // Si no hay contraseña configurada en el servidor, se asume acceso libre (o se fuerza configuración).
-    // Por seguridad y petición del usuario, si CHATBOT_PASSWORD existe, se debe validar.
-    
-    if (CHATBOT_PASSWORD) {
-        if (password === CHATBOT_PASSWORD) {
-            return res.json({ success: true });
-        } else {
-            return res.status(401).json({ success: false, error: "Contraseña incorrecta." });
-        }
-    } else {
-        // Si no está definida la variable, avisamos en log pero permitimos (o bloqueamos).
-        // Estrategia: Permitir acceso si no está configurada para no romper nada, pero idealmente debería configurarse.
-        console.warn("ADVERTENCIA: CHATBOT_PASSWORD no está definida en el entorno. Acceso permitido por defecto.");
-        return res.json({ success: true, warning: "Sin protección activada." });
-    }
+    return res.status(410).json({
+        success: false,
+        error: 'Endpoint deprecado. Usa autenticación Clerk con Authorization: Bearer <token>.',
+    });
 });
 
 /**
  * POST /api/chat/validate-password
- * Endpoint específico para validar la contraseña desde la extensión.
- * body: { password: string }
+ * Endpoint deprecado tras migración a Clerk.
  */
 app.post('/api/chat/validate-password', (req, res) => {
-    const { password } = req.body;
-
-    // Misma lógica de validación que /api/verify-password pero con respuesta estandarizada para la extensión
-    if (CHATBOT_PASSWORD) {
-        if (password === CHATBOT_PASSWORD) {
-            return res.json({ ok: true });
-        } else {
-            return res.status(401).json({ ok: false, error: "invalid_password" });
-        }
-    } else {
-        return res.json({ ok: true });
-    }
+    return res.status(410).json({
+        ok: false,
+        error: 'deprecated_password_auth',
+        message: 'Usa Clerk y envía Authorization: Bearer <token>.',
+    });
 });
 
 /**
  * POST /api/chatbot
  * Recibe una pregunta y un contexto sobre una noticia y devuelve la respuesta de un LLM.
- * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object }, password: string }
+ * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object } }
  */
-app.post('/api/chatbot', async (req, res) => {
-    const { pregunta, contexto, password } = req.body;
-
-    // Verificación de seguridad
-    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
-        return res.status(401).json({ error: "Acceso denegado. Contraseña incorrecta o ausente." });
-    }
+app.post('/api/chatbot', requireAuth(), async (req, res) => {
+    const { pregunta, contexto } = req.body;
 
     if (!pregunta || !contexto || !contexto.titulo || !contexto.cuerpo || !contexto.valoraciones) {
         return res.status(400).json({ error: "La pregunta y un contexto completo (título, cuerpo, valoraciones) son requeridos." });
@@ -447,7 +466,7 @@ app.get('/api/news/context', async (req, res) => {
  * GET /api/news/:id/alerts
  * Devuelve alertas V2 y su resumen para una noticia concreta.
  */
-app.get('/api/news/:id/alerts', async (req, res) => {
+app.get('/api/news/:id/alerts', requireAuth(), async (req, res) => {
     const { id } = req.params;
     if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) {
         return res.status(400).json({ ok: false, error: "El parámetro ':id' debe ser un ObjectId válido." });
@@ -490,15 +509,10 @@ app.get('/api/news/:id/alerts', async (req, res) => {
 /**
  * POST /api/chat/news
  * Chatbot específico para la extensión. Recibe newsId, recupera el contexto del backend y llama a la IA.
- * body: { newsId: string, userMessage: string, password: string, previousMessages: array }
+ * body: { newsId: string, userMessage: string, previousMessages: array }
  */
-app.post('/api/chat/news', async (req, res) => {
-    const { newsId, userMessage, password, previousMessages } = req.body;
-
-    // 1. Verificación de seguridad
-    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
-        return res.status(401).json({ ok: false, error: "Acceso denegado. Contraseña incorrecta." });
-    }
+app.post('/api/chat/news', requireAuth(), async (req, res) => {
+    const { newsId, userMessage, previousMessages } = req.body;
 
     if (!newsId || !userMessage) {
         return res.status(400).json({ ok: false, error: "newsId y userMessage son requeridos." });
@@ -642,7 +656,7 @@ app.post('/api/chat/news', async (req, res) => {
  * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
  */
-app.post('/api/check-urls', (req, res) => {
+app.post('/api/check-urls', requireAuth(), (req, res) => {
     const { urls } = req.body;
 
     if (!urls || !Array.isArray(urls)) {
@@ -784,7 +798,7 @@ app.post('/api/check-urls', (req, res) => {
  * Busca una noticia por URL o ID en las BD (Nueva -> Antigua).
  * body: { identificador: 'url_o_id', soloAntigua: false }
  */
-app.post('/api/buscar', async (req, res) => {
+app.post('/api/buscar', requireAuth(), async (req, res) => {
     const { identificador, soloAntigua } = req.body;
 
     if (!identificador) {
@@ -813,6 +827,16 @@ app.post('/api/buscar', async (req, res) => {
     }
 });
 
+app.use((error, req, res, next) => {
+    if (error && (error.code === 'CORS_ORIGIN_DENIED' || error.message === 'Not allowed by CORS')) {
+        return res.status(403).json({
+            error: 'Origen no permitido por CORS.',
+            origin: error.origin || null,
+        });
+    }
+    return next(error);
+});
+
 // Manejo de rutas no encontradas
 app.use((req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada' });
@@ -824,5 +848,6 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ API escuchando en puerto ${PORT}...`);
     console.log(`🐍 Ruta de intérprete Python: ${PYTHON_INTERPRETER}`);
     console.log(`📁 Directorio de scripts: ${PYTHON_SCRIPT_DIR}`);
+    console.log(`🔐 Orígenes CORS permitidos: ${ALLOWED_ORIGINS.join(', ') || '(ninguno configurado)'}`);
     console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
 });

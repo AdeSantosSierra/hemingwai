@@ -102,4 +102,20 @@ newspaper3k
 #cd ~/hemingwai/servidor_api
 #source ../.venv/bin/activate
 #export PATH=~/hemingwai/node/nodejs/bin:$PATH
+#export CLERK_SECRET_KEY="sk_test_XXXX"   # o sk_live_XXXX
+#export FRONTEND_ORIGIN="http://localhost:5173"
+#export PORT=3000
 #npm start
+
+'''
+Terminal A: Backend
+cd ~/hemingwai/servidor_api
+source ../.venv/bin/activate
+export PATH=~/hemingwai/node/nodejs/bin:$PATH
+npm start
+
+Terminal B: Frontend
+cd ~/hemingwai/frontend
+export PATH=~/hemingwai/node/nodejs/bin:$PATH
+npm run dev 
+'''

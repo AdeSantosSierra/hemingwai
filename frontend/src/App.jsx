@@ -1,12 +1,11 @@
 // App.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import logo from './assets/logo2.png';
 import {
   Search,
   History,
   Settings,
   HelpCircle,
-  User,
   Globe2,
   Newspaper,
   Loader,
@@ -18,6 +17,12 @@ import {
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useAuth
+} from '@clerk/clerk-react';
 
 import API_BASE_URL from './apiConfig';
 import ResultadoBusqueda from './components/ResultadoBusqueda';
@@ -26,15 +31,18 @@ import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
 import TerminalSectionTitle from './components/TerminalSectionTitle';
 import BackgroundParticles from './components/BackgroundParticles';
+import SignedOutLanding from './components/SignedOutLanding';
 
 /*  
    App principal
      */
 function App() {
+  const { getToken, isLoaded, isSignedIn } = useAuth();
   const [identificador, setIdentificador] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [history, setHistory] = useState([]);
+  const [initialQuery, setInitialQuery] = useState(null);
   
   // State for History Dropdown
   const [showHistory, setShowHistory] = useState(false);
@@ -59,13 +67,13 @@ function App() {
     
     if (match && match[1]) {
       // Prioridad 1: ID en ruta
-      handleBuscarNoticia(match[1]);
+      setInitialQuery(match[1]);
     } else {
       // Prioridad 2: Query param ?url=
       const searchParams = new URLSearchParams(window.location.search);
       const urlParam = searchParams.get('url');
       if (urlParam) {
-        handleBuscarNoticia(urlParam);
+        setInitialQuery(urlParam);
       }
     }
   }, []);
@@ -94,7 +102,7 @@ function App() {
     };
   }, [showHistory]);
 
-  const addToHistory = (item) => {
+  const addToHistory = useCallback((item) => {
     setHistory((prev) => {
       // Evitar duplicados: eliminar si ya existe (para moverlo al principio)
       const filtered = prev.filter((i) => i.query !== item.query);
@@ -103,14 +111,26 @@ function App() {
       // Limitar a 10 items
       return newHistory.slice(0, 10);
     });
-  };
+  }, []);
 
-  const handleBuscarNoticia = async (queryOverride = null) => {
+  const handleBuscarNoticia = useCallback(async (queryOverride = null) => {
     const query = queryOverride || identificador;
     if (!query || !query.trim()) {
       setEstadoBusqueda('error');
       setResultadoBusqueda('El campo de búsqueda no puede estar vacío.');
       toast.error('Por favor, introduce una URL válida.');
+      return;
+    }
+
+    if (!isLoaded) {
+      toast.error('Inicializando sesión. Inténtalo de nuevo en unos segundos.');
+      return;
+    }
+
+    if (!isSignedIn) {
+      setEstadoBusqueda('error');
+      setResultadoBusqueda('Inicia sesión con Google para analizar noticias.');
+      toast.error('Debes iniciar sesión para usar el análisis.');
       return;
     }
 
@@ -123,9 +143,17 @@ function App() {
     setResultadoBusqueda(null);
 
     try {
+      const token = await getToken();
+      if (!token) {
+        throw new Error('No se pudo obtener el token de sesión de Clerk.');
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/buscar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({ identificador: query })
       });
 
@@ -174,7 +202,13 @@ function App() {
       );
       toast.error('Error de conexión. Inténtalo de nuevo.');
     }
-  };
+  }, [addToHistory, getToken, identificador, isLoaded, isSignedIn]);
+
+  useEffect(() => {
+    if (!initialQuery || !isLoaded || !isSignedIn) return;
+    handleBuscarNoticia(initialQuery);
+    setInitialQuery(null);
+  }, [handleBuscarNoticia, initialQuery, isLoaded, isSignedIn]);
 
   const handleHistorySelect = (item) => {
       setShowHistory(false);
@@ -183,7 +217,20 @@ function App() {
       handleBuscarNoticia(item.query);
   };
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-[#071A31] text-gray-100 flex items-center justify-center px-6">
+        <div className="max-w-lg w-full rounded-2xl border border-lima/40 bg-[#0b2340] p-6 text-center">
+          <h1 className="text-2xl font-bold mb-2">Loading authentication...</h1>
+          <p className="text-sm text-gray-200">Preparing your session to access HemingwAI.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
+    <>
+    <SignedIn>
     <div className="min-h-screen flex flex-col bg-animated text-gray-100 font-sans overflow-x-hidden">
       {/* Capa de Partículas (Z-Index 0, detrás del grid y contenido) */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -233,9 +280,7 @@ function App() {
           <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Ajustes">
             <Settings className="w-5 h-5" />
           </button>
-          <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Perfil">
-            <User className="w-5 h-5" />
-          </button>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </header>
 
@@ -322,7 +367,7 @@ function App() {
 
                   <button
                     onClick={() => handleBuscarNoticia()}
-                    disabled={estadoBusqueda === 'loading'}
+                    disabled={estadoBusqueda === 'loading' || !isLoaded || !isSignedIn}
                     className={`
                       w-full flex items-center justify-center font-bold
                       rounded-[14px]
@@ -338,7 +383,9 @@ function App() {
                       <Loader className={`animate-spin ${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />
                     )}
                     {estadoBusqueda !== 'loading' && <Database className={`${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />}
-                    {estadoBusqueda === 'loading' ? 'Analizando...' : 'Analizar Noticia'}
+                    {estadoBusqueda === 'loading'
+                      ? 'Analizando...'
+                      : (!isLoaded || !isSignedIn ? 'Inicia sesión para analizar' : 'Analizar Noticia')}
                   </button>
                 </div>
               </div>
@@ -442,6 +489,12 @@ function App() {
 
       </main>
     </div>
+    </SignedIn>
+
+    <SignedOut>
+      <SignedOutLanding />
+    </SignedOut>
+    </>
   );
 }
 
