@@ -17,6 +17,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
+const HISTORY_SCRIPT = 'history_entrypoint.py';
+const HISTORY_LIMIT = 4;
 
 // El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
 const PYTHON_INTERPRETER = 'python'; 
@@ -142,6 +144,115 @@ function ejecutarScriptPython(scriptName, args = []) {
             }
         });
     });
+}
+
+function ejecutarScriptPythonPorStdin(scriptName, payload, timeoutMs = 10000) {
+    const scriptPath = path.join(PYTHON_SCRIPT_DIR, scriptName);
+    const py = spawn(PYTHON_INTERPRETER, [scriptPath]);
+
+    return new Promise((resolve, reject) => {
+        let stdoutData = '';
+        let stderrData = '';
+
+        const timeout = setTimeout(() => {
+            py.kill();
+            reject({ error: `Timeout ejecutando ${scriptName}` });
+        }, timeoutMs);
+
+        py.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+        });
+
+        py.stderr.on('data', (data) => {
+            stderrData += data.toString();
+        });
+
+        py.on('error', (err) => {
+            clearTimeout(timeout);
+            reject({ error: `Error al iniciar ${scriptName}`, details: err.message });
+        });
+
+        py.on('close', (code) => {
+            clearTimeout(timeout);
+
+            if (code !== 0) {
+                try {
+                    const parsedError = JSON.parse(stdoutData || stderrData);
+                    return reject({
+                        error: parsedError.error || `Error en ${scriptName}`,
+                        details: parsedError.details || null,
+                    });
+                } catch (_e) {
+                    return reject({
+                        error: `Error en ${scriptName} (exit code ${code})`,
+                        details: stderrData || stdoutData || null,
+                    });
+                }
+            }
+
+            try {
+                const parsed = JSON.parse(stdoutData);
+                if (parsed && parsed.ok === false) {
+                    return reject({ error: parsed.error || `Error en ${scriptName}` });
+                }
+                resolve(parsed);
+            } catch (err) {
+                reject({
+                    error: `Formato de salida inválido en ${scriptName}`,
+                    details: err.message,
+                });
+            }
+        });
+
+        try {
+            py.stdin.write(JSON.stringify(payload));
+            py.stdin.end();
+        } catch (stdinErr) {
+            clearTimeout(timeout);
+            py.kill();
+            reject({
+                error: `Error enviando datos a ${scriptName}`,
+                details: stdinErr.message,
+            });
+        }
+    });
+}
+
+function normalizeHistoryQuery(query) {
+    if (typeof query !== 'string') {
+        return '';
+    }
+    return query.trim();
+}
+
+function normalizeNullableHistoryText(value) {
+    if (typeof value !== 'string') {
+        return null;
+    }
+    const trimmed = value.trim();
+    return trimmed ? trimmed : null;
+}
+
+async function pushHistoryForUser(userId, item) {
+    const query = normalizeHistoryQuery(item?.query);
+    if (!userId || !query) {
+        return [];
+    }
+
+    const payload = {
+        action: 'push_history',
+        userId,
+        limit: HISTORY_LIMIT,
+        item: {
+            query,
+            title: normalizeNullableHistoryText(item?.title),
+            url: normalizeNullableHistoryText(item?.url),
+            timestamp: Date.now(),
+        },
+    };
+
+    const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, payload);
+    return Array.isArray(result?.items) ? result.items : [];
 }
 
 // =======================================================
@@ -652,6 +763,68 @@ app.post('/api/chat/news', requireAuth(), async (req, res) => {
 });
 
 /**
+ * GET /api/history
+ * Devuelve el historial de búsqueda del usuario autenticado.
+ */
+app.get('/api/history', requireAuth(), async (req, res) => {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'No autenticado.' });
+    }
+
+    try {
+        const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, {
+            action: 'get_history',
+            userId,
+            limit: HISTORY_LIMIT,
+        });
+        return res.json({ items: Array.isArray(result?.items) ? result.items : [] });
+    } catch (error) {
+        console.error('Error en GET /api/history:', error);
+        return res.status(500).json({
+            error: error.error || 'Error interno del servidor al obtener historial.',
+        });
+    }
+});
+
+/**
+ * POST /api/history
+ * Actualiza el historial de búsqueda del usuario autenticado.
+ * body: { query: string, title?: string, url?: string }
+ */
+app.post('/api/history', requireAuth(), async (req, res) => {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'No autenticado.' });
+    }
+
+    const query = normalizeHistoryQuery(req.body?.query);
+    if (!query) {
+        return res.status(400).json({ error: "El campo 'query' es requerido." });
+    }
+
+    try {
+        const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, {
+            action: 'push_history',
+            userId,
+            limit: HISTORY_LIMIT,
+            item: {
+                query,
+                title: normalizeNullableHistoryText(req.body?.title),
+                url: normalizeNullableHistoryText(req.body?.url),
+                timestamp: Date.now(),
+            },
+        });
+        return res.json({ items: Array.isArray(result?.items) ? result.items : [] });
+    } catch (error) {
+        console.error('Error en POST /api/history:', error);
+        return res.status(500).json({
+            error: error.error || 'Error interno del servidor al actualizar historial.',
+        });
+    }
+});
+
+/**
  * POST /api/check-urls
  * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
@@ -815,6 +988,21 @@ app.post('/api/buscar', requireAuth(), async (req, res) => {
         
         if (resultado.mensaje === "Noticia no encontrada.") {
              return res.status(404).json(resultado);
+        }
+
+        // Auto-guardar en historial por usuario autenticado (fallo no bloqueante).
+        const userId = req.auth?.userId;
+        const query = normalizeHistoryQuery(identificador);
+        if (userId && query && (resultado.titulo || resultado.url)) {
+            try {
+                await pushHistoryForUser(userId, {
+                    query,
+                    title: resultado.titulo,
+                    url: resultado.url,
+                });
+            } catch (historyError) {
+                console.warn('No se pudo actualizar historial en /api/buscar:', historyError);
+            }
         }
         
         // Devuelve el objeto de la noticia encontrada (sin el embedding)

@@ -33,11 +33,14 @@ import TerminalSectionTitle from './components/TerminalSectionTitle';
 import BackgroundParticles from './components/BackgroundParticles';
 import SignedOutLanding from './components/SignedOutLanding';
 
+const HISTORY_LIMIT = 4;
+const HISTORY_STORAGE_KEY_PREFIX = 'analysisHistory';
+
 /*  
    App principal
      */
 function App() {
-  const { getToken, isLoaded, isSignedIn } = useAuth();
+  const { getToken, isLoaded, isSignedIn, userId } = useAuth();
   const [identificador, setIdentificador] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
@@ -49,18 +52,31 @@ function App() {
   const historyRef = useRef(null);
 
   const isIdle = estadoBusqueda === 'idle';
+  const historyStorageKey = userId
+    ? `${HISTORY_STORAGE_KEY_PREFIX}:${userId}`
+    : null;
 
-  // Cargar historial desde sessionStorage al inicio
-  useEffect(() => {
-    try {
-      const storedHistory = sessionStorage.getItem('analysisHistory');
-      if (storedHistory) {
-        setHistory(JSON.parse(storedHistory));
-      }
-    } catch (e) {
-      console.error('Error al cargar historial:', e);
+  const mapHistoryItemsForUI = useCallback((items) => {
+    if (!Array.isArray(items)) {
+      return [];
     }
 
+    return items
+      .filter((item) => item && typeof item.query === 'string' && item.query.trim())
+      .map((item) => ({
+        id: crypto.randomUUID(),
+        query: item.query.trim(),
+        title: item.title ?? null,
+        url: item.url ?? null,
+        timestamp: Number.isFinite(Number(item.timestamp))
+          ? Number(item.timestamp)
+          : Date.now()
+      }))
+      .slice(0, HISTORY_LIMIT);
+  }, []);
+
+  // Detectar ruta /analisis/:id al montar
+  useEffect(() => {
     // Detectar ruta /analisis/:id al montar
     const path = window.location.pathname;
     const match = path.match(/^\/analisis\/([^/]+)/);
@@ -78,10 +94,79 @@ function App() {
     }
   }, []);
 
-  // Guardar historial en sessionStorage cuando cambie
+  // Guardar copia de fallback por usuario en sessionStorage
   useEffect(() => {
-    sessionStorage.setItem('analysisHistory', JSON.stringify(history));
-  }, [history]);
+    if (!historyStorageKey) {
+      return;
+    }
+    try {
+      sessionStorage.setItem(historyStorageKey, JSON.stringify(history));
+    } catch (e) {
+      console.error('Error al guardar historial local:', e);
+    }
+  }, [history, historyStorageKey]);
+
+  // Cargar historial persistente desde backend por usuario autenticado.
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn || !userId || !historyStorageKey) {
+      setHistory([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadRemoteHistory() {
+      try {
+        const token = await getToken();
+        if (!token) {
+          throw new Error('No se pudo obtener token de Clerk.');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/history`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al cargar historial (${response.status})`);
+        }
+
+        const data = await response.json();
+        if (cancelled) {
+          return;
+        }
+
+        const mapped = mapHistoryItemsForUI(data.items);
+        setHistory(mapped);
+      } catch (error) {
+        console.error('No se pudo cargar historial remoto. Usando fallback local:', error);
+        try {
+          const storedHistory = sessionStorage.getItem(historyStorageKey);
+          const parsed = storedHistory ? JSON.parse(storedHistory) : [];
+          if (!cancelled) {
+            setHistory(mapHistoryItemsForUI(parsed));
+          }
+        } catch (fallbackError) {
+          console.error('Error al cargar historial local:', fallbackError);
+          if (!cancelled) {
+            setHistory([]);
+          }
+        }
+      }
+    }
+
+    loadRemoteHistory();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, historyStorageKey, isLoaded, isSignedIn, mapHistoryItemsForUI, userId]);
 
   // Click outside handler for History dropdown
   useEffect(() => {
@@ -103,19 +188,24 @@ function App() {
   }, [showHistory]);
 
   const addToHistory = useCallback((item) => {
+    const normalized = mapHistoryItemsForUI([item])[0];
+    if (!normalized) {
+      return;
+    }
+
     setHistory((prev) => {
       // Evitar duplicados: eliminar si ya existe (para moverlo al principio)
-      const filtered = prev.filter((i) => i.query !== item.query);
+      const filtered = prev.filter((i) => i.query !== normalized.query);
       // Añadir al principio
-      const newHistory = [item, ...filtered];
-      // Limitar a 10 items
-      return newHistory.slice(0, 10);
+      const newHistory = [normalized, ...filtered];
+      // Limitar a 4 items
+      return newHistory.slice(0, HISTORY_LIMIT);
     });
-  }, []);
+  }, [mapHistoryItemsForUI]);
 
   const handleBuscarNoticia = useCallback(async (queryOverride = null) => {
-    const query = queryOverride || identificador;
-    if (!query || !query.trim()) {
+    const query = (queryOverride || identificador || '').trim();
+    if (!query) {
       setEstadoBusqueda('error');
       setResultadoBusqueda('El campo de búsqueda no puede estar vacío.');
       toast.error('Por favor, introduce una URL válida.');
@@ -183,16 +273,14 @@ function App() {
         setResultadoBusqueda(data);
         toast.success('Análisis completado con éxito.');
 
-        // Añadir al historial si tiene título y es válido
-        if (data.titulo) {
-            addToHistory({
-                id: crypto.randomUUID(),
-                query: query,
-                title: data.titulo,
-                url: data.url,
-                timestamp: Date.now()
-            });
-        }
+        // /api/buscar guarda en backend; mantenemos UI sincronizada localmente.
+        addToHistory({
+          id: crypto.randomUUID(),
+          query,
+          title: data.titulo ?? null,
+          url: data.url ?? null,
+          timestamp: Date.now()
+        });
       }
     } catch (error) {
       console.error('Error al procesar la búsqueda:', error);
