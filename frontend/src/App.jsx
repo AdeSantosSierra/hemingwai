@@ -299,10 +299,19 @@ function App() {
   }, [handleBuscarNoticia, initialQuery, isLoaded, isSignedIn]);
 
   const handleHistorySelect = (item) => {
+      const selectedIdentifier = (
+        (typeof item?.url === 'string' && item.url.trim())
+        || (typeof item?.query === 'string' && item.query.trim())
+        || ''
+      );
+      if (!selectedIdentifier) {
+        return;
+      }
+
       setShowHistory(false);
       // Smooth scroll si es necesario
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      handleBuscarNoticia(item.query);
+      handleBuscarNoticia(selectedIdentifier);
   };
 
   if (!isLoaded) {

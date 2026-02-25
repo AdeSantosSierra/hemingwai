@@ -14,7 +14,7 @@ from env_config import get_env_first
 
 DEFAULT_LIMIT = 4
 MAX_LIMIT = 4
-DB_NAME = "base_de_datos_noticia"
+DB_NAME = "Base_de_datos_noticias"
 COLLECTION_NAME = "user_history"
 _indexes_ensured = False
 _indexes_lock = threading.Lock()
