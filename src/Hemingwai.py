@@ -17,6 +17,12 @@ load_dotenv()
 from MongoDB import MongoDBService
 from deterministic_engine import compute_evaluation_result
 from llm_alert_extractor import extract_alerts_with_llm
+from section_summaries import (
+    build_section_summaries_meta,
+    default_section_summaries,
+    extract_sections_analysis,
+    generate_section_summaries,
+)
 from env_config import (
     get_env_bool,
     get_env_first,
@@ -35,7 +41,13 @@ OPENAI_RETRY_BASE_SECONDS = get_env_int("OPENAI_RETRY_BASE_SECONDS", 1)
 OPENAI_TIMEOUT_SECONDS = get_env_int("OPENAI_TIMEOUT_SECONDS", 60)
 FEATURE_ENABLE_ANTHROPIC = get_env_bool("FEATURE_ENABLE_ANTHROPIC", True)
 FEATURE_FAIL_OPEN_ANTHROPIC = get_env_bool("FEATURE_FAIL_OPEN_ANTHROPIC", False)
+FEATURE_ENABLE_SECTION_SUMMARIES = get_env_bool(
+    "ENABLE_SECTION_SUMMARIES",
+    get_env_bool("FEATURE_ENABLE_SECTION_SUMMARIES", True),
+)
 OPENAI_MODEL_EMBEDDING = os.getenv("OPENAI_MODEL_EMBEDDING", "text-embedding-3-small")
+SECTION_SUMMARIES_MODEL = os.getenv("SECTION_SUMMARIES_MODEL", "gpt-4o-mini")
+SECTION_SUMMARIES_VERSION = os.getenv("SECTION_SUMMARIES_VERSION", "v1")
 MONGO_READ_URI = get_env_first(("MONGO_READ_URI", "OLD_MONGODB_URI", "MONGODB_URI"))
 MONGO_WRITE_URI = get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI"))
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")
@@ -317,6 +329,51 @@ def procesar_noticias():
             "engine_version": ENGINE_VERSION,
             "pipeline_version": PIPELINE_VERSION
         }
+
+        if FEATURE_ENABLE_SECTION_SUMMARIES:
+            section_summaries = default_section_summaries()
+            sections_analysis = extract_sections_analysis(evaluation_result, valoraciones_texto)
+            analysis_lengths = {k: len((sections_analysis.get(k) or "").strip()) for k in section_summaries}
+            try:
+                section_summaries = generate_section_summaries(
+                    openai,
+                    sections_analysis,
+                    model=SECTION_SUMMARIES_MODEL,
+                    timeout_seconds=OPENAI_TIMEOUT_SECONDS,
+                )
+                evaluation_result["section_summaries"] = section_summaries
+                evaluation_result["section_summaries_meta"] = build_section_summaries_meta(
+                    model=SECTION_SUMMARIES_MODEL,
+                    version=SECTION_SUMMARIES_VERSION,
+                )
+                pipeline_meta["steps"]["section_summaries"] = {
+                    "ok": True,
+                    "at": datetime.now(timezone.utc).isoformat(),
+                    "model": SECTION_SUMMARIES_MODEL,
+                }
+                print(
+                    "Section summaries OK "
+                    f"doc_id={doc_to_analyze['_id']} lengths={analysis_lengths}"
+                )
+            except Exception as e:
+                evaluation_result["section_summaries"] = section_summaries
+                pipeline_meta["steps"]["section_summaries"] = {
+                    "ok": False,
+                    "at": datetime.now(timezone.utc).isoformat(),
+                    "model": SECTION_SUMMARIES_MODEL,
+                    "error": type(e).__name__,
+                }
+                print(
+                    "Section summaries failed "
+                    f"doc_id={doc_to_analyze['_id']} err={type(e).__name__}: {e} "
+                    f"lengths={analysis_lengths}"
+                )
+        else:
+            pipeline_meta["steps"]["section_summaries"] = {
+                "ok": False,
+                "at": datetime.now(timezone.utc).isoformat(),
+                "status": "disabled",
+            }
 
         print(f"Procesando titular: {titulo}")
         resultados_titular = Utils.analizar_titular(anthropic_client, openai, titulo)

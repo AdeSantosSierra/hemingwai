@@ -4,8 +4,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (prel
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.tex
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -173,226 +173,44 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-No file España_se_sitúa_a_la_cola_de_países_de_la_UE_en_accesibilida.aux.
+No file It_depends_on_whether_the_courts_do_the_right_thing.aux.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
- / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
-
 [2]
-[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
-[4]
-Overfull \hbox (91.0321pt too wide) in paragraph at lines 178--179
-[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / projects / access-[]afforda
-ble-[]and-[]quality-[]housing-[]all-[]people-[]house4all$[] 
+[3]
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.aux)
 
-Overfull \hbox (212.0321pt too wide) in paragraph at lines 179--180
-[][]$\OT1/pcr/m/n/10 https : / / blog . urbanitae . com / en / 2025 / 12 / 01 /
- how-[]does-[]spain-[]compare-[]to-[]other-[]countries-[]in-[]housing-[]accessi
-bility/$[] 
-
-Overfull \hbox (69.5321pt too wide) in paragraph at lines 180--181
-[][]$\OT1/pcr/m/n/10 https : / / aecr . org / es / la-[]espana-[]de-[]los-[]50-
-[]millones-[]y-[]el-[]cuello-[]de-[]botella-[]en-[]vivienda/$[] 
-
-Overfull \hbox (41.5321pt too wide) in paragraph at lines 181--182
-[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / publications / house4all-[]
-european-[]compendium-[]housing-[]policies$[] 
-
-Overfull \hbox (169.5321pt too wide) in paragraph at lines 182--183
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2025 / 08
- / 06 / spains-[]housing-[]crisis-[]deepens-[]residents-[]anger-[]is-[]rising$[
-] 
-
-Overfull \hbox (528.0321pt too wide) in paragraph at lines 183--184
-[][]$\OT1/pcr/m/n/10 https : / / spain . representation . ec . europa . eu / no
-ticias-[]eventos / noticias-[]0 / la-[]comision-[]toma-[]medidas-[]para-[]logra
-r-[]una-[]vivienda-[]mas-[]asequible-[]en-[]toda-[]europa-[]2025-[]12-[]16 _
-
-Overfull \hbox (206.5321pt too wide) in paragraph at lines 184--185
-[][]$\OT1/pcr/m/n/10 https : / / dreampropertiesinternational . com / analysis-
-[]real-[]estate-[]market-[]spain-[]2024-[]q3-[]prices-[]are-[]rising-[]again/$[
-] 
-
-Overfull \hbox (396.0321pt too wide) in paragraph at lines 185--186
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2024 / 08 / 22 / 818659-[]the-[]effort-[]to-[]buy-[]
-or-[]rent-[]a-[]home-[]in-[]spain-[]continues-[]to-[]grow$[] 
-
-Overfull \hbox (127.5321pt too wide) in paragraph at lines 186--187
-[][]$\OT1/pcr/m/n/10 https : / / www . cbre . es / en-[]gb / insights / figures
- / living-[]market-[]data-[]figures-[]third-[]quarter-[]2024-[]spain$[] 
-
-[5]
-Overfull \hbox (271.5321pt too wide) in paragraph at lines 188--189
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
-[]analysis / real-[]estate / spains-[]housing-[]market-[]enters-[]new-[]expansi
-onary-[]phase$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 190--191
-[][]$\OT1/pcr/m/n/10 https : / / www . bde . es / f / webbe / GAP / Secciones /
- SalaPrensa / IntervencionesPublicas /
-
-Overfull \hbox (34.0321pt too wide) in paragraph at lines 191--192
-[][]$\OT1/pcr/m/n/10 https : / / ec . europa . eu / eurostat / statistics-[]exp
-lained / index . php / Living _ conditions _
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 193--194
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2024 / 02 /
-
-Overfull \hbox (31.0321pt too wide) in paragraph at lines 196--197
-[][]$\OT1/pcr/m/n/10 https : / / fuster-[]associates . com / blog / foreign-[]h
-ome-[]purchases-[]sales-[]spain-[]q3-[]2024/$[] 
-
-Overfull \hbox (504.5321pt too wide) in paragraph at lines 197--198
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 05 / 29 / 844725-[]spain-[]sees-[]decline-[]i
-n-[]housing-[]affordability-[]as-[]effort-[]to-[]buy-[]or-[]rent-[]rises-[]in$[
-] 
-
-Overfull \hbox (498.0321pt too wide) in paragraph at lines 198--199
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 03 / 27 / 833707-[]record-[]breaking-[]year-[
-]foreign-[]buyers-[]purchase-[]nearly-[]93-[]000-[]homes-[]in-[]spain-[]in$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 199--200
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2025 / 10 /
-
-Overfull \hbox (273.5321pt too wide) in paragraph at lines 200--201
-[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2025 / 10
- / 17 / how-[]expensive-[]is-[]housing-[]in-[]spain-[]compared-[]to-[]the-[]res
-t-[]of-[]the-[]world/$[] 
-
-Overfull \hbox (6.0321pt too wide) in paragraph at lines 201--202
-[][]$\OT1/pcr/m/n/10 https : / / www . ceicdata . com / en / indicator / spain 
-/ household-[]debt-[]-[]of-[]nominal-[]gdp$[] 
-
-Overfull \hbox (103.0321pt too wide) in paragraph at lines 202--203
-[][]$\OT1/pcr/m/n/10 https : / / www . cbre . com / insights / figures / living
--[]market-[]data-[]figures-[]fourth-[]quarter-[]2024-[]spain$[] 
-
-Overfull \hbox (229.5321pt too wide) in paragraph at lines 203--204
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
-[]analysis / real-[]estate / rally-[]spains-[]real-[]estate-[]market-[]gathers-
-[]pace$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 205--206
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2024 / 03 /
-
-Overfull \hbox (36.0321pt too wide) in paragraph at lines 206--207
-[][]$\OT1/pcr/m/n/10 https : / / www . statista . com / statistics / 1106669 / 
-house-[]price-[]to-[]income-[]ratio-[]europe/$[] 
-
-Overfull \hbox (236.0321pt too wide) in paragraph at lines 207--208
-[][]$\OT1/pcr/m/n/10 https : / / www . abnamro . com / research / en / our-[]re
-search / housing-[]market-[]monitor-[]eu-[]housing-[]markets-[]share-[]common-[
-]problems$[] 
-
-Overfull \hbox (267.0321pt too wide) in paragraph at lines 210--211
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2026 / 01
- / 21 / housing-[]crisis-[]whos-[]most-[]affected-[]by-[]europes-[]lack-[]of-[]
-affordable-[]housing$[] 
-
-Overfull \hbox (504.0321pt too wide) in paragraph at lines 211--212
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 07 / 25 / 853538-[]ibiza-[]from-[]mega-[]luxu
-ry-[]to-[]shanty-[]towns-[]the-[]housing-[]crisis-[]gripping-[]the-[]island$[] 
-
-
-Overfull \hbox (165.5321pt too wide) in paragraph at lines 212--213
-[][]$\OT1/pcr/m/n/10 https : / / news . spainhouses . net / 2025 / 10 / where-[
-]is-[]it-[]most-[]expensive-[]and-[]cheapest-[]to-[]buy-[]a-[]home-[]in-[]spain
-/$[] 
-
-Overfull \hbox (170.0321pt too wide) in paragraph at lines 213--214
-[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2024 / 10
- / 18 / bank-[]of-[]spain-[]says-[]half-[]a-[]million-[]new-[]homes-[]needed/$[
-] 
-
-Overfull \hbox (316.5321pt too wide) in paragraph at lines 215--216
-[][]$\OT1/pcr/m/n/10 https : / / alegria-[]realestate . com / en / articles / m
-ost-[]expensive-[]and-[]affordable-[]regions-[]in-[]spain-[]2025-[]real-[]estat
-e-[]and-[]cost-[]of-[]living$[] 
-
-Overfull \hbox (304.0321pt too wide) in paragraph at lines 217--218
-[][]$\OT1/pcr/m/n/10 https : / / hatamatata . com / n / skolko-[]let-[]nuzno-[]
-ctoby-[]kupit-[]nedvizimost-[]ploshhadiu-[]100-[]kvadratnyx-[]metrov-[]v-[]ispa
-nii-[]iberian-[]press/$[] 
-
-Overfull \hbox (85.0321pt too wide) in paragraph at lines 218--219
-[][]$\OT1/pcr/m/n/10 https : / / www . lucasfox . com / news-[]and-[]press / ar
-ticles / 2024-[]spanish-[]real-[]estate-[]market-[]report$[] 
-
-Overfull \hbox (102.0321pt too wide) in paragraph at lines 219--220
-[][]$\OT1/pcr/m/n/10 https : / / www . bbvaresearch . com / en / publicaciones 
-/ spain-[]young-[]people-[]emancipation-[]and-[]renting/$[] 
-
-Overfull \hbox (432.5321pt too wide) in paragraph at lines 220--221
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 06 / 17 / 847497-[]the-[]sale-[]of-[]second-[
-]homes-[]to-[]foreigners-[]in-[]spain-[]grew-[]by-[]2-[]in-[]2024$[] 
-
-Overfull \hbox (248.5321pt too wide) in paragraph at lines 221--222
-[][]$\OT1/pcr/m/n/10 https : / / www . realinstitutoelcano . org / en / comment
-aries / the-[]plight-[]of-[]young-[]adults-[]seeking-[]to-[]leave-[]the-[]paren
-tal-[]home/$[] 
-
-[6]
-Overfull \hbox (231.5321pt too wide) in paragraph at lines 222--223
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / business / 2026 / 02 / 
-19 / nearly-[]half-[]of-[]europeans-[]cannot-[]or-[]will-[]not-[]buy-[]a-[]home
--[]report-[]says$[] 
-
-Overfull \hbox (206.5321pt too wide) in paragraph at lines 223--224
-[][]$\OT1/pcr/m/n/10 https : / / feps-[]europe . eu / wp-[]content / uploads / 
-2025 / 12 / The-[]housing-[]crisis-[]in-[]Greece-[]North-[]Macedonia-[]and-[]Fi
-nland .
-
-Overfull \hbox (350.5321pt too wide) in paragraph at lines 225--226
-[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / topics / en / a
-rticle / 20241014STO24542 / the-[]housing-[]crisis-[]in-[]europe-[]key-[]facts-
-[]and-[]eu-[]action-[]infographics$[] 
-
-[7]
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux)
-
-Package rerunfilecheck Warning: File `España_se_sitúa_a_la_cola_de_países_de
-_la_UE_en_accesibilida.out' has changed.
+Package rerunfilecheck Warning: File `It_depends_on_whether_the_courts_do_the_r
+ight_thing.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
- )
-(see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
-a_cola_de_países_de_la_UE_en_accesibilida.pdf (7 pages, 100532 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
-_a_la_cola_de_países_de_la_UE_en_accesibilida.log.
+ )</usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-
+dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type
+1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/It_depends_on_whether
+_the_courts_do_the_right_thing.pdf (3 pages, 63175 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/It_depends_on_whe
+ther_the_courts_do_the_right_thing.log.
 
 --- pdflatex pass 2 ---
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.tex
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -560,213 +378,31 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.out)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.out)
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.aux)
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.out)
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.out)
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
- / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
-
 [2]
-[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
-[4]
-Overfull \hbox (91.0321pt too wide) in paragraph at lines 178--179
-[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / projects / access-[]afforda
-ble-[]and-[]quality-[]housing-[]all-[]people-[]house4all$[] 
-
-Overfull \hbox (212.0321pt too wide) in paragraph at lines 179--180
-[][]$\OT1/pcr/m/n/10 https : / / blog . urbanitae . com / en / 2025 / 12 / 01 /
- how-[]does-[]spain-[]compare-[]to-[]other-[]countries-[]in-[]housing-[]accessi
-bility/$[] 
-
-Overfull \hbox (69.5321pt too wide) in paragraph at lines 180--181
-[][]$\OT1/pcr/m/n/10 https : / / aecr . org / es / la-[]espana-[]de-[]los-[]50-
-[]millones-[]y-[]el-[]cuello-[]de-[]botella-[]en-[]vivienda/$[] 
-
-Overfull \hbox (41.5321pt too wide) in paragraph at lines 181--182
-[][]$\OT1/pcr/m/n/10 https : / / www . espon . eu / publications / house4all-[]
-european-[]compendium-[]housing-[]policies$[] 
-
-Overfull \hbox (169.5321pt too wide) in paragraph at lines 182--183
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2025 / 08
- / 06 / spains-[]housing-[]crisis-[]deepens-[]residents-[]anger-[]is-[]rising$[
-] 
-
-Overfull \hbox (528.0321pt too wide) in paragraph at lines 183--184
-[][]$\OT1/pcr/m/n/10 https : / / spain . representation . ec . europa . eu / no
-ticias-[]eventos / noticias-[]0 / la-[]comision-[]toma-[]medidas-[]para-[]logra
-r-[]una-[]vivienda-[]mas-[]asequible-[]en-[]toda-[]europa-[]2025-[]12-[]16 _
-
-Overfull \hbox (206.5321pt too wide) in paragraph at lines 184--185
-[][]$\OT1/pcr/m/n/10 https : / / dreampropertiesinternational . com / analysis-
-[]real-[]estate-[]market-[]spain-[]2024-[]q3-[]prices-[]are-[]rising-[]again/$[
-] 
-
-Overfull \hbox (396.0321pt too wide) in paragraph at lines 185--186
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2024 / 08 / 22 / 818659-[]the-[]effort-[]to-[]buy-[]
-or-[]rent-[]a-[]home-[]in-[]spain-[]continues-[]to-[]grow$[] 
-
-Overfull \hbox (127.5321pt too wide) in paragraph at lines 186--187
-[][]$\OT1/pcr/m/n/10 https : / / www . cbre . es / en-[]gb / insights / figures
- / living-[]market-[]data-[]figures-[]third-[]quarter-[]2024-[]spain$[] 
-
-[5]
-Overfull \hbox (271.5321pt too wide) in paragraph at lines 188--189
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
-[]analysis / real-[]estate / spains-[]housing-[]market-[]enters-[]new-[]expansi
-onary-[]phase$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 190--191
-[][]$\OT1/pcr/m/n/10 https : / / www . bde . es / f / webbe / GAP / Secciones /
- SalaPrensa / IntervencionesPublicas /
-
-Overfull \hbox (34.0321pt too wide) in paragraph at lines 191--192
-[][]$\OT1/pcr/m/n/10 https : / / ec . europa . eu / eurostat / statistics-[]exp
-lained / index . php / Living _ conditions _
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 193--194
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2024 / 02 /
-
-Overfull \hbox (31.0321pt too wide) in paragraph at lines 196--197
-[][]$\OT1/pcr/m/n/10 https : / / fuster-[]associates . com / blog / foreign-[]h
-ome-[]purchases-[]sales-[]spain-[]q3-[]2024/$[] 
-
-Overfull \hbox (504.5321pt too wide) in paragraph at lines 197--198
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 05 / 29 / 844725-[]spain-[]sees-[]decline-[]i
-n-[]housing-[]affordability-[]as-[]effort-[]to-[]buy-[]or-[]rent-[]rises-[]in$[
-] 
-
-Overfull \hbox (498.0321pt too wide) in paragraph at lines 198--199
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 03 / 27 / 833707-[]record-[]breaking-[]year-[
-]foreign-[]buyers-[]purchase-[]nearly-[]93-[]000-[]homes-[]in-[]spain-[]in$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 199--200
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2025 / 10 /
-
-Overfull \hbox (273.5321pt too wide) in paragraph at lines 200--201
-[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2025 / 10
- / 17 / how-[]expensive-[]is-[]housing-[]in-[]spain-[]compared-[]to-[]the-[]res
-t-[]of-[]the-[]world/$[] 
-
-Overfull \hbox (6.0321pt too wide) in paragraph at lines 201--202
-[][]$\OT1/pcr/m/n/10 https : / / www . ceicdata . com / en / indicator / spain 
-/ household-[]debt-[]-[]of-[]nominal-[]gdp$[] 
-
-Overfull \hbox (103.0321pt too wide) in paragraph at lines 202--203
-[][]$\OT1/pcr/m/n/10 https : / / www . cbre . com / insights / figures / living
--[]market-[]data-[]figures-[]fourth-[]quarter-[]2024-[]spain$[] 
-
-Overfull \hbox (229.5321pt too wide) in paragraph at lines 203--204
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / en / sectoral-
-[]analysis / real-[]estate / rally-[]spains-[]real-[]estate-[]market-[]gathers-
-[]pace$[] 
-
-Overfull \hbox (9.5321pt too wide) in paragraph at lines 205--206
-[][]$\OT1/pcr/m/n/10 https : / / www . caixabankresearch . com / sites / defaul
-t / files / content / file / 2024 / 03 /
-
-Overfull \hbox (36.0321pt too wide) in paragraph at lines 206--207
-[][]$\OT1/pcr/m/n/10 https : / / www . statista . com / statistics / 1106669 / 
-house-[]price-[]to-[]income-[]ratio-[]europe/$[] 
-
-Overfull \hbox (236.0321pt too wide) in paragraph at lines 207--208
-[][]$\OT1/pcr/m/n/10 https : / / www . abnamro . com / research / en / our-[]re
-search / housing-[]market-[]monitor-[]eu-[]housing-[]markets-[]share-[]common-[
-]problems$[] 
-
-Overfull \hbox (267.0321pt too wide) in paragraph at lines 210--211
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / my-[]europe / 2026 / 01
- / 21 / housing-[]crisis-[]whos-[]most-[]affected-[]by-[]europes-[]lack-[]of-[]
-affordable-[]housing$[] 
-
-Overfull \hbox (504.0321pt too wide) in paragraph at lines 211--212
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 07 / 25 / 853538-[]ibiza-[]from-[]mega-[]luxu
-ry-[]to-[]shanty-[]towns-[]the-[]housing-[]crisis-[]gripping-[]the-[]island$[] 
-
-
-Overfull \hbox (165.5321pt too wide) in paragraph at lines 212--213
-[][]$\OT1/pcr/m/n/10 https : / / news . spainhouses . net / 2025 / 10 / where-[
-]is-[]it-[]most-[]expensive-[]and-[]cheapest-[]to-[]buy-[]a-[]home-[]in-[]spain
-/$[] 
-
-Overfull \hbox (170.0321pt too wide) in paragraph at lines 213--214
-[][]$\OT1/pcr/m/n/10 https : / / www . spanishpropertyinsight . com / 2024 / 10
- / 18 / bank-[]of-[]spain-[]says-[]half-[]a-[]million-[]new-[]homes-[]needed/$[
-] 
-
-Overfull \hbox (316.5321pt too wide) in paragraph at lines 215--216
-[][]$\OT1/pcr/m/n/10 https : / / alegria-[]realestate . com / en / articles / m
-ost-[]expensive-[]and-[]affordable-[]regions-[]in-[]spain-[]2025-[]real-[]estat
-e-[]and-[]cost-[]of-[]living$[] 
-
-Overfull \hbox (304.0321pt too wide) in paragraph at lines 217--218
-[][]$\OT1/pcr/m/n/10 https : / / hatamatata . com / n / skolko-[]let-[]nuzno-[]
-ctoby-[]kupit-[]nedvizimost-[]ploshhadiu-[]100-[]kvadratnyx-[]metrov-[]v-[]ispa
-nii-[]iberian-[]press/$[] 
-
-Overfull \hbox (85.0321pt too wide) in paragraph at lines 218--219
-[][]$\OT1/pcr/m/n/10 https : / / www . lucasfox . com / news-[]and-[]press / ar
-ticles / 2024-[]spanish-[]real-[]estate-[]market-[]report$[] 
-
-Overfull \hbox (102.0321pt too wide) in paragraph at lines 219--220
-[][]$\OT1/pcr/m/n/10 https : / / www . bbvaresearch . com / en / publicaciones 
-/ spain-[]young-[]people-[]emancipation-[]and-[]renting/$[] 
-
-Overfull \hbox (432.5321pt too wide) in paragraph at lines 220--221
-[][]$\OT1/pcr/m/n/10 https : / / www . idealista . com / en / news / property-[
-]for-[]sale-[]in-[]spain / 2025 / 06 / 17 / 847497-[]the-[]sale-[]of-[]second-[
-]homes-[]to-[]foreigners-[]in-[]spain-[]grew-[]by-[]2-[]in-[]2024$[] 
-
-Overfull \hbox (248.5321pt too wide) in paragraph at lines 221--222
-[][]$\OT1/pcr/m/n/10 https : / / www . realinstitutoelcano . org / en / comment
-aries / the-[]plight-[]of-[]young-[]adults-[]seeking-[]to-[]leave-[]the-[]paren
-tal-[]home/$[] 
-
-[6]
-Overfull \hbox (231.5321pt too wide) in paragraph at lines 222--223
-[][]$\OT1/pcr/m/n/10 https : / / www . euronews . com / business / 2026 / 02 / 
-19 / nearly-[]half-[]of-[]europeans-[]cannot-[]or-[]will-[]not-[]buy-[]a-[]home
--[]report-[]says$[] 
-
-Overfull \hbox (206.5321pt too wide) in paragraph at lines 223--224
-[][]$\OT1/pcr/m/n/10 https : / / feps-[]europe . eu / wp-[]content / uploads / 
-2025 / 12 / The-[]housing-[]crisis-[]in-[]Greece-[]North-[]Macedonia-[]and-[]Fi
-nland .
-
-Overfull \hbox (350.5321pt too wide) in paragraph at lines 225--226
-[][]$\OT1/pcr/m/n/10 https : / / www . europarl . europa . eu / topics / en / a
-rticle / 20241014STO24542 / the-[]housing-[]crisis-[]in-[]europe-[]key-[]facts-
-[]and-[]eu-[]action-[]infographics$[] 
-
-[7]
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux) )
-(see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
-a_cola_de_países_de_la_UE_en_accesibilida.pdf (7 pages, 100532 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
-_a_la_cola_de_países_de_la_UE_en_accesibilida.log.
+[3]
+(/home/roberto/hemingwai/output_temporal/It_depends_on_whether_the_courts_do_th
+e_right_thing.aux) )</usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr
+8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/sh
+are/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/tex
+mf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/It_depends_on_whether
+_the_courts_do_the_right_thing.pdf (3 pages, 63175 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/It_depends_on_whe
+ther_the_courts_do_the_right_thing.log.

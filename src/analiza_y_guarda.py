@@ -4,6 +4,7 @@ import os
 import sys
 import json
 from env_config import get_env_bool, get_env_int
+from fact_checking_wrapper import run_fact_checking
 
 
 # Definir directorios base para que el script sea robusto
@@ -24,8 +25,10 @@ RETRIEVED_FILE = _resolve_path(os.getenv("PATH_RETRIEVED_FILE"), os.path.join(OU
 VENV_DIR = _resolve_path(os.getenv("PATH_VENV_DIR"), os.path.join(ROOT_DIR, ".venv"))
 VENV_PYTHON = os.path.join(VENV_DIR, "bin", "python")
 SUBPROCESS_TIMEOUT_SECONDS = get_env_int("PATH_SUBPROCESS_TIMEOUT_SECONDS", 0)
-FEATURE_ENABLE_PERPLEXITY = get_env_bool("FEATURE_ENABLE_PERPLEXITY", True)
-FEATURE_FAIL_OPEN_PERPLEXITY = get_env_bool("FEATURE_FAIL_OPEN_PERPLEXITY", False)
+ENABLE_FACT_CHECKING = get_env_bool(
+    "ENABLE_FACT_CHECKING",
+    get_env_bool("FEATURE_ENABLE_PERPLEXITY", True),
+)
 
 # --- Preparar directorio de salida ---
 if not os.path.exists(OUTPUT_DIR):
@@ -108,32 +111,54 @@ for campo in CAMPOS_CLAVE:
         sys.exit(1)
 print("Todos los campos clave están presentes en la noticia extraída.")
 
-# 3. Ejecutar fact_check_perplexity.py con el ID de la noticia
-if FEATURE_ENABLE_PERPLEXITY:
-    print("Ejecutando verificación de hechos con Perplexity AI...")
-    proc_fact_check = subprocess.run([
-        VENV_PYTHON, "fact_check_perplexity.py", noticia_id
-    ], cwd=SRC_DIR, capture_output=True, text=False, env=env_utf8, timeout=(SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None))
-    output_fact_check = (proc_fact_check.stdout or b"") + (proc_fact_check.stderr or b"")
+# 3. Ejecutar fact-checking robusto (nunca tumba el pipeline)
+print("Ejecutando paso de fact-checking...")
+try:
+    fact_check_exec = run_fact_checking(
+        {
+            "noticia_id": noticia_id,
+            "output_dir": OUTPUT_DIR,
+            "src_dir": SRC_DIR,
+            "venv_python": VENV_PYTHON,
+            "env": env_utf8,
+            "timeout_seconds": (SUBPROCESS_TIMEOUT_SECONDS if SUBPROCESS_TIMEOUT_SECONDS > 0 else None),
+            "enable_fact_checking": ENABLE_FACT_CHECKING,
+        }
+    )
+except Exception as e:
+    fact_check_exec = {
+        "fact_checking": {
+            "status": "unavailable",
+            "provider": "perplexity",
+            "reason": "wrapper_error",
+            "message": "Fact-checking no disponible.",
+        }
+    }
+    fallback_fact_check_file = os.path.join(OUTPUT_DIR, "fact_check_analisis.json")
     try:
-        output_fact_check = output_fact_check.decode("utf-8", errors="replace")
-    except Exception:
-        output_fact_check = output_fact_check.decode("latin1", errors="replace")
-    print(output_fact_check)
+        with open(fallback_fact_check_file, "w", encoding="utf-8") as f:
+            json.dump(
+                {
+                    "noticia_id": noticia_id,
+                    "analisis": "Fact-checking no disponible.",
+                    "fuentes": [],
+                    "status": "unavailable",
+                    "reason": "wrapper_error",
+                    "warning": f"{type(e).__name__}",
+                },
+                f,
+                ensure_ascii=False,
+                indent=2,
+            )
+    except Exception as write_err:
+        print(f"Warning: no se pudo escribir placeholder de fact-check ({type(write_err).__name__}).")
+    print(f"Warning: fact-checking wrapper error ({type(e).__name__}). Continuando.")
 
-    # Verificar que el archivo de análisis se ha generado
-    fact_check_file = os.path.join(OUTPUT_DIR, "fact_check_analisis.json")
-    if not os.path.exists(fact_check_file):
-        msg = f"No se encontró el archivo {fact_check_file}. El análisis de Perplexity puede haber fallado."
-        if FEATURE_FAIL_OPEN_PERPLEXITY:
-            print(msg + " Continuando por FEATURE_FAIL_OPEN_PERPLEXITY=true.")
-        else:
-            print(msg + " Abortando.")
-            sys.exit(1)
-    else:
-        print("Verificación de hechos completada y archivo de análisis generado.")
-else:
-    print("Paso fact-check omitido: FEATURE_ENABLE_PERPLEXITY=false.")
+fact_check_block = fact_check_exec.get("fact_checking") or {}
+print(
+    "Paso fact-checking finalizado "
+    f"status={fact_check_block.get('status')} reason={fact_check_block.get('reason')}"
+)
 
 
 

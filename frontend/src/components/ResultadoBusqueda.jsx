@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import {
   XCircle,
@@ -9,24 +9,13 @@ import {
 // eslint-disable-next-line no-unused-vars
 import { motion } from 'framer-motion';
 import Chatbot from './Chatbot';
-import ScoreCounter from './ScoreCounter';
+import NewsScoreDonut from './NewsScoreDonut';
 import SkeletonAnalysis from './SkeletonAnalysis';
 import RevealOnScroll from './RevealOnScroll';
 
 /*  
    Helpers
      */
-
-// Emoticono según puntuación
-const getEmoticonoPuntuacion = (puntuacion) => {
-  const p = Number(puntuacion) || 0;
-  // Escala 0–10
-  if (p >= 8.5) return '🤩';
-  if (p >= 7.5) return '😊';
-  if (p >= 6) return '🙂';
-  if (p >= 4.5) return '😐';
-  return '😢';
-};
 
 // Escape HTML helper
 const escapeHtml = (unsafe) => {
@@ -223,6 +212,14 @@ const CATEGORY_LABELS = {
   enfoque: 'Enfoque',
 };
 
+const CRITERION_SUMMARY_LABELS = {
+  fiabilidad: 'Fiabilidad',
+  adecuacion: 'Adecuación',
+  claridad: 'Claridad',
+  profundidad: 'Profundidad',
+  enfoque: 'Enfoque',
+};
+
 /*  
    PuntuacionIndicador
      */
@@ -250,10 +247,14 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarResumen, setMostrarResumen] = useState(false);
+  const [activeCriterion, setActiveCriterion] = useState(null);
   
   // Referencia al chatbot
   const chatbotRef = useRef(null);
+
+  useEffect(() => {
+    setActiveCriterion(null);
+  }, [resultado?._id, resultado?.url]);
 
   // Estado inicial
   if (estado === 'idle') {
@@ -333,7 +334,6 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   const resolvedScores = resolveGlobalScores(resultado);
   const globalScore = resolvedScores.principal;
   const hasGlobalScore = globalScore !== null;
-  const globalScoreForUi = hasGlobalScore ? globalScore : 0;
   const fallbackScore = toFiniteNumber(resultado.puntuacion);
   const scoreForChatbot = hasGlobalScore ? globalScore : fallbackScore;
 
@@ -375,6 +375,13 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     medium: toFiniteNumber(summaryCounts.medium) ?? computedCounts.medium,
     low: toFiniteNumber(summaryCounts.low) ?? computedCounts.low,
   };
+  const evaluationResult = resultado?.evaluation_result || {};
+  const criterionSummary =
+    activeCriterion === null
+      ? null
+      : evaluationResult?.section_summaries?.[activeCriterion] || '—';
+  const criterionSummaryLabel =
+    activeCriterion === null ? null : CRITERION_SUMMARY_LABELS[activeCriterion] || activeCriterion;
 
   return (
     <>
@@ -420,73 +427,51 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                       : 'N/A'}
                   </p>
                 </div>
-                {/* Botón Resumen del análisis */}
-                <div className="col-span-1 sm:col-span-2 mt-2">
-                  <button
-                    onClick={() => setMostrarResumen(!mostrarResumen)}
-                    className="bg-[#001a33]/50 border border-lima text-lima px-4 py-2 rounded-md hover:bg-[#001a33]/80 transition-colors font-medium text-sm"
-                  >
-                    Resumen del análisis
-                  </button>
+                <div className="col-span-1 sm:col-span-2 mt-2 space-y-4 border-t border-gray-600/30 pt-4">
+                  {activeCriterion === null ? (
+                    <>
+                      <div>
+                        <span className="font-semibold text-gray-300 block mb-1">
+                          Resumen valoración:
+                        </span>
+                        <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                          {resultado.resumen_valoracion || '—'}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="font-semibold text-gray-300 block mb-1">
+                          Resumen valoración del titular:
+                        </span>
+                        <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                          {resultado.resumen_valoracion_titular || '—'}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <span className="font-semibold text-gray-300 block mb-1">
+                        Resumen de {criterionSummaryLabel}
+                      </span>
+                      <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                        {criterionSummary}
+                      </p>
+                    </div>
+                  )}
                 </div>
-
-                {/* Dropdown Resumen */}
-                {mostrarResumen && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="col-span-1 sm:col-span-2 space-y-4 overflow-hidden border-t border-gray-600/30 pt-4 mt-2"
-                  >
-                    <div>
-                      <span className="font-semibold text-gray-300 block mb-1">
-                        Resumen valoración:
-                      </span>
-                      <p className="text-gray-200 leading-relaxed">
-                        {resultado.resumen_valoracion || 'No disponible'}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="font-semibold text-gray-300 block mb-1">
-                        Resumen valoración del titular:
-                      </span>
-                      <p className="text-gray-200 leading-relaxed">
-                        {resultado.resumen_valoracion_titular || 'No disponible'}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
               </div>
             </div>
 
             {/* Columna derecha: Puntuación */}
-            <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
+            <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0 md:w-52 lg:w-64">
               {/* Puntuación General */}
               <div className="text-center">
                 <div className="text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">
                   Puntuación general
                 </div>
-                <div className="flex flex-col items-center justify-center">
-                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(globalScoreForUi)}</span>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={`w-3 h-3 rounded-full ${
-                        globalScoreForUi >= 7.5
-                          ? 'bg-green-500'
-                          : globalScoreForUi >= 6
-                          ? 'bg-yellow-500'
-                          : globalScoreForUi >= 4.5
-                          ? 'bg-orange-500'
-                          : 'bg-red-500'
-                      }`}
-                    />
-                    {hasGlobalScore ? (
-                      <ScoreCounter value={globalScoreForUi} className="text-3xl font-extrabold text-lima" />
-                    ) : (
-                      <span className="text-3xl font-extrabold text-lima">N/A</span>
-                    )}
-                  </div>
-                </div>
+                <NewsScoreDonut
+                  evaluationResult={evaluationResult}
+                  onActiveCriterionChange={setActiveCriterion}
+                />
               </div>
             </div>
           </div>

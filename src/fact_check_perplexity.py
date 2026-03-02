@@ -40,7 +40,11 @@ PERPLEXITY_MAX_TOKENS = get_env_int("PERPLEXITY_MAX_TOKENS", 1000)
 PERPLEXITY_TIMEOUT_SECONDS = get_env_int("PERPLEXITY_TIMEOUT_SECONDS", 120)
 PERPLEXITY_RETRIES = get_env_int("PERPLEXITY_RETRIES", 2)
 PERPLEXITY_RETRY_BASE_SECONDS = get_env_int("PERPLEXITY_RETRY_BASE_SECONDS", 2)
-FEATURE_ENABLE_PERPLEXITY = get_env_bool("FEATURE_ENABLE_PERPLEXITY", True)
+ENABLE_FACT_CHECKING = get_env_bool(
+    "ENABLE_FACT_CHECKING",
+    get_env_bool("FEATURE_ENABLE_PERPLEXITY", True),
+)
+FEATURE_ENABLE_PERPLEXITY = ENABLE_FACT_CHECKING
 FEATURE_FAIL_OPEN_PERPLEXITY = get_env_bool("FEATURE_FAIL_OPEN_PERPLEXITY", False)
 MONGO_URI = get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGODB_URI"))
 DB_NAME = os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")
@@ -80,9 +84,44 @@ def _build_perplexity_step(status: str, error: str = None, ok: bool = False) -> 
 def _persist_perplexity_step(collection, obj_id, status: str, error: str = None, ok: bool = False, analisis: str = None, fuentes=None):
     if collection is None or obj_id is None:
         return
+    from datetime import datetime, timezone
     fuentes = fuentes or []
     step = _build_perplexity_step(status=status, error=error, ok=ok)
+    error_reason = str(error or "").strip().lower()
+    if ok:
+        fact_status = "available"
+        reason = "ok"
+    elif status == "skipped" or "disabled" in error_reason:
+        fact_status = "skipped"
+        reason = "disabled_by_flag"
+    else:
+        fact_status = "unavailable"
+        reason = error_reason or "provider_unavailable"
+
+    fact_checking_block = {
+        "status": fact_status,
+        "provider": "perplexity",
+        "reason": reason[:120],
+        "message": "Fact-checking disponible." if ok else "Fact-checking no disponible.",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if ok and analisis is not None:
+        fact_checking_block["result"] = {
+            "analysis": str(analisis or ""),
+            "sources": list(fuentes),
+        }
+
+    step_fact_checking = {
+        "ok": bool(ok),
+        "status": "success" if ok else ("skipped" if fact_status == "skipped" else "unavailable"),
+        "reason": fact_checking_block["reason"],
+        "duration_ms": 0,
+        "at": datetime.now(timezone.utc).isoformat(),
+    }
+
     update_doc = {
+        "evaluation_result.fact_checking": fact_checking_block,
+        "pipeline.steps.fact_checking": step_fact_checking,
         "pipeline.steps.perplexity": step,
         "pipeline.steps.fact_check": step,  # compatibilidad con consumidores actuales
     }
@@ -109,7 +148,7 @@ def verificar_noticia(noticia_id: str) -> dict:
             "noticia_id": noticia_id,
             "analisis": "Fact-check deshabilitado por configuración.",
             "fuentes": [],
-            "warning": "feature_disabled",
+            "warning": "disabled_by_flag",
         }
 
     # --- Conexión a MongoDB ---

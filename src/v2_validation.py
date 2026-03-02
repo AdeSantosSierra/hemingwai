@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 Minimal validation for V2 deterministic engine and clickbait logic.
-Run from repo root: python scripts/v2_validation.py
-Or from src: python -c "import sys; sys.path.insert(0, '..'); exec(open('scripts/v2_validation.py').read())"
+Run from repo root: python src/v2_validation.py
 """
 import sys
 import os
