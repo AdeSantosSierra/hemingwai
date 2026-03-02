@@ -93,13 +93,14 @@ newspaper3k
 
 
 
-#cd ~/hemingwai/frontend
-#source ../.venv/bin/activate
-#export PATH=~/hemingwai/node/nodejs/bin:$PATH
-#npm run dev
 
-
+#Terminal A: Backend
 #cd ~/hemingwai/servidor_api
 #source ../.venv/bin/activate
 #export PATH=~/hemingwai/node/nodejs/bin:$PATH
 #npm start
+
+#Terminal B: Frontend
+#cd ~/hemingwai/frontend
+#export PATH=~/hemingwai/node/nodejs/bin:$PATH
+#npm run dev 

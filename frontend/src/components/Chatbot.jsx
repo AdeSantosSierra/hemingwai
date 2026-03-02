@@ -1,5 +1,6 @@
-import React, { useState, forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { useState, forwardRef, useImperativeHandle, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { SignInButton, useAuth } from '@clerk/clerk-react';
 import API_BASE_URL from '../apiConfig';
 
 // --- Renderizado Markdown ---
@@ -199,6 +200,7 @@ const styles = {
 };
 
 const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
+    const { getToken, isLoaded, isSignedIn } = useAuth();
     const [mensajes, setMensajes] = useState([
         { role: 'bot', content: 'Hola. ¿Qué te gustaría saber sobre el análisis de esta noticia?' }
     ]);
@@ -206,19 +208,18 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
     const [cargando, setCargando] = useState(false);
     const [error, setError] = useState(null);
 
-    // Estado para la autenticación
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [passwordInput, setPasswordInput] = useState('');
     const [authError, setAuthError] = useState(null);
-    const [verifying, setVerifying] = useState(false);
 
     // Refs
-    const passwordInputRef = useRef(null);
     const containerRef = useRef(null);
 
     // Lógica principal de envío de mensaje
-    const sendMessage = async (textoMensaje) => {
+    const sendMessage = useCallback(async (textoMensaje) => {
         if (!textoMensaje || !textoMensaje.trim() || cargando) return;
+        if (!isLoaded || !isSignedIn) {
+            setAuthError('Inicia sesión para usar el chatbot.');
+            return;
+        }
 
         const nuevoMensajeUsuario = { role: 'user', content: textoMensaje };
         setMensajes(prevMensajes => [...prevMensajes, nuevoMensajeUsuario]);
@@ -229,25 +230,29 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
         
         setCargando(true);
         setError(null);
+        setAuthError(null);
 
         try {
+            const token = await getToken();
+            if (!token) {
+                throw new Error('No se pudo obtener el token de sesión.');
+            }
+
             const response = await fetch(`${API_BASE_URL}/api/chatbot`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
                     pregunta: textoMensaje,
-                    contexto: noticiaContexto,
-                    password: passwordInput // Enviar la contraseña autenticada con cada petición
+                    contexto: noticiaContexto
                 }),
             });
 
             if (!response.ok) {
-                // Si falla la autenticación en medio de la sesión (ej: reinicio de servidor)
                 if (response.status === 401) {
-                    setIsAuthenticated(false);
-                    throw new Error('Sesión expirada o contraseña inválida.');
+                    throw new Error('No autorizado. Vuelve a iniciar sesión.');
                 }
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Ocurrió un error en el servidor.');
@@ -264,58 +269,21 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
         } finally {
             setCargando(false);
         }
-    };
+    }, [cargando, getToken, inputUsuario, isLoaded, isSignedIn, noticiaContexto]);
 
     // Exponer métodos al padre
     useImperativeHandle(ref, () => ({
         handleQuickQuestion: (question) => {
-            if (!isAuthenticated) {
-                // 1. Scroll al contenedor
+            if (!isSignedIn) {
                 if (containerRef.current) {
                     containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
-                // 2. Focus en el input de contraseña
-                if (passwordInputRef.current) {
-                    passwordInputRef.current.focus();
-                }
-                // 3. Mostrar mensaje informativo
-                setAuthError("Para hacer esta pregunta, primero desbloquea el chat.");
+                setAuthError('Para hacer esta pregunta, primero inicia sesión.');
                 return;
             }
-            // Si está autenticado, enviar mensaje
             sendMessage(question);
         }
-    }));
-
-    // Manejar el envío de contraseña
-    const handleAuthSubmit = async (e) => {
-        e.preventDefault();
-        if (!passwordInput.trim() || verifying) return;
-
-        setVerifying(true);
-        setAuthError(null);
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/verify-password`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password: passwordInput })
-            });
-
-            const data = await response.json();
-
-            if (response.ok && data.success) {
-                setIsAuthenticated(true);
-            } else {
-                throw new Error(data.error || 'Contraseña incorrecta');
-            }
-        } catch (err) {
-            console.error(err);
-            setAuthError('Contraseña incorrecta. Inténtalo de nuevo.');
-        } finally {
-            setVerifying(false);
-        }
-    };
+    }), [isSignedIn, sendMessage]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -325,30 +293,20 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
     return (
         <div style={styles.chatbotContainer} ref={containerRef}>
             {/* Pantalla de Bloqueo */}
-            {!isAuthenticated && (
+            {(!isLoaded || !isSignedIn) && (
                 <div style={styles.lockScreen}>
                     <h3 style={styles.lockTitle}>🔒 Chatbot Protegido</h3>
                     <p className="text-white mb-4 text-center text-sm">
-                        Introduce la contraseña para acceder al asistente.
+                        Inicia sesión con Google para acceder al asistente.
                     </p>
-                    <form onSubmit={handleAuthSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                        <input
-                            ref={passwordInputRef}
-                            type="password"
-                            value={passwordInput}
-                            onChange={(e) => setPasswordInput(e.target.value)}
-                            placeholder="Contraseña..."
-                            style={styles.lockInput}
-                            autoFocus
-                        />
-                        <button 
-                            type="submit" 
-                            style={{...styles.button, ...(verifying ? styles.buttonDisabled : {})}} 
-                            disabled={verifying}
-                        >
-                            {verifying ? 'Verificando...' : 'Desbloquear'}
-                        </button>
-                    </form>
+                    {isLoaded && (
+                        <SignInButton mode="modal">
+                            <button type="button" style={styles.button}>
+                                Iniciar sesión
+                            </button>
+                        </SignInButton>
+                    )}
+                    {!isLoaded && <p className="text-white/80 text-sm">Cargando sesión...</p>}
                     {authError && <p style={styles.error}>{authError}</p>}
                 </div>
             )}
@@ -383,14 +341,14 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                     onChange={(e) => setInputUsuario(e.target.value)}
                     placeholder="Escribe tu pregunta aquí..."
                     style={styles.input}
-                    disabled={cargando || !isAuthenticated}
+                    disabled={cargando || !isLoaded || !isSignedIn}
                     // Adding focus class via className prop
                     className="focus:shadow-[0_0_0_2px_rgba(210,210,9,0.2)] transition-shadow duration-200 placeholder-gray-400"
                 />
                 <button 
                     type="submit" 
-                    style={{...styles.button, ...(cargando || !isAuthenticated ? styles.buttonDisabled : {})}} 
-                    disabled={cargando || !isAuthenticated}
+                    style={{...styles.button, ...(cargando || !isLoaded || !isSignedIn ? styles.buttonDisabled : {})}} 
+                    disabled={cargando || !isLoaded || !isSignedIn}
                 >
                     Enviar
                 </button>

@@ -32,7 +32,7 @@
 \begin{center}
     {\Huge\bfseries {{ news_item.titulo | escape_tex_inline | default('Título no disponible') }}\par}
     \vspace{0.5em}
-    {\large\bfseries Puntuación: {{ news_item.puntuacion if news_item.puntuacion is not none else 'N/A' }}\par}
+    {\large\bfseries Puntuación: {{ '%.2f'|format(news_item.global_score_2dp) if news_item.global_score_2dp is not none else 'N/A' }}\par}
 \end{center}
 \vspace{1em}
 
@@ -69,16 +69,6 @@
     No disponible.
 {% endif %}
 \vspace{1em}
-
-% --- Spider Chart for Puntuacion Individual (from Matplotlib image) ---
-\clearpage
-\section*{Gráfico de Puntuaciones Individuales}
-\begin{figure}[h!] % [h!] tries to place it "here"
-   \centering
-   \includegraphics[width=0.8\textwidth, keepaspectratio]{spider_chart.png}
-   % \caption{Gráfico de Puntuaciones Individuales.} % Optional caption
-\end{figure}
-\clearpage % Add a page break after the figure, if desired, to ensure it doesn't overlap
 
 % --- Valoracion General (String Summary) ---
 \section*{Valoración General}

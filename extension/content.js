@@ -135,15 +135,15 @@ function getColorForScore(score) {
     const val = Number(score);
     if (isNaN(val)) return { bgColor: '#001a33', useWhiteLogo: false };
 
-    // Semáforo:
-    // < 50: Rojo (Mala) -> Logo Blanco, Texto Blanco
-    // 50-69: Amarillo (Regular) -> Logo Azul (texto oscuro), Texto Negro
-    // >= 70: Verde (Buena) -> Logo Blanco, Texto Blanco
+    // Semáforo (escala 0–10):
+    // < 5: Rojo (Mala)
+    // 5-6.9: Amarillo (Regular)
+    // >= 7: Verde (Buena)
     
-    if (val < 50) {
+    if (val < 5) {
         return { bgColor: '#dc3545', useWhiteLogo: true }; // Red
     }
-    if (val < 70) {
+    if (val < 7) {
         return { bgColor: '#ffc107', useWhiteLogo: false }; // Yellow
     }
     return { bgColor: '#28a745', useWhiteLogo: true }; // Green
@@ -245,7 +245,7 @@ function createPopoverElement(data) {
             <div class="hemingwai-section">
                 <span class="hemingwai-label">¿Qué verás cuando esté lista?</span>
                 <div class="hemingwai-text">
-                    Cuando el análisis esté disponible, aquí aparecerá una puntuación global de 0 a 100, un resumen y el análisis del titular.
+                    Cuando el análisis esté disponible, aquí aparecerá una puntuación global de 0 a 10, un resumen y el análisis del titular.
                 </div>
             </div>
         `;
@@ -257,7 +257,7 @@ function createPopoverElement(data) {
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
-                <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/100</span>
+                <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/10</span>
             </div>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">RESUMEN</span>
@@ -412,7 +412,7 @@ function updateHemingwaiBadge(badge, data) {
     if (hasScore) {
         scoreSpan.textContent = String(score);
         scoreSpan.style.display = 'inline-block';
-        badge.title = `Puntuación HemingwAI: ${score}/100`;
+        badge.title = `Puntuación HemingwAI: ${score}/10`;
         badge.classList.remove('hemingwai-badge-pending');
     } else {
         scoreSpan.textContent = '';

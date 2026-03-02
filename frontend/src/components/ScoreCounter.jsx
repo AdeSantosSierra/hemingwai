@@ -17,12 +17,13 @@ const ScoreCounter = ({ value, className = "" }) => {
   useEffect(() => {
     return springValue.on("change", (latest) => {
       if (ref.current) {
-        ref.current.textContent = Math.round(latest);
+        const safeValue = Number.isFinite(latest) ? latest : 0;
+        ref.current.textContent = safeValue.toFixed(2);
       }
     });
   }, [springValue]);
 
-  return <span ref={ref} className={className}>{0}</span>;
+  return <span ref={ref} className={className}>{(0).toFixed(2)}</span>;
 };
 
 ScoreCounter.propTypes = {

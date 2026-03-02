@@ -13,7 +13,11 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
-      - key: CHATBOT_PASSWORD
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: FRONTEND_ORIGIN
+        value: https://hemingwai-frontend-5vw6.onrender.com
+      - key: FRONTEND_ORIGINS
         sync: false
       - key: PORT
         value: 3000
@@ -31,3 +35,5 @@ services:
     envVars:
       - key: VITE_API_BASE_URL
         value: https://hemingwai-backend-5vw6.onrender.com
+      - key: VITE_CLERK_PUBLISHABLE_KEY
+        sync: false

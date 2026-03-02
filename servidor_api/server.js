@@ -6,6 +6,7 @@ const { exec, spawn } = require('child_process');
 const cors = require('cors');
 const path = require('path');
 const OpenAI = require('openai');
+const { clerkMiddleware, requireAuth } = require('@clerk/express');
 
 // Cargar variables de entorno desde el archivo .env en el root del proyecto
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
@@ -16,22 +17,60 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
+const HISTORY_SCRIPT = 'history_entrypoint.py';
+const HISTORY_LIMIT = 4;
 
 // El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
 const PYTHON_INTERPRETER = 'python'; 
 
+function normalizeOrigin(origin = '') {
+    return String(origin).trim().replace(/\/+$/, '');
+}
+
+const LOCAL_DEV_ORIGINS = process.env.NODE_ENV === 'production'
+    ? []
+    : ['http://localhost:5173', 'http://127.0.0.1:5173'];
+
+const ALLOWED_ORIGINS = Array.from(new Set([
+    process.env.FRONTEND_ORIGIN,
+    ...(process.env.FRONTEND_ORIGINS || '')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean),
+    ...LOCAL_DEV_ORIGINS,
+].map(normalizeOrigin).filter(Boolean)));
+
+const corsOptions = {
+    origin(origin, callback) {
+        // Permitir herramientas sin origin (curl/postman/server-to-server)
+        if (!origin) {
+            return callback(null, true);
+        }
+
+        if (ALLOWED_ORIGINS.includes(normalizeOrigin(origin))) {
+            return callback(null, true);
+        }
+
+        const corsError = new Error('Not allowed by CORS');
+        corsError.code = 'CORS_ORIGIN_DENIED';
+        corsError.status = 403;
+        corsError.origin = normalizeOrigin(origin);
+        return callback(corsError);
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: false,
+};
+
 // Middleware
-// Configuración de CORS global explícita y permisiva
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-// Handle preflight requests
-app.options('*', cors());
-
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+app.use(clerkMiddleware());
 app.use(express.json()); // Para parsear cuerpos de petición JSON
+
+if (!process.env.CLERK_SECRET_KEY) {
+    console.warn('ADVERTENCIA: CLERK_SECRET_KEY no está definida. requireAuth() rechazará solicitudes autenticadas.');
+}
 
 // Ruta de health check para Render
 app.get('/', (req, res) => {
@@ -48,6 +87,18 @@ app.get('/health', (req, res) => {
         status: 'healthy',
         python: PYTHON_INTERPRETER,
         scriptDir: PYTHON_SCRIPT_DIR
+    });
+});
+
+app.get('/api/me', requireAuth(), (req, res) => {
+    const sessionClaims = req.auth?.sessionClaims || {};
+
+    res.json({
+        userId: req.auth?.userId || null,
+        sessionId: req.auth?.sessionId || null,
+        orgId: req.auth?.orgId || sessionClaims.org_id || null,
+        issuedAt: Number.isFinite(sessionClaims.iat) ? sessionClaims.iat : null,
+        exp: Number.isFinite(sessionClaims.exp) ? sessionClaims.exp : null,
     });
 });
 
@@ -95,6 +146,115 @@ function ejecutarScriptPython(scriptName, args = []) {
     });
 }
 
+function ejecutarScriptPythonPorStdin(scriptName, payload, timeoutMs = 10000) {
+    const scriptPath = path.join(PYTHON_SCRIPT_DIR, scriptName);
+    const py = spawn(PYTHON_INTERPRETER, [scriptPath]);
+
+    return new Promise((resolve, reject) => {
+        let stdoutData = '';
+        let stderrData = '';
+
+        const timeout = setTimeout(() => {
+            py.kill();
+            reject({ error: `Timeout ejecutando ${scriptName}` });
+        }, timeoutMs);
+
+        py.stdout.on('data', (data) => {
+            stdoutData += data.toString();
+        });
+
+        py.stderr.on('data', (data) => {
+            stderrData += data.toString();
+        });
+
+        py.on('error', (err) => {
+            clearTimeout(timeout);
+            reject({ error: `Error al iniciar ${scriptName}`, details: err.message });
+        });
+
+        py.on('close', (code) => {
+            clearTimeout(timeout);
+
+            if (code !== 0) {
+                try {
+                    const parsedError = JSON.parse(stdoutData || stderrData);
+                    return reject({
+                        error: parsedError.error || `Error en ${scriptName}`,
+                        details: parsedError.details || null,
+                    });
+                } catch (_e) {
+                    return reject({
+                        error: `Error en ${scriptName} (exit code ${code})`,
+                        details: stderrData || stdoutData || null,
+                    });
+                }
+            }
+
+            try {
+                const parsed = JSON.parse(stdoutData);
+                if (parsed && parsed.ok === false) {
+                    return reject({ error: parsed.error || `Error en ${scriptName}` });
+                }
+                resolve(parsed);
+            } catch (err) {
+                reject({
+                    error: `Formato de salida inválido en ${scriptName}`,
+                    details: err.message,
+                });
+            }
+        });
+
+        try {
+            py.stdin.write(JSON.stringify(payload));
+            py.stdin.end();
+        } catch (stdinErr) {
+            clearTimeout(timeout);
+            py.kill();
+            reject({
+                error: `Error enviando datos a ${scriptName}`,
+                details: stdinErr.message,
+            });
+        }
+    });
+}
+
+function normalizeHistoryQuery(query) {
+    if (typeof query !== 'string') {
+        return '';
+    }
+    return query.trim();
+}
+
+function normalizeNullableHistoryText(value) {
+    if (typeof value !== 'string') {
+        return null;
+    }
+    const trimmed = value.trim();
+    return trimmed ? trimmed : null;
+}
+
+async function pushHistoryForUser(userId, item) {
+    const query = normalizeHistoryQuery(item?.query);
+    if (!userId || !query) {
+        return [];
+    }
+
+    const payload = {
+        action: 'push_history',
+        userId,
+        limit: HISTORY_LIMIT,
+        item: {
+            query,
+            title: normalizeNullableHistoryText(item?.title),
+            url: normalizeNullableHistoryText(item?.url),
+            timestamp: Date.now(),
+        },
+    };
+
+    const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, payload);
+    return Array.isArray(result?.items) ? result.items : [];
+}
+
 // =======================================================
 // CONFIGURACIÓN DE OPENAI
 // =======================================================
@@ -110,22 +270,61 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Contraseña maestra para el chatbot
-const CHATBOT_PASSWORD = process.env.CHATBOT_PASSWORD;
-
 // Nombres de los parámetros de evaluación para dar contexto al modelo
+// Actualizados a los 5 criterios vigentes en Utils.criterios
 const NOMBRES_PARAMETROS = {
-    1: "Interpretación del periodista",
-    2: "Opiniones",
-    3: "Cita de fuentes",
-    4: "Confiabilidad de las fuentes",
-    5: "Trascendencia",
-    6: "Relevancia de los datos",
-    7: "Precisión y claridad",
-    8: "Enfoque",
-    9: "Contexto",
-    10: "Ética",
+    1: "Fiabilidad",
+    2: "Adecuación",
+    3: "Claridad",
+    4: "Profundidad",
+    5: "Enfoque",
 };
+
+function toFiniteNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+}
+
+function resolveGlobalScores(payload = {}) {
+    const evaluation = payload.evaluation_result || {};
+    const extras = evaluation.extras || {};
+    const derived = evaluation.derived || {};
+
+    const raw =
+        toFiniteNumber(payload.global_score_raw) ??
+        toFiniteNumber(extras.raw_global_score) ??
+        toFiniteNumber(extras.global_score_raw) ??
+        toFiniteNumber(derived.global_score_raw);
+
+    let score2dp =
+        toFiniteNumber(payload.global_score_2dp) ??
+        toFiniteNumber(extras.global_score_2dp) ??
+        toFiniteNumber(derived.global_score_2dp);
+
+    if (score2dp === null && raw !== null) {
+        score2dp = Math.round((raw + Number.EPSILON) * 100) / 100;
+    }
+    if (score2dp === null) {
+        score2dp =
+            toFiniteNumber(derived.global_score) ??
+            toFiniteNumber(payload.puntuacion) ??
+            toFiniteNumber(payload.puntuacion_global) ??
+            toFiniteNumber(payload.puntuacionTotal);
+    }
+
+    const score1dp =
+        toFiniteNumber(payload.global_score_1dp) ??
+        toFiniteNumber(extras.global_score_1dp) ??
+        toFiniteNumber(derived.global_score_1dp) ??
+        (score2dp === null ? null : Math.round((score2dp + Number.EPSILON) * 10) / 10);
+
+    return {
+        global_score_raw: raw,
+        global_score_2dp: score2dp,
+        global_score_1dp: score1dp,
+        principal: score2dp,
+    };
+}
 
 // =======================================================
 // RUTAS DE LA API
@@ -133,61 +332,34 @@ const NOMBRES_PARAMETROS = {
 
 /**
  * POST /api/verify-password
- * Verifica si la contraseña proporcionada coincide con la variable de entorno.
- * body: { password: string }
+ * Endpoint deprecado tras migración a Clerk.
  */
 app.post('/api/verify-password', (req, res) => {
-    const { password } = req.body;
-
-    // Si no hay contraseña configurada en el servidor, se asume acceso libre (o se fuerza configuración).
-    // Por seguridad y petición del usuario, si CHATBOT_PASSWORD existe, se debe validar.
-    
-    if (CHATBOT_PASSWORD) {
-        if (password === CHATBOT_PASSWORD) {
-            return res.json({ success: true });
-        } else {
-            return res.status(401).json({ success: false, error: "Contraseña incorrecta." });
-        }
-    } else {
-        // Si no está definida la variable, avisamos en log pero permitimos (o bloqueamos).
-        // Estrategia: Permitir acceso si no está configurada para no romper nada, pero idealmente debería configurarse.
-        console.warn("ADVERTENCIA: CHATBOT_PASSWORD no está definida en el entorno. Acceso permitido por defecto.");
-        return res.json({ success: true, warning: "Sin protección activada." });
-    }
+    return res.status(410).json({
+        success: false,
+        error: 'Endpoint deprecado. Usa autenticación Clerk con Authorization: Bearer <token>.',
+    });
 });
 
 /**
  * POST /api/chat/validate-password
- * Endpoint específico para validar la contraseña desde la extensión.
- * body: { password: string }
+ * Endpoint deprecado tras migración a Clerk.
  */
 app.post('/api/chat/validate-password', (req, res) => {
-    const { password } = req.body;
-
-    // Misma lógica de validación que /api/verify-password pero con respuesta estandarizada para la extensión
-    if (CHATBOT_PASSWORD) {
-        if (password === CHATBOT_PASSWORD) {
-            return res.json({ ok: true });
-        } else {
-            return res.status(401).json({ ok: false, error: "invalid_password" });
-        }
-    } else {
-        return res.json({ ok: true });
-    }
+    return res.status(410).json({
+        ok: false,
+        error: 'deprecated_password_auth',
+        message: 'Usa Clerk y envía Authorization: Bearer <token>.',
+    });
 });
 
 /**
  * POST /api/chatbot
  * Recibe una pregunta y un contexto sobre una noticia y devuelve la respuesta de un LLM.
- * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object }, password: string }
+ * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object } }
  */
-app.post('/api/chatbot', async (req, res) => {
-    const { pregunta, contexto, password } = req.body;
-
-    // Verificación de seguridad
-    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
-        return res.status(401).json({ error: "Acceso denegado. Contraseña incorrecta o ausente." });
-    }
+app.post('/api/chatbot', requireAuth(), async (req, res) => {
+    const { pregunta, contexto } = req.body;
 
     if (!pregunta || !contexto || !contexto.titulo || !contexto.cuerpo || !contexto.valoraciones) {
         return res.status(400).json({ error: "La pregunta y un contexto completo (título, cuerpo, valoraciones) son requeridos." });
@@ -210,7 +382,9 @@ app.post('/api/chatbot', async (req, res) => {
             contextoParaIA += `- ${nombreParametro}: ${contexto.valoraciones[key]}\n`;
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        const scores = resolveGlobalScores(contexto);
+        const puntuacionTexto = scores.principal === null ? 'N/A' : scores.principal.toFixed(2);
+        contextoParaIA += `\nPuntuación Global: ${puntuacionTexto}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }
@@ -330,11 +504,8 @@ app.post('/api/check-url', async (req, res) => {
 
         // Intentamos mapear posibles nombres de campos de puntuación y resúmenes
         const id = resultado._id || resultado.id || null;
-        const puntuacion =
-            resultado.puntuacion ??
-            resultado.puntuacion_global ??
-            resultado.puntuacionTotal ??
-            null;
+        const scores = resolveGlobalScores(resultado);
+        const puntuacion = scores.principal;
 
         const resumen_valoracion =
             resultado.resumen_valoracion ||
@@ -350,6 +521,9 @@ app.post('/api/check-url', async (req, res) => {
             analizado: true,
             id,
             puntuacion,
+            global_score_raw: scores.global_score_raw,
+            global_score_2dp: scores.global_score_2dp,
+            global_score_1dp: scores.global_score_1dp,
             resumen_valoracion,
             resumen_valoracion_titular
         });
@@ -400,17 +574,56 @@ app.get('/api/news/context', async (req, res) => {
 });
 
 /**
+ * GET /api/news/:id/alerts
+ * Devuelve alertas V2 y su resumen para una noticia concreta.
+ */
+app.get('/api/news/:id/alerts', requireAuth(), async (req, res) => {
+    const { id } = req.params;
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) {
+        return res.status(400).json({ ok: false, error: "El parámetro ':id' debe ser un ObjectId válido." });
+    }
+
+    try {
+        const news = await ejecutarScriptPython('buscar_noticia.py', [id]);
+        if (!news || news.mensaje === "Noticia no encontrada.") {
+            return res.status(404).json({ ok: false, error: "Noticia no encontrada." });
+        }
+
+        const alerts = news?.evaluation_result?.alerts ?? [];
+        const alerts_summary = news?.evaluation_result?.alerts_summary ?? {
+            counts: { high: 0, medium: 0, low: 0 },
+            by_category: {},
+            top: []
+        };
+        const audit = news?.evaluation_result?.audit ?? {
+            rules_fired: [],
+            inconsistencies: [],
+            decision_path: []
+        };
+
+        return res.status(200).json({
+            ok: true,
+            news_id: id,
+            alerts,
+            alerts_summary,
+            audit
+        });
+    } catch (error) {
+        console.error('Error en /api/news/:id/alerts:', error);
+        return res.status(500).json({
+            ok: false,
+            error: error.error || "Error interno del servidor al obtener alertas."
+        });
+    }
+});
+
+/**
  * POST /api/chat/news
  * Chatbot específico para la extensión. Recibe newsId, recupera el contexto del backend y llama a la IA.
- * body: { newsId: string, userMessage: string, password: string, previousMessages: array }
+ * body: { newsId: string, userMessage: string, previousMessages: array }
  */
-app.post('/api/chat/news', async (req, res) => {
-    const { newsId, userMessage, password, previousMessages } = req.body;
-
-    // 1. Verificación de seguridad
-    if (CHATBOT_PASSWORD && password !== CHATBOT_PASSWORD) {
-        return res.status(401).json({ ok: false, error: "Acceso denegado. Contraseña incorrecta." });
-    }
+app.post('/api/chat/news', requireAuth(), async (req, res) => {
+    const { newsId, userMessage, previousMessages } = req.body;
 
     if (!newsId || !userMessage) {
         return res.status(400).json({ ok: false, error: "newsId y userMessage son requeridos." });
@@ -443,7 +656,9 @@ app.post('/api/chat/news', async (req, res) => {
             }
         }
         
-        contextoParaIA += `\nPuntuación Global: ${contexto.puntuacion || 'N/A'}/100\n`;
+        const scores = resolveGlobalScores(contexto);
+        const puntuacionTexto = scores.principal === null ? 'N/A' : scores.principal.toFixed(2);
+        contextoParaIA += `\nPuntuación Global: ${puntuacionTexto}/10\n`;
         if (contexto.puntuacion_individual) {
              contextoParaIA += `Puntuaciones por sección: ${JSON.stringify(contexto.puntuacion_individual)}\n`;
         }
@@ -548,11 +763,73 @@ app.post('/api/chat/news', async (req, res) => {
 });
 
 /**
+ * GET /api/history
+ * Devuelve el historial de búsqueda del usuario autenticado.
+ */
+app.get('/api/history', requireAuth(), async (req, res) => {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'No autenticado.' });
+    }
+
+    try {
+        const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, {
+            action: 'get_history',
+            userId,
+            limit: HISTORY_LIMIT,
+        });
+        return res.json({ items: Array.isArray(result?.items) ? result.items : [] });
+    } catch (error) {
+        console.error('Error en GET /api/history:', error);
+        return res.status(500).json({
+            error: error.error || 'Error interno del servidor al obtener historial.',
+        });
+    }
+});
+
+/**
+ * POST /api/history
+ * Actualiza el historial de búsqueda del usuario autenticado.
+ * body: { query: string, title?: string, url?: string }
+ */
+app.post('/api/history', requireAuth(), async (req, res) => {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        return res.status(401).json({ error: 'No autenticado.' });
+    }
+
+    const query = normalizeHistoryQuery(req.body?.query);
+    if (!query) {
+        return res.status(400).json({ error: "El campo 'query' es requerido." });
+    }
+
+    try {
+        const result = await ejecutarScriptPythonPorStdin(HISTORY_SCRIPT, {
+            action: 'push_history',
+            userId,
+            limit: HISTORY_LIMIT,
+            item: {
+                query,
+                title: normalizeNullableHistoryText(req.body?.title),
+                url: normalizeNullableHistoryText(req.body?.url),
+                timestamp: Date.now(),
+            },
+        });
+        return res.json({ items: Array.isArray(result?.items) ? result.items : [] });
+    } catch (error) {
+        console.error('Error en POST /api/history:', error);
+        return res.status(500).json({
+            error: error.error || 'Error interno del servidor al actualizar historial.',
+        });
+    }
+});
+
+/**
  * POST /api/check-urls
  * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
  */
-app.post('/api/check-urls', (req, res) => {
+app.post('/api/check-urls', requireAuth(), (req, res) => {
     const { urls } = req.body;
 
     if (!urls || !Array.isArray(urls)) {
@@ -694,7 +971,7 @@ app.post('/api/check-urls', (req, res) => {
  * Busca una noticia por URL o ID en las BD (Nueva -> Antigua).
  * body: { identificador: 'url_o_id', soloAntigua: false }
  */
-app.post('/api/buscar', async (req, res) => {
+app.post('/api/buscar', requireAuth(), async (req, res) => {
     const { identificador, soloAntigua } = req.body;
 
     if (!identificador) {
@@ -712,6 +989,21 @@ app.post('/api/buscar', async (req, res) => {
         if (resultado.mensaje === "Noticia no encontrada.") {
              return res.status(404).json(resultado);
         }
+
+        // Auto-guardar en historial por usuario autenticado (fallo no bloqueante).
+        const userId = req.auth?.userId;
+        const query = normalizeHistoryQuery(identificador);
+        if (userId && query && (resultado.titulo || resultado.url)) {
+            try {
+                await pushHistoryForUser(userId, {
+                    query,
+                    title: resultado.titulo,
+                    url: resultado.url,
+                });
+            } catch (historyError) {
+                console.warn('No se pudo actualizar historial en /api/buscar:', historyError);
+            }
+        }
         
         // Devuelve el objeto de la noticia encontrada (sin el embedding)
         res.json(resultado); 
@@ -721,6 +1013,16 @@ app.post('/api/buscar', async (req, res) => {
         // Devuelve el error de ejecución de Python
         res.status(500).json({ error: error.error || "Error interno del servidor al ejecutar script de búsqueda." });
     }
+});
+
+app.use((error, req, res, next) => {
+    if (error && (error.code === 'CORS_ORIGIN_DENIED' || error.message === 'Not allowed by CORS')) {
+        return res.status(403).json({
+            error: 'Origen no permitido por CORS.',
+            origin: error.origin || null,
+        });
+    }
+    return next(error);
 });
 
 // Manejo de rutas no encontradas
@@ -734,5 +1036,6 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ API escuchando en puerto ${PORT}...`);
     console.log(`🐍 Ruta de intérprete Python: ${PYTHON_INTERPRETER}`);
     console.log(`📁 Directorio de scripts: ${PYTHON_SCRIPT_DIR}`);
+    console.log(`🔐 Orígenes CORS permitidos: ${ALLOWED_ORIGINS.join(', ') || '(ninguno configurado)'}`);
     console.log(`🌍 Entorno: ${process.env.NODE_ENV || 'development'}`);
 });

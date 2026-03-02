@@ -1,12 +1,11 @@
 // App.jsx
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import logo from './assets/logo2.png';
 import {
   Search,
   History,
   Settings,
   HelpCircle,
-  User,
   Globe2,
   Newspaper,
   Loader,
@@ -18,6 +17,12 @@ import {
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  useAuth
+} from '@clerk/clerk-react';
 
 import API_BASE_URL from './apiConfig';
 import ResultadoBusqueda from './components/ResultadoBusqueda';
@@ -26,54 +31,142 @@ import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
 import TerminalSectionTitle from './components/TerminalSectionTitle';
 import BackgroundParticles from './components/BackgroundParticles';
+import SignedOutLanding from './components/SignedOutLanding';
+
+const HISTORY_LIMIT = 4;
+const HISTORY_STORAGE_KEY_PREFIX = 'analysisHistory';
 
 /*  
    App principal
      */
 function App() {
+  const { getToken, isLoaded, isSignedIn, userId } = useAuth();
   const [identificador, setIdentificador] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [history, setHistory] = useState([]);
+  const [initialQuery, setInitialQuery] = useState(null);
   
   // State for History Dropdown
   const [showHistory, setShowHistory] = useState(false);
   const historyRef = useRef(null);
 
   const isIdle = estadoBusqueda === 'idle';
+  const historyStorageKey = userId
+    ? `${HISTORY_STORAGE_KEY_PREFIX}:${userId}`
+    : null;
 
-  // Cargar historial desde sessionStorage al inicio
-  useEffect(() => {
-    try {
-      const storedHistory = sessionStorage.getItem('analysisHistory');
-      if (storedHistory) {
-        setHistory(JSON.parse(storedHistory));
-      }
-    } catch (e) {
-      console.error('Error al cargar historial:', e);
+  const mapHistoryItemsForUI = useCallback((items) => {
+    if (!Array.isArray(items)) {
+      return [];
     }
 
+    return items
+      .filter((item) => item && typeof item.query === 'string' && item.query.trim())
+      .map((item) => ({
+        id: crypto.randomUUID(),
+        query: item.query.trim(),
+        title: item.title ?? null,
+        url: item.url ?? null,
+        timestamp: Number.isFinite(Number(item.timestamp))
+          ? Number(item.timestamp)
+          : Date.now()
+      }))
+      .slice(0, HISTORY_LIMIT);
+  }, []);
+
+  // Detectar ruta /analisis/:id al montar
+  useEffect(() => {
     // Detectar ruta /analisis/:id al montar
     const path = window.location.pathname;
     const match = path.match(/^\/analisis\/([^/]+)/);
     
     if (match && match[1]) {
       // Prioridad 1: ID en ruta
-      handleBuscarNoticia(match[1]);
+      setInitialQuery(match[1]);
     } else {
       // Prioridad 2: Query param ?url=
       const searchParams = new URLSearchParams(window.location.search);
       const urlParam = searchParams.get('url');
       if (urlParam) {
-        handleBuscarNoticia(urlParam);
+        setInitialQuery(urlParam);
       }
     }
   }, []);
 
-  // Guardar historial en sessionStorage cuando cambie
+  // Guardar copia de fallback por usuario en sessionStorage
   useEffect(() => {
-    sessionStorage.setItem('analysisHistory', JSON.stringify(history));
-  }, [history]);
+    if (!historyStorageKey) {
+      return;
+    }
+    try {
+      sessionStorage.setItem(historyStorageKey, JSON.stringify(history));
+    } catch (e) {
+      console.error('Error al guardar historial local:', e);
+    }
+  }, [history, historyStorageKey]);
+
+  // Cargar historial persistente desde backend por usuario autenticado.
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn || !userId || !historyStorageKey) {
+      setHistory([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadRemoteHistory() {
+      try {
+        const token = await getToken();
+        if (!token) {
+          throw new Error('No se pudo obtener token de Clerk.');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/history`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al cargar historial (${response.status})`);
+        }
+
+        const data = await response.json();
+        if (cancelled) {
+          return;
+        }
+
+        const mapped = mapHistoryItemsForUI(data.items);
+        setHistory(mapped);
+      } catch (error) {
+        console.error('No se pudo cargar historial remoto. Usando fallback local:', error);
+        try {
+          const storedHistory = sessionStorage.getItem(historyStorageKey);
+          const parsed = storedHistory ? JSON.parse(storedHistory) : [];
+          if (!cancelled) {
+            setHistory(mapHistoryItemsForUI(parsed));
+          }
+        } catch (fallbackError) {
+          console.error('Error al cargar historial local:', fallbackError);
+          if (!cancelled) {
+            setHistory([]);
+          }
+        }
+      }
+    }
+
+    loadRemoteHistory();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, historyStorageKey, isLoaded, isSignedIn, mapHistoryItemsForUI, userId]);
 
   // Click outside handler for History dropdown
   useEffect(() => {
@@ -94,23 +187,40 @@ function App() {
     };
   }, [showHistory]);
 
-  const addToHistory = (item) => {
+  const addToHistory = useCallback((item) => {
+    const normalized = mapHistoryItemsForUI([item])[0];
+    if (!normalized) {
+      return;
+    }
+
     setHistory((prev) => {
       // Evitar duplicados: eliminar si ya existe (para moverlo al principio)
-      const filtered = prev.filter((i) => i.query !== item.query);
+      const filtered = prev.filter((i) => i.query !== normalized.query);
       // Añadir al principio
-      const newHistory = [item, ...filtered];
-      // Limitar a 10 items
-      return newHistory.slice(0, 10);
+      const newHistory = [normalized, ...filtered];
+      // Limitar a 4 items
+      return newHistory.slice(0, HISTORY_LIMIT);
     });
-  };
+  }, [mapHistoryItemsForUI]);
 
-  const handleBuscarNoticia = async (queryOverride = null) => {
-    const query = queryOverride || identificador;
-    if (!query || !query.trim()) {
+  const handleBuscarNoticia = useCallback(async (queryOverride = null) => {
+    const query = (queryOverride || identificador || '').trim();
+    if (!query) {
       setEstadoBusqueda('error');
       setResultadoBusqueda('El campo de búsqueda no puede estar vacío.');
       toast.error('Por favor, introduce una URL válida.');
+      return;
+    }
+
+    if (!isLoaded) {
+      toast.error('Inicializando sesión. Inténtalo de nuevo en unos segundos.');
+      return;
+    }
+
+    if (!isSignedIn) {
+      setEstadoBusqueda('error');
+      setResultadoBusqueda('Inicia sesión con Google para analizar noticias.');
+      toast.error('Debes iniciar sesión para usar el análisis.');
       return;
     }
 
@@ -123,9 +233,17 @@ function App() {
     setResultadoBusqueda(null);
 
     try {
+      const token = await getToken();
+      if (!token) {
+        throw new Error('No se pudo obtener el token de sesión de Clerk.');
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/buscar`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({ identificador: query })
       });
 
@@ -155,16 +273,14 @@ function App() {
         setResultadoBusqueda(data);
         toast.success('Análisis completado con éxito.');
 
-        // Añadir al historial si tiene título y es válido
-        if (data.titulo) {
-            addToHistory({
-                id: crypto.randomUUID(),
-                query: query,
-                title: data.titulo,
-                url: data.url,
-                timestamp: Date.now()
-            });
-        }
+        // /api/buscar guarda en backend; mantenemos UI sincronizada localmente.
+        addToHistory({
+          id: crypto.randomUUID(),
+          query,
+          title: data.titulo ?? null,
+          url: data.url ?? null,
+          timestamp: Date.now()
+        });
       }
     } catch (error) {
       console.error('Error al procesar la búsqueda:', error);
@@ -174,16 +290,44 @@ function App() {
       );
       toast.error('Error de conexión. Inténtalo de nuevo.');
     }
-  };
+  }, [addToHistory, getToken, identificador, isLoaded, isSignedIn]);
+
+  useEffect(() => {
+    if (!initialQuery || !isLoaded || !isSignedIn) return;
+    handleBuscarNoticia(initialQuery);
+    setInitialQuery(null);
+  }, [handleBuscarNoticia, initialQuery, isLoaded, isSignedIn]);
 
   const handleHistorySelect = (item) => {
+      const selectedIdentifier = (
+        (typeof item?.url === 'string' && item.url.trim())
+        || (typeof item?.query === 'string' && item.query.trim())
+        || ''
+      );
+      if (!selectedIdentifier) {
+        return;
+      }
+
       setShowHistory(false);
       // Smooth scroll si es necesario
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      handleBuscarNoticia(item.query);
+      handleBuscarNoticia(selectedIdentifier);
   };
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-[#071A31] text-gray-100 flex items-center justify-center px-6">
+        <div className="max-w-lg w-full rounded-2xl border border-lima/40 bg-[#0b2340] p-6 text-center">
+          <h1 className="text-2xl font-bold mb-2">Loading authentication...</h1>
+          <p className="text-sm text-gray-200">Preparing your session to access HemingwAI.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
+    <>
+    <SignedIn>
     <div className="min-h-screen flex flex-col bg-animated text-gray-100 font-sans overflow-x-hidden">
       {/* Capa de Partículas (Z-Index 0, detrás del grid y contenido) */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -233,9 +377,7 @@ function App() {
           <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Ajustes">
             <Settings className="w-5 h-5" />
           </button>
-          <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Perfil">
-            <User className="w-5 h-5" />
-          </button>
+          <UserButton afterSignOutUrl="/" />
         </div>
       </header>
 
@@ -322,7 +464,7 @@ function App() {
 
                   <button
                     onClick={() => handleBuscarNoticia()}
-                    disabled={estadoBusqueda === 'loading'}
+                    disabled={estadoBusqueda === 'loading' || !isLoaded || !isSignedIn}
                     className={`
                       w-full flex items-center justify-center font-bold
                       rounded-[14px]
@@ -338,7 +480,9 @@ function App() {
                       <Loader className={`animate-spin ${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />
                     )}
                     {estadoBusqueda !== 'loading' && <Database className={`${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />}
-                    {estadoBusqueda === 'loading' ? 'Analizando...' : 'Analizar Noticia'}
+                    {estadoBusqueda === 'loading'
+                      ? 'Analizando...'
+                      : (!isLoaded || !isSignedIn ? 'Inicia sesión para analizar' : 'Analizar Noticia')}
                   </button>
                 </div>
               </div>
@@ -442,6 +586,12 @@ function App() {
 
       </main>
     </div>
+    </SignedIn>
+
+    <SignedOut>
+      <SignedOutLanding />
+    </SignedOut>
+    </>
   );
 }
 

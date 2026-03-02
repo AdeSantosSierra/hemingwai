@@ -1,4 +1,4 @@
-# News Genre Binary Classifier (LLM Judge) — v0.3
+# News Genre Binary Classifier (LLM Judge) - v0.3
 ## Output: NOTICIA vs OTRA
 
 **Goal:** Decide if a text is **NOTICIA** (straight news) or **OTRA** (any non-straight-news: opinion, commentary, analysis framed with author voice, persuasive rhetoric, insinuation, etc.).

@@ -1,18 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-  ResponsiveContainer
-} from 'recharts';
-import {
   XCircle,
   MessageSquare,
   Search,
-  Loader,
   AlertTriangle,
 } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
@@ -29,10 +20,11 @@ import RevealOnScroll from './RevealOnScroll';
 // Emoticono según puntuación
 const getEmoticonoPuntuacion = (puntuacion) => {
   const p = Number(puntuacion) || 0;
-  if (p >= 85) return '🤩';
-  if (p >= 75) return '😊';
-  if (p >= 60) return '🙂';
-  if (p >= 45) return '😐';
+  // Escala 0–10
+  if (p >= 8.5) return '🤩';
+  if (p >= 7.5) return '😊';
+  if (p >= 6) return '🙂';
+  if (p >= 4.5) return '😐';
   return '😢';
 };
 
@@ -140,22 +132,116 @@ const formatearFuentes = (fuentes) => {
   return html;
 };
 
+const toFiniteNumber = (value) => {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+};
+
+const roundTo = (value, decimals) => {
+  const factor = 10 ** decimals;
+  return Math.round((value + Number.EPSILON) * factor) / factor;
+};
+
+const resolveGlobalScores = (payload = {}) => {
+  const evaluation = payload.evaluation_result || {};
+  const extras = evaluation.extras || {};
+  const derived = evaluation.derived || {};
+
+  const raw =
+    toFiniteNumber(payload.global_score_raw) ??
+    toFiniteNumber(extras.raw_global_score) ??
+    toFiniteNumber(extras.global_score_raw) ??
+    toFiniteNumber(derived.global_score_raw);
+
+  let score2dp =
+    toFiniteNumber(payload.global_score_2dp) ??
+    toFiniteNumber(extras.global_score_2dp) ??
+    toFiniteNumber(derived.global_score_2dp);
+
+  if (score2dp === null && raw !== null) {
+    score2dp = roundTo(raw, 2);
+  }
+  if (score2dp === null) {
+    score2dp =
+      toFiniteNumber(derived.global_score) ??
+      toFiniteNumber(payload.puntuacion) ??
+      toFiniteNumber(payload.puntuacion_global) ??
+      toFiniteNumber(payload.puntuacionTotal);
+  }
+
+  const score1dp =
+    toFiniteNumber(payload.global_score_1dp) ??
+    toFiniteNumber(extras.global_score_1dp) ??
+    toFiniteNumber(derived.global_score_1dp) ??
+    (score2dp === null ? null : roundTo(score2dp, 1));
+
+  return {
+    global_score_raw: raw,
+    global_score_2dp: score2dp,
+    global_score_1dp: score1dp,
+    principal: score2dp,
+  };
+};
+
+const resolveAlerts = (payload = {}) => {
+  const evaluation = payload.evaluation_result || {};
+  const alerts = Array.isArray(payload.alerts)
+    ? payload.alerts
+    : Array.isArray(evaluation.alerts)
+    ? evaluation.alerts
+    : [];
+  const alertsSummary = payload.alerts_summary || evaluation.alerts_summary || null;
+  return { alerts, alertsSummary };
+};
+
+const normalizeKey = (value) =>
+  String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+
+const SEVERITY_UI = {
+  high: {
+    label: 'Alta',
+    badge: 'bg-red-500/20 text-red-200 border border-red-400/40',
+  },
+  medium: {
+    label: 'Media',
+    badge: 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/40',
+  },
+  low: {
+    label: 'Baja',
+    badge: 'bg-sky-500/20 text-sky-200 border border-sky-400/40',
+  },
+};
+
+const CATEGORY_LABELS = {
+  fiabilidad: 'Fiabilidad',
+  adecuacion: 'Adecuación',
+  claridad: 'Claridad',
+  profundidad: 'Profundidad',
+  enfoque: 'Enfoque',
+};
+
 /*  
    PuntuacionIndicador
      */
 const PuntuacionIndicador = ({ puntuacion }) => {
   const score = Number(puntuacion);
   const getColor = (s) => {
-    if (s >= 75) return 'bg-lime-500';
-    if (s >= 60) return 'bg-yellow-500';
-    if (s >= 45) return 'bg-orange-500';
+    // Escala 0–10
+    if (s >= 7.5) return 'bg-lime-500';
+    if (s >= 6) return 'bg-yellow-500';
+    if (s >= 4.5) return 'bg-orange-500';
     return 'bg-red-500';
   };
 
   return (
     <div className="flex items-center gap-2">
       <div className={`w-3 h-3 rounded-full ${getColor(score)}`} />
-      <span className="font-bold text-gray-200">{isNaN(score) ? 'N/A' : score}</span>
+      <span className="font-bold text-gray-200">
+        {Number.isFinite(score) ? score.toFixed(2) : 'N/A'}
+      </span>
     </div>
   );
 };
@@ -164,7 +250,6 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 const ResultadoBusqueda = ({ estado, resultado }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
-  const [mostrarRadarGrande, setMostrarRadarGrande] = useState(false);
   const [mostrarResumen, setMostrarResumen] = useState(false);
   
   // Referencia al chatbot
@@ -220,22 +305,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
   }
 
   const nombresSecciones = {
-    '1': 'Interpretación del periodista',
-    '2': 'Opiniones',
-    '3': 'Cita de fuentes',
-    '4': 'Confiabilidad de fuentes',
-    '5': 'Trascendencia',
-    '6': 'Relevancia de los datos',
-    '7': 'Precisión y claridad',
-    '8': 'Enfoque',
-    '9': 'Contexto',
-    '10': 'Ética'
+    '1': 'Fiabilidad',
+    '2': 'Adecuación',
+    '3': 'Claridad',
+    '4': 'Profundidad',
+    '5': 'Enfoque'
   };
-
-  const datosRadar = Object.keys(nombresSecciones).map((key) => ({
-    seccion: nombresSecciones[key],
-    puntuacion: resultado.puntuacion_individual?.[key] ?? 0
-  }));
 
   const abrirModal = (titulo, contenido, tipoContenido = 'markdown') => {
     setSeccionSeleccionada({ titulo, contenido, tipoContenido });
@@ -253,6 +328,52 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         const pregunta = `Dame un resumen de la calificación que ha obtenido la sección de ${nombreSeccion}`;
         chatbotRef.current.handleQuickQuestion(pregunta);
     }
+  };
+
+  const resolvedScores = resolveGlobalScores(resultado);
+  const globalScore = resolvedScores.principal;
+  const hasGlobalScore = globalScore !== null;
+  const globalScoreForUi = hasGlobalScore ? globalScore : 0;
+  const fallbackScore = toFiniteNumber(resultado.puntuacion);
+  const scoreForChatbot = hasGlobalScore ? globalScore : fallbackScore;
+
+  const { alerts: rawAlerts, alertsSummary } = resolveAlerts(resultado);
+  const alerts = (rawAlerts || [])
+    .filter((alert) => alert && typeof alert === 'object')
+    .map((alert) => {
+      const severityKey = normalizeKey(alert.severity);
+      const categoryKey = normalizeKey(alert.category);
+      const severity = SEVERITY_UI[severityKey] || SEVERITY_UI.medium;
+      const category = CATEGORY_LABELS[categoryKey] || 'General';
+      const evidenceRefs = Array.isArray(alert.evidence_refs)
+        ? alert.evidence_refs.filter(Boolean).slice(0, 3)
+        : [];
+
+      return {
+        code: alert.code || 'UNKNOWN_ALERT',
+        message: alert.message || 'Alerta sin descripción.',
+        origin: normalizeKey(alert.origin) === 'engine' ? 'Motor' : 'Modelo',
+        category,
+        severity,
+        evidenceRefs,
+      };
+    });
+
+  const computedCounts = alerts.reduce(
+    (acc, alert) => {
+      const label = alert.severity.label;
+      if (label === 'Alta') acc.high += 1;
+      if (label === 'Media') acc.medium += 1;
+      if (label === 'Baja') acc.low += 1;
+      return acc;
+    },
+    { high: 0, medium: 0, low: 0 }
+  );
+  const summaryCounts = alertsSummary?.counts || {};
+  const alertCounts = {
+    high: toFiniteNumber(summaryCounts.high) ?? computedCounts.high,
+    medium: toFiniteNumber(summaryCounts.medium) ?? computedCounts.medium,
+    low: toFiniteNumber(summaryCounts.low) ?? computedCounts.low,
   };
 
   return (
@@ -338,122 +459,37 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               </div>
             </div>
 
-            {/* Columna derecha: Puntuación arriba, radar debajo */}
+            {/* Columna derecha: Puntuación */}
             <div className="flex flex-col items-end gap-3 flex-shrink-0 md:w-48 lg:w-56">
-
-
               {/* Puntuación General */}
               <div className="text-center">
                 <div className="text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">
                   Puntuación general
                 </div>
                 <div className="flex flex-col items-center justify-center">
-                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(resultado.puntuacion)}</span>
+                  <span className="text-4xl mb-1">{getEmoticonoPuntuacion(globalScoreForUi)}</span>
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-3 h-3 rounded-full ${
-                        resultado.puntuacion >= 75
+                        globalScoreForUi >= 7.5
                           ? 'bg-green-500'
-                          : resultado.puntuacion >= 60
+                          : globalScoreForUi >= 6
                           ? 'bg-yellow-500'
-                          : resultado.puntuacion >= 45
+                          : globalScoreForUi >= 4.5
                           ? 'bg-orange-500'
                           : 'bg-red-500'
                       }`}
                     />
-                    <ScoreCounter value={resultado.puntuacion ?? 0} className="text-3xl font-extrabold text-lima" />
+                    {hasGlobalScore ? (
+                      <ScoreCounter value={globalScoreForUi} className="text-3xl font-extrabold text-lima" />
+                    ) : (
+                      <span className="text-3xl font-extrabold text-lima">N/A</span>
+                    )}
                   </div>
                 </div>
               </div>
-
-              {/* Mini Radar (Botón) */}
-              {resultado.puntuacion_individual && (
-                <div className="flex flex-col items-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setMostrarRadarGrande(!mostrarRadarGrande)}
-                    className="w-24 h-24 rounded-lg hover:bg-white/10 transition-colors p-1 border border-transparent hover:border-gray-500"
-                    title="Ver desglose de criterios"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="100%" data={datosRadar}>
-                        <PolarGrid stroke="#4B5563" />
-                        <PolarAngleAxis
-                          dataKey="seccion"
-                          tick={false}
-                          axisLine={false}
-                        />
-                        <PolarRadiusAxis
-                          angle={90}
-                          domain={[0, 100]}
-                          tick={{
-                            fill: '#9CA3AF',   
-                            fontSize: 0       
-                          }}
-                          tickLine={false}      
-                        />
-                        <Radar
-                          name="Puntuación"
-                          dataKey="puntuacion"
-                          stroke="#D2D209"
-                          fill="#D2D209"
-                          fillOpacity={0.5}
-                        />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </motion.button>
-                </div>
-              )}
             </div>
           </div>
-
-          {/* Radar chart Expandido */}
-          {mostrarRadarGrande && resultado.puntuacion_individual && (
-            <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mt-6 border-t border-gray-600/30 pt-6"
-            >
-              <h4 className="text-xl font-bold text-white mb-4 text-center">
-                Análisis visual de calidad
-              </h4>
-              <div style={{ width: '100%', height: 400 }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart 
-                    data={datosRadar} 
-                    outerRadius="100%" 
-                    margin={{ top: 10, right: 10, bottom: 40, left: 10 }}
-                  >
-                    <PolarGrid stroke="#4B5563" />
-                    <PolarAngleAxis
-                      dataKey="seccion"
-                      tick={{ fill: '#E5E7EB', fontSize: 14 }}
-                    />
-                    <PolarRadiusAxis
-                    angle={90}
-                    domain={[0, 100]}
-                    tick={{
-                      fill: '#9CA3AF',   // color de las etiquetas
-                      fontSize: 11       // ↓ tamaño más pequeño (prueba 9–11)
-                    }}
-                    tickLine={false}
-                    
-                    />
-
-                    <Radar
-                      name="Puntuación"
-                      dataKey="puntuacion"
-                      stroke="#D2D209"
-                      fill="#D2D209"
-                      fillOpacity={0.5}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
-              </div>
-            </motion.div>
-          )}
         </div>
         </RevealOnScroll>
 
@@ -544,8 +580,58 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </div>
         </RevealOnScroll>
 
+        {/* Alertas */}
+        <RevealOnScroll delay={150}>
+        <div className="hw-glass rounded-2xl p-6 border-l-4 border-amber-400">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h4 className="text-xl font-bold text-white">
+              Alertas detectadas
+            </h4>
+            <div className="flex flex-wrap gap-2 text-xs">
+              <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-400/30">
+                Altas: {alertCounts.high}
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/30">
+                Medias: {alertCounts.medium}
+              </span>
+              <span className="px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
+                Bajas: {alertCounts.low}
+              </span>
+            </div>
+          </div>
+
+          {alerts.length === 0 ? (
+            <p className="text-sm text-gray-300">No hay alertas registradas para esta noticia.</p>
+          ) : (
+            <div className="space-y-3">
+              {alerts.map((alert, index) => (
+                <div
+                  key={`${alert.code}-${index}`}
+                  className="rounded-lg border border-white/10 bg-[#001a33]/35 p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${alert.severity.badge}`}>
+                      Severidad {alert.severity.label}
+                    </span>
+                    <span className="text-xs text-gray-300">{alert.category}</span>
+                    <span className="text-xs text-gray-500">{alert.origin}</span>
+                    <span className="text-[11px] text-gray-500 font-mono">{alert.code}</span>
+                  </div>
+                  <p className="text-sm text-gray-100">{alert.message}</p>
+                  {alert.evidenceRefs.length > 0 && (
+                    <p className="text-xs text-gray-400 mt-2">
+                      Evidencias: {alert.evidenceRefs.join(' | ')}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        </RevealOnScroll>
+
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
-        <RevealOnScroll delay={200}>
+        <RevealOnScroll delay={220}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-white mb-2">
             Pregúntale al chatbot
@@ -574,7 +660,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         </RevealOnScroll>
 
         {/* Valoraciones individuales */}
-        <RevealOnScroll delay={300}>
+        <RevealOnScroll delay={320}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
           <h4 className="text-xl font-bold text-white mb-4 hw-terminal-font">
             Valoraciones por sección
@@ -584,6 +670,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
               Object.keys(nombresSecciones).map((key) => {
                 const puntuacion = resultado.puntuacion_individual?.[key];
                 const valoracion = resultado.valoraciones?.[key];
+                const puntuacionNumerica = toFiniteNumber(puntuacion);
 
                 return (
                   <motion.button
@@ -603,8 +690,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                       <span className="text-sm font-semibold text-gray-200">
                         {nombresSecciones[key]}
                       </span>
-                      {puntuacion ? (
-                        <PuntuacionIndicador puntuacion={puntuacion} />
+                      {puntuacionNumerica !== null ? (
+                        <PuntuacionIndicador puntuacion={puntuacionNumerica} />
                       ) : (
                         <span className="text-gray-400 text-xs">N/A</span>
                       )}
@@ -641,7 +728,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                           fuente: resultado.fuente,
                           keywords: resultado.keywords,
                           tags: resultado.tags,
-                          puntuacion: resultado.puntuacion,
+                          puntuacion: scoreForChatbot ?? undefined,
                           puntuacion_individual: resultado.puntuacion_individual,
                       }}
                   />
