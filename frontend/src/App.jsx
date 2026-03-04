@@ -27,7 +27,6 @@ import {
 import API_BASE_URL from './apiConfig';
 import ResultadoBusqueda from './components/ResultadoBusqueda';
 import HistoryPanel from './components/HistoryPanel';
-import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
 import BackgroundParticles from './components/BackgroundParticles';
 import SignedOutLanding from './components/SignedOutLanding';
@@ -356,23 +355,23 @@ function App() {
       <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
-      <header className="w-full border-b border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/95 backdrop-blur flex items-center justify-between px-6 sm:px-10 py-3 shadow-md sticky top-0 z-50 transition-colors duration-300">
-        <div className="flex items-center gap-3">
+      <header className="w-full border-b border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/95 backdrop-blur flex items-center justify-between px-8 sm:px-12 py-4 shadow-md sticky top-0 z-50 transition-colors duration-300">
+        <div className="flex items-center gap-4">
           <img
             src={isDarkMode ? logoBlanco : logoNegro}
             alt="Mirada Media Lab"
-            className="h-9 w-auto drop-shadow-sm"
+            className="h-[44px] w-auto drop-shadow-sm"
           />
           <div className="hidden sm:flex flex-col">
-            <span className="text-sm font-semibold tracking-tight">
+            <span className="text-[18px] leading-tight font-semibold tracking-tight">
               Mirada21 Media Lab
             </span>
-            <span className="text-xs text-[color:var(--hw-text-muted)]">
+            <span className="text-[14px] leading-tight text-[color:var(--hw-text-muted)]">
               Análisis de noticias con IA
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4 text-[color:var(--hw-text-muted)]">
+        <div className="flex items-center gap-6 sm:gap-7 text-[color:var(--hw-text-muted)]">
           {/* History Button and Dropdown */}
           <div className="relative flex items-center" ref={historyRef}>
             <button 
@@ -380,7 +379,7 @@ function App() {
               title="Historial"
               onClick={() => setShowHistory(!showHistory)}
             >
-              <History className="w-5 h-5" />
+              <History className="w-6 h-6" />
             </button>
             
             {showHistory && (
@@ -395,9 +394,11 @@ function App() {
             title={isDarkMode ? 'Cambiar a modo día' : 'Cambiar a modo noche'}
             onClick={() => setIsDarkMode((current) => !current)}
           >
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </button>
-          <UserButton afterSignOutUrl="/" />
+          <div className="scale-[1.25] origin-center">
+            <UserButton afterSignOutUrl="/" />
+          </div>
         </div>
       </header>
 
@@ -411,15 +412,18 @@ function App() {
           className={`flex flex-col items-center text-center w-full transition-all duration-700 ${isIdle ? 'mt-20 sm:mt-24 mb-0' : 'mt-8 mb-8'}`}
           transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
         >
-          <GlitchTitle 
-            text={`El marcador\nde calidad de las Noticias`}
-            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 sm:mb-8 whitespace-pre-line"
-            intensity="subtle"
-          />
+          <h1 className="text-4xl sm:text-6xl font-light tracking-tight leading-tight mb-6 sm:mb-8 text-[color:var(--hw-text)]">
+            El <span className="font-bold">marcador</span>
+            <br />
+            de calidad de las <span className="font-bold text-lima">Noticias</span>
+          </h1>
 
-          <p className="text-sm sm:text-base text-[color:var(--hw-text-muted)] max-w-2xl mx-auto mb-8 sm:mb-10">
-            Evalúa el rigor, detecta sesgos y verifica los acontecimientos con
-            nuestro motor de IA avanzado.
+          <p className="text-sm sm:text-base md:text-xl text-[color:var(--hw-text-muted)] max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed">
+            Evalúa el rigor, detecta sesgos y verifica los acontecimientos con nuestro{' '}
+            <span className="text-[color:var(--hw-text)] border-b border-lima/50 font-medium">
+              motor de IA avanzado
+            </span>
+            .
           </p>
         </Motion.section>
 
@@ -522,7 +526,7 @@ function App() {
               </div>
               <h4 className="text-[13px] font-mono uppercase tracking-[0.4em] font-bold text-[color:var(--hw-text)]">Procesamiento</h4>
               <p className="text-[14px] text-[color:var(--hw-text-muted)] font-light leading-relaxed px-4">
-                Análisis neuronal de fiabilidad y trascendencia.
+                Análisis de la noticia usando nuestro motor basado en IA.
               </p>
             </RevealOnScroll>
 

@@ -43,7 +43,7 @@ const HistoryPanel = ({ history, onSelect }) => {
                  <span className="text-[10px] text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text-muted)]">• {new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
               </div>
             </div>
-            <ExternalLink className="w-3 h-3 text-[color:var(--hw-text-muted)] group-hover:text-lima opacity-0 group-hover:opacity-100 transition-all mt-1" />
+            <ExternalLink className="w-3 h-3 text-[color:var(--hw-text)] group-hover:text-lima transition-colors mt-1" />
           </button>
         ))}
       </div>
