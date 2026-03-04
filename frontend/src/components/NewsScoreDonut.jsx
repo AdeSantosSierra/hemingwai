@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
+import { getEvaluationGlobalScore, getEvaluationStatusLabel } from '../lib/evaluationViewModel';
 
 const CRITERIA_CONFIG = [
   { key: 'fiabilidad', label: 'Fiabilidad', color: '#22c55e' },
@@ -67,11 +68,12 @@ const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
   );
 
   const activeCriterion = criteriaData.find((criterion) => criterion.key === activeCriterionKey) || null;
-  const globalScore = clampScore(evaluationResult?.derived?.global_score);
+  const globalScore = clampScore(getEvaluationGlobalScore(evaluationResult));
+  const statusLabel = getEvaluationStatusLabel(evaluationResult);
   const displayScore = activeCriterion ? activeCriterion.score : globalScore;
   const centerSubText = activeCriterion
     ? activeCriterion.label
-    : evaluationResult?.status?.label || '—';
+    : statusLabel || '—';
 
   const cx = 120;
   const cy = 120;
@@ -165,7 +167,7 @@ const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
                 activeCriterion ? 'opacity-0' : 'opacity-100'
               }`}
             >
-              {evaluationResult?.status?.label || '—'}
+              {statusLabel || '—'}
             </span>
             <span
               className={`absolute inset-0 truncate text-sm font-semibold text-gray-100 transition-opacity duration-200 ${
@@ -200,6 +202,7 @@ NewsScoreDonut.propTypes = {
   evaluationResult: PropTypes.shape({
     derived: PropTypes.shape({
       global_score: PropTypes.number,
+      global_score_2dp: PropTypes.number,
     }),
     status: PropTypes.shape({
       label: PropTypes.string,

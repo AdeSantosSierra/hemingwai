@@ -1,10 +1,10 @@
 {
-  "noticia_id": "68212b937061040009ec3e48",
+  "noticia_id": "68212b947061040009ec3e49",
   "analisis": "Fact-checking no disponible.",
   "fuentes": [],
   "status": "unavailable",
   "provider": "perplexity",
   "reason": "missing_api_key",
   "message": "Fact-checking no disponible.",
-  "created_at": "2026-03-02T17:56:24.857498+00:00"
+  "created_at": "2026-03-04T17:44:26.257228+00:00"
 }

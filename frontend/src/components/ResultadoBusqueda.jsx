@@ -12,6 +12,12 @@ import Chatbot from './Chatbot';
 import NewsScoreDonut from './NewsScoreDonut';
 import SkeletonAnalysis from './SkeletonAnalysis';
 import RevealOnScroll from './RevealOnScroll';
+import {
+  getEvaluationAlerts,
+  getEvaluationAlertsSummary,
+  getEvaluationGlobalScore,
+  getEvaluationResult,
+} from '../lib/evaluationViewModel';
 
 /*  
    Helpers
@@ -124,63 +130,6 @@ const formatearFuentes = (fuentes) => {
 const toFiniteNumber = (value) => {
   const n = Number(value);
   return Number.isFinite(n) ? n : null;
-};
-
-const roundTo = (value, decimals) => {
-  const factor = 10 ** decimals;
-  return Math.round((value + Number.EPSILON) * factor) / factor;
-};
-
-const resolveGlobalScores = (payload = {}) => {
-  const evaluation = payload.evaluation_result || {};
-  const extras = evaluation.extras || {};
-  const derived = evaluation.derived || {};
-
-  const raw =
-    toFiniteNumber(payload.global_score_raw) ??
-    toFiniteNumber(extras.raw_global_score) ??
-    toFiniteNumber(extras.global_score_raw) ??
-    toFiniteNumber(derived.global_score_raw);
-
-  let score2dp =
-    toFiniteNumber(payload.global_score_2dp) ??
-    toFiniteNumber(extras.global_score_2dp) ??
-    toFiniteNumber(derived.global_score_2dp);
-
-  if (score2dp === null && raw !== null) {
-    score2dp = roundTo(raw, 2);
-  }
-  if (score2dp === null) {
-    score2dp =
-      toFiniteNumber(derived.global_score) ??
-      toFiniteNumber(payload.puntuacion) ??
-      toFiniteNumber(payload.puntuacion_global) ??
-      toFiniteNumber(payload.puntuacionTotal);
-  }
-
-  const score1dp =
-    toFiniteNumber(payload.global_score_1dp) ??
-    toFiniteNumber(extras.global_score_1dp) ??
-    toFiniteNumber(derived.global_score_1dp) ??
-    (score2dp === null ? null : roundTo(score2dp, 1));
-
-  return {
-    global_score_raw: raw,
-    global_score_2dp: score2dp,
-    global_score_1dp: score1dp,
-    principal: score2dp,
-  };
-};
-
-const resolveAlerts = (payload = {}) => {
-  const evaluation = payload.evaluation_result || {};
-  const alerts = Array.isArray(payload.alerts)
-    ? payload.alerts
-    : Array.isArray(evaluation.alerts)
-    ? evaluation.alerts
-    : [];
-  const alertsSummary = payload.alerts_summary || evaluation.alerts_summary || null;
-  return { alerts, alertsSummary };
 };
 
 const normalizeKey = (value) =>
@@ -331,13 +280,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     }
   };
 
-  const resolvedScores = resolveGlobalScores(resultado);
-  const globalScore = resolvedScores.principal;
-  const hasGlobalScore = globalScore !== null;
-  const fallbackScore = toFiniteNumber(resultado.puntuacion);
-  const scoreForChatbot = hasGlobalScore ? globalScore : fallbackScore;
-
-  const { alerts: rawAlerts, alertsSummary } = resolveAlerts(resultado);
+  const evaluationResult = getEvaluationResult(resultado);
+  const scoreForChatbot = getEvaluationGlobalScore(evaluationResult);
+  const rawAlerts = getEvaluationAlerts(evaluationResult);
+  const alertsSummary = getEvaluationAlertsSummary(evaluationResult);
   const alerts = (rawAlerts || [])
     .filter((alert) => alert && typeof alert === 'object')
     .map((alert) => {
@@ -375,7 +321,6 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
     medium: toFiniteNumber(summaryCounts.medium) ?? computedCounts.medium,
     low: toFiniteNumber(summaryCounts.low) ?? computedCounts.low,
   };
-  const evaluationResult = resultado?.evaluation_result || {};
   const criterionSummary =
     activeCriterion === null
       ? null
