@@ -16,7 +16,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 import {
   SignedIn,
   SignedOut,
@@ -386,7 +386,7 @@ function App() {
         
         {/* HERO SECTION */}
         {/* En Idle: se queda arriba (con margen). En Active: igual, arriba. */}
-        <motion.section 
+        <Motion.section 
           layout 
           className={`flex flex-col items-center text-center w-full transition-all duration-700 ${isIdle ? 'mt-20 sm:mt-24 mb-0' : 'mt-8 mb-8'}`}
           transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
@@ -408,20 +408,20 @@ function App() {
             Analiza titulares, fuentes, contexto y criterios éticos para ayudarte
             a entender la calidad informativa de cada artículo.
           </p>
-        </motion.section>
+        </Motion.section>
 
         {/* WRAPPER PARA EL BUSCADOR */}
         {/* 
             En Idle: flex-1 (ocupa todo el espacio restante hasta el footer) + flex + justify-center 
             Esto centra verticalmente la tarjeta de búsqueda en el espacio disponible.
         */}
-        <motion.div 
+        <Motion.div 
           layout
           className={`w-full flex flex-col items-center transition-all duration-700 ease-in-out ${isIdle ? 'flex-1 justify-center pb-20' : 'justify-start'}`}
         >
           {/* Tarjeta de búsqueda */}
           <RevealOnScroll className="w-full flex justify-center">
-            <motion.section 
+            <Motion.section 
               layout
               className={`w-full transition-all duration-500 ease-in-out ${isIdle ? 'max-w-4xl' : 'max-w-5xl mb-2'}`}
             >
@@ -486,15 +486,15 @@ function App() {
                   </button>
                 </div>
               </div>
-            </motion.section>
+            </Motion.section>
           </RevealOnScroll>
-        </motion.div>
+        </Motion.div>
 
         {/* Resultados - Solo visible si no es idle */}
         <AnimatePresence>
           {!isIdle && (
             <RevealOnScroll className="w-full">
-              <motion.section 
+              <Motion.section 
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 50 }}
@@ -511,7 +511,7 @@ function App() {
                     resultado={resultadoBusqueda}
                   />
                 </div>
-              </motion.section>
+              </Motion.section>
             </RevealOnScroll>
           )}
         </AnimatePresence>

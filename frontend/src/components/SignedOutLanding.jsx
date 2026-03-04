@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion as Motion, useReducedMotion } from 'framer-motion';
 import { SignInButton } from '@clerk/clerk-react';
 import { Brain, ShieldCheck, Newspaper, Activity } from 'lucide-react';
 import BackgroundParticles from './BackgroundParticles';
@@ -107,26 +107,26 @@ function SignedOutLanding() {
         }}
       />
 
-      <motion.div
+      <Motion.div
         aria-hidden="true"
         className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-lime-300/12 blur-3xl"
         animate={reduceMotion ? undefined : { x: [0, 18, -10, 0], y: [0, 16, -8, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
+      <Motion.div
         aria-hidden="true"
         className="absolute top-[35%] right-[-80px] h-96 w-96 rounded-full bg-cyan-300/10 blur-3xl"
         animate={reduceMotion ? undefined : { x: [0, -22, 14, 0], y: [0, -12, 18, 0] }}
         transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <motion.div
+      <Motion.div
         aria-hidden="true"
         className="absolute bottom-[-130px] left-[30%] h-80 w-80 rounded-full bg-lime-200/10 blur-3xl"
         animate={reduceMotion ? undefined : { x: [0, 10, -14, 0], y: [0, -16, 6, 0] }}
         transition={{ duration: 25, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      <motion.div
+      <Motion.div
         aria-hidden="true"
         className="absolute inset-x-0 h-32 pointer-events-none"
         style={{
@@ -145,7 +145,7 @@ function SignedOutLanding() {
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-12 sm:px-8">
         <div className="w-full max-w-6xl grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-center">
-          <motion.section
+          <Motion.section
             className="rounded-3xl border border-white/12 bg-[#0a1f38]/72 backdrop-blur-xl shadow-[0_30px_70px_rgba(0,0,0,0.35)] p-7 sm:p-10"
             initial={reduceMotion ? undefined : { opacity: 0, y: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -189,7 +189,7 @@ function SignedOutLanding() {
                   className="flex items-start gap-3 rounded-xl border border-white/12 bg-[#0f2a49]/52 px-4 py-3"
                 >
                   <div className="flex-shrink-0 rounded-lg p-2 bg-lime-300/12 border border-lime-300/30 text-lime-200">
-                    <Icon className="w-4 h-4" />
+                    {React.createElement(Icon, { className: 'w-4 h-4' })}
                   </div>
                   <div>
                     <p className="font-semibold text-white text-sm">{title}</p>
@@ -201,25 +201,25 @@ function SignedOutLanding() {
 
             <div className="mt-8">
               <SignInButton mode="modal">
-                <motion.button
+                <Motion.button
                   type="button"
                   className="relative inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-[#001a33] bg-gradient-to-r from-[#e3e30a] to-[#c4c408] shadow-[0_10px_25px_rgba(210,210,9,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-lime-300 focus-visible:ring-offset-[#0a1f38]"
                   whileHover={reduceMotion ? undefined : { y: -2, scale: 1.01 }}
                   whileTap={reduceMotion ? undefined : { scale: 0.99 }}
                 >
-                  <motion.span
+                  <Motion.span
                     aria-hidden="true"
                     className="absolute inset-0 rounded-xl bg-lime-200/35 blur-lg"
                     animate={reduceMotion ? undefined : { opacity: [0.35, 0.68, 0.35] }}
                     transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
                   />
                   <span className="relative z-10">Continue with Google</span>
-                </motion.button>
+                </Motion.button>
               </SignInButton>
             </div>
-          </motion.section>
+          </Motion.section>
 
-          <motion.aside
+          <Motion.aside
             className="hidden lg:flex flex-col rounded-2xl border border-white/10 bg-[#091b31]/75 backdrop-blur-lg p-5 min-h-[420px]"
             initial={reduceMotion ? undefined : { opacity: 0, x: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, x: 0 }}
@@ -235,7 +235,7 @@ function SignedOutLanding() {
               <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#07162a] to-transparent pointer-events-none z-10" />
               <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#07162a] to-transparent pointer-events-none z-10" />
 
-              <motion.div
+              <Motion.div
                 ref={trackRef}
                 className="space-y-2 will-change-transform"
                 animate={shouldAnimateTicker ? { y: [0, -trackHeight] } : undefined}
@@ -258,9 +258,9 @@ function SignedOutLanding() {
                     {item.text}
                   </div>
                 ))}
-              </motion.div>
+              </Motion.div>
             </div>
-          </motion.aside>
+          </Motion.aside>
         </div>
       </div>
 

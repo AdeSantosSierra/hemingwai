@@ -19,13 +19,15 @@ const RevealOnScroll = ({ children, className = '', delay = 0 }) => {
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const observedElement = ref.current;
+
+    if (observedElement) {
+      observer.observe(observedElement);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (observedElement) {
+        observer.unobserve(observedElement);
       }
     };
   }, []);

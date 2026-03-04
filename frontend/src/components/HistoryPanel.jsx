@@ -35,7 +35,7 @@ const HistoryPanel = ({ history, onSelect }) => {
                      try {
                        const urlStr = item.url || item.query;
                        return new URL(urlStr).hostname.replace('www.', '');
-                     } catch (e) {
+                     } catch {
                        return 'ID: ' + item.query.substring(0, 8) + '...';
                      }
                    })()}
