@@ -25,7 +25,6 @@ servidor_api/node_modules/
 
 # Dependencias del Frontend
 frontend/node_modules/
-frontend/src/assets/
 # Dependencias de Node
 /node_modules
 /node/
