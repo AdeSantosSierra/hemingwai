@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion as Motion, useReducedMotion } from 'framer-motion';
 import { SignInButton } from '@clerk/clerk-react';
-import { Brain, ShieldCheck, Newspaper, Activity } from 'lucide-react';
+import { Brain, ShieldCheck, Newspaper, Activity, Sun, Moon } from 'lucide-react';
 import BackgroundParticles from './BackgroundParticles';
 import GlitchTitle from './GlitchTitle';
 
@@ -45,7 +45,7 @@ function signalAccentStripe(tone) {
   return 'before:bg-emerald-300/70';
 }
 
-function SignedOutLanding() {
+function SignedOutLanding({ isDarkMode, onToggleTheme }) {
   const reduceMotion = useReducedMotion();
 
   const trackRef = useRef(null);
@@ -95,8 +95,23 @@ function SignedOutLanding() {
   const tickerDuration = trackHeight > 0 ? trackHeight / pxPerSecond : 18;
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#071A31] text-gray-100">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(210,210,9,0.11),transparent_38%),radial-gradient(circle_at_82%_18%,rgba(75,169,255,0.11),transparent_45%),linear-gradient(160deg,#071A31_0%,#0b2340_48%,#06192d_100%)]" />
+    <div className="relative min-h-screen overflow-hidden bg-[color:var(--hw-bg)] text-[color:var(--hw-text)] transition-colors duration-300">
+      <div className={`absolute inset-0 ${
+        isDarkMode
+          ? 'bg-[radial-gradient(circle_at_20%_10%,rgba(212,230,0,0.12),transparent_38%),radial-gradient(circle_at_82%_18%,rgba(0,243,255,0.09),transparent_45%),linear-gradient(160deg,#050505_0%,#0b0b0b_48%,#111111_100%)]'
+          : 'bg-[radial-gradient(circle_at_20%_10%,rgba(212,230,0,0.18),transparent_38%),radial-gradient(circle_at_82%_18%,rgba(0,243,255,0.08),transparent_45%),linear-gradient(160deg,#f9fafb_0%,#f1f5f9_48%,#ffffff_100%)]'
+      }`} />
+
+      <div className="absolute right-6 top-6 z-30">
+        <button
+          type="button"
+          onClick={onToggleTheme}
+          className="w-11 h-11 rounded-full border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)] text-[color:var(--hw-text)] flex items-center justify-center hover:text-lima hover:border-lima transition-colors"
+          title={isDarkMode ? 'Cambiar a modo día' : 'Cambiar a modo noche'}
+        >
+          {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+        </button>
+      </div>
 
       <div
         className="absolute inset-0 opacity-30"
@@ -146,18 +161,22 @@ function SignedOutLanding() {
       <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-12 sm:px-8">
         <div className="w-full max-w-6xl grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-center">
           <Motion.section
-            className="rounded-3xl border border-white/12 bg-[#0a1f38]/72 backdrop-blur-xl shadow-[0_30px_70px_rgba(0,0,0,0.35)] p-7 sm:p-10"
+            className={`rounded-3xl border backdrop-blur-xl p-7 sm:p-10 ${
+              isDarkMode
+                ? 'border-white/12 bg-[#141414]/72 shadow-[0_30px_70px_rgba(0,0,0,0.35)]'
+                : 'border-black/10 bg-white/85 shadow-[0_20px_55px_rgba(15,23,42,0.14)]'
+            }`}
             initial={reduceMotion ? undefined : { opacity: 0, y: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
             transition={{ duration: 0.45, ease: 'easeOut' }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="inline-flex items-center px-3 py-1 rounded-full border border-lime-300/35 bg-lime-300/10 text-lime-200 text-xs font-semibold tracking-wide">
+              <div className="inline-flex items-center px-3 py-1 rounded-full border border-lima/40 bg-lima/15 text-lima text-xs font-semibold tracking-wide">
                 AI NEWSROOM ACCESS
               </div>
 
               {/* LIVE chip */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/12 bg-white/5 text-xs font-semibold text-gray-200">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/50 text-xs font-semibold text-[color:var(--hw-text-muted)]">
                 <span
                   aria-hidden="true"
                   className={`h-2 w-2 rounded-full bg-emerald-300 ${reduceMotion ? '' : 'animate-pulse'}`}
@@ -167,7 +186,7 @@ function SignedOutLanding() {
             </div>
 
             {reduceMotion ? (
-              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white">
+              <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-[color:var(--hw-text)]">
                 Welcome to Newscore
               </h1>
             ) : (
@@ -178,7 +197,7 @@ function SignedOutLanding() {
               />
             )}
 
-            <p className="mt-4 text-sm sm:text-base text-gray-200 max-w-2xl leading-relaxed">
+            <p className="mt-4 text-sm sm:text-base text-[color:var(--hw-text-muted)] max-w-2xl leading-relaxed">
               Your AI newsroom for credibility, context, and bias signals.
             </p>
 
@@ -186,14 +205,14 @@ function SignedOutLanding() {
               {FEATURES.map(({ icon: Icon, title, description }) => (
                 <div
                   key={title}
-                  className="flex items-start gap-3 rounded-xl border border-white/12 bg-[#0f2a49]/52 px-4 py-3"
+                  className="flex items-start gap-3 rounded-xl border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/60 px-4 py-3"
                 >
-                  <div className="flex-shrink-0 rounded-lg p-2 bg-lime-300/12 border border-lime-300/30 text-lime-200">
+                  <div className="flex-shrink-0 rounded-lg p-2 bg-lima/15 border border-lima/40 text-lima">
                     {React.createElement(Icon, { className: 'w-4 h-4' })}
                   </div>
                   <div>
-                    <p className="font-semibold text-white text-sm">{title}</p>
-                    <p className="text-xs sm:text-sm text-gray-300">{description}</p>
+                    <p className="font-semibold text-[color:var(--hw-text)] text-sm">{title}</p>
+                    <p className="text-xs sm:text-sm text-[color:var(--hw-text-muted)]">{description}</p>
                   </div>
                 </div>
               ))}
@@ -203,13 +222,15 @@ function SignedOutLanding() {
               <SignInButton mode="modal">
                 <Motion.button
                   type="button"
-                  className="relative inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-[#001a33] bg-gradient-to-r from-[#e3e30a] to-[#c4c408] shadow-[0_10px_25px_rgba(210,210,9,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-lime-300 focus-visible:ring-offset-[#0a1f38]"
+                  className={`relative inline-flex items-center justify-center rounded-xl px-6 py-3 font-semibold text-[#050505] bg-gradient-to-r from-[#d4e600] to-[#c6dd00] shadow-[0_10px_25px_rgba(212,230,0,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-lime-300 ${
+                    isDarkMode ? 'focus-visible:ring-offset-[#0f0f0f]' : 'focus-visible:ring-offset-white'
+                  }`}
                   whileHover={reduceMotion ? undefined : { y: -2, scale: 1.01 }}
                   whileTap={reduceMotion ? undefined : { scale: 0.99 }}
                 >
                   <Motion.span
                     aria-hidden="true"
-                    className="absolute inset-0 rounded-xl bg-lime-200/35 blur-lg"
+                    className="absolute inset-0 rounded-xl bg-lima/35 blur-lg"
                     animate={reduceMotion ? undefined : { opacity: [0.35, 0.68, 0.35] }}
                     transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
                   />
@@ -220,20 +241,24 @@ function SignedOutLanding() {
           </Motion.section>
 
           <Motion.aside
-            className="hidden lg:flex flex-col rounded-2xl border border-white/10 bg-[#091b31]/75 backdrop-blur-lg p-5 min-h-[420px]"
+            className={`hidden lg:flex flex-col rounded-2xl border backdrop-blur-lg p-5 min-h-[420px] ${
+              isDarkMode
+                ? 'border-white/10 bg-[#131313]/75'
+                : 'border-black/10 bg-white/80'
+            }`}
             initial={reduceMotion ? undefined : { opacity: 0, x: 18 }}
             animate={reduceMotion ? undefined : { opacity: 1, x: 0 }}
             transition={{ duration: 0.45, delay: 0.1 }}
             aria-label="Live signals"
           >
-            <div className="flex items-center gap-2 text-lime-200 text-sm font-semibold mb-4">
+            <div className="flex items-center gap-2 text-lima text-sm font-semibold mb-4">
               <Activity className="w-4 h-4" />
               Live signals
             </div>
 
-            <div className="relative flex-1 overflow-hidden rounded-xl border border-white/10 bg-[#07162a]/60 p-3">
-              <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#07162a] to-transparent pointer-events-none z-10" />
-              <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#07162a] to-transparent pointer-events-none z-10" />
+            <div className="relative flex-1 overflow-hidden rounded-xl border border-[color:var(--hw-border)] bg-[color:var(--hw-bg)]/40 p-3">
+              <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
+              <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
 
               <Motion.div
                 ref={trackRef}
@@ -264,7 +289,7 @@ function SignedOutLanding() {
         </div>
       </div>
 
-      <footer className="absolute bottom-4 inset-x-0 z-10 text-center text-[11px] text-gray-300/85 px-4">
+      <footer className="absolute bottom-4 inset-x-0 z-10 text-center text-[11px] text-[color:var(--hw-text-muted)] px-4">
         Mirada21 Media Lab · Powered by Newscore
       </footer>
     </div>

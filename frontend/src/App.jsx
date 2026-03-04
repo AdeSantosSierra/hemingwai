@@ -1,11 +1,10 @@
 // App.jsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import logo from './assets/logo2.png';
+import logoBlanco from './assets/logoblanco.png';
+import logoNegro from './assets/logonegro.png';
 import {
   Search,
   History,
-  Settings,
-  HelpCircle,
   Globe2,
   Newspaper,
   Loader,
@@ -13,7 +12,9 @@ import {
   Code,
   Link2,
   Brain,
-  ShieldCheck
+  ShieldCheck,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { Toaster, toast } from 'sonner';
 import { motion as Motion, AnimatePresence } from 'framer-motion';
@@ -35,12 +36,23 @@ import SignedOutLanding from './components/SignedOutLanding';
 
 const HISTORY_LIMIT = 4;
 const HISTORY_STORAGE_KEY_PREFIX = 'analysisHistory';
+const THEME_STORAGE_KEY = 'hw-theme';
 
 /*  
    App principal
      */
 function App() {
   const { getToken, isLoaded, isSignedIn, userId } = useAuth();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    try {
+      const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+      if (savedTheme === 'dark') return true;
+      if (savedTheme === 'light') return false;
+    } catch (error) {
+      console.error('No se pudo leer el tema guardado:', error);
+    }
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
   const [identificador, setIdentificador] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
@@ -55,6 +67,15 @@ function App() {
   const historyStorageKey = userId
     ? `${HISTORY_STORAGE_KEY_PREFIX}:${userId}`
     : null;
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, isDarkMode ? 'dark' : 'light');
+    } catch (error) {
+      console.error('No se pudo guardar la preferencia de tema:', error);
+    }
+  }, [isDarkMode]);
 
   const mapHistoryItemsForUI = useCallback((items) => {
     if (!Array.isArray(items)) {
@@ -316,10 +337,10 @@ function App() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-[#071A31] text-gray-100 flex items-center justify-center px-6">
-        <div className="max-w-lg w-full rounded-2xl border border-lima/40 bg-[#0b2340] p-6 text-center">
+      <div className="min-h-screen bg-[color:var(--hw-bg)] text-[color:var(--hw-text)] flex items-center justify-center px-6">
+        <div className="max-w-lg w-full rounded-2xl border border-lima/40 bg-[color:var(--hw-bg-elevated)] p-6 text-center">
           <h1 className="text-2xl font-bold mb-2">Loading authentication...</h1>
-          <p className="text-sm text-gray-200">Preparing your session to access HemingwAI.</p>
+          <p className="text-sm text-[color:var(--hw-text-muted)]">Preparing your session to access HemingwAI.</p>
         </div>
       </div>
     );
@@ -328,7 +349,7 @@ function App() {
   return (
     <>
     <SignedIn>
-    <div className="min-h-screen flex flex-col bg-animated text-gray-100 font-sans overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-animated text-[color:var(--hw-text)] font-sans overflow-x-hidden transition-colors duration-300">
       {/* Capa de Partículas (Z-Index 0, detrás del grid y contenido) */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <BackgroundParticles />
@@ -337,10 +358,10 @@ function App() {
       <Toaster position="top-center" richColors />
       
       {/* Barra superior */}
-      <header className="w-full border-b border-lima/60 bg-[#071A31]/95 backdrop-blur flex items-center justify-between px-6 sm:px-10 py-3 shadow-md sticky top-0 z-50">
+      <header className="w-full border-b border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/95 backdrop-blur flex items-center justify-between px-6 sm:px-10 py-3 shadow-md sticky top-0 z-50 transition-colors duration-300">
         <div className="flex items-center gap-3">
           <img
-            src={logo}
+            src={isDarkMode ? logoBlanco : logoNegro}
             alt="Mirada Media Lab"
             className="h-9 w-auto drop-shadow-sm"
           />
@@ -348,16 +369,16 @@ function App() {
             <span className="text-sm font-semibold tracking-tight">
               Mirada21 Media Lab
             </span>
-            <span className="text-xs text-gray-300">
+            <span className="text-xs text-[color:var(--hw-text-muted)]">
               Análisis de noticias con IA
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4 text-gray-200">
+        <div className="flex items-center gap-4 text-[color:var(--hw-text-muted)]">
           {/* History Button and Dropdown */}
-          <div className="relative" ref={historyRef}>
+          <div className="relative flex items-center" ref={historyRef}>
             <button 
-              className={`hover:text-lima transition-colors transform hover:scale-110 duration-200 ${showHistory ? 'text-lima' : ''}`}
+              className={`flex items-center justify-center hover:text-lima transition-colors transform hover:scale-110 duration-200 ${showHistory ? 'text-lima' : ''}`}
               title="Historial"
               onClick={() => setShowHistory(!showHistory)}
             >
@@ -365,17 +386,18 @@ function App() {
             </button>
             
             {showHistory && (
-              <div className="absolute right-0 mt-2 z-50 bg-[#071A31] border border-gray-700 rounded-lg shadow-2xl overflow-hidden w-64 md:w-80">
+              <div className="absolute right-0 top-full mt-2 z-50 bg-[color:var(--hw-bg-elevated)] border border-[color:var(--hw-border)] rounded-lg shadow-2xl overflow-hidden w-64 md:w-80">
                 <HistoryPanel history={history} onSelect={handleHistorySelect} />
               </div>
             )}
           </div>
 
-          <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Ayuda">
-            <HelpCircle className="w-5 h-5" />
-          </button>
-          <button className="hover:text-lima transition-colors transform hover:scale-110 duration-200" title="Ajustes">
-            <Settings className="w-5 h-5" />
+          <button
+            className="hover:text-lima transition-colors transform hover:scale-110 duration-200"
+            title={isDarkMode ? 'Cambiar a modo día' : 'Cambiar a modo noche'}
+            onClick={() => setIsDarkMode((current) => !current)}
+          >
+            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
           </button>
           <UserButton afterSignOutUrl="/" />
         </div>
@@ -391,7 +413,7 @@ function App() {
           className={`flex flex-col items-center text-center w-full transition-all duration-700 ${isIdle ? 'mt-20 sm:mt-24 mb-0' : 'mt-8 mb-8'}`}
           transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#071A31]/80 border border-lima shadow-sm mb-4 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[color:var(--hw-bg-elevated)] border border-lima shadow-sm mb-4 animate-fade-in">
             <Newspaper className="w-4 h-4 text-lima" />
             <span className="text-xs font-semibold tracking-wide uppercase">
               IA para análisis periodístico
@@ -399,14 +421,14 @@ function App() {
           </div>
           
           <GlitchTitle 
-            text="La IA que evalúa la calidad de las noticias" 
-            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4"
+            text={`El marcador\nde calidad de las Noticias`}
+            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 whitespace-pre-line"
             intensity="subtle"
           />
 
-          <p className="text-sm sm:text-base text-gray-200 max-w-2xl mx-auto">
-            Analiza titulares, fuentes, contexto y criterios éticos para ayudarte
-            a entender la calidad informativa de cada artículo.
+          <p className="text-sm sm:text-base text-[color:var(--hw-text-muted)] max-w-2xl mx-auto">
+            Evalúa el rigor, detecta sesgos y verifica los acontecimientos con
+            nuestro motor de IA avanzado.
           </p>
         </Motion.section>
 
@@ -431,17 +453,17 @@ function App() {
                 ${isIdle ? 'px-8 sm:px-12 py-12' : 'px-6 sm:px-8 py-6'}
               `}>
                 <h2 className={`
-                  font-bold text-gray-100 flex items-center gap-3 transition-all duration-300
+                  font-bold text-[color:var(--hw-text)] flex items-center gap-3 transition-all duration-300
                   ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center tracking-tight' : 'text-lg sm:text-xl mb-5'}
                 `}>
                   <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-7 h-7' : 'w-5 h-5'}`} />
-                  {isIdle ? 'ANALIZAR NOTICIA DESDE URL' : 'Analizar noticia desde URL'}
+                  {isIdle ? 'EL MARCADOR DE CALIDAD DE LAS NOTICIAS' : 'El marcador de calidad de las Noticias'}
                 </h2>
 
                 <div className={`space-y-5 ${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
                   <div className="relative group">
                     <Search className={`
-                      absolute left-5 text-gray-500 group-focus-within:text-lima transition-all duration-300
+                      absolute left-5 text-[color:var(--hw-text-muted)] group-focus-within:text-lima transition-all duration-300
                       ${isIdle ? 'top-5 w-6 h-6' : 'top-3 w-5 h-5'}
                     `} />
                     <input
@@ -451,7 +473,7 @@ function App() {
                       onChange={(e) => setIdentificador(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleBuscarNoticia()}
                       className={`
-                        w-full bg-[#050f1e]/60 border border-gray-600/70 text-gray-100 placeholder-gray-400
+                        w-full bg-[color:var(--hw-bg-strong)] border border-[color:var(--hw-border)] text-[color:var(--hw-text)] placeholder-[color:var(--hw-text-muted)]
                         rounded-[14px]
                         focus:outline-none focus:ring-2 focus:ring-lima/20 focus:border-lima/40
                         transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
@@ -471,8 +493,8 @@ function App() {
                       hover:brightness-110 hover:scale-[1.005] active:scale-[0.99]
                       transition-all duration-200
                       disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed
-                      bg-gradient-to-r from-[#e3e30a] to-[#c4c408] text-[#001a33]
-                      shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(210,210,9,0.2)]
+                      bg-gradient-to-r from-[#d4e600] to-[#c6dd00] text-[#050505]
+                      shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(212,230,0,0.2)]
                       ${isIdle ? 'px-8 py-4 text-lg mt-6' : 'px-4 py-3 text-base'}
                     `}
                   >
@@ -502,7 +524,7 @@ function App() {
                 className="w-full mt-0 mb-8"
               >
                 <div className="bg-transparent p-6 transition-all duration-500">
-                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-gray-100 flex items-center gap-2 hw-terminal-font">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-4 text-[color:var(--hw-text)] flex items-center gap-2 hw-terminal-font">
                     <Code className="w-5 h-5 text-lima" />
                     Resultado del análisis
                   </h3>
@@ -529,12 +551,12 @@ function App() {
           <div className="grid gap-6 md:grid-cols-3">
             {/* Card 1 */}
             <RevealOnScroll delay={0} className="h-full">
-              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
                 <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
                   <Link2 className="w-6 h-6 text-lima" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">1. Leemos tu URL</h3>
-                <p className="text-sm text-gray-300">
+                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">1. Leemos tu URL</h3>
+                <p className="text-sm text-[color:var(--hw-text-muted)]">
                   Extraemos el titular, el cuerpo de la noticia y la fuente original para procesar la información.
                 </p>
               </div>
@@ -542,12 +564,12 @@ function App() {
 
             {/* Card 2 */}
             <RevealOnScroll delay={100} className="h-full">
-              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
                  <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
                   <Brain className="w-6 h-6 text-lima" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">2. Analizamos el contenido</h3>
-                <p className="text-sm text-gray-300">
+                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">2. Analizamos el contenido</h3>
+                <p className="text-sm text-[color:var(--hw-text-muted)]">
                   La IA evalúa la calidad del titular, la precisión, el contexto y la confiabilidad de las fuentes.
                 </p>
               </div>
@@ -555,12 +577,12 @@ function App() {
 
             {/* Card 3 */}
             <RevealOnScroll delay={200} className="h-full">
-              <div className="bg-[#001a33]/60 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
+              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
                  <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
                   <ShieldCheck className="w-6 h-6 text-lima" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">3. Te devolvemos la valoración</h3>
-                <p className="text-sm text-gray-300">
+                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">3. Te devolvemos la valoración</h3>
+                <p className="text-sm text-[color:var(--hw-text-muted)]">
                   Te mostramos una puntuación global y un desglose detallado de la información.
                 </p>
               </div>
@@ -572,12 +594,12 @@ function App() {
         <footer className={`mt-auto mb-6 w-full ${isIdle ? '' : ''}`}>
           <div className="max-w-3xl mx-auto">
             {!isIdle && (
-                <div className="bg-[#071A31] text-gray-200 text-xs text-center py-3 rounded-xl border border-lima shadow-[0_0_25px_rgba(210,210,9,0.4)] px-4 mb-3">
+                <div className="bg-[color:var(--hw-bg-elevated)] text-[color:var(--hw-text-muted)] text-xs text-center py-3 rounded-xl border border-lima shadow-[0_0_25px_rgba(212,230,0,0.28)] px-4 mb-3">
                 Esta IA puede cometer errores. Verifica la información relevante
                 antes de tomar decisiones basadas en los resultados.
               </div>
             )}
-            <p className="text-[11px] text-gray-400 text-center">
+            <p className="text-[11px] text-[color:var(--hw-text-muted)] text-center">
               © 2025 Mirada Media Lab · Suite de Análisis IA. Todos los derechos
               reservados.
             </p>
@@ -589,7 +611,10 @@ function App() {
     </SignedIn>
 
     <SignedOut>
-      <SignedOutLanding />
+      <SignedOutLanding
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode((current) => !current)}
+      />
     </SignedOut>
     </>
   );

@@ -10,6 +10,34 @@
   * REGLAS GLOBALES
   *   ------ */
  @layer base {
+   :root {
+     --hw-primary: #d4e600;
+     --hw-bg: #f9fafb;
+     --hw-bg-elevated: #ffffff;
+     --hw-bg-strong: #f3f4f6;
+     --hw-text: #111827;
+     --hw-text-muted: #6b7280;
+     --hw-border: rgba(15, 23, 42, 0.14);
+     --hw-grid: rgba(17, 24, 39, 0.08);
+     --hw-glass-border: rgba(15, 23, 42, 0.12);
+     --hw-glass-bg: rgba(255, 255, 255, 0.72);
+     --hw-glass-top: rgba(255, 255, 255, 0.8);
+   }
+
+   html.dark {
+     --hw-primary: #d4e600;
+     --hw-bg: #050505;
+     --hw-bg-elevated: #111111;
+     --hw-bg-strong: #1b1b1b;
+     --hw-text: #f3f4f6;
+     --hw-text-muted: #9ca3af;
+     --hw-border: rgba(255, 255, 255, 0.12);
+     --hw-grid: rgba(255, 255, 255, 0.03);
+     --hw-glass-border: rgba(212, 230, 0, 0.2);
+     --hw-glass-bg: rgba(17, 17, 17, 0.62);
+     --hw-glass-top: rgba(255, 255, 255, 0.06);
+   }
+
    html {
      font-family: 'Arimo', sans-serif;
    }
@@ -22,21 +50,23 @@
  body {
    margin: 0;
    min-height: 100vh;
-   background-color: #001a33;
+   background-color: var(--hw-bg);
+   color: var(--hw-text);
+   transition: background-color 220ms ease, color 220ms ease;
  }
  
  @layer utilities {
    .bg-lima {
-     background-color: #d2d209;
+     background-color: var(--hw-primary);
    }
    .text-lima {
-     color: #d2d209;
+     color: var(--hw-primary);
    }
    .border-lima {
-     border-color: #d2d209;
+     border-color: var(--hw-primary);
    }
    .hover\:bg-lima-dark:hover {
-    background-color: #d2d209;
+    background-color: var(--hw-primary);
   }
  }
 
@@ -49,7 +79,7 @@
  /* --- GLITCH EFECTO (OLD/MEDIUM) --- */
  .glitch {
    position: relative;
-   color: white;
+   color: var(--hw-text);
  }
 
  .glitch::before,
@@ -60,12 +90,12 @@
    left: 0;
    width: 100%;
    height: 100%;
-   background: #001a33;
+   background: var(--hw-bg);
  }
 
  .glitch::before {
    left: 2px;
-   text-shadow: -1px 0 #d2d209;
+   text-shadow: -1px 0 var(--hw-primary);
    clip: rect(44px, 450px, 56px, 0);
    animation: glitch-anim-1 3s infinite linear alternate-reverse;
  }
@@ -82,7 +112,7 @@
  .hw-glitch {
    position: relative;
    display: inline-block;
-   color: white;
+   color: var(--hw-text);
    /* Ensure main text is always visible and on top of backgrounds but below pseudo-effects if they were covering, 
       but here we want pseudo to be behind or blended. 
       Actually, standard glitch puts pseudo on top usually but with mix-blend-mode or behind. 
@@ -106,7 +136,7 @@
 
  /* Red channel / Left shift */
  .hw-glitch::before {
-   text-shadow: -1px 0 #d2d209; /* Lime shadow */
+   text-shadow: -1px 0 var(--hw-primary); /* Lime shadow */
    animation: hw-glitch-continuous 8s infinite linear alternate-reverse;
  }
 
@@ -139,8 +169,8 @@
    top: 0;
    bottom: 0;
    width: 4px;
-   background-color: #d2d209;
-   box-shadow: 0 0 10px #d2d209;
+   background-color: var(--hw-primary);
+   box-shadow: 0 0 10px color-mix(in srgb, var(--hw-primary) 80%, transparent);
    animation: hw-bar-glow 4s ease-in-out infinite;
  }
 
@@ -153,7 +183,7 @@
    background: linear-gradient(
      to bottom,
      transparent,
-     rgba(210, 210, 9, 0.1) 50%,
+     color-mix(in srgb, var(--hw-primary) 24%, transparent) 50%,
      transparent
    );
    opacity: 0.3;
@@ -218,8 +248,8 @@
  }
 
  @keyframes hw-bar-glow {
-   0%, 100% { opacity: 0.8; box-shadow: 0 0 5px #d2d209; }
-   50% { opacity: 1; box-shadow: 0 0 15px #d2d209; }
+   0%, 100% { opacity: 0.8; box-shadow: 0 0 5px color-mix(in srgb, var(--hw-primary) 75%, transparent); }
+   50% { opacity: 1; box-shadow: 0 0 15px color-mix(in srgb, var(--hw-primary) 90%, transparent); }
  }
 
  @keyframes hw-scanline {
@@ -231,7 +261,7 @@
  .bg-animated {
   position: relative;
   min-height: 100vh;
-  background-color: #001a33;
+  background-color: var(--hw-bg);
   overflow-x: hidden;
   isolation: isolate;
 }
@@ -242,10 +272,10 @@
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,0.015) 1px, transparent 1px);
+    linear-gradient(to right, var(--hw-grid) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--hw-grid) 1px, transparent 1px);
   background-size: 40px 40px;
-  opacity: 0.15;
+  opacity: 0.35;
   mix-blend-mode: soft-light;
   z-index: 1;
   -webkit-mask-image: radial-gradient(circle at 50% 35%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 35%, black 100%);
@@ -259,9 +289,9 @@
   /* Multi-layer background: Sheen (moved here) + Radial + Linear + Base */
   background:
     linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 58%),
-    radial-gradient(1200px 500px at 20% 0%, rgba(255,255,255,0.06), rgba(255,255,255,0) 55%),
+    radial-gradient(1200px 500px at 20% 0%, var(--hw-glass-top), rgba(255,255,255,0) 55%),
     linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.0) 45%),
-    rgba(6, 18, 33, 0.36);
+    var(--hw-glass-bg);
   background-blend-mode: screen, normal, normal, normal;
   
   /* Double border effect: 
@@ -269,12 +299,12 @@
      2. Inner: extremely subtle cool white (rgba(255, 255, 255, 0.03)) via box-shadow ring
      + Inner highlight/shadows for depth
   */
-  border: 1px solid rgba(210, 210, 9, 0.15);
+  border: 1px solid var(--hw-glass-border);
   box-shadow: 
     inset 0 0 0 1px rgba(255, 255, 255, 0.03), /* Inner subtle cool white border */
     inset 0 1px 0 0 rgba(255, 255, 255, 0.08), /* Top edge highlight */
     inset 0 -1px 0 0 rgba(0, 0, 0, 0.2), /* Bottom edge shadow */
-    0 12px 28px rgba(0, 0, 0, 0.22); /* Deep drop shadow */
+    0 12px 28px rgba(0, 0, 0, 0.16); /* Deep drop shadow */
   
   overflow: hidden; /* For noise containment */
 }

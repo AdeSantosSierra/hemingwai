@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const TerminalSectionTitle = ({ children, className = '' }) => {
   return (
-    <div className={`hw-terminal-title font-mono text-white ${className}`}>
+    <div className={`hw-terminal-title font-mono text-[color:var(--hw-text)] ${className}`}>
       {/* Vertical bar on the left */}
       <div className="hw-terminal-bar"></div>
       

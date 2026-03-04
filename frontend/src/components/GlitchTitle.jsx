@@ -16,7 +16,7 @@ const GlitchTitle = ({
   return (
     <span className={`${wrapperClass} inline-block`}>
       <h1 
-        className={`${glitchClass} relative inline-block text-white ${className}`} 
+        className={`${glitchClass} relative inline-block text-[color:var(--hw-text)] ${className}`} 
         data-text={text}
       >
         {text}

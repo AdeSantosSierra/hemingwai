@@ -15,7 +15,7 @@ const renderMarkdown = (text) => {
     // --- Formato Markdown Básico ---
     
     // Títulos (### Título) -> <h3>
-    html = html.replace(/^### (.*$)/gim, '<h3 class="font-bold mt-3 mb-1 text-lg border-b border-white/10 pb-1">$1</h3>');
+    html = html.replace(/^### (.*$)/gim, '<h3 class="font-bold mt-3 mb-1 text-lg border-b border-[color:var(--hw-border)] pb-1">$1</h3>');
     // Títulos (## Título) -> <h2>
     html = html.replace(/^## (.*$)/gim, '<h2 class="font-bold mt-3 mb-1 text-xl">$1</h2>');
     
@@ -59,7 +59,7 @@ const renderMarkdown = (text) => {
 };
 // ----------------------------
 
-// Estilos con la paleta corporativa (Azul Oscuro y #d2d209)
+// Estilos visuales ligados a tokens de tema (sin afectar la lógica del chat)
 const styles = {
     chatbotContainer: {
         // border: '1px solid #d2d209', // Borde removido para integrarse con glass
@@ -68,7 +68,7 @@ const styles = {
         marginTop: '0',
         fontFamily: 'Inter, sans-serif', 
         backgroundColor: 'transparent', // Transparente para permitir glass del padre
-        color: '#ffffff', // Texto base blanco
+        color: 'var(--hw-text)',
         // maxWidth eliminada para que llene la columna
         width: '100%',
         margin: '0',
@@ -80,19 +80,19 @@ const styles = {
     title: {
         margin: '0 0 20px 0',
         paddingBottom: '15px',
-        borderBottom: '1px solid rgba(210, 210, 9, 0.3)', // Línea separadora sutil
+        borderBottom: '1px solid var(--hw-border)',
         textAlign: 'center',
-        color: '#d2d209', // Título en #d2d209
+        color: 'var(--hw-primary)',
         fontSize: '1.25rem',
     },
     messagesContainer: {
         flex: '1', // Ocupa el espacio restante
         minHeight: '400px',
         overflowY: 'auto',
-        border: '1px solid rgba(255,255,255,0.10)',
+        border: '1px solid var(--hw-border)',
         padding: '16px',
         marginBottom: '16px',
-        backgroundColor: 'rgba(255,255,255,0.03)', // Glass-like surface
+        backgroundColor: 'color-mix(in srgb, var(--hw-bg-elevated) 82%, transparent)',
         backdropFilter: 'blur(10px) saturate(130%)',
         WebkitBackdropFilter: 'blur(10px) saturate(130%)',
         borderRadius: '6px',
@@ -109,17 +109,17 @@ const styles = {
         lineHeight: '1.5',
     },
     userMessage: {
-        backgroundColor: '#d2d209', // Fondo #d2d209
-        color: '#001a33', // Texto oscuro para contraste
+        backgroundColor: 'var(--hw-primary)',
+        color: '#050505',
         alignSelf: 'flex-end',
         marginLeft: 'auto',
         boxShadow: '0 8px 18px rgba(0,0,0,0.25)', // Tiny shadow
     },
     botMessage: {
-        backgroundColor: 'rgba(255,255,255,0.04)', // Glass message
-        border: '1px solid rgba(255,255,255,0.10)',
+        backgroundColor: 'color-mix(in srgb, var(--hw-bg-elevated) 92%, transparent)',
+        border: '1px solid var(--hw-border)',
         backdropFilter: 'blur(8px)',
-        color: '#ffffff', // Texto blanco
+        color: 'var(--hw-text)',
         alignSelf: 'flex-start',
     },
     form: {
@@ -129,25 +129,25 @@ const styles = {
         flex: '1',
         padding: '10px',
         borderRadius: '20px',
-        border: '1px solid rgba(210, 210, 9, 0.5)',
+        border: '1px solid var(--hw-border)',
         marginRight: '10px',
-        backgroundColor: 'rgba(5, 15, 30, 0.6)', // Fondo oscuro transparente
-        color: '#ffffff', // Texto blanco
+        backgroundColor: 'color-mix(in srgb, var(--hw-bg) 88%, transparent)',
+        color: 'var(--hw-text)',
         outline: 'none',
     },
     button: {
         padding: '10px 20px',
         borderRadius: '20px',
         border: 'none',
-        backgroundColor: '#d2d209', // Botón #d2d209
-        color: '#001a33', // Texto botón oscuro
+        backgroundColor: 'var(--hw-primary)',
+        color: '#050505',
         cursor: 'pointer',
         fontWeight: 'bold',
-        boxShadow: '0 10px 24px rgba(210,210,9,0.18)',
+        boxShadow: '0 10px 24px rgba(212,230,0,0.2)',
     },
     buttonDisabled: {
-        backgroundColor: 'rgba(210, 210, 9, 0.3)', // Lower opacity lime
-        color: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'rgba(212, 230, 0, 0.35)',
+        color: 'rgba(5, 5, 5, 0.5)',
         cursor: 'not-allowed',
         boxShadow: 'none',
     },
@@ -158,7 +158,7 @@ const styles = {
     },
     loading: {
         textAlign: 'center',
-        color: '#d2d209', // "Pensando..." en #d2d209
+        color: 'var(--hw-primary)',
     },
     // Estilos para la pantalla de bloqueo
     lockScreen: {
@@ -180,7 +180,7 @@ const styles = {
         padding: '20px',
     },
     lockTitle: {
-        color: '#d2d209',
+        color: 'var(--hw-primary)',
         marginBottom: '15px',
         fontSize: '1.2em',
         textAlign: 'center',
@@ -188,10 +188,10 @@ const styles = {
     lockInput: {
         padding: '10px',
         borderRadius: '20px',
-        border: '1px solid #d2d209',
+        border: '1px solid var(--hw-border)',
         marginBottom: '15px',
-        backgroundColor: 'rgba(5, 15, 30, 0.6)', // Dark background
-        color: '#fff',
+        backgroundColor: 'color-mix(in srgb, var(--hw-bg) 88%, transparent)',
+        color: 'var(--hw-text)',
         width: '80%',
         maxWidth: '300px',
         textAlign: 'center',
@@ -296,7 +296,7 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
             {(!isLoaded || !isSignedIn) && (
                 <div style={styles.lockScreen}>
                     <h3 style={styles.lockTitle}>🔒 Chatbot Protegido</h3>
-                    <p className="text-white mb-4 text-center text-sm">
+                    <p className="text-[color:var(--hw-text)] mb-4 text-center text-sm">
                         Inicia sesión con Google para acceder al asistente.
                     </p>
                     {isLoaded && (
@@ -306,7 +306,7 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                             </button>
                         </SignInButton>
                     )}
-                    {!isLoaded && <p className="text-white/80 text-sm">Cargando sesión...</p>}
+                    {!isLoaded && <p className="text-[color:var(--hw-text-muted)] text-sm">Cargando sesión...</p>}
                     {authError && <p style={styles.error}>{authError}</p>}
                 </div>
             )}
@@ -343,7 +343,7 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                     style={styles.input}
                     disabled={cargando || !isLoaded || !isSignedIn}
                     // Adding focus class via className prop
-                    className="focus:shadow-[0_0_0_2px_rgba(210,210,9,0.2)] transition-shadow duration-200 placeholder-gray-400"
+                    className="focus:shadow-[0_0_0_2px_rgba(212,230,0,0.2)] transition-shadow duration-200 placeholder-[color:var(--hw-text-muted)]"
                 />
                 <button 
                     type="submit" 

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 const HistoryPanel = ({ history, onSelect }) => {
   if (!history || history.length === 0) {
       return (
-          <div className="p-4 text-center text-gray-400 text-xs">
+          <div className="p-4 text-center text-[color:var(--hw-text-muted)] text-xs">
               No hay historial reciente.
           </div>
       );
@@ -13,7 +13,7 @@ const HistoryPanel = ({ history, onSelect }) => {
 
   return (
     <div className="w-72 max-h-96 overflow-y-auto py-2">
-      <div className="flex items-center gap-2 px-4 py-2 text-gray-400 border-b border-gray-700/50 mb-1">
+      <div className="flex items-center gap-2 px-4 py-2 text-[color:var(--hw-text-muted)] border-b border-[color:var(--hw-border)] mb-1">
         <History className="w-3 h-3" />
         <span className="text-[10px] font-semibold uppercase tracking-wider">Recientes</span>
       </div>
@@ -23,14 +23,14 @@ const HistoryPanel = ({ history, onSelect }) => {
           <button
             key={item.id || index}
             onClick={() => onSelect(item)}
-            className="flex items-start gap-3 px-4 py-3 hover:bg-[#0f2e53] transition-colors text-left group border-b border-gray-800/50 last:border-0"
+            className="flex items-start gap-3 px-4 py-3 hover:bg-[color:var(--hw-bg-strong)] transition-colors text-left group border-b border-[color:var(--hw-border)] last:border-0"
           >
             <div className="flex-1 min-w-0">
-              <h4 className="text-xs font-medium text-gray-200 truncate group-hover:text-white">
+              <h4 className="text-xs font-medium text-[color:var(--hw-text)] truncate group-hover:text-[color:var(--hw-text)]">
                 {item.title || item.query}
               </h4>
               <div className="flex items-center gap-1 mt-0.5">
-                 <span className="text-[10px] text-gray-500 truncate group-hover:text-gray-400">
+                 <span className="text-[10px] text-[color:var(--hw-text-muted)] truncate group-hover:text-[color:var(--hw-text-muted)]">
                    {(() => {
                      try {
                        const urlStr = item.url || item.query;
@@ -40,10 +40,10 @@ const HistoryPanel = ({ history, onSelect }) => {
                      }
                    })()}
                  </span>
-                 <span className="text-[10px] text-gray-600 group-hover:text-gray-500">• {new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                 <span className="text-[10px] text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text-muted)]">• {new Date(item.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
               </div>
             </div>
-            <ExternalLink className="w-3 h-3 text-gray-600 group-hover:text-lima opacity-0 group-hover:opacity-100 transition-all mt-1" />
+            <ExternalLink className="w-3 h-3 text-[color:var(--hw-text-muted)] group-hover:text-lima opacity-0 group-hover:opacity-100 transition-all mt-1" />
           </button>
         ))}
       </div>

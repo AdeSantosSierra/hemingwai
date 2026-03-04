@@ -185,7 +185,7 @@ const PuntuacionIndicador = ({ puntuacion }) => {
   return (
     <div className="flex items-center gap-2">
       <div className={`w-3 h-3 rounded-full ${getColor(score)}`} />
-      <span className="font-bold text-gray-200">
+      <span className="font-bold text-[color:var(--hw-text-muted)]">
         {Number.isFinite(score) ? score.toFixed(2) : 'N/A'}
       </span>
     </div>
@@ -346,58 +346,58 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
             {/* Columna izquierda: Título y Metadatos */}
             <div className="flex-1">
-              <h3 className="text-2xl font-bold text-white mb-4">
+              <h3 className="text-2xl font-bold text-[color:var(--hw-text)] mb-4">
                 {resultado.titulo}
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="font-semibold text-gray-300">
+                  <span className="font-semibold text-[color:var(--hw-text-muted)]">
                     Fecha de publicación:
                   </span>
-                  <p className="text-gray-200">
+                  <p className="text-[color:var(--hw-text-muted)]">
                     {resultado.fecha_publicacion
                       ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
                       : 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <span className="font-semibold text-gray-300">Fuente:</span>
-                  <p className="text-gray-200">{resultado.fuente || 'N/A'}</p>
+                  <span className="font-semibold text-[color:var(--hw-text-muted)]">Fuente:</span>
+                  <p className="text-[color:var(--hw-text-muted)]">{resultado.fuente || 'N/A'}</p>
                 </div>
                 <div className="col-span-1 sm:col-span-2">
-                  <span className="font-semibold text-gray-300">Autor(es):</span>
-                  <p className="text-gray-200">
+                  <span className="font-semibold text-[color:var(--hw-text-muted)]">Autor(es):</span>
+                  <p className="text-[color:var(--hw-text-muted)]">
                     {resultado.autor && resultado.autor.length > 0
                       ? resultado.autor.join(', ')
                       : 'N/A'}
                   </p>
                 </div>
-                <div className="col-span-1 sm:col-span-2 mt-2 space-y-4 border-t border-gray-600/30 pt-4">
+                <div className="col-span-1 sm:col-span-2 mt-2 space-y-4 border-t border-[color:var(--hw-border)] pt-4">
                   {activeCriterion === null ? (
                     <>
                       <div>
-                        <span className="font-semibold text-gray-300 block mb-1">
+                        <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
                           Resumen valoración:
                         </span>
-                        <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                        <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
                           {resultado.resumen_valoracion || '—'}
                         </p>
                       </div>
                       <div>
-                        <span className="font-semibold text-gray-300 block mb-1">
+                        <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
                           Resumen valoración del titular:
                         </span>
-                        <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                        <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
                           {resultado.resumen_valoracion_titular || '—'}
                         </p>
                       </div>
                     </>
                   ) : (
                     <div>
-                      <span className="font-semibold text-gray-300 block mb-1">
+                      <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
                         Resumen de {criterionSummaryLabel}
                       </span>
-                      <p className="text-gray-200 leading-relaxed whitespace-pre-wrap">
+                      <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
                         {criterionSummary}
                       </p>
                     </div>
@@ -410,7 +410,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0 md:w-52 lg:w-64">
               {/* Puntuación General */}
               <div className="text-center">
-                <div className="text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wide">
+                <div className="text-xs font-semibold text-[color:var(--hw-text-muted)] mb-1 uppercase tracking-wide">
                   Puntuación general
                 </div>
                 <NewsScoreDonut
@@ -426,7 +426,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         {/* Otras secciones (Análisis adicional) */}
         <RevealOnScroll delay={100}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-white mb-4">
+          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4">
             Análisis general
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -437,11 +437,11 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 abrirModal('Valoración general', resultado.valoracion_general)
               }
               disabled={!resultado.valoracion_general}
-              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
+              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
             >
-              <div className="font-semibold text-gray-100">Valoración general</div>
+              <div className="font-semibold text-[color:var(--hw-text)]">Valoración general</div>
               {!resultado.valoracion_general && (
-                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
               )}
             </motion.button>
 
@@ -455,13 +455,13 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 )
               }
               disabled={!resultado.valoracion_titular?.titular}
-              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
+              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
             >
-              <div className="font-semibold text-gray-100">
+              <div className="font-semibold text-[color:var(--hw-text)]">
                 Valoración del titular
               </div>
               {!resultado.valoracion_titular?.titular && (
-                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
               )}
             </motion.button>
 
@@ -472,13 +472,13 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
               }
               disabled={!resultado.fact_check_analisis}
-              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
+              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
             >
-              <div className="font-semibold text-gray-100">
+              <div className="font-semibold text-[color:var(--hw-text)]">
                 Análisis de Fact-Checking
               </div>
               {!resultado.fact_check_analisis && (
-                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
               )}
             </motion.button>
 
@@ -496,14 +496,14 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                 !resultado.fact_check_fuentes ||
                 resultado.fact_check_fuentes.length === 0
               }
-              className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
+              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
             >
-              <div className="font-semibold text-gray-100">
+              <div className="font-semibold text-[color:var(--hw-text)]">
                 Fuentes de Fact-Checking
               </div>
               {(!resultado.fact_check_fuentes ||
                 resultado.fact_check_fuentes.length === 0) && (
-                <p className="text-xs text-gray-400 mt-1">No disponible</p>
+                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
               )}
             </motion.button>
           </div>
@@ -514,7 +514,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         <RevealOnScroll delay={150}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-amber-400">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h4 className="text-xl font-bold text-white">
+            <h4 className="text-xl font-bold text-[color:var(--hw-text)]">
               Alertas detectadas
             </h4>
             <div className="flex flex-wrap gap-2 text-xs">
@@ -531,25 +531,25 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
           </div>
 
           {alerts.length === 0 ? (
-            <p className="text-sm text-gray-300">No hay alertas registradas para esta noticia.</p>
+            <p className="text-sm text-[color:var(--hw-text-muted)]">No hay alertas registradas para esta noticia.</p>
           ) : (
             <div className="space-y-3">
               {alerts.map((alert, index) => (
                 <div
                   key={`${alert.code}-${index}`}
-                  className="rounded-lg border border-white/10 bg-[#001a33]/35 p-4"
+                  className="rounded-lg border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/70 p-4"
                 >
                   <div className="flex flex-wrap items-center gap-2 mb-2">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${alert.severity.badge}`}>
                       Severidad {alert.severity.label}
                     </span>
-                    <span className="text-xs text-gray-300">{alert.category}</span>
+                    <span className="text-xs text-[color:var(--hw-text-muted)]">{alert.category}</span>
                     <span className="text-xs text-gray-500">{alert.origin}</span>
                     <span className="text-[11px] text-gray-500 font-mono">{alert.code}</span>
                   </div>
-                  <p className="text-sm text-gray-100">{alert.message}</p>
+                  <p className="text-sm text-[color:var(--hw-text)]">{alert.message}</p>
                   {alert.evidenceRefs.length > 0 && (
-                    <p className="text-xs text-gray-400 mt-2">
+                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">
                       Evidencias: {alert.evidenceRefs.join(' | ')}
                     </p>
                   )}
@@ -563,10 +563,10 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
         <RevealOnScroll delay={220}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-white mb-2">
+          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-2">
             Pregúntale al chatbot
           </h4>
-          <p className="text-sm text-gray-300 mb-4">
+          <p className="text-sm text-[color:var(--hw-text-muted)] mb-4">
              Haz clic en una sección para preguntar automáticamente al chatbot sobre su calificación.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -576,12 +576,12 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     key={key}
                     whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                     onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
-                    className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left bg-[#001a33]/35 flex items-center justify-between group"
+                    className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left bg-[color:var(--hw-bg-elevated)]/70 flex items-center justify-between group"
                   >
-                    <span className="text-sm font-semibold text-gray-200 group-hover:text-white">
+                    <span className="text-sm font-semibold text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text)]">
                       {nombresSecciones[key]}
                     </span>
-                    <MessageSquare className="w-4 h-4 text-gray-400 group-hover:text-lima" />
+                    <MessageSquare className="w-4 h-4 text-[color:var(--hw-text-muted)] group-hover:text-lima" />
                   </motion.button>
                 );
               })}
@@ -592,7 +592,7 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         {/* Valoraciones individuales */}
         <RevealOnScroll delay={320}>
         <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-white mb-4 hw-terminal-font">
+          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4 hw-terminal-font">
             Valoraciones por sección
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
@@ -613,21 +613,21 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                         valoracion || 'Contenido no disponible'
                       )
                     }
-                    className="p-4 border border-white/10 rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[#001a33]/35"
+                    className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
                     disabled={!valoracion}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-gray-200">
+                      <span className="text-sm font-semibold text-[color:var(--hw-text-muted)]">
                         {nombresSecciones[key]}
                       </span>
                       {puntuacionNumerica !== null ? (
                         <PuntuacionIndicador puntuacion={puntuacionNumerica} />
                       ) : (
-                        <span className="text-gray-400 text-xs">N/A</span>
+                        <span className="text-[color:var(--hw-text-muted)] text-xs">N/A</span>
                       )}
                     </div>
                     {!valoracion && (
-                      <p className="text-xs text-gray-400 mt-2">No disponible</p>
+                      <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">No disponible</p>
                     )}
                   </motion.button>
                 );

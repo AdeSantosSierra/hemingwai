@@ -1,4 +1,5 @@
 export default {
+  darkMode: 'class',
   content: [
     // 🌟 ESTO LE DICE A TAILWIND DÓNDE BUSCAR CLASES 🌟
     "./index.html",
@@ -11,8 +12,13 @@ export default {
         display: ['SUSE', 'sans-serif'], // SUSE para títulos
       },
       colors: {
-        lima: '#d2d209',
-        'lima-dark': '#baba08',
+        lima: '#D4E600',
+        'lima-dark': '#C6DD00',
+        primary: '#D4E600',
+        'background-light': '#F9FAFB',
+        'background-dark': '#050505',
+        'surface-light': '#FFFFFF',
+        'surface-dark': '#111111',
       },
       keyframes: {
         'fade-in': {

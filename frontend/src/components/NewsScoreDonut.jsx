@@ -22,7 +22,7 @@ const formatScore = (value) => {
 };
 
 const getScoreTone = (score) => {
-  if (!Number.isFinite(score)) return 'text-gray-300';
+  if (!Number.isFinite(score)) return 'text-[color:var(--hw-text-muted)]';
   if (score < 5) return 'text-red-500';
   if (score < 8) return 'text-yellow-400';
   return 'text-green-500';
@@ -163,14 +163,14 @@ const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
           </div>
           <div className="relative mt-1 h-6 w-full">
             <span
-              className={`absolute inset-0 truncate text-sm font-semibold text-gray-100 transition-opacity duration-200 ${
+              className={`absolute inset-0 truncate text-sm font-semibold text-[color:var(--hw-text)] transition-opacity duration-200 ${
                 activeCriterion ? 'opacity-0' : 'opacity-100'
               }`}
             >
               {statusLabel || '—'}
             </span>
             <span
-              className={`absolute inset-0 truncate text-sm font-semibold text-gray-100 transition-opacity duration-200 ${
+              className={`absolute inset-0 truncate text-sm font-semibold text-[color:var(--hw-text)] transition-opacity duration-200 ${
                 activeCriterion ? 'opacity-100' : 'opacity-0'
               }`}
             >
@@ -180,7 +180,7 @@ const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-gray-300">
+      <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-[color:var(--hw-text-muted)]">
         {criteriaData.map((criterion) => (
           <div key={criterion.key} className="flex items-center gap-2">
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: criterion.color }} />
