@@ -8,8 +8,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Arimo', 'sans-serif'], // Arimo por defecto para texto
-        display: ['SUSE', 'sans-serif'], // SUSE para títulos
+        sans: ['Inter', 'sans-serif'],
+        display: ['Inter', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace'],
       },
       colors: {
         lima: '#D4E600',

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
 /*   ------
  * DIRECTIVAS PRINCIPALES DE TAILWIND
  * Estas tres líneas le dicen a Tailwind qué generar.
@@ -39,11 +41,11 @@
    }
 
    html {
-     font-family: 'Arimo', sans-serif;
+     font-family: 'Inter', sans-serif;
    }
    
    h1, h2, h3, h4, h5, h6 {
-     font-family: 'SUSE', sans-serif;
+     font-family: 'Inter', sans-serif;
    }
  }
  
@@ -72,7 +74,7 @@
 
  /* --- TIPOGRAFÍA TERMINAL GLOBAL --- */
  .hw-terminal-font {
-   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
    letter-spacing: 0.02em;
  }
 

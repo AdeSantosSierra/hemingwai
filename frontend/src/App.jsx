@@ -5,14 +5,13 @@ import logoNegro from './assets/logonegro.png';
 import {
   Search,
   History,
-  Globe2,
-  Newspaper,
   Loader,
+  ArrowRight,
   Database,
   Code,
-  Link2,
-  Brain,
-  ShieldCheck,
+  FileDown,
+  Cpu,
+  BarChart3,
   Sun,
   Moon
 } from 'lucide-react';
@@ -30,7 +29,6 @@ import ResultadoBusqueda from './components/ResultadoBusqueda';
 import HistoryPanel from './components/HistoryPanel';
 import GlitchTitle from './components/GlitchTitle';
 import RevealOnScroll from './components/RevealOnScroll';
-import TerminalSectionTitle from './components/TerminalSectionTitle';
 import BackgroundParticles from './components/BackgroundParticles';
 import SignedOutLanding from './components/SignedOutLanding';
 
@@ -413,20 +411,13 @@ function App() {
           className={`flex flex-col items-center text-center w-full transition-all duration-700 ${isIdle ? 'mt-20 sm:mt-24 mb-0' : 'mt-8 mb-8'}`}
           transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 20 }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[color:var(--hw-bg-elevated)] border border-lima shadow-sm mb-4 animate-fade-in">
-            <Newspaper className="w-4 h-4 text-lima" />
-            <span className="text-xs font-semibold tracking-wide uppercase">
-              IA para análisis periodístico
-            </span>
-          </div>
-          
           <GlitchTitle 
             text={`El marcador\nde calidad de las Noticias`}
-            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 whitespace-pre-line"
+            className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 sm:mb-8 whitespace-pre-line"
             intensity="subtle"
           />
 
-          <p className="text-sm sm:text-base text-[color:var(--hw-text-muted)] max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-[color:var(--hw-text-muted)] max-w-2xl mx-auto mb-8 sm:mb-10">
             Evalúa el rigor, detecta sesgos y verifica los acontecimientos con
             nuestro motor de IA avanzado.
           </p>
@@ -439,7 +430,7 @@ function App() {
         */}
         <Motion.div 
           layout
-          className={`w-full flex flex-col items-center transition-all duration-700 ease-in-out ${isIdle ? 'flex-1 justify-center pb-20' : 'justify-start'}`}
+          className={`w-full flex flex-col items-center transition-all duration-700 ease-in-out ${isIdle ? 'flex-1 justify-center pb-20' : 'justify-start pt-2 sm:pt-4'}`}
         >
           {/* Tarjeta de búsqueda */}
           <RevealOnScroll className="w-full flex justify-center">
@@ -447,38 +438,17 @@ function App() {
               layout
               className={`w-full transition-all duration-500 ease-in-out ${isIdle ? 'max-w-4xl' : 'max-w-5xl mb-2'}`}
             >
-              <div className={`
-                hw-glass rounded-[24px]
-                transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl
-                ${isIdle ? 'px-8 sm:px-12 py-12' : 'px-6 sm:px-8 py-6'}
-              `}>
-                <h2 className={`
-                  font-bold text-[color:var(--hw-text)] flex items-center gap-3 transition-all duration-300
-                  ${isIdle ? 'text-2xl sm:text-3xl mb-8 justify-center tracking-tight' : 'text-lg sm:text-xl mb-5'}
-                `}>
-                  <Globe2 className={`text-lima transition-all duration-300 ${isIdle ? 'w-7 h-7' : 'w-5 h-5'}`} />
-                  {isIdle ? 'EL MARCADOR DE CALIDAD DE LAS NOTICIAS' : 'El marcador de calidad de las Noticias'}
-                </h2>
-
-                <div className={`space-y-5 ${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
-                  <div className="relative group">
-                    <Search className={`
-                      absolute left-5 text-[color:var(--hw-text-muted)] group-focus-within:text-lima transition-all duration-300
-                      ${isIdle ? 'top-5 w-6 h-6' : 'top-3 w-5 h-5'}
-                    `} />
+              <div className={`${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
+                <div className="bg-[color:var(--hw-bg-elevated)] border border-[color:var(--hw-border)] rounded-xl sm:rounded-full p-1.5 sm:p-2 pl-3 sm:pl-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shadow-[0_12px_30px_rgba(0,0,0,0.14)] focus-within:border-lima transition-colors">
+                  <div className="flex items-center flex-grow min-w-0">
+                    <Search className="text-lima mr-3 w-5 h-5 sm:w-6 sm:h-6 transform -rotate-45" />
                     <input
                       type="text"
-                      placeholder="Pega aquí la URL de la noticia..."
+                      placeholder="Introduce aquí la URL de la noticia"
                       value={identificador}
                       onChange={(e) => setIdentificador(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleBuscarNoticia()}
-                      className={`
-                        w-full bg-[color:var(--hw-bg-strong)] border border-[color:var(--hw-border)] text-[color:var(--hw-text)] placeholder-[color:var(--hw-text-muted)]
-                        rounded-[14px]
-                        focus:outline-none focus:ring-2 focus:ring-lima/20 focus:border-lima/40
-                        transition-all shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
-                        ${isIdle ? 'pl-14 pr-4 py-5 text-lg' : 'pl-10 pr-3 py-3 text-sm'}
-                      `}
+                      className="bg-transparent border-none focus:ring-0 flex-grow text-[color:var(--hw-text)] placeholder-[color:var(--hw-text-muted)] font-mono text-xs sm:text-sm w-full truncate"
                       disabled={estadoBusqueda === 'loading'}
                       autoFocus={isIdle}
                     />
@@ -487,24 +457,19 @@ function App() {
                   <button
                     onClick={() => handleBuscarNoticia()}
                     disabled={estadoBusqueda === 'loading' || !isLoaded || !isSignedIn}
-                    className={`
-                      w-full flex items-center justify-center font-bold
-                      rounded-[14px]
-                      hover:brightness-110 hover:scale-[1.005] active:scale-[0.99]
-                      transition-all duration-200
-                      disabled:bg-gray-600 disabled:text-gray-300 disabled:cursor-not-allowed
-                      bg-gradient-to-r from-[#d4e600] to-[#c6dd00] text-[#050505]
-                      shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_4px_15px_rgba(212,230,0,0.2)]
-                      ${isIdle ? 'px-8 py-4 text-lg mt-6' : 'px-4 py-3 text-base'}
-                    `}
+                    className="bg-gradient-to-r from-[#d4e600] to-[#c6dd00] text-[#050505] font-bold py-2.5 sm:py-3 px-4 sm:px-8 rounded-lg sm:rounded-full hover:bg-opacity-90 transition-transform active:scale-95 flex items-center justify-center gap-2 text-xs sm:text-sm tracking-wide disabled:opacity-50 disabled:cursor-not-allowed shrink-0"
                   >
-                    {estadoBusqueda === 'loading' && (
-                      <Loader className={`animate-spin ${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />
+                    {estadoBusqueda === 'loading' ? (
+                      <>
+                        <Loader className="animate-spin w-4 h-4 sm:w-5 sm:h-5" />
+                        <span>ANALIZANDO</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{(!isLoaded || !isSignedIn) ? 'INICIA SESIÓN' : 'ANALIZAR'}</span>
+                        <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                      </>
                     )}
-                    {estadoBusqueda !== 'loading' && <Database className={`${isIdle ? 'w-7 h-7 mr-3' : 'w-5 h-5 mr-2'}`} />}
-                    {estadoBusqueda === 'loading'
-                      ? 'Analizando...'
-                      : (!isLoaded || !isSignedIn ? 'Inicia sesión para analizar' : 'Analizar Noticia')}
                   </button>
                 </div>
               </div>
@@ -538,54 +503,37 @@ function App() {
           )}
         </AnimatePresence>
 
-        {/* Sección: ¿Cómo analiza HemingwAI tus noticias? */}
-        <section className="w-full mt-10 mb-12">
-          <RevealOnScroll>
-            <div className="flex justify-center mb-10">
-              <TerminalSectionTitle className="text-xl sm:text-2xl font-bold">
-                I. ¿Cómo analiza HemingwAI las noticias?
-              </TerminalSectionTitle>
-            </div>
-          </RevealOnScroll>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Card 1 */}
-            <RevealOnScroll delay={0} className="h-full">
-              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
-                <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
-                  <Link2 className="w-6 h-6 text-lima" />
-                </div>
-                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">1. Leemos tu URL</h3>
-                <p className="text-sm text-[color:var(--hw-text-muted)]">
-                  Extraemos el titular, el cuerpo de la noticia y la fuente original para procesar la información.
-                </p>
+        {/* Flujo de análisis */}
+        <section className="w-full max-w-4xl mt-12 py-8 opacity-95 mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 text-center">
+            <RevealOnScroll delay={0} className="space-y-4">
+              <div className="w-12 h-12 rounded-full border-2 border-lima/40 flex items-center justify-center mx-auto bg-[color:var(--hw-bg-elevated)] shadow-[0_0_20px_rgba(212,230,0,0.1)] aspect-square">
+                <FileDown className="w-5 h-5 text-lima" />
               </div>
+              <h4 className="text-[13px] font-mono uppercase tracking-[0.4em] font-bold text-[color:var(--hw-text)]">Extracción</h4>
+              <p className="text-[14px] text-[color:var(--hw-text-muted)] font-light leading-relaxed px-4">
+                Obtención de metadatos y limpieza de texto original.
+              </p>
             </RevealOnScroll>
 
-            {/* Card 2 */}
-            <RevealOnScroll delay={100} className="h-full">
-              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
-                 <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
-                  <Brain className="w-6 h-6 text-lima" />
-                </div>
-                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">2. Analizamos el contenido</h3>
-                <p className="text-sm text-[color:var(--hw-text-muted)]">
-                  La IA evalúa la calidad del titular, la precisión, el contexto y la confiabilidad de las fuentes.
-                </p>
+            <RevealOnScroll delay={100} className="space-y-4">
+              <div className="w-12 h-12 rounded-full border-2 border-lima/40 flex items-center justify-center mx-auto bg-[color:var(--hw-bg-elevated)] shadow-[0_0_20px_rgba(212,230,0,0.1)] aspect-square">
+                <Cpu className="w-5 h-5 text-lima" />
               </div>
+              <h4 className="text-[13px] font-mono uppercase tracking-[0.4em] font-bold text-[color:var(--hw-text)]">Procesamiento</h4>
+              <p className="text-[14px] text-[color:var(--hw-text-muted)] font-light leading-relaxed px-4">
+                Análisis neuronal de fiabilidad y trascendencia.
+              </p>
             </RevealOnScroll>
 
-            {/* Card 3 */}
-            <RevealOnScroll delay={200} className="h-full">
-              <div className="bg-[color:var(--hw-bg-elevated)]/70 backdrop-blur border border-lima/30 rounded-xl p-6 hover:border-lima transition-colors h-full flex flex-col items-center text-center group">
-                 <div className="w-12 h-12 rounded-full bg-lima/10 flex items-center justify-center mb-4 group-hover:bg-lima/20 transition-colors">
-                  <ShieldCheck className="w-6 h-6 text-lima" />
-                </div>
-                <h3 className="text-lg font-bold text-[color:var(--hw-text)] mb-2">3. Te devolvemos la valoración</h3>
-                <p className="text-sm text-[color:var(--hw-text-muted)]">
-                  Te mostramos una puntuación global y un desglose detallado de la información.
-                </p>
+            <RevealOnScroll delay={200} className="space-y-4">
+              <div className="w-12 h-12 rounded-full border-2 border-lima/40 flex items-center justify-center mx-auto bg-[color:var(--hw-bg-elevated)] shadow-[0_0_20px_rgba(212,230,0,0.1)] aspect-square">
+                <BarChart3 className="w-5 h-5 text-lima" />
               </div>
+              <h4 className="text-[13px] font-mono uppercase tracking-[0.4em] font-bold text-[color:var(--hw-text)]">Resultados</h4>
+              <p className="text-[14px] text-[color:var(--hw-text-muted)] font-light leading-relaxed px-4">
+                Generación de puntuaciones y alertas de calidad.
+              </p>
             </RevealOnScroll>
           </div>
         </section>
