@@ -24,39 +24,44 @@ const formatScore = (value) => {
 const getScoreTone = (score) => {
   if (!Number.isFinite(score)) return 'text-[color:var(--hw-text-muted)]';
   if (score < 5) return 'text-red-500';
-  if (score < 8) return 'text-yellow-400';
-  return 'text-green-500';
+  if (score < 8) return 'text-amber-400';
+  return 'text-emerald-400';
 };
 
-const toPolar = (cx, cy, radius, angle) => ({
-  x: cx + radius * Math.cos(angle),
-  y: cy + radius * Math.sin(angle),
-});
+const getSegmentGeometry = (totalSegments, radius, desiredGapAngle = 0.24) => {
+  const circumference = 2 * Math.PI * radius;
+  const stepAngle = (2 * Math.PI) / totalSegments;
+  const gapAngle = Math.min(desiredGapAngle, stepAngle * 0.45);
+  const segmentAngle = stepAngle - gapAngle;
+  const segmentLength = (circumference * segmentAngle) / (2 * Math.PI);
+  const gapLength = (circumference * gapAngle) / (2 * Math.PI);
 
-const donutSlicePath = (cx, cy, innerRadius, outerRadius, startAngle, endAngle) => {
-  const outerStart = toPolar(cx, cy, outerRadius, startAngle);
-  const outerEnd = toPolar(cx, cy, outerRadius, endAngle);
-  const innerEnd = toPolar(cx, cy, innerRadius, endAngle);
-  const innerStart = toPolar(cx, cy, innerRadius, startAngle);
-  const largeArcFlag = endAngle - startAngle > Math.PI ? 1 : 0;
+  return { circumference, segmentLength, gapLength, stepAngle, gapAngle };
+};
 
-  return [
-    `M ${outerStart.x} ${outerStart.y}`,
-    `A ${outerRadius} ${outerRadius} 0 ${largeArcFlag} 1 ${outerEnd.x} ${outerEnd.y}`,
-    `L ${innerEnd.x} ${innerEnd.y}`,
-    `A ${innerRadius} ${innerRadius} 0 ${largeArcFlag} 0 ${innerStart.x} ${innerStart.y}`,
-    'Z',
-  ].join(' ');
+const buildDashMetrics = (index, score, segmentLength, gapLength, circumference) => {
+  const normalizedScore = Number.isFinite(score) ? score : 0;
+  const visibleDash = (segmentLength * normalizedScore) / 10;
+  const dashOffset = index * (segmentLength + gapLength);
+  return {
+    valueDashArray: `${visibleDash} ${circumference}`,
+    trackDashArray: `${segmentLength} ${circumference}`,
+    dashOffset,
+  };
 };
 
 const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
-  const [activeCriterionKey, setActiveCriterionKey] = useState(null);
+  const [hoveredKey, setHoveredKey] = useState(null);
+  const [pinnedKey, setPinnedKey] = useState(null);
+  const [animatingIn, setAnimatingIn] = useState(true);
 
   useEffect(() => {
-    if (typeof onActiveCriterionChange === 'function') {
-      onActiveCriterionChange(activeCriterionKey);
-    }
-  }, [activeCriterionKey, onActiveCriterionChange]);
+    setHoveredKey(null);
+    setPinnedKey(null);
+    setAnimatingIn(true);
+    const timer = setTimeout(() => setAnimatingIn(false), 650);
+    return () => clearTimeout(timer);
+  }, [evaluationResult]);
 
   const criteriaData = useMemo(
     () =>
@@ -67,117 +72,191 @@ const NewsScoreDonut = ({ evaluationResult, onActiveCriterionChange }) => {
     [evaluationResult]
   );
 
+  const activeCriterionKey = hoveredKey || pinnedKey;
   const activeCriterion = criteriaData.find((criterion) => criterion.key === activeCriterionKey) || null;
+
+  useEffect(() => {
+    if (typeof onActiveCriterionChange === 'function') {
+      onActiveCriterionChange(activeCriterion?.key || null);
+    }
+  }, [activeCriterion, onActiveCriterionChange]);
+
   const globalScore = clampScore(getEvaluationGlobalScore(evaluationResult));
   const statusLabel = getEvaluationStatusLabel(evaluationResult);
   const displayScore = activeCriterion ? activeCriterion.score : globalScore;
-  const centerSubText = activeCriterion
-    ? activeCriterion.label
-    : statusLabel || '—';
+  const centerSubText = activeCriterion ? activeCriterion.label : statusLabel || '—';
 
-  const cx = 120;
-  const cy = 120;
-  const innerRadius = 65;
-  const outerRadius = 80;
+  const radius = 80;
+  const strokeWidth = 16;
+  const center = 120;
+  const totalSegments = CRITERIA_CONFIG.length;
+  const { circumference, segmentLength, gapLength, stepAngle, gapAngle } = getSegmentGeometry(
+    totalSegments,
+    radius
+  );
+  const minHitRadius = radius - strokeWidth / 2 - 8;
+  const maxHitRadius = radius + strokeWidth / 2 + 10;
 
-  const slices = useMemo(() => {
-    // Slices iguales para mantener targets de interacción consistentes; el valor exacto se comunica en el centro.
-    const baseStart = -Math.PI / 2;
-    const step = (Math.PI * 2) / CRITERIA_CONFIG.length;
-    const gap = 0.035;
+  const getCriterionKeyFromPointer = (event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 240;
+    const y = ((event.clientY - rect.top) / rect.height) * 240;
+    const dx = x - center;
+    const dy = y - center;
+    const distance = Math.hypot(dx, dy);
 
-    return criteriaData.map((criterion, index) => {
-      const startAngle = baseStart + step * index + gap / 2;
-      const endAngle = baseStart + step * (index + 1) - gap / 2;
-      return {
-        ...criterion,
-        path: donutSlicePath(cx, cy, innerRadius, outerRadius, startAngle, endAngle),
-      };
-    });
-  }, [criteriaData]);
+    if (distance < minHitRadius || distance > maxHitRadius) {
+      return null;
+    }
+
+    const angle = Math.atan2(dy, dx);
+    const normalized = (angle + Math.PI / 2 + Math.PI * 2) % (Math.PI * 2);
+    const segmentIndex = Math.floor(normalized / stepAngle);
+    const withinStep = normalized - segmentIndex * stepAngle;
+    if (withinStep < gapAngle) {
+      return null;
+    }
+
+    return criteriaData[segmentIndex]?.key || null;
+  };
+
+  const handlePointerMove = (event) => {
+    setHoveredKey(getCriterionKeyFromPointer(event));
+  };
+
+  const handlePointerLeave = () => {
+    setHoveredKey(null);
+  };
+
+  const handleDonutClick = (event) => {
+    const clickedKey = getCriterionKeyFromPointer(event);
+    if (!clickedKey) return;
+    setPinnedKey((prev) => (prev === clickedKey ? null : clickedKey));
+    setHoveredKey(clickedKey);
+  };
 
   return (
-    <div className="w-full max-w-[260px]">
-      <div className="relative mx-auto aspect-square w-full">
+    <div className="w-full max-w-[300px]">
+      <div className="relative mx-auto aspect-square w-full select-none">
+        <div className="pointer-events-none absolute inset-2 rounded-full border border-[color:var(--hw-border)] opacity-40 [animation:spin_36s_linear_infinite]" />
+        <div className="pointer-events-none absolute inset-7 rounded-full border border-[color:var(--hw-border)] opacity-30 [animation:spin_22s_linear_infinite_reverse]" />
+        <div className="pointer-events-none absolute inset-10 rounded-full bg-[radial-gradient(circle,rgba(210,210,9,0.14)_0%,rgba(210,210,9,0)_70%)] opacity-70 blur-2xl" />
+
         <svg
-          className="h-full w-full"
+          className="relative z-10 h-full w-full"
           viewBox="0 0 240 240"
           role="img"
           aria-label="Distribución de puntuaciones por criterio"
-          onMouseLeave={() => setActiveCriterionKey(null)}
+          onMouseMove={handlePointerMove}
+          onMouseLeave={handlePointerLeave}
+          onClick={handleDonutClick}
           onBlur={(event) => {
             const nextFocusedElement = event.relatedTarget;
-            if (nextFocusedElement && event.currentTarget.contains(nextFocusedElement)) {
-              return;
-            }
-            setActiveCriterionKey(null);
+            if (nextFocusedElement && event.currentTarget.contains(nextFocusedElement)) return;
+            setHoveredKey(null);
           }}
+          style={{ cursor: hoveredKey ? 'pointer' : 'default' }}
         >
-          {slices.map((slice) => {
-            const isActive = activeCriterionKey === slice.key;
+          <circle
+            cx={center}
+            cy={center}
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            className="text-[color:var(--hw-border)] opacity-55"
+          />
+
+          {criteriaData.map((criterion, index) => {
+            const isActive = activeCriterionKey === criterion.key;
             const isMuted = activeCriterionKey !== null && !isActive;
-            const scoreLabel = Number.isFinite(slice.score)
-              ? `${slice.score.toFixed(1)} sobre 10`
-              : 'sin dato';
+            const { valueDashArray, trackDashArray, dashOffset } = buildDashMetrics(
+              index,
+              criterion.score,
+              segmentLength,
+              gapLength,
+              circumference
+            );
 
             return (
-              <path
-                key={slice.key}
-                d={slice.path}
-                fill={slice.color}
-                tabIndex={0}
-                aria-label={`${slice.label}: ${scoreLabel}`}
-                style={{
-                  opacity: isMuted ? 0.3 : 1,
-                  transition: 'opacity 180ms ease',
-                  outline: 'none',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={() => setActiveCriterionKey(slice.key)}
-                onFocus={() => setActiveCriterionKey(slice.key)}
-              />
+              <g key={criterion.key}>
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={radius}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth={strokeWidth + 10}
+                  strokeDasharray={trackDashArray}
+                  strokeDashoffset={-dashOffset}
+                  transform={`rotate(-90 ${center} ${center})`}
+                  pointerEvents="none"
+                  aria-label={`${criterion.label}: ${formatScore(criterion.score)} sobre 10`}
+                />
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={radius}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={strokeWidth}
+                  strokeDasharray={trackDashArray}
+                  strokeDashoffset={-dashOffset}
+                  transform={`rotate(-90 ${center} ${center})`}
+                  className="text-[color:var(--hw-border)] opacity-50"
+                  pointerEvents="none"
+                />
+                <circle
+                  cx={center}
+                  cy={center}
+                  r={radius}
+                  fill="none"
+                  stroke={criterion.color}
+                  strokeWidth={isActive ? strokeWidth + 2 : strokeWidth}
+                  strokeLinecap="round"
+                  strokeDasharray={animatingIn ? `0 ${circumference}` : valueDashArray}
+                  strokeDashoffset={-dashOffset}
+                  transform={`rotate(-90 ${center} ${center})`}
+                  className="transition-all duration-500 ease-out"
+                  pointerEvents="none"
+                  style={{
+                    opacity: isMuted ? 0.2 : 1,
+                    filter: isActive ? `drop-shadow(0 0 12px ${criterion.color}cc)` : 'none',
+                  }}
+                />
+              </g>
             );
           })}
         </svg>
 
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-5">
-          <div className="relative h-12 w-full">
+        <div className="pointer-events-none absolute inset-0 z-20 flex flex-col items-center justify-center px-5 text-center">
+          <div className="relative h-14 w-full">
             <span
-              className={`absolute inset-0 flex items-center justify-center text-4xl font-extrabold transition-opacity transition-colors duration-200 ${getScoreTone(
+              className={`absolute inset-0 flex items-center justify-center text-5xl font-black tracking-tight transition-opacity duration-300 ${getScoreTone(
                 globalScore
-              )} ${
-                activeCriterion ? 'opacity-0' : 'opacity-100'
-              }`}
+              )} ${activeCriterion ? 'opacity-0' : 'opacity-100'}`}
             >
               {formatScore(globalScore)}
             </span>
             <span
-              className={`absolute inset-0 flex items-center justify-center text-4xl font-extrabold transition-opacity transition-colors duration-200 ${getScoreTone(
+              className={`absolute inset-0 flex items-center justify-center text-5xl font-black tracking-tight transition-opacity duration-300 ${getScoreTone(
                 activeCriterion?.score
-              )} ${
-                activeCriterion ? 'opacity-100' : 'opacity-0'
-              }`}
+              )} ${activeCriterion ? 'opacity-100' : 'opacity-0'}`}
             >
               {activeCriterion ? formatScore(activeCriterion.score) : '—'}
             </span>
           </div>
-          <div className="relative mt-1 h-6 w-full">
-            <span
-              className={`absolute inset-0 truncate text-sm font-semibold text-[color:var(--hw-text)] transition-opacity duration-200 ${
-                activeCriterion ? 'opacity-0' : 'opacity-100'
-              }`}
-            >
-              {statusLabel || '—'}
-            </span>
-            <span
-              className={`absolute inset-0 truncate text-sm font-semibold text-[color:var(--hw-text)] transition-opacity duration-200 ${
-                activeCriterion ? 'opacity-100' : 'opacity-0'
-              }`}
-            >
-              {activeCriterion?.label || '—'}
-            </span>
+          <div className="mt-1 text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--hw-text-muted)]">
+            {activeCriterion ? 'Criterio activo' : 'Valoración global'}
+          </div>
+          <div className="mt-1 max-w-[180px] truncate text-sm font-semibold text-[color:var(--hw-text)]">
+            {centerSubText}
           </div>
         </div>
+      </div>
+
+      <div className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-lime-400/90">
+        Hover: detalle | clic: fijar
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-[color:var(--hw-text-muted)]">

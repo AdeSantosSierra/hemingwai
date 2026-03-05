@@ -327,6 +327,14 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
       : evaluationResult?.section_summaries?.[activeCriterion] || '—';
   const criterionSummaryLabel =
     activeCriterion === null ? null : CRITERION_SUMMARY_LABELS[activeCriterion] || activeCriterion;
+  const publicationDate = resultado.fecha_publicacion
+    ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
+    : 'N/A';
+  const authorsText = Array.isArray(resultado.autor)
+    ? resultado.autor.length > 0
+      ? resultado.autor.join(', ')
+      : 'N/A'
+    : resultado.autor || 'N/A';
 
   return (
     <>
@@ -334,337 +342,338 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start"
+        className="space-y-8"
         key={resultado._id || resultado.url}
       >
-        {/* Columna Izquierda: Contenido del análisis */}
-        <div className="space-y-6">
-        {/* Información básica */}
         <RevealOnScroll delay={0}>
-        <div className="p-6 hw-glass rounded-2xl border-l-4 border-lima">
-        <div className="flex flex-col md:flex-row gap-4 md:items-start">
-
-            {/* Columna izquierda: Título y Metadatos */}
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-[color:var(--hw-text)] mb-4">
-                {resultado.titulo}
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-semibold text-[color:var(--hw-text-muted)]">
-                    Fecha de publicación:
-                  </span>
-                  <p className="text-[color:var(--hw-text-muted)]">
-                    {resultado.fecha_publicacion
-                      ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
-                      : 'N/A'}
-                  </p>
-                </div>
-                <div>
-                  <span className="font-semibold text-[color:var(--hw-text-muted)]">Fuente:</span>
-                  <p className="text-[color:var(--hw-text-muted)]">{resultado.fuente || 'N/A'}</p>
-                </div>
-                <div className="col-span-1 sm:col-span-2">
-                  <span className="font-semibold text-[color:var(--hw-text-muted)]">Autor(es):</span>
-                  <p className="text-[color:var(--hw-text-muted)]">
-                    {resultado.autor && resultado.autor.length > 0
-                      ? resultado.autor.join(', ')
-                      : 'N/A'}
-                  </p>
-                </div>
-                <div className="col-span-1 sm:col-span-2 mt-2 space-y-4 border-t border-[color:var(--hw-border)] pt-4">
-                  {activeCriterion === null ? (
-                    <>
-                      <div>
-                        <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
-                          Resumen valoración:
-                        </span>
-                        <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
-                          {resultado.resumen_valoracion || '—'}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
-                          Resumen valoración del titular:
-                        </span>
-                        <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
-                          {resultado.resumen_valoracion_titular || '—'}
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <div>
-                      <span className="font-semibold text-[color:var(--hw-text-muted)] block mb-1">
-                        Resumen de {criterionSummaryLabel}
-                      </span>
-                      <p className="text-[color:var(--hw-text-muted)] leading-relaxed whitespace-pre-wrap">
-                        {criterionSummary}
-                      </p>
-                    </div>
-                  )}
-                </div>
+          <div className="hw-glass rounded-3xl p-8 border-l-4 border-lima">
+            <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.24em] text-lima/80 mb-3">
+              Noticia analizada
+            </p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-[color:var(--hw-text)]">
+              {resultado.titulo}
+            </h2>
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--hw-text-muted)] mb-2">
+                  Autor
+                </p>
+                <p className="text-lg font-medium text-[color:var(--hw-text)]">{authorsText}</p>
               </div>
-            </div>
-
-            {/* Columna derecha: Puntuación */}
-            <div className="flex flex-col items-center md:items-end gap-3 flex-shrink-0 md:w-52 lg:w-64">
-              {/* Puntuación General */}
-              <div className="text-center">
-                <div className="text-xs font-semibold text-[color:var(--hw-text-muted)] mb-1 uppercase tracking-wide">
-                  Puntuación general
-                </div>
-                <NewsScoreDonut
-                  evaluationResult={evaluationResult}
-                  onActiveCriterionChange={setActiveCriterion}
-                />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--hw-text-muted)] mb-2">
+                  Fecha
+                </p>
+                <p className="text-lg font-medium text-[color:var(--hw-text)]">{publicationDate}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--hw-text-muted)] mb-2">
+                  Fuente
+                </p>
+                <p className="text-lg font-medium text-[color:var(--hw-text)]">{resultado.fuente || 'N/A'}</p>
               </div>
             </div>
           </div>
-        </div>
         </RevealOnScroll>
 
-        {/* Otras secciones (Análisis adicional) */}
-        <RevealOnScroll delay={100}>
-        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4">
-            Análisis general
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() =>
-                abrirModal('Valoración general', resultado.valoracion_general)
-              }
-              disabled={!resultado.valoracion_general}
-              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
-            >
-              <div className="font-semibold text-[color:var(--hw-text)]">Valoración general</div>
-              {!resultado.valoracion_general && (
-                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
-              )}
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() =>
-                abrirModal(
-                  'Valoración del titular',
-                  resultado.valoracion_titular?.titular
-                )
-              }
-              disabled={!resultado.valoracion_titular?.titular}
-              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
-            >
-              <div className="font-semibold text-[color:var(--hw-text)]">
-                Valoración del titular
-              </div>
-              {!resultado.valoracion_titular?.titular && (
-                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
-              )}
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() =>
-                abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
-              }
-              disabled={!resultado.fact_check_analisis}
-              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
-            >
-              <div className="font-semibold text-[color:var(--hw-text)]">
-                Análisis de Fact-Checking
-              </div>
-              {!resultado.fact_check_analisis && (
-                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
-              )}
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() =>
-                abrirModal(
-                  'Fuentes de fact-checking',
-                  resultado.fact_check_fuentes,
-                  'fuentes'
-                )
-              }
-              disabled={
-                !resultado.fact_check_fuentes ||
-                resultado.fact_check_fuentes.length === 0
-              }
-              className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
-            >
-              <div className="font-semibold text-[color:var(--hw-text)]">
-                Fuentes de Fact-Checking
-              </div>
-              {(!resultado.fact_check_fuentes ||
-                resultado.fact_check_fuentes.length === 0) && (
-                <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
-              )}
-            </motion.button>
-          </div>
-        </div>
-        </RevealOnScroll>
-
-        {/* Alertas */}
-        <RevealOnScroll delay={150}>
-        <div className="hw-glass rounded-2xl p-6 border-l-4 border-amber-400">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <h4 className="text-xl font-bold text-[color:var(--hw-text)]">
-              Alertas detectadas
-            </h4>
-            <div className="flex flex-wrap gap-2 text-xs">
-              <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-400/30">
-                Altas: {alertCounts.high}
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/30">
-                Medias: {alertCounts.medium}
-              </span>
-              <span className="px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
-                Bajas: {alertCounts.low}
-              </span>
-            </div>
-          </div>
-
-          {alerts.length === 0 ? (
-            <p className="text-sm text-[color:var(--hw-text-muted)]">No hay alertas registradas para esta noticia.</p>
-          ) : (
-            <div className="space-y-3">
-              {alerts.map((alert, index) => (
-                <div
-                  key={`${alert.code}-${index}`}
-                  className="rounded-lg border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/70 p-4"
-                >
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${alert.severity.badge}`}>
-                      Severidad {alert.severity.label}
-                    </span>
-                    <span className="text-xs text-[color:var(--hw-text-muted)]">{alert.category}</span>
-                    <span className="text-xs text-gray-500">{alert.origin}</span>
-                    <span className="text-[11px] text-gray-500 font-mono">{alert.code}</span>
-                  </div>
-                  <p className="text-sm text-[color:var(--hw-text)]">{alert.message}</p>
-                  {alert.evidenceRefs.length > 0 && (
-                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">
-                      Evidencias: {alert.evidenceRefs.join(' | ')}
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start">
+          <div className="space-y-6">
+            <RevealOnScroll delay={70}>
+              <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+                <div className="flex flex-col xl:flex-row gap-8">
+                  <div className="flex flex-col items-center gap-3 flex-shrink-0">
+                    <p className="text-xs font-semibold text-[color:var(--hw-text-muted)] uppercase tracking-[0.18em]">
+                      Puntuación general
                     </p>
-                  )}
+                    <NewsScoreDonut
+                      evaluationResult={evaluationResult}
+                      onActiveCriterionChange={setActiveCriterion}
+                    />
+                  </div>
+                  <div className="flex-1 xl:border-l xl:border-[color:var(--hw-border)] xl:pl-8">
+                    {activeCriterion === null ? (
+                      <div className="space-y-4">
+                        <h4 className="text-2xl font-bold text-[color:var(--hw-text)]">
+                          Análisis general
+                        </h4>
+                        <div>
+                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--hw-text-muted)] block mb-2">
+                            Resumen valoración
+                          </span>
+                          <p className="text-base leading-relaxed whitespace-pre-wrap text-[color:var(--hw-text)]">
+                            {resultado.resumen_valoracion || '—'}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[color:var(--hw-text-muted)] block mb-2">
+                            Resumen valoración del titular
+                          </span>
+                          <p className="text-base leading-relaxed whitespace-pre-wrap text-[color:var(--hw-text)]">
+                            {resultado.resumen_valoracion_titular || '—'}
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        <h4 className="text-2xl font-bold text-[color:var(--hw-text)]">
+                          Análisis por criterio
+                        </h4>
+                        <span className="text-xs font-semibold uppercase tracking-[0.24em] text-lima">
+                          {criterionSummaryLabel}
+                        </span>
+                        <p className="text-base leading-relaxed whitespace-pre-wrap text-[color:var(--hw-text)]">
+                          {criterionSummary}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-        </RevealOnScroll>
+              </div>
+            </RevealOnScroll>
 
-        {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
-        <RevealOnScroll delay={220}>
-        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-2">
-            Pregúntale al chatbot
-          </h4>
-          <p className="text-sm text-[color:var(--hw-text-muted)] mb-4">
-             Haz clic en una sección para preguntar automáticamente al chatbot sobre su calificación.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            {Object.keys(nombresSecciones).map((key) => {
-                return (
-                  <motion.button
-                    key={key}
-                    whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-                    onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
-                    className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left bg-[color:var(--hw-bg-elevated)]/70 flex items-center justify-between group"
-                  >
-                    <span className="text-sm font-semibold text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text)]">
-                      {nombresSecciones[key]}
-                    </span>
-                    <MessageSquare className="w-4 h-4 text-[color:var(--hw-text-muted)] group-hover:text-lima" />
-                  </motion.button>
-                );
-              })}
-          </div>
-        </div>
-        </RevealOnScroll>
+            {/* Alertas */}
+            <RevealOnScroll delay={100}>
+            <div className="hw-glass rounded-2xl p-6 border-l-4 border-amber-400">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h4 className="text-xl font-bold text-[color:var(--hw-text)]">
+                  Alertas detectadas
+                </h4>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-400/30">
+                    Altas: {alertCounts.high}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/30">
+                    Medias: {alertCounts.medium}
+                  </span>
+                  <span className="px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
+                    Bajas: {alertCounts.low}
+                  </span>
+                </div>
+              </div>
 
-        {/* Valoraciones individuales */}
-        <RevealOnScroll delay={320}>
-        <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-          <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4 hw-terminal-font">
-            Valoraciones por sección
-          </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-            {resultado.puntuacion_individual &&
-              Object.keys(nombresSecciones).map((key) => {
-                const puntuacion = resultado.puntuacion_individual?.[key];
-                const valoracion = resultado.valoraciones?.[key];
-                const puntuacionNumerica = toFiniteNumber(puntuacion);
-
-                return (
-                  <motion.button
-                    key={key}
-                    whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() =>
-                      abrirModal(
-                        nombresSecciones[key],
-                        valoracion || 'Contenido no disponible'
-                      )
-                    }
-                    className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
-                    disabled={!valoracion}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-[color:var(--hw-text-muted)]">
-                        {nombresSecciones[key]}
-                      </span>
-                      {puntuacionNumerica !== null ? (
-                        <PuntuacionIndicador puntuacion={puntuacionNumerica} />
-                      ) : (
-                        <span className="text-[color:var(--hw-text-muted)] text-xs">N/A</span>
+              {alerts.length === 0 ? (
+                <p className="text-sm text-[color:var(--hw-text-muted)]">No hay alertas registradas para esta noticia.</p>
+              ) : (
+                <div className="space-y-3">
+                  {alerts.map((alert, index) => (
+                    <div
+                      key={`${alert.code}-${index}`}
+                      className="rounded-lg border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/70 p-4"
+                    >
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${alert.severity.badge}`}>
+                          Severidad {alert.severity.label}
+                        </span>
+                        <span className="text-xs text-[color:var(--hw-text-muted)]">{alert.category}</span>
+                        <span className="text-xs text-gray-500">{alert.origin}</span>
+                        <span className="text-[11px] text-gray-500 font-mono">{alert.code}</span>
+                      </div>
+                      <p className="text-sm text-[color:var(--hw-text)]">{alert.message}</p>
+                      {alert.evidenceRefs.length > 0 && (
+                        <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">
+                          Evidencias: {alert.evidenceRefs.join(' | ')}
+                        </p>
                       )}
                     </div>
-                    {!valoracion && (
-                      <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">No disponible</p>
-                    )}
-                  </motion.button>
-                );
-              })}
-          </div>
-        </div>
-        </RevealOnScroll>
-      </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            </RevealOnScroll>
 
-        {/* Columna Derecha: Chatbot Sticky */}
-        <div className="md:sticky md:top-4">
-          <RevealOnScroll delay={150}>
-          {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
-              <div className="hw-glass rounded-2xl p-6">
-                  <Chatbot 
-                      ref={chatbotRef}
-                      noticiaContexto={{
-                          titulo: resultado.titulo,
-                          cuerpo: resultado.cuerpo,
-                          valoraciones: resultado.valoraciones,
-                          fact_check_analisis: resultado.fact_check_analisis,
-                          fact_check_fuentes: resultado.fact_check_fuentes,
-                          texto_referencia_diccionario: resultado.texto_referencia_diccionario,
-                          valoracion_titular: resultado.valoracion_titular,
-                          autor: resultado.autor,
-                          url: resultado.url,
-                          fecha_publicacion: resultado.fecha_publicacion,
-                          fuente: resultado.fuente,
-                          keywords: resultado.keywords,
-                          tags: resultado.tags,
-                          puntuacion: scoreForChatbot ?? undefined,
-                          puntuacion_individual: resultado.puntuacion_individual,
-                      }}
-                  />
+            {/* Otras secciones (Análisis adicional) */}
+            <RevealOnScroll delay={150}>
+            <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+              <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4">
+                Análisis general
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    abrirModal('Valoración general', resultado.valoracion_general)
+                  }
+                  disabled={!resultado.valoracion_general}
+                  className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
+                >
+                  <div className="font-semibold text-[color:var(--hw-text)]">Valoración general</div>
+                  {!resultado.valoracion_general && (
+                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    abrirModal(
+                      'Valoración del titular',
+                      resultado.valoracion_titular?.titular
+                    )
+                  }
+                  disabled={!resultado.valoracion_titular?.titular}
+                  className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
+                >
+                  <div className="font-semibold text-[color:var(--hw-text)]">
+                    Valoración del titular
+                  </div>
+                  {!resultado.valoracion_titular?.titular && (
+                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    abrirModal('Análisis de fact-checking', resultado.fact_check_analisis)
+                  }
+                  disabled={!resultado.fact_check_analisis}
+                  className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
+                >
+                  <div className="font-semibold text-[color:var(--hw-text)]">
+                    Análisis de Fact-Checking
+                  </div>
+                  {!resultado.fact_check_analisis && (
+                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
+                  )}
+                </motion.button>
+
+                <motion.button
+                  whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() =>
+                    abrirModal(
+                      'Fuentes de fact-checking',
+                      resultado.fact_check_fuentes,
+                      'fuentes'
+                    )
+                  }
+                  disabled={
+                    !resultado.fact_check_fuentes ||
+                    resultado.fact_check_fuentes.length === 0
+                  }
+                  className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
+                >
+                  <div className="font-semibold text-[color:var(--hw-text)]">
+                    Fuentes de Fact-Checking
+                  </div>
+                  {(!resultado.fact_check_fuentes ||
+                    resultado.fact_check_fuentes.length === 0) && (
+                    <p className="text-xs text-[color:var(--hw-text-muted)] mt-1">No disponible</p>
+                  )}
+                </motion.button>
               </div>
-          )}
-          </RevealOnScroll>
+            </div>
+            </RevealOnScroll>
+
+            {/* NUEVA SECCIÓN: Pregúntale al chatbot */}
+            <RevealOnScroll delay={220}>
+            <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+              <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-2">
+                Pregúntale al chatbot
+              </h4>
+              <p className="text-sm text-[color:var(--hw-text-muted)] mb-4">
+                 Haz clic en una sección para preguntar automáticamente al chatbot sobre su calificación.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {Object.keys(nombresSecciones).map((key) => {
+                    return (
+                      <motion.button
+                        key={key}
+                        whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                        onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
+                        className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left bg-[color:var(--hw-bg-elevated)]/70 flex items-center justify-between group"
+                      >
+                        <span className="text-sm font-semibold text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text)]">
+                          {nombresSecciones[key]}
+                        </span>
+                        <MessageSquare className="w-4 h-4 text-[color:var(--hw-text-muted)] group-hover:text-lima" />
+                      </motion.button>
+                    );
+                  })}
+              </div>
+            </div>
+            </RevealOnScroll>
+
+            {/* Valoraciones individuales */}
+            <RevealOnScroll delay={320}>
+            <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
+              <h4 className="text-xl font-bold text-[color:var(--hw-text)] mb-4 hw-terminal-font">
+                Valoraciones por sección
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+                {resultado.puntuacion_individual &&
+                  Object.keys(nombresSecciones).map((key) => {
+                    const puntuacion = resultado.puntuacion_individual?.[key];
+                    const valoracion = resultado.valoraciones?.[key];
+                    const puntuacionNumerica = toFiniteNumber(puntuacion);
+
+                    return (
+                      <motion.button
+                        key={key}
+                        whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() =>
+                          abrirModal(
+                            nombresSecciones[key],
+                            valoracion || 'Contenido no disponible'
+                          )
+                        }
+                        className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left disabled:opacity-50 disabled:cursor-not-allowed bg-[color:var(--hw-bg-elevated)]/70"
+                        disabled={!valoracion}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-semibold text-[color:var(--hw-text-muted)]">
+                            {nombresSecciones[key]}
+                          </span>
+                          {puntuacionNumerica !== null ? (
+                            <PuntuacionIndicador puntuacion={puntuacionNumerica} />
+                          ) : (
+                            <span className="text-[color:var(--hw-text-muted)] text-xs">N/A</span>
+                          )}
+                        </div>
+                        {!valoracion && (
+                          <p className="text-xs text-[color:var(--hw-text-muted)] mt-2">No disponible</p>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+              </div>
+            </div>
+            </RevealOnScroll>
+          </div>
+
+          {/* Columna Derecha: Chatbot Sticky */}
+          <div className="md:sticky md:top-4">
+            <RevealOnScroll delay={150}>
+            {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
+                <div className="hw-glass rounded-2xl p-6">
+                    <Chatbot 
+                        ref={chatbotRef}
+                        noticiaContexto={{
+                            titulo: resultado.titulo,
+                            cuerpo: resultado.cuerpo,
+                            valoraciones: resultado.valoraciones,
+                            fact_check_analisis: resultado.fact_check_analisis,
+                            fact_check_fuentes: resultado.fact_check_fuentes,
+                            texto_referencia_diccionario: resultado.texto_referencia_diccionario,
+                            valoracion_titular: resultado.valoracion_titular,
+                            autor: resultado.autor,
+                            url: resultado.url,
+                            fecha_publicacion: resultado.fecha_publicacion,
+                            fuente: resultado.fuente,
+                            keywords: resultado.keywords,
+                            tags: resultado.tags,
+                            puntuacion: scoreForChatbot ?? undefined,
+                            puntuacion_individual: resultado.puntuacion_individual,
+                        }}
+                    />
+                </div>
+            )}
+            </RevealOnScroll>
+          </div>
         </div>
       </motion.div>
 
