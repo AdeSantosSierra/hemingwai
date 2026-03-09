@@ -1,5 +1,3 @@
-como se podria mejoras esto? quiera saber tus ideas, no hace falta que li impementes todavia.
-
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion as Motion, useReducedMotion } from 'framer-motion';
 import { SignInButton } from '@clerk/clerk-react';
