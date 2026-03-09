@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { motion as Motion, useReducedMotion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion as Motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { SignInButton } from '@clerk/clerk-react';
 import { Brain, ShieldCheck, Newspaper, Activity, Sun, Moon } from 'lucide-react';
 import BackgroundParticles from './BackgroundParticles';
@@ -48,6 +48,13 @@ const LIVE_SIGNALS = [
   { text: 'Numerical evidence verified', tone: 'positive' },
 ];
 
+const FEED_SIZE = 9;
+const FEED_REFRESH_MS = 1450;
+const INITIAL_FEED = LIVE_SIGNALS.slice(0, FEED_SIZE).map((item, index) => ({
+  ...item,
+  id: `seed-${index}`,
+}));
+
 function signalToneClasses(tone) {
   if (tone === 'critical') return 'text-red-300 border-red-400/30 bg-red-500/10';
   if (tone === 'warning') return 'text-amber-200 border-amber-400/30 bg-amber-500/10';
@@ -63,51 +70,28 @@ function signalAccentStripe(tone) {
 function SignedOutLanding({ isDarkMode, onToggleTheme }) {
   const reduceMotion = useReducedMotion();
 
-  const trackRef = useRef(null);
-  const roRef = useRef(null);
-  const rafRef = useRef(null);
-
-  const [trackHeight, setTrackHeight] = useState(0);
-
-  // Always duplicate for seamless loop
-  const tickerItems = useMemo(() => [...LIVE_SIGNALS, ...LIVE_SIGNALS], []);
+  const nextSignalIdRef = useRef(FEED_SIZE);
+  const cursorRef = useRef(FEED_SIZE % LIVE_SIGNALS.length);
+  const [signalFeed, setSignalFeed] = useState(() => INITIAL_FEED);
 
   useEffect(() => {
-    const measure = () => {
-      if (!trackRef.current) return;
-      const total = trackRef.current.scrollHeight;
-      // Round to avoid subpixel seams
-      const half = Math.round(total / 2);
-      if (half > 0) setTrackHeight(half);
-    };
+    if (reduceMotion) return undefined;
 
-    const scheduleMeasure = () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(measure);
-    };
+    const intervalId = window.setInterval(() => {
+      const nextSignal = LIVE_SIGNALS[cursorRef.current];
+      cursorRef.current = (cursorRef.current + 1) % LIVE_SIGNALS.length;
 
-    scheduleMeasure();
+      const id = nextSignalIdRef.current;
+      nextSignalIdRef.current += 1;
 
-    // Prefer ResizeObserver
-    if (typeof ResizeObserver !== 'undefined' && trackRef.current) {
-      roRef.current = new ResizeObserver(() => scheduleMeasure());
-      roRef.current.observe(trackRef.current);
-    } else {
-      window.addEventListener('resize', scheduleMeasure);
-    }
+      setSignalFeed((prev) => [
+        { ...nextSignal, id: `live-${id}` },
+        ...prev.slice(0, FEED_SIZE - 1),
+      ]);
+    }, FEED_REFRESH_MS);
 
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (roRef.current) roRef.current.disconnect();
-      window.removeEventListener('resize', scheduleMeasure);
-    };
-  }, []);
-
-  const shouldAnimateTicker = !reduceMotion && trackHeight > 0;
-
-  // Keep perceived speed constant regardless of number of items
-  const pxPerSecond = 22; // tweak: 18 slower, 26 faster
-  const tickerDuration = trackHeight > 0 ? trackHeight / pxPerSecond : 18;
+    return () => window.clearInterval(intervalId);
+  }, [reduceMotion]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[color:var(--hw-bg)] text-[color:var(--hw-text)] transition-colors duration-300">
@@ -275,30 +259,39 @@ function SignedOutLanding({ isDarkMode, onToggleTheme }) {
               <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
               <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
 
-              <Motion.div
-                ref={trackRef}
-                className="space-y-2 will-change-transform"
-                animate={shouldAnimateTicker ? { y: [0, -trackHeight] } : undefined}
-                transition={
-                  shouldAnimateTicker
-                    ? { duration: tickerDuration, ease: 'linear', repeat: Infinity }
-                    : undefined
-                }
-              >
-                {(reduceMotion ? LIVE_SIGNALS : tickerItems).map((item, idx) => (
-                  <div
-                    key={`${item.text}-${idx}`}
-                    className={[
-                      'relative rounded-lg border px-3 py-2 text-xs font-medium',
-                      'before:absolute before:left-0 before:top-0 before:h-full before:w-[3px] before:rounded-l-lg',
-                      signalAccentStripe(item.tone),
-                      signalToneClasses(item.tone),
-                    ].join(' ')}
-                  >
-                    {item.text}
-                  </div>
-                ))}
-              </Motion.div>
+              <div className="space-y-2">
+                <AnimatePresence initial={false}>
+                  {signalFeed.map((item, idx) => (
+                    <Motion.div
+                      key={item.id}
+                      layout={!reduceMotion}
+                      initial={reduceMotion ? false : { opacity: 0, y: -18, scale: 0.98 }}
+                      animate={reduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0, y: 14 }}
+                      transition={
+                        reduceMotion
+                          ? undefined
+                          : { type: 'spring', stiffness: 260, damping: 30, mass: 0.7 }
+                      }
+                      className={[
+                        'relative rounded-lg border px-3 py-2 text-xs font-medium',
+                        'before:absolute before:left-0 before:top-0 before:h-full before:w-[3px] before:rounded-l-lg',
+                        signalAccentStripe(item.tone),
+                        signalToneClasses(item.tone),
+                      ].join(' ')}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span>{item.text}</span>
+                        {!reduceMotion && idx === 0 && (
+                          <span className="text-[10px] uppercase tracking-wide text-lima/90">
+                            new
+                          </span>
+                        )}
+                      </div>
+                    </Motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
             </div>
           </Motion.aside>
         </div>
