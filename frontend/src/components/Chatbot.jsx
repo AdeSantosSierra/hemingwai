@@ -251,11 +251,20 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
             });
 
             if (!response.ok) {
+                let errorData = null;
+                try {
+                    errorData = await response.json();
+                } catch (_parseError) {
+                    errorData = null;
+                }
+
                 if (response.status === 401) {
                     throw new Error('No autorizado. Vuelve a iniciar sesión.');
                 }
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Ocurrió un error en el servidor.');
+                if (response.status === 403) {
+                    throw new Error(errorData?.message || 'Acceso restringido al chatbot para este usuario.');
+                }
+                throw new Error(errorData?.error || errorData?.message || 'Ocurrió un error en el servidor.');
             }
 
             const data = await response.json();

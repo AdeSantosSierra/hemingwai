@@ -18,6 +18,7 @@ const PORT = process.env.PORT || 3000;
 
 const PYTHON_SCRIPT_DIR = path.join(__dirname, '..', 'src');
 const HISTORY_SCRIPT = 'history_entrypoint.py';
+const PERMISSIONS_SCRIPT = 'permissions_entrypoint.py';
 const HISTORY_LIMIT = 4;
 
 // El intérprete de Python se resuelve automáticamente desde el PATH del entorno virtual definido en el Dockerfile.
@@ -99,6 +100,19 @@ app.get('/api/me', requireAuth(), (req, res) => {
         orgId: req.auth?.orgId || sessionClaims.org_id || null,
         issuedAt: Number.isFinite(sessionClaims.iat) ? sessionClaims.iat : null,
         exp: Number.isFinite(sessionClaims.exp) ? sessionClaims.exp : null,
+    });
+});
+
+app.get('/api/chatbot/access', requireAuth(), async (req, res) => {
+    const permission = await resolveChatbotPermissionState(req);
+    if (!permission.ok) {
+        return res.status(permission.status).json(permission.payload);
+    }
+
+    return res.json({
+        ok: true,
+        userId: permission.userId,
+        canUseChatbot: permission.canUseChatbot,
     });
 });
 
@@ -255,6 +269,66 @@ async function pushHistoryForUser(userId, item) {
     return Array.isArray(result?.items) ? result.items : [];
 }
 
+function resolveSessionEmail(req) {
+    const sessionClaims = req.auth?.sessionClaims || {};
+    const candidateEmail =
+        sessionClaims.email ||
+        sessionClaims.email_address ||
+        sessionClaims.primary_email_address?.email_address ||
+        sessionClaims.primary_email_address?.email ||
+        null;
+    return normalizeNullableHistoryText(candidateEmail);
+}
+
+async function resolveChatbotPermissionState(req, { enforce = false } = {}) {
+    const userId = req.auth?.userId;
+    if (!userId) {
+        return {
+            ok: false,
+            status: 401,
+            payload: { ok: false, error: 'No autenticado.' },
+        };
+    }
+
+    try {
+        const result = await ejecutarScriptPythonPorStdin(PERMISSIONS_SCRIPT, {
+            action: 'check_chatbot_access',
+            userId,
+            email: resolveSessionEmail(req),
+            bootstrapIfMissing: true,
+        });
+
+        const canUseChatbot = result?.canUseChatbot === true;
+        if (enforce && !canUseChatbot) {
+            return {
+                ok: false,
+                status: 403,
+                payload: {
+                    ok: false,
+                    error: 'chatbot_access_denied',
+                    message: 'Tu usuario no tiene permiso para usar el chatbot.',
+                },
+            };
+        }
+
+        return {
+            ok: true,
+            userId,
+            canUseChatbot,
+        };
+    } catch (error) {
+        return {
+            ok: false,
+            status: 500,
+            payload: {
+                ok: false,
+                error: 'permission_check_failed',
+                message: error.error || 'No se pudo verificar el permiso de chatbot.',
+            },
+        };
+    }
+}
+
 // =======================================================
 // CONFIGURACIÓN DE OPENAI
 // =======================================================
@@ -359,6 +433,11 @@ app.post('/api/chat/validate-password', (req, res) => {
  * body: { pregunta: string, contexto: { titulo: string, cuerpo: string, valoraciones: object } }
  */
 app.post('/api/chatbot', requireAuth(), async (req, res) => {
+    const permission = await resolveChatbotPermissionState(req, { enforce: true });
+    if (!permission.ok) {
+        return res.status(permission.status).json(permission.payload);
+    }
+
     const { pregunta, contexto } = req.body;
 
     if (!pregunta || !contexto || !contexto.titulo || !contexto.cuerpo || !contexto.valoraciones) {
@@ -623,6 +702,11 @@ app.get('/api/news/:id/alerts', requireAuth(), async (req, res) => {
  * body: { newsId: string, userMessage: string, previousMessages: array }
  */
 app.post('/api/chat/news', requireAuth(), async (req, res) => {
+    const permission = await resolveChatbotPermissionState(req, { enforce: true });
+    if (!permission.ok) {
+        return res.status(permission.status).json(permission.payload);
+    }
+
     const { newsId, userMessage, previousMessages } = req.body;
 
     if (!newsId || !userMessage) {

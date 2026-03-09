@@ -54,6 +54,10 @@ function App() {
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [history, setHistory] = useState([]);
+  const [chatbotAccess, setChatbotAccess] = useState({
+    isLoading: true,
+    canUseChatbot: false,
+  });
   const [initialQuery, setInitialQuery] = useState(null);
   
   // State for History Dropdown
@@ -185,6 +189,66 @@ function App() {
       cancelled = true;
     };
   }, [getToken, historyStorageKey, isLoaded, isSignedIn, mapHistoryItemsForUI, userId]);
+
+  useEffect(() => {
+    if (!isLoaded) {
+      setChatbotAccess({ isLoading: true, canUseChatbot: false });
+      return;
+    }
+
+    if (!isSignedIn || !userId) {
+      setChatbotAccess({ isLoading: false, canUseChatbot: false });
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadChatbotAccess() {
+      setChatbotAccess((prev) => ({ ...prev, isLoading: true }));
+
+      try {
+        const token = await getToken();
+        if (!token) {
+          throw new Error('No se pudo obtener token de Clerk.');
+        }
+
+        const response = await fetch(`${API_BASE_URL}/api/chatbot/access`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error al cargar permiso de chatbot (${response.status})`);
+        }
+
+        const data = await response.json();
+        if (cancelled) {
+          return;
+        }
+
+        setChatbotAccess({
+          isLoading: false,
+          canUseChatbot: data.canUseChatbot === true,
+        });
+      } catch (error) {
+        console.error('No se pudo cargar permiso de chatbot. Se aplica modo restringido:', error);
+        if (cancelled) {
+          return;
+        }
+
+        // Fail-closed: sin confirmación del backend, no habilitamos chatbot.
+        setChatbotAccess({ isLoading: false, canUseChatbot: false });
+      }
+    }
+
+    loadChatbotAccess();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [getToken, isLoaded, isSignedIn, userId]);
 
   // Click outside handler for History dropdown
   useEffect(() => {
@@ -500,6 +564,7 @@ function App() {
                   <ResultadoBusqueda
                     estado={estadoBusqueda}
                     resultado={resultadoBusqueda}
+                    chatbotAccess={chatbotAccess}
                   />
                 </div>
               </Motion.section>

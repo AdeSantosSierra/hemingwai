@@ -193,7 +193,7 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 };
 
 
-const ResultadoBusqueda = ({ estado, resultado }) => {
+const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [activeCriterion, setActiveCriterion] = useState(null);
@@ -274,6 +274,9 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
 
   // Función para enviar pregunta rápida al chatbot
   const handlePreguntaChatbot = (nombreSeccion) => {
+    if (chatbotAccess?.isLoading || chatbotAccess?.canUseChatbot !== true) {
+      return;
+    }
     if (chatbotRef.current) {
         const pregunta = `Dame un resumen de la calificación que ha obtenido la sección de ${nombreSeccion}`;
         chatbotRef.current.handleQuickQuestion(pregunta);
@@ -335,6 +338,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
       ? resultado.autor.join(', ')
       : 'N/A'
     : resultado.autor || 'N/A';
+  const isChatbotAccessLoading = chatbotAccess?.isLoading === true;
+  const canUseChatbot = chatbotAccess?.canUseChatbot === true;
 
   return (
     <>
@@ -584,7 +589,8 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                         key={key}
                         whileHover={{ scale: 1.02, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
                         onClick={() => handlePreguntaChatbot(nombresSecciones[key])}
-                        className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left bg-[color:var(--hw-bg-elevated)]/70 flex items-center justify-between group"
+                        disabled={!canUseChatbot || isChatbotAccessLoading}
+                        className="p-4 border border-[color:var(--hw-border)] rounded-lg hover:border-lima transition-all duration-200 text-left bg-[color:var(--hw-bg-elevated)]/70 flex items-center justify-between group disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <span className="text-sm font-semibold text-[color:var(--hw-text-muted)] group-hover:text-[color:var(--hw-text)]">
                           {nombresSecciones[key]}
@@ -594,6 +600,16 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
                     );
                   })}
               </div>
+              {isChatbotAccessLoading && (
+                <p className="text-xs text-[color:var(--hw-text-muted)] mt-3">
+                  Verificando permisos de acceso al chatbot...
+                </p>
+              )}
+              {!isChatbotAccessLoading && !canUseChatbot && (
+                <p className="text-xs text-amber-300 mt-3">
+                  Acceso restringido: tu cuenta no está autorizada para usar el chatbot.
+                </p>
+              )}
             </div>
             </RevealOnScroll>
 
@@ -650,26 +666,47 @@ const ResultadoBusqueda = ({ estado, resultado }) => {
             <RevealOnScroll delay={150}>
             {resultado.titulo && resultado.cuerpo && resultado.valoraciones && (
                 <div className="hw-glass rounded-2xl p-6">
-                    <Chatbot 
-                        ref={chatbotRef}
-                        noticiaContexto={{
-                            titulo: resultado.titulo,
-                            cuerpo: resultado.cuerpo,
-                            valoraciones: resultado.valoraciones,
-                            fact_check_analisis: resultado.fact_check_analisis,
-                            fact_check_fuentes: resultado.fact_check_fuentes,
-                            texto_referencia_diccionario: resultado.texto_referencia_diccionario,
-                            valoracion_titular: resultado.valoracion_titular,
-                            autor: resultado.autor,
-                            url: resultado.url,
-                            fecha_publicacion: resultado.fecha_publicacion,
-                            fuente: resultado.fuente,
-                            keywords: resultado.keywords,
-                            tags: resultado.tags,
-                            puntuacion: scoreForChatbot ?? undefined,
-                            puntuacion_individual: resultado.puntuacion_individual,
-                        }}
-                    />
+                    {isChatbotAccessLoading && (
+                      <div className="p-4 rounded-xl border border-[color:var(--hw-border)] bg-[color:var(--hw-bg-elevated)]/70">
+                        <p className="text-sm text-[color:var(--hw-text-muted)]">
+                          Verificando permisos del chatbot...
+                        </p>
+                      </div>
+                    )}
+
+                    {!isChatbotAccessLoading && canUseChatbot && (
+                      <Chatbot 
+                          ref={chatbotRef}
+                          noticiaContexto={{
+                              titulo: resultado.titulo,
+                              cuerpo: resultado.cuerpo,
+                              valoraciones: resultado.valoraciones,
+                              fact_check_analisis: resultado.fact_check_analisis,
+                              fact_check_fuentes: resultado.fact_check_fuentes,
+                              texto_referencia_diccionario: resultado.texto_referencia_diccionario,
+                              valoracion_titular: resultado.valoracion_titular,
+                              autor: resultado.autor,
+                              url: resultado.url,
+                              fecha_publicacion: resultado.fecha_publicacion,
+                              fuente: resultado.fuente,
+                              keywords: resultado.keywords,
+                              tags: resultado.tags,
+                              puntuacion: scoreForChatbot ?? undefined,
+                              puntuacion_individual: resultado.puntuacion_individual,
+                          }}
+                      />
+                    )}
+
+                    {!isChatbotAccessLoading && !canUseChatbot && (
+                      <div className="p-4 rounded-xl border border-amber-400/40 bg-amber-500/10">
+                        <h5 className="text-base font-semibold text-amber-200 mb-1">
+                          Acceso restringido
+                        </h5>
+                        <p className="text-sm text-amber-100/90">
+                          Tu cuenta no tiene permiso para usar el chatbot en este momento.
+                        </p>
+                      </div>
+                    )}
                 </div>
             )}
             </RevealOnScroll>
