@@ -221,9 +221,9 @@ function SignedOutLanding({ isDarkMode, onToggleTheme }) {
       )}
 
       <div className="relative z-10 min-h-screen flex items-center justify-center px-5 py-12 sm:px-8">
-        <div className="w-full max-w-6xl grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-center">
+        <div className="w-full max-w-6xl grid gap-8 lg:grid-cols-[1.3fr_0.7fr] items-center lg:items-stretch">
           <Motion.section
-            className={`rounded-3xl border backdrop-blur-xl p-7 sm:p-10 ${
+            className={`h-full rounded-3xl border backdrop-blur-xl p-7 sm:p-10 ${
               isDarkMode
                 ? 'border-white/12 bg-[#141414]/72 shadow-[0_30px_70px_rgba(0,0,0,0.35)]'
                 : 'border-black/10 bg-white/85 shadow-[0_20px_55px_rgba(15,23,42,0.14)]'
@@ -303,7 +303,7 @@ function SignedOutLanding({ isDarkMode, onToggleTheme }) {
           </Motion.section>
 
           <Motion.aside
-            className={`hidden lg:flex flex-col rounded-2xl border backdrop-blur-lg p-5 min-h-[420px] ${
+            className={`hidden lg:flex h-full min-h-0 flex-col rounded-2xl border backdrop-blur-lg p-5 ${
               isDarkMode
                 ? 'border-white/10 bg-[#131313]/75'
                 : 'border-black/10 bg-white/80'
@@ -318,7 +318,7 @@ function SignedOutLanding({ isDarkMode, onToggleTheme }) {
               Live signals
             </div>
 
-            <div className="relative flex-1 overflow-hidden rounded-xl border border-[color:var(--hw-border)] bg-[color:var(--hw-bg)]/40 p-3">
+            <div className="relative min-h-0 flex-1 overflow-hidden rounded-xl border border-[color:var(--hw-border)] bg-[color:var(--hw-bg)]/40 p-3">
               <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
               <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[color:var(--hw-bg)] to-transparent pointer-events-none z-10" />
 
