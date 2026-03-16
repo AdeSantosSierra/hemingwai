@@ -259,8 +259,22 @@
    100% { top: 120%; }
  }
 
- /* --- BACKGROUND & PARTICLES --- */
- .bg-animated {
+ @keyframes hw-search-scan {
+   0% { transform: translateX(-130%); }
+   100% { transform: translateX(130%); }
+ }
+
+ @keyframes hw-shimmer {
+   100% { transform: translateX(100%); }
+ }
+
+ @keyframes hw-radar-breathe {
+   0%, 100% { opacity: 0.6; transform: scale(0.96); }
+   50% { opacity: 1; transform: scale(1.04); }
+ }
+
+/* --- BACKGROUND & PARTICLES --- */
+.bg-animated {
   position: relative;
   min-height: 100vh;
   background-color: var(--hw-bg);
@@ -351,6 +365,152 @@
   mask-image: radial-gradient(circle at 50% 40%, transparent 0%, transparent 55%, black 80%);
 }
 
+.hw-search-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.hw-search-shell__scanline,
+.hw-search-shell__glow {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.hw-search-shell__scanline {
+  inset: 0;
+  background: linear-gradient(100deg, transparent 25%, rgba(212, 230, 0, 0.2) 48%, rgba(21, 215, 255, 0.22) 50%, transparent 74%);
+  transform: translateX(-130%);
+}
+
+.hw-search-shell__glow {
+  inset: -1px;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px rgba(212, 230, 0, 0.24),
+    0 0 0 1px rgba(212, 230, 0, 0.1),
+    0 0 30px rgba(212, 230, 0, 0.14);
+}
+
+.hw-search-shell.is-loading {
+  box-shadow:
+    0 0 0 1px rgba(212, 230, 0, 0.18),
+    0 18px 42px rgba(0, 0, 0, 0.18),
+    0 0 36px rgba(212, 230, 0, 0.12);
+}
+
+.hw-search-shell.is-loading .hw-search-shell__scanline,
+.hw-search-shell.is-loading .hw-search-shell__glow {
+  opacity: 1;
+}
+
+.hw-search-shell.is-loading .hw-search-shell__scanline {
+  animation: hw-search-scan 1.8s linear infinite;
+}
+
+.hw-loading-shell {
+  position: relative;
+}
+
+.hw-loading-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(21, 215, 255, 0.12), transparent 28%),
+    radial-gradient(circle at 82% 78%, rgba(212, 230, 0, 0.14), transparent 30%);
+  opacity: 0.85;
+}
+
+.hw-loading-progress {
+  background: linear-gradient(90deg, #d4e600 0%, #efff59 42%, #15d7ff 100%);
+  box-shadow:
+    0 0 18px rgba(212, 230, 0, 0.34),
+    0 0 28px rgba(21, 215, 255, 0.2);
+  transition: width 280ms ease;
+}
+
+.hw-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 100%), var(--hw-bg-strong);
+}
+
+.hw-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+  animation: hw-shimmer 1.5s ease-in-out infinite;
+}
+
+.hw-loading-radar {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  border-radius: 9999px;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+.hw-loading-radar__glow {
+  position: absolute;
+  inset: 28px;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(212, 230, 0, 0.28) 0%, rgba(21, 215, 255, 0.18) 32%, transparent 72%);
+  filter: blur(24px);
+  animation: hw-radar-breathe 2.8s ease-in-out infinite;
+}
+
+.hw-loading-radar__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hw-loading-radar__ring--outer {
+  animation: spin 18s linear infinite;
+}
+
+.hw-loading-radar__ring--middle {
+  inset: 18px;
+  border-color: rgba(212, 230, 0, 0.22);
+  box-shadow: 0 0 32px rgba(212, 230, 0, 0.12);
+  animation: spin 12s linear infinite reverse;
+}
+
+.hw-loading-radar__ring--inner {
+  inset: 42px;
+  border-color: rgba(21, 215, 255, 0.3);
+  box-shadow: 0 0 26px rgba(21, 215, 255, 0.16);
+}
+
+.hw-loading-radar__sweep {
+  position: absolute;
+  inset: 18px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(212, 230, 0, 0.03) 250deg, rgba(212, 230, 0, 0.42) 316deg, rgba(21, 215, 255, 0.55) 334deg, transparent 360deg);
+  filter: blur(1px);
+  animation: spin 2.6s linear infinite;
+}
+
+.hw-loading-radar__core {
+  position: absolute;
+  inset: 74px;
+  border-radius: inherit;
+  border: 1px solid rgba(212, 230, 0, 0.34);
+  background:
+    radial-gradient(circle, rgba(239, 255, 89, 0.5) 0%, rgba(212, 230, 0, 0.2) 40%, rgba(21, 215, 255, 0.08) 70%, transparent 100%);
+  box-shadow:
+    0 0 26px rgba(212, 230, 0, 0.3),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
 .bg-animated > header,
 .bg-animated > main,
 .bg-animated > footer {
@@ -372,7 +532,13 @@
   .hw-glitch::before,
   .hw-glitch::after,
   .hw-terminal-bar,
-  .hw-terminal-scanline {
+  .hw-terminal-scanline,
+  .hw-search-shell__scanline,
+  .hw-shimmer::after,
+  .hw-loading-radar__glow,
+  .hw-loading-radar__ring--outer,
+  .hw-loading-radar__ring--middle,
+  .hw-loading-radar__sweep {
     animation: none !important;
   }
   

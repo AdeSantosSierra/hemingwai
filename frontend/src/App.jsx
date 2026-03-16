@@ -7,7 +7,6 @@ import {
   History,
   Loader,
   ArrowRight,
-  Database,
   Code,
   FileDown,
   Cpu,
@@ -34,6 +33,7 @@ import SignedOutLanding from './components/SignedOutLanding';
 const HISTORY_LIMIT = 4;
 const HISTORY_STORAGE_KEY_PREFIX = 'analysisHistory';
 const THEME_STORAGE_KEY = 'hw-theme';
+const MIN_LOADING_MS = 1800;
 
 /*  
    App principal
@@ -51,6 +51,7 @@ function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
   const [identificador, setIdentificador] = useState('');
+  const [loadingQuery, setLoadingQuery] = useState('');
   const [resultadoBusqueda, setResultadoBusqueda] = useState(null);
   const [estadoBusqueda, setEstadoBusqueda] = useState('idle'); // 'idle', 'loading', 'success', 'error'
   const [history, setHistory] = useState([]);
@@ -313,6 +314,16 @@ function App() {
 
     setEstadoBusqueda('loading');
     setResultadoBusqueda(null);
+    setLoadingQuery(query);
+
+    const loadingStartedAt = window.performance.now();
+    const waitForLoadingAnimation = async () => {
+      const elapsed = window.performance.now() - loadingStartedAt;
+      const remaining = MIN_LOADING_MS - elapsed;
+      if (remaining > 0) {
+        await new Promise((resolve) => window.setTimeout(resolve, remaining));
+      }
+    };
 
     try {
       const token = await getToken();
@@ -331,6 +342,7 @@ function App() {
 
       if (response.status === 404) {
         const data = await response.json();
+        await waitForLoadingAnimation();
         setEstadoBusqueda('success');
         setResultadoBusqueda(data);
         toast('Noticia no encontrada en la base de datos.', {
@@ -347,10 +359,12 @@ function App() {
       const data = await response.json();
 
       if (data.error) {
+        await waitForLoadingAnimation();
         setEstadoBusqueda('error');
         setResultadoBusqueda(data.error);
         toast.error('Error en el análisis: ' + data.error);
       } else {
+        await waitForLoadingAnimation();
         setEstadoBusqueda('success');
         setResultadoBusqueda(data);
         toast.success('Análisis completado con éxito.');
@@ -366,6 +380,7 @@ function App() {
       }
     } catch (error) {
       console.error('Error al procesar la búsqueda:', error);
+      await waitForLoadingAnimation();
       setEstadoBusqueda('error');
       setResultadoBusqueda(
         error.message || 'Error de conexión con el servidor Express.'
@@ -428,7 +443,7 @@ function App() {
           />
           <div className="hidden sm:flex flex-col">
             <span className="text-[18px] leading-tight font-semibold tracking-tight">
-              Mirada21 Media Lab
+              
             </span>
             <span className="text-[14px] leading-tight text-[color:var(--hw-text-muted)]">
               Análisis de noticias con IA
@@ -507,7 +522,9 @@ function App() {
               className={`w-full transition-all duration-500 ease-in-out ${isIdle ? 'max-w-4xl' : 'max-w-5xl mb-2'}`}
             >
               <div className={`${isIdle ? 'max-w-3xl mx-auto' : ''}`}>
-                <div className="bg-[color:var(--hw-bg-elevated)] border border-[color:var(--hw-border)] rounded-xl sm:rounded-full p-1.5 sm:p-2 pl-3 sm:pl-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shadow-[0_12px_30px_rgba(0,0,0,0.14)] focus-within:border-lima transition-colors">
+                <div className={`hw-search-shell bg-[color:var(--hw-bg-elevated)] border border-[color:var(--hw-border)] rounded-xl sm:rounded-full p-1.5 sm:p-2 pl-3 sm:pl-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shadow-[0_12px_30px_rgba(0,0,0,0.14)] focus-within:border-lima transition-colors ${estadoBusqueda === 'loading' ? 'is-loading' : ''}`}>
+                  <span aria-hidden="true" className="hw-search-shell__scanline" />
+                  <span aria-hidden="true" className="hw-search-shell__glow" />
                   <div className="flex items-center flex-grow min-w-0">
                     <Search className="text-lima mr-3 w-5 h-5 sm:w-6 sm:h-6 transform -rotate-45" />
                     <input
@@ -565,6 +582,7 @@ function App() {
                     estado={estadoBusqueda}
                     resultado={resultadoBusqueda}
                     chatbotAccess={chatbotAccess}
+                    query={loadingQuery}
                   />
                 </div>
               </Motion.section>

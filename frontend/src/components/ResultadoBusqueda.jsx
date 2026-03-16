@@ -7,11 +7,12 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 // eslint-disable-next-line no-unused-vars
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import Chatbot from './Chatbot';
 import NewsScoreDonut from './NewsScoreDonut';
 import SkeletonAnalysis from './SkeletonAnalysis';
 import RevealOnScroll from './RevealOnScroll';
+import { CRITERIA_CONFIG, CRITERION_BY_KEY } from '../lib/criteriaConfig';
 import {
   getEvaluationAlerts,
   getEvaluationAlertsSummary,
@@ -138,6 +139,19 @@ const normalizeKey = (value) =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 
+const hexToRgba = (hex, alpha) => {
+  const normalized = String(hex || '').replace('#', '');
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
+    return `rgba(212, 230, 0, ${alpha})`;
+  }
+
+  const r = Number.parseInt(normalized.slice(0, 2), 16);
+  const g = Number.parseInt(normalized.slice(2, 4), 16);
+  const b = Number.parseInt(normalized.slice(4, 6), 16);
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
+
 const SEVERITY_UI = {
   high: {
     label: 'Alta',
@@ -153,21 +167,15 @@ const SEVERITY_UI = {
   },
 };
 
-const CATEGORY_LABELS = {
-  fiabilidad: 'Fiabilidad',
-  adecuacion: 'Adecuación',
-  claridad: 'Claridad',
-  profundidad: 'Profundidad',
-  enfoque: 'Enfoque',
-};
+const CATEGORY_LABELS = Object.fromEntries(
+  CRITERIA_CONFIG.map((criterion) => [criterion.key, criterion.label])
+);
 
-const CRITERION_SUMMARY_LABELS = {
-  fiabilidad: 'Fiabilidad',
-  adecuacion: 'Adecuación',
-  claridad: 'Claridad',
-  profundidad: 'Profundidad',
-  enfoque: 'Enfoque',
-};
+const CRITERION_SUMMARY_LABELS = CATEGORY_LABELS;
+
+const CRITERION_SECTION_LABELS = Object.fromEntries(
+  CRITERIA_CONFIG.map((criterion) => [criterion.sectionId, criterion.label])
+);
 
 /*  
    PuntuacionIndicador
@@ -193,16 +201,18 @@ const PuntuacionIndicador = ({ puntuacion }) => {
 };
 
 
-const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
+const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [activeCriterion, setActiveCriterion] = useState(null);
+  const [selectedCriterion, setSelectedCriterion] = useState(null);
   
   // Referencia al chatbot
   const chatbotRef = useRef(null);
 
   useEffect(() => {
     setActiveCriterion(null);
+    setSelectedCriterion(null);
   }, [resultado?._id, resultado?.url]);
 
   // Estado inicial
@@ -220,7 +230,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
 
   // Loading
   if (estado === 'loading') {
-    return <SkeletonAnalysis />;
+    return <SkeletonAnalysis query={query} />;
   }
 
   // Error
@@ -254,13 +264,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
     );
   }
 
-  const nombresSecciones = {
-    '1': 'Fiabilidad',
-    '2': 'Adecuación',
-    '3': 'Claridad',
-    '4': 'Profundidad',
-    '5': 'Enfoque'
-  };
+  const nombresSecciones = CRITERION_SECTION_LABELS;
 
   const abrirModal = (titulo, contenido, tipoContenido = 'markdown') => {
     setSeccionSeleccionada({ titulo, contenido, tipoContenido });
@@ -302,6 +306,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
         code: alert.code || 'UNKNOWN_ALERT',
         message: alert.message || 'Alerta sin descripción.',
         origin: normalizeKey(alert.origin) === 'engine' ? 'Motor' : 'Modelo',
+        categoryKey,
         category,
         severity,
         evidenceRefs,
@@ -330,6 +335,24 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
       : evaluationResult?.section_summaries?.[activeCriterion] || '—';
   const criterionSummaryLabel =
     activeCriterion === null ? null : CRITERION_SUMMARY_LABELS[activeCriterion] || activeCriterion;
+  const selectedCriterionMeta =
+    selectedCriterion === null ? null : CRITERION_BY_KEY[selectedCriterion] || null;
+  const selectedCriterionScore = selectedCriterionMeta
+    ? toFiniteNumber(evaluationResult?.scores?.[selectedCriterionMeta.key]?.value)
+    : null;
+  const selectedCriterionSummary = selectedCriterionMeta
+    ? evaluationResult?.section_summaries?.[selectedCriterionMeta.key] || 'Contenido no disponible.'
+    : '';
+  const selectedCriterionSectionId = selectedCriterionMeta?.sectionId || null;
+  const selectedCriterionDetail = selectedCriterionSectionId
+    ? resultado.valoraciones?.[selectedCriterionSectionId]
+    : null;
+  const selectedCriterionAlerts = selectedCriterionMeta
+    ? alerts.filter((alert) => alert.categoryKey === selectedCriterionMeta.key).slice(0, 2)
+    : [];
+  const selectedCriterionGlow = selectedCriterionMeta
+    ? hexToRgba(selectedCriterionMeta.color, 0.28)
+    : 'rgba(212, 230, 0, 0.24)';
   const publicationDate = resultado.fecha_publicacion
     ? new Date(resultado.fecha_publicacion).toLocaleDateString('es-ES')
     : 'N/A';
@@ -384,8 +407,8 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 items-start">
           <div className="space-y-6">
             <RevealOnScroll delay={70}>
-              <div className="hw-glass rounded-2xl p-6 border-l-4 border-lima">
-                <div className="flex flex-col xl:flex-row gap-8">
+              <div className="hw-glass relative overflow-hidden rounded-2xl p-6 border-l-4 border-lima">
+                <div className="flex flex-col xl:flex-row gap-8 transition-all duration-300">
                   <div className="flex flex-col items-center gap-3 flex-shrink-0">
                     <p className="text-xs font-semibold text-[color:var(--hw-text-muted)] uppercase tracking-[0.18em]">
                       Puntuación general
@@ -393,6 +416,8 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
                     <NewsScoreDonut
                       evaluationResult={evaluationResult}
                       onActiveCriterionChange={setActiveCriterion}
+                      onSelectedCriterionChange={setSelectedCriterion}
+                      selectedCriterionKey={selectedCriterion}
                     />
                   </div>
                   <div className="flex-1 xl:border-l xl:border-[color:var(--hw-border)] xl:pl-8">
@@ -713,6 +738,150 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess }) => {
           </div>
         </div>
       </motion.div>
+
+      {selectedCriterionMeta && createPortal(
+        <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6"
+          >
+            <button
+              type="button"
+              aria-label="Cerrar detalle del criterio"
+              className="absolute inset-0 bg-black/55 backdrop-blur-sm"
+              onClick={() => setSelectedCriterion(null)}
+            />
+
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+              className="relative z-10 flex items-center justify-center"
+              style={{
+                width: 'min(92vw, 42rem)',
+                height: 'min(92vw, 42rem)',
+                maxHeight: '88vh',
+              }}
+            >
+              <div
+                className="pointer-events-none absolute inset-0 rounded-full blur-3xl"
+                style={{
+                  background: `radial-gradient(circle, ${selectedCriterionGlow} 0%, ${hexToRgba(selectedCriterionMeta.color, 0.14)} 34%, transparent 72%)`,
+                }}
+              />
+
+              <div
+                className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[2rem] border px-5 py-6 text-center shadow-[0_0_80px_rgba(0,0,0,0.34)] sm:rounded-full sm:px-12 sm:py-12"
+                style={{
+                  borderColor: hexToRgba(selectedCriterionMeta.color, 0.42),
+                  background: `radial-gradient(circle at 50% 32%, ${hexToRgba(selectedCriterionMeta.color, 0.18)} 0%, ${hexToRgba(selectedCriterionMeta.color, 0.08)} 24%, rgba(5,5,5,0.94) 74%)`,
+                  boxShadow: `0 0 0 1px ${hexToRgba(selectedCriterionMeta.color, 0.18)}, 0 0 42px ${hexToRgba(selectedCriterionMeta.color, 0.24)}`,
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setSelectedCriterion(null)}
+                  className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border text-[color:var(--hw-text)] transition-colors hover:text-white sm:right-8 sm:top-8"
+                  style={{
+                    borderColor: hexToRgba(selectedCriterionMeta.color, 0.3),
+                    backgroundColor: hexToRgba(selectedCriterionMeta.color, 0.08),
+                  }}
+                >
+                  <XCircle className="h-5 w-5" />
+                </button>
+
+                <p
+                  className="text-[11px] font-semibold uppercase tracking-[0.35em] sm:text-xs"
+                  style={{ color: selectedCriterionMeta.color }}
+                >
+                  Detalle focal
+                </p>
+                <h5
+                  className="mt-3 text-xl font-black uppercase tracking-[0.18em] sm:text-2xl"
+                  style={{ color: selectedCriterionMeta.color }}
+                >
+                  {selectedCriterionMeta.label}
+                </h5>
+                <div
+                  className="mt-3 text-5xl font-black leading-none tracking-tight sm:text-7xl"
+                  style={{
+                    color: selectedCriterionMeta.color,
+                    textShadow: `0 0 28px ${hexToRgba(selectedCriterionMeta.color, 0.42)}`,
+                  }}
+                >
+                  {selectedCriterionScore === null ? '—' : selectedCriterionScore.toFixed(1)}
+                </div>
+                <p className="mt-3 max-w-md text-sm leading-relaxed text-[color:var(--hw-text-muted)] sm:text-base">
+                  {selectedCriterionMeta.description}
+                </p>
+
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                  <span
+                    className="rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em]"
+                    style={{
+                      borderColor: hexToRgba(selectedCriterionMeta.color, 0.26),
+                      backgroundColor: hexToRgba(selectedCriterionMeta.color, 0.12),
+                      color: selectedCriterionMeta.color,
+                    }}
+                  >
+                    {selectedCriterionAlerts.length} alertas asociadas
+                  </span>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--hw-text-muted)]">
+                    clic fuera para cerrar
+                  </span>
+                </div>
+
+                <div className="mt-5 max-h-[24vh] max-w-lg overflow-y-auto px-1 text-sm leading-relaxed text-[color:var(--hw-text)] sm:max-h-[170px] sm:text-base">
+                  <p>{selectedCriterionSummary}</p>
+                  {selectedCriterionAlerts.map((alert) => (
+                    <p key={alert.code} className="mt-3 text-sm text-[color:var(--hw-text-muted)]">
+                      {alert.message}
+                    </p>
+                  ))}
+                </div>
+
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedCriterion(null);
+                      abrirModal(
+                        selectedCriterionMeta.label,
+                        selectedCriterionDetail || selectedCriterionSummary || 'Contenido no disponible'
+                      );
+                    }}
+                    className="rounded-full border px-5 py-3 text-sm font-semibold transition-transform hover:scale-[1.02]"
+                    style={{
+                      borderColor: hexToRgba(selectedCriterionMeta.color, 0.32),
+                      backgroundColor: hexToRgba(selectedCriterionMeta.color, 0.14),
+                      color: selectedCriterionMeta.color,
+                    }}
+                  >
+                    Ver detalle completo
+                  </button>
+
+                  <button
+                    type="button"
+                    disabled={!canUseChatbot || isChatbotAccessLoading}
+                    onClick={() => {
+                      setSelectedCriterion(null);
+                      handlePreguntaChatbot(selectedCriterionMeta.label);
+                    }}
+                    className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-[color:var(--hw-text)] transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    Preguntar al chatbot
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Modal - Renderizado en Portal para evitar conflictos con transformaciones CSS */}
       {mostrarModal && seccionSeleccionada && createPortal(

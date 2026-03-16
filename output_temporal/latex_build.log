@@ -4,8 +4,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (prel
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.tex
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -173,46 +173,55 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-No file Bill_Gates_says_he_will_give_away_most_of_his_fortune_by_204.aux.
+No file Biden_indulta_a_su_hijo_Hunter_pese_a_haber_asegurado_que_no.aux.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-[2]
-[3]
-[4]
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.aux)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (536.0321pt too wide) in paragraph at lines 72--74
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / internacional / elecciones-[]us
+a / 2024-[]12-[]02 / el-[]presidente-[]biden-[]indulta-[]a-[]su-[]hijo-[]hunter
+-[]de-[]los-[]casos-[]de-[]posesion-[]ilegal-[]de-[]un-[]arma-[]y-[]fraude-[]fi
+scal .
 
-Package rerunfilecheck Warning: File `Bill_Gates_says_he_will_give_away_most_of
-_his_fortune_by_204.out' has changed.
+[2]
+[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+[4]
+[5]
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.aux)
+
+Package rerunfilecheck Warning: File `Biden_indulta_a_su_hijo_Hunter_pese_a_hab
+er_asegurado_que_no.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
- )</usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share
-/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-
-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type
-1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_wi
-ll_give_away_most_of_his_fortune_by_204.pdf (4 pages, 75888 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/Bill_Gates_says_h
-e_will_give_away_most_of_his_fortune_by_204.log.
+ )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hi
+jo_Hunter_pese_a_haber_asegurado_que_no.pdf (5 pages, 84899 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Biden_indulta_a_s
+u_hijo_Hunter_pese_a_haber_asegurado_que_no.log.
 
 --- pdflatex pass 2 ---
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.tex
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -380,33 +389,42 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.aux)
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.out)
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.out)
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.aux)
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.out)
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.out)
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (536.0321pt too wide) in paragraph at lines 72--74
+[][]$\OT1/pcr/m/n/10 https : / / elpais . com / internacional / elecciones-[]us
+a / 2024-[]12-[]02 / el-[]presidente-[]biden-[]indulta-[]a-[]su-[]hijo-[]hunter
+-[]de-[]los-[]casos-[]de-[]posesion-[]ilegal-[]de-[]un-[]arma-[]y-[]fraude-[]fi
+scal .
+
 [2]
-[3]
+[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
 [4]
-(/home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_will_give_away_most
-_of_his_fortune_by_204.aux) )</usr/share/texlive/texmf-dist/fonts/type1/urw/cou
-rier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/te
-xlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/Bill_Gates_says_he_wi
-ll_give_away_most_of_his_fortune_by_204.pdf (4 pages, 75888 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/Bill_Gates_says_h
-e_will_give_away_most_of_his_fortune_by_204.log.
+[5]
+(/home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hijo_Hunter_pese_a_
+haber_asegurado_que_no.aux) )
+(see the transcript file for additional information)</usr/share/texlive/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
+nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
+/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
+fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Biden_indulta_a_su_hi
+jo_Hunter_pese_a_haber_asegurado_que_no.pdf (5 pages, 84899 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Biden_indulta_a_s
+u_hijo_Hunter_pese_a_haber_asegurado_que_no.log.
