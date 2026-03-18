@@ -164,7 +164,7 @@ function getColorForScore(score) {
             accentColor: '#15d7ff',
             textColor: '#050505',
             state: 'pending',
-            useWhiteLogo: false
+            logoVariant: 'dark'
         };
     }
 
@@ -174,21 +174,21 @@ function getColorForScore(score) {
             accentColor: '#15d7ff',
             textColor: '#050505',
             state: 'pending',
-            useWhiteLogo: false
+            logoVariant: 'dark'
         };
     }
 
     // Semáforo (escala 0–10):
     // < 5: Rojo (Mala)
     // 5-6.9: Amarillo (Regular)
-    // >= 7: Lima de marca (Buena)
+    // >= 7: Verde (Buena)
 
     if (val < 5) {
         return {
-            accentColor: '#f87171',
+            accentColor: '#dc2626',
             textColor: '#f8fafc',
             state: 'low',
-            useWhiteLogo: true
+            logoVariant: 'white'
         };
     }
     if (val < 7) {
@@ -196,14 +196,14 @@ function getColorForScore(score) {
             accentColor: '#facc15',
             textColor: '#050505',
             state: 'medium',
-            useWhiteLogo: false
+            logoVariant: 'dark'
         };
     }
     return {
-        accentColor: '#d4e600',
+        accentColor: '#22c55e',
         textColor: '#050505',
         state: 'high',
-        useWhiteLogo: false
+        logoVariant: 'dark'
     };
 }
 
@@ -485,12 +485,12 @@ function updateHemingwaiBadge(badge, data) {
         badge.classList.add('hemingwai-badge-pending');
     }
 
-    const { accentColor, textColor, state, useWhiteLogo } = getColorForScore(score);
+    const { accentColor, textColor, state, logoVariant } = getColorForScore(score);
     badge.dataset.state = state;
     badge.style.setProperty('--hemingwai-badge-accent', accentColor);
     badge.style.color = textColor;
-
-    img.src = useWhiteLogo ? WHITE_LOGO_URL : BLUE_LOGO_URL;
+    img.src = logoVariant === 'white' ? WHITE_LOGO_URL : BLUE_LOGO_URL;
+    img.style.filter = logoVariant === 'dark' ? 'brightness(0) saturate(100%)' : 'none';
 }
 
 function createHemingwaiBadge(data) {

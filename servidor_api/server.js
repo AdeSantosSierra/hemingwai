@@ -409,6 +409,13 @@ function resolveGlobalScores(payload = {}) {
 // RUTAS DE LA API
 // =======================================================
 
+function isValidExtensionChatPassword(password) {
+    const expectedPassword = String(process.env.CHATBOT_PASSWORD || '').trim();
+    const receivedPassword = String(password || '').trim();
+
+    return Boolean(expectedPassword) && receivedPassword === expectedPassword;
+}
+
 /**
  * POST /api/verify-password
  * Endpoint deprecado tras migración a Clerk.
@@ -422,14 +429,36 @@ app.post('/api/verify-password', (req, res) => {
 
 /**
  * POST /api/chat/validate-password
- * Endpoint deprecado tras migración a Clerk.
+ * Valida la contraseña del chatbot usada por la extensión.
  */
 app.post('/api/chat/validate-password', (req, res) => {
-    return res.status(410).json({
-        ok: false,
-        error: 'deprecated_password_auth',
-        message: 'Usa Clerk y envía Authorization: Bearer <token>.',
-    });
+    const { password } = req.body || {};
+
+    if (!String(process.env.CHATBOT_PASSWORD || '').trim()) {
+        return res.status(500).json({
+            ok: false,
+            error: 'chatbot_password_not_configured',
+            message: 'El backend no tiene configurada la contraseña del chatbot.',
+        });
+    }
+
+    if (!password) {
+        return res.status(400).json({
+            ok: false,
+            error: 'missing_password',
+            message: 'Introduce la contraseña.',
+        });
+    }
+
+    if (!isValidExtensionChatPassword(password)) {
+        return res.status(401).json({
+            ok: false,
+            error: 'invalid_password',
+            message: 'Contraseña incorrecta.',
+        });
+    }
+
+    return res.json({ ok: true });
 });
 
 /**
@@ -704,15 +733,26 @@ app.get('/api/news/:id/alerts', requireAuth(), async (req, res) => {
 /**
  * POST /api/chat/news
  * Chatbot específico para la extensión. Recibe newsId, recupera el contexto del backend y llama a la IA.
- * body: { newsId: string, userMessage: string, previousMessages: array }
+ * body: { newsId: string, userMessage: string, previousMessages: array, password: string }
  */
-app.post('/api/chat/news', requireAuth(), async (req, res) => {
-    const permission = await resolveChatbotPermissionState(req, { enforce: true });
-    if (!permission.ok) {
-        return res.status(permission.status).json(permission.payload);
+app.post('/api/chat/news', async (req, res) => {
+    const { newsId, userMessage, previousMessages, password } = req.body;
+
+    if (!String(process.env.CHATBOT_PASSWORD || '').trim()) {
+        return res.status(500).json({
+            ok: false,
+            error: 'chatbot_password_not_configured',
+            message: 'El backend no tiene configurada la contraseña del chatbot.',
+        });
     }
 
-    const { newsId, userMessage, previousMessages } = req.body;
+    if (!isValidExtensionChatPassword(password)) {
+        return res.status(401).json({
+            ok: false,
+            error: 'AUTH_REQUIRED',
+            message: 'Contraseña inválida o sesión expirada.',
+        });
+    }
 
     if (!newsId || !userMessage) {
         return res.status(400).json({ ok: false, error: "newsId y userMessage son requeridos." });
