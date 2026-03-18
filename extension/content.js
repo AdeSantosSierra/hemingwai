@@ -125,6 +125,8 @@ async function requestCheckUrlsBatch(urls) {
         urls
     });
 
+    console.log("[HemingwAI Content] CHECK_URLS_BATCH payload recibido:", response);
+
     if (!response) {
         return {
             ok: false,
@@ -134,6 +136,10 @@ async function requestCheckUrlsBatch(urls) {
     }
 
     if (response.ok !== true) {
+        console.warn("[HemingwAI Content] CHECK_URLS_BATCH invalidado:", {
+            reason: response.error || "Respuesta no-ok del background.",
+            payload: response
+        });
         return {
             ok: false,
             error: response.error || "No se pudo comprobar las URLs con el backend.",

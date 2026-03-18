@@ -81,6 +81,36 @@ function getConnectionErrorMessage(error, fallback) {
     return fallback;
 }
 
+function normalizeCheckUrlsPayload(data) {
+    if (Array.isArray(data)) {
+        return { resultados: data, source: 'root_array' };
+    }
+
+    if (!data || typeof data !== 'object') {
+        return null;
+    }
+
+    if (Array.isArray(data.resultados)) {
+        return { resultados: data.resultados, source: 'resultados' };
+    }
+
+    if (Array.isArray(data.items)) {
+        return { resultados: data.items, source: 'items' };
+    }
+
+    if (data.data && typeof data.data === 'object') {
+        if (Array.isArray(data.data.resultados)) {
+            return { resultados: data.data.resultados, source: 'data.resultados' };
+        }
+
+        if (Array.isArray(data.data.items)) {
+            return { resultados: data.data.items, source: 'data.items' };
+        }
+    }
+
+    return null;
+}
+
 async function handleVerifyPassword(message) {
     const { password } = message;
     if (!password) {
@@ -202,6 +232,12 @@ async function handleCheckUrlsBatch(message) {
             body: JSON.stringify({ urls })
         });
 
+        console.log("[HemingwAI Background] /api/check-urls raw backend payload:", {
+            status: response.status,
+            ok: response.ok,
+            data: response.data
+        });
+
         if (!response.ok) {
             return {
                 ok: false,
@@ -210,7 +246,14 @@ async function handleCheckUrlsBatch(message) {
             };
         }
 
-        if (!response.data || !Array.isArray(response.data.resultados)) {
+        const normalized = normalizeCheckUrlsPayload(response.data);
+        if (!normalized) {
+            console.warn("[HemingwAI Background] /api/check-urls invalid payload shape:", {
+                status: response.status,
+                payloadType: typeof response.data,
+                payloadKeys: response.data && typeof response.data === 'object' ? Object.keys(response.data) : [],
+                payload: response.data
+            });
             return {
                 ok: false,
                 error: "Respuesta inválida del backend para check-urls.",
@@ -218,10 +261,23 @@ async function handleCheckUrlsBatch(message) {
             };
         }
 
-        return {
+        console.log("[HemingwAI Background] /api/check-urls normalized payload:", {
+            source: normalized.source,
+            resultadosCount: normalized.resultados.length,
+            sample: normalized.resultados[0] || null
+        });
+
+        const payload = {
             ok: true,
-            resultados: response.data.resultados
+            resultados: normalized.resultados
         };
+
+        console.log("[HemingwAI Background] /api/check-urls payload reenviado al content:", {
+            resultadosCount: payload.resultados.length,
+            sample: payload.resultados[0] || null
+        });
+
+        return payload;
     } catch (error) {
         return {
             ok: false,
