@@ -32,12 +32,17 @@ const LOCAL_DEV_ORIGINS = process.env.NODE_ENV === 'production'
     ? []
     : ['http://localhost:5173', 'http://127.0.0.1:5173'];
 
+const CHROME_EXTENSION_ORIGINS = [
+    'chrome-extension://lmfnndfgfmikgmemeggdngamfdbiifnp'
+];
+
 const ALLOWED_ORIGINS = Array.from(new Set([
     process.env.FRONTEND_ORIGIN,
     ...(process.env.FRONTEND_ORIGINS || '')
         .split(',')
         .map((origin) => origin.trim())
         .filter(Boolean),
+    ...CHROME_EXTENSION_ORIGINS,
     ...LOCAL_DEV_ORIGINS,
 ].map(normalizeOrigin).filter(Boolean)));
 
