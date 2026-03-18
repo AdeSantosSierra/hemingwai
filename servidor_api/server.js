@@ -918,7 +918,8 @@ app.post('/api/history', requireAuth(), async (req, res) => {
  * Endpoint batch para verificar múltiples URLs a la vez usando spawn.
  * body: { urls: string[] }
  */
-app.post('/api/check-urls', requireAuth(), (req, res) => {
+// Público para la extensión MV3: el service worker no envía token Clerk.
+app.post('/api/check-urls', (req, res) => {
     const { urls } = req.body;
 
     if (!urls || !Array.isArray(urls)) {
