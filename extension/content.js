@@ -8,7 +8,6 @@ const SETTINGS = {
 };
 
 const ENV = {
-    API_BASE: "https://hemingwai-backend.onrender.com",
     ANALYSIS_BASE_URL: "https://hemingwai-frontend.onrender.com"
 };
 
@@ -19,7 +18,6 @@ const envReadyPromise = new Promise((resolve) => {
             if (result) {
                 if (result.hemingwaiEnv === 'dev') {
                     SETTINGS.env = 'dev';
-                    ENV.API_BASE = "https://hemingwai-backend-5vw6.onrender.com";
                     ENV.ANALYSIS_BASE_URL = "https://hemingwai-frontend-5vw6.onrender.com";
                     console.log("[HemingwAI] Environment switched to DEV (backend-5vw6).");
                 }
@@ -37,7 +35,6 @@ const envReadyPromise = new Promise((resolve) => {
     }
 });
 
-const getApiEndpointBatch = () => `${ENV.API_BASE}/api/check-urls`;
 const MAX_URLS_PER_PAGE = 100; 
 
 // Logos
@@ -120,6 +117,34 @@ function sendMessageAsync(message) {
             resolve(undefined);
         }
     });
+}
+
+async function requestCheckUrlsBatch(urls) {
+    const response = await sendMessageAsync({
+        type: "CHECK_URLS_BATCH",
+        urls
+    });
+
+    if (!response) {
+        return {
+            ok: false,
+            error: "No se recibió respuesta del service worker.",
+            resultados: []
+        };
+    }
+
+    if (response.ok !== true) {
+        return {
+            ok: false,
+            error: response.error || "No se pudo comprobar las URLs con el backend.",
+            resultados: Array.isArray(response.resultados) ? response.resultados : []
+        };
+    }
+
+    return {
+        ok: true,
+        resultados: Array.isArray(response.resultados) ? response.resultados : []
+    };
 }
 
 // ========================================================
@@ -1476,16 +1501,12 @@ async function processArticlePage() {
     const currentUrlNorm = normalizeUrl(currentUrl);
 
     try {
-        const response = await fetch(getApiEndpointBatch(), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ urls: [currentUrl] })
-        });
-
-        if (!response.ok) return;
-
-        const data = await response.json();
-        const resultados = data.resultados || [];
+        const batchResult = await requestCheckUrlsBatch([currentUrl]);
+        if (!batchResult.ok) {
+            console.warn("HemingwAI: No se pudo comprobar la noticia actual.", batchResult.error);
+            return;
+        }
+        const resultados = batchResult.resultados || [];
         
         const match = resultados.find(r => normalizeUrl(r.url) === currentUrlNorm);
 
@@ -1571,16 +1592,12 @@ async function scanListingPage() {
     console.log(`HemingwAI: Consultando batch para ${uniqueUrlsToQuery.length} URLs únicas...`);
 
     try {
-        const response = await fetch(getApiEndpointBatch(), {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ urls: uniqueUrlsToQuery })
-        });
-
-        if (!response.ok) return;
-
-        const data = await response.json();
-        const resultados = data.resultados || [];
+        const batchResult = await requestCheckUrlsBatch(uniqueUrlsToQuery);
+        if (!batchResult.ok) {
+            console.warn("HemingwAI: No se pudo comprobar el batch del listado.", batchResult.error);
+            return;
+        }
+        const resultados = batchResult.resultados || [];
 
         let foundCount = 0;
         for (const res of resultados) {

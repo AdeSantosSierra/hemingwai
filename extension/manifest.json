@@ -7,7 +7,10 @@
   "action": {
     "default_popup": "popup.html"
   },
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "https://hemingwai-backend.onrender.com/*",
+    "https://hemingwai-backend-5vw6.onrender.com/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
