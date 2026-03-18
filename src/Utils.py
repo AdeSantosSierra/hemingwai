@@ -67,17 +67,26 @@ class Utils:
         3: {
             "nombre": "Claridad",
             "instruccion": (
-                "Evalúa si el texto se entiende y comunica con precisión narrativa: orden lógico, definiciones, "
-                "ausencia de ambigüedad y redacción comprensible para el público objetivo.\n\n"
+                "Evalúa si la noticia hace comprensible el conocimiento que pretende aportar: "
+                "si ordena el relato con lógica, presenta con precisión narrativa los datos relevantes "
+                "y jerarquiza correctamente lo importante para que el lector entienda el núcleo del hecho. "
+                "La claridad NO es solo fluidez o buena redacción formal: una noticia no debe puntuar alto "
+                "si está bien escrita pero deja ambiguo, disperso o mal jerarquizado lo esencial.\n\n"
+                
                 "Puntúa positivamente si:\n"
-                "- La estructura es clara (qué pasó, a quién, cuándo, dónde, por qué/para qué si aplica).\n"
-                "- Los conceptos y términos están usados con precisión y sin ambigüedad.\n"
-                "- El estilo facilita la comprensión (no excesivamente técnico sin explicación; frases claras).\n\n"
+                "- El relato sigue un orden lógico y facilita entender qué pasó, a quién, cuándo, dónde y por qué importa.\n"
+                "- Los datos relevantes están jerarquizados con claridad, de modo que el núcleo informativo no queda oculto entre detalles secundarios.\n"
+                "- La redacción es precisa y comprensible para el público objetivo, sin ambigüedades que alteren la interpretación.\n"
+                "- La estructura ayuda a distinguir lo central de lo accesorio y favorece una comprensión efectiva del hecho.\n\n"
+                
                 "Puntúa negativamente si:\n"
-                "- Hay vaguedad ('algunos', 'muchos', 'expertos', 'fuentes') sin concreción.\n"
-                "- Hay saltos lógicos, falta de hilo conductor o exceso de tecnicismos sin aclaración.\n"
-                "- Se generan interpretaciones por mala redacción, pronombres ambiguos o términos imprecisos.\n\n"
-                "En la justificación, indica qué partes no se entienden bien y cómo deberían reformularse."
+                "- Aunque el texto esté bien escrito, no permite identificar con claridad el núcleo del acontecimiento o su sentido informativo.\n"
+                "- Hay mala jerarquización: detalles accesorios desplazan o tapan los datos importantes.\n"
+                "- Existen vaguedades, saltos lógicos, ambigüedades o tecnicismos no explicados que dificultan entender lo relevante.\n"
+                "- La organización del relato dispersa, confunde o debilita la comprensión efectiva del contenido informativo.\n\n"
+                
+                "En la justificación, cita fragmentos concretos y explica no solo si el texto 'se entiende', "
+                "sino si hace inteligible lo importante con precisión narrativa y jerarquización adecuada."
             )
         },
         4: {
