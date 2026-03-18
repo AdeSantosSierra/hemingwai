@@ -1,166 +1,628 @@
-/* HEMINGWAI STYLES */
+/* HemingwAI extension visual system aligned with frontend */
 
-/* --- Popover (Dark Navy Theme) --- */
+body.hemingwai-popup,
+.hemingwai-popover,
+.hemingwai-badge {
+    --hw-primary: #d4e600;
+    --hw-secondary: #15d7ff;
+    --hw-bg: #050505;
+    --hw-bg-elevated: #111111;
+    --hw-bg-strong: #1b1b1b;
+    --hw-text: #f3f4f6;
+    --hw-text-muted: #9ca3af;
+    --hw-border: rgba(255, 255, 255, 0.12);
+    --hw-grid: rgba(255, 255, 255, 0.04);
+    --hw-glass-border: rgba(212, 230, 0, 0.18);
+    --hw-glass-bg: rgba(17, 17, 17, 0.84);
+    --hw-glass-top: rgba(255, 255, 255, 0.06);
+    --hw-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+    --hw-shadow-soft: 0 12px 28px rgba(0, 0, 0, 0.24);
+    --hw-radius-lg: 18px;
+    --hw-radius-md: 14px;
+    --hw-radius-sm: 10px;
+    font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.hemingwai-popover *,
+.hemingwai-badge *,
+body.hemingwai-popup * {
+    box-sizing: border-box;
+}
+
+/* --- Shared glass language --- */
+
+.hemingwai-glass-panel {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(105deg, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 58%),
+        radial-gradient(110% 90% at 18% 0%, var(--hw-glass-top), rgba(255, 255, 255, 0) 55%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 46%),
+        var(--hw-glass-bg);
+    border: 1px solid var(--hw-glass-border);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 0 rgba(0, 0, 0, 0.18),
+        var(--hw-shadow);
+    backdrop-filter: blur(16px) saturate(135%);
+    -webkit-backdrop-filter: blur(16px) saturate(135%);
+}
+
+.hemingwai-glass-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, var(--hw-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--hw-grid) 1px, transparent 1px);
+    background-size: 36px 36px;
+    opacity: 0.12;
+    mix-blend-mode: soft-light;
+}
+
+.hemingwai-eyebrow {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--hw-primary);
+}
+
+.hemingwai-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+    padding: 0 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--hw-text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.hemingwai-chip--accent {
+    border-color: rgba(212, 230, 0, 0.28);
+    background: rgba(212, 230, 0, 0.1);
+    color: var(--hw-primary);
+}
+
+/* --- Popup --- */
+
+body.hemingwai-popup {
+    width: 320px;
+    min-height: 420px;
+    margin: 0;
+    padding: 14px;
+    color: var(--hw-text);
+    background:
+        radial-gradient(circle at 20% 0%, rgba(212, 230, 0, 0.16), transparent 34%),
+        radial-gradient(circle at 82% 18%, rgba(21, 215, 255, 0.12), transparent 42%),
+        linear-gradient(160deg, #050505 0%, #0a0a0a 44%, #111111 100%);
+}
+
+body.hemingwai-popup::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.22;
+}
+
+.hemingwai-popup__shell {
+    position: relative;
+    z-index: 1;
+}
+
+.hemingwai-popup__card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 18px;
+    background:
+        linear-gradient(105deg, rgba(255, 255, 255, 0) 42%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 58%),
+        radial-gradient(110% 90% at 18% 0%, var(--hw-glass-top), rgba(255, 255, 255, 0) 55%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 46%),
+        rgba(17, 17, 17, 0.88);
+    border: 1px solid rgba(212, 230, 0, 0.18);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+        0 22px 46px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+.hemingwai-popup__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, var(--hw-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--hw-grid) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.12;
+}
+
+.hemingwai-popup__header,
+.hemingwai-popup__section,
+.hemingwai-popup__reload {
+    position: relative;
+    z-index: 1;
+}
+
+.hemingwai-popup__header {
+    padding-bottom: 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hemingwai-popup__title {
+    margin: 8px 0 0;
+    font-size: 24px;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--hw-text);
+}
+
+.hemingwai-popup__subtitle {
+    margin: 10px 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--hw-text-muted);
+}
+
+.hemingwai-popup__section {
+    margin-top: 18px;
+}
+
+.hemingwai-popup__section-label {
+    margin: 0 0 10px;
+}
+
+.hemingwai-popup__env-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    border-radius: var(--hw-radius-md);
+    border: 1px solid var(--hw-border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.hemingwai-popup__env-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.hemingwai-popup__env-copy strong {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--hw-text);
+}
+
+.hemingwai-popup__env-copy span {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--hw-text-muted);
+}
+
+.hemingwai-popup__env-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 72px;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.hemingwai-popup__env-value.env-prod {
+    color: var(--hw-primary);
+    border-color: rgba(212, 230, 0, 0.28);
+    background: rgba(212, 230, 0, 0.1);
+    box-shadow: 0 0 18px rgba(212, 230, 0, 0.12);
+}
+
+.hemingwai-popup__env-value.env-dev {
+    color: #9ae8ff;
+    border-color: rgba(21, 215, 255, 0.26);
+    background: rgba(21, 215, 255, 0.12);
+    box-shadow: 0 0 18px rgba(21, 215, 255, 0.1);
+}
+
+.hemingwai-popup__button-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+body.hemingwai-popup button {
+    appearance: none;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--hw-text);
+    border-radius: 14px;
+    min-height: 42px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition:
+        transform 160ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease,
+        box-shadow 180ms ease,
+        color 180ms ease;
+}
+
+body.hemingwai-popup button:hover {
+    transform: translateY(-1px);
+    border-color: rgba(212, 230, 0, 0.24);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+body.hemingwai-popup button:active {
+    transform: scale(0.98);
+}
+
+body.hemingwai-popup button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(212, 230, 0, 0.22);
+}
+
+body.hemingwai-popup button.active {
+    border-color: rgba(212, 230, 0, 0.34);
+    background: linear-gradient(90deg, #d4e600 0%, #c6dd00 100%);
+    color: #050505;
+    box-shadow:
+        0 12px 24px rgba(212, 230, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.hemingwai-popup__toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px;
+    border-radius: var(--hw-radius-md);
+    border: 1px solid var(--hw-border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.hemingwai-popup__toggle-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.hemingwai-popup__toggle-copy strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--hw-text);
+}
+
+.hemingwai-popup__toggle-copy span {
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--hw-text-muted);
+}
+
+.hemingwai-popup__switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.hemingwai-popup__switch input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+}
+
+.hemingwai-popup__switch-track {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 46px;
+    height: 28px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.hemingwai-popup__switch-track::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    transition: transform 180ms ease, background-color 180ms ease;
+}
+
+.hemingwai-popup__switch input:checked + .hemingwai-popup__switch-track {
+    background: rgba(212, 230, 0, 0.18);
+    border-color: rgba(212, 230, 0, 0.32);
+    box-shadow: 0 0 20px rgba(212, 230, 0, 0.12);
+}
+
+.hemingwai-popup__switch input:checked + .hemingwai-popup__switch-track::after {
+    transform: translateX(18px);
+    background: var(--hw-primary);
+}
+
+.hemingwai-popup__reload {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hemingwai-popup__reload button {
+    width: 100%;
+}
+
+.hemingwai-popup__hint {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--hw-text-muted);
+}
+
+/* --- Popover --- */
+
 .hemingwai-popover {
     position: fixed;
-    width: 320px;
-    max-width: 420px;
-    background: #001a33; /* Dark Navy */
-    color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    border-top: 3px solid #d2d209; /* Brand Yellow */
-    padding: 16px 20px;
-    z-index: 2147483647; /* Always on top */
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    width: 340px;
+    max-width: min(340px, calc(100vw - 32px));
+    padding: 18px;
+    color: var(--hw-text);
+    border-radius: 22px;
+    z-index: 2147483647;
     display: none;
     opacity: 0;
-    transition: opacity 0.15s ease-out;
-    box-sizing: border-box;
+    transform: translateY(8px) scale(0.985);
+    transition: opacity 180ms ease, transform 180ms ease;
     text-align: left;
-    line-height: 1.5;
+    line-height: 1.55;
 }
 
 .hemingwai-popover.visible {
     display: block;
     opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.hemingwai-popover.hemingwai-glass-panel {
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.03),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+        inset 0 -1px 0 0 rgba(0, 0, 0, 0.18),
+        0 20px 48px rgba(0, 0, 0, 0.42);
+}
+
+.hemingwai-popover__header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
 }
 
 .hemingwai-popover h4 {
-    margin: 0 0 16px 0;
-    font-size: 16px;
-    font-weight: 700;
-    color: #d2d209; /* Brand Yellow title */
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+    margin: 0 0 16px;
+    font-size: 22px;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--hw-text);
 }
 
 .hemingwai-section {
-    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 14px;
+    padding: 13px 14px;
+    border-radius: var(--hw-radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .hemingwai-label {
     display: block;
+    margin-bottom: 7px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.7); /* Dimmed white */
-    margin-bottom: 4px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    color: var(--hw-text-muted);
 }
 
 .hemingwai-text {
-    font-size: 14px;
-    color: #ffffff;
-    line-height: 1.5;
+    font-size: 13px;
+    color: var(--hw-text);
+    line-height: 1.6;
 }
 
 .hemingwai-score {
-    font-size: 1.4em;
-    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .hemingwai-footer {
-    text-align: right;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
     margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .hemingwai-link {
-    font-size: 13px;
-    color: #d2d209; /* Brand Yellow */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--hw-text);
     text-decoration: none;
-    font-weight: 600;
-    transition: opacity 0.2s;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: transform 160ms ease, border-color 180ms ease, background-color 180ms ease, color 180ms ease;
 }
 
 .hemingwai-link:hover {
-    text-decoration: underline;
-    opacity: 0.9;
+    transform: translateY(-1px);
+    border-color: rgba(212, 230, 0, 0.28);
+    background: rgba(212, 230, 0, 0.08);
+    color: var(--hw-primary);
 }
 
+/* --- Badge --- */
 
-/* --- Badge Styles --- */
-
-/* Badge como “carácter inline” pegado al titular */
 .hemingwai-badge-inline {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-left: 0.5em;           /* separación ≈ un espacio de texto */
-    vertical-align: baseline;     /* alineado con el texto del titular */
-    transform: none !important;
-    pointer-events: auto;         /* acepta eventos de ratón */
-}
-
-/* Badge genérico */
-.hemingwai-badge {
-    /* Base styles */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    
-    padding: 2px 6px;
-    border-radius: 999px;
-    
-    font-family: system-ui, -apple-system, sans-serif;
-    font-weight: bold;
-    font-size: 0.8rem; /* approx 12-13px */
-    line-height: 1;
-    color: white; /* texto blanco por defecto */
-    
-    box-shadow: 0 0 4px rgba(0,0,0,0.2);
-    white-space: nowrap;
-    cursor: pointer;
-    user-select: none;
-    width: auto;
-    height: auto;
-
-    /* que la burbuja esté por encima y reciba eventos de ratón */
-    position: relative;
-    z-index: 2147483647;
+    margin-left: 0.55em;
+    vertical-align: baseline;
+    transform: translateY(-0.02em);
     pointer-events: auto;
 }
 
-.hemingwai-badge-logo {
-    width: 14px;
-    height: 14px;
-    margin-right: 4px;
-    object-fit: contain;
-    display: block;
-    pointer-events: none;
+.hemingwai-badge {
+    --hemingwai-badge-accent: var(--hw-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 26px;
+    padding: 3px 8px 3px 7px;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--hemingwai-badge-accent) 30%, rgba(255, 255, 255, 0.12));
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 48%),
+        color-mix(in srgb, var(--hemingwai-badge-accent) 16%, rgba(17, 17, 17, 0.96));
+    color: var(--hw-text);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 8px 18px rgba(0, 0, 0, 0.24),
+        0 0 18px color-mix(in srgb, var(--hemingwai-badge-accent) 22%, transparent);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    z-index: 2147483647;
+    pointer-events: auto;
+    backdrop-filter: blur(12px) saturate(135%);
+    -webkit-backdrop-filter: blur(12px) saturate(135%);
+    transition:
+        transform 160ms ease,
+        box-shadow 180ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease;
 }
 
-/* Hide margin if no score sibling (though current JS creates empty span, ensure CSS handles visual check if needed) */
-/* Actually, JS sets display:none on scoreSpan, so margin works naturally */
+.hemingwai-badge:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 12px 22px rgba(0, 0, 0, 0.28),
+        0 0 24px color-mix(in srgb, var(--hemingwai-badge-accent) 26%, transparent);
+}
+
+.hemingwai-badge.hemingwai-badge-pending {
+    border-style: solid;
+}
+
+.hemingwai-badge-logo {
+    width: 13px;
+    height: 13px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+    pointer-events: none;
+}
 
 .hemingwai-badge-score {
     display: inline-block;
     min-width: 16px;
     text-align: center;
     pointer-events: none;
+    letter-spacing: -0.02em;
 }
 
-/* Colors managed by JS inline styles or utility classes can be added here if preferred */
-/* But user logic asked for JS dynamic color setting, so we stick to base layout here. */
+.hemingwai-badge-article {
+    margin-left: 0.65em;
+}
 
-/* === DEBUG VISUAL PARA LISTADOS (solo desarrollo) === */
+/* --- Debug helpers --- */
 
 .hemingwai-debug-candidate {
-  outline: 1px dashed rgba(255, 165, 0, 0.7) !important; /* naranja */
+    outline: 1px dashed rgba(255, 165, 0, 0.7) !important;
 }
 
 .hemingwai-debug-found {
-  outline: 2px solid rgba(0, 188, 212, 0.9) !important; /* cian */
+    outline: 2px solid rgba(0, 188, 212, 0.9) !important;
 }
 
 .hemingwai-debug-analyzed {
-  outline-color: rgba(76, 175, 80, 0.9) !important; /* verde para analizadas */
+    outline-color: rgba(76, 175, 80, 0.9) !important;
 }
 
 .hemingwai-debug-pending {
-  outline-color: rgba(255, 193, 7, 0.9) !important; /* amarillo para pendientes */
+    outline-color: rgba(255, 193, 7, 0.9) !important;
 }

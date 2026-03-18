@@ -1,5 +1,0 @@
-{
-  "name": "Newscore HUD V 1.1",
-  "description": "A futuristic news analysis dashboard that evaluates reliability, adequacy, clarity, depth, and focus using a deterministic weighted scoring system powered by Gemini evaluation.",
-  "requestFramePermissions": []
-}

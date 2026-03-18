@@ -4,111 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HemingwAI Settings</title>
-    <style>
-        body {
-            background-color: #001a33;
-            color: white;
-            font-family: system-ui, -apple-system, sans-serif;
-            width: 250px;
-            padding: 16px;
-            margin: 0;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        h2 {
-            margin: 0 0 16px 0;
-            font-size: 16px;
-            color: #d2d209;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid #d2d209;
-            padding-bottom: 8px;
-        }
-        .status-container {
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        .status-label {
-            color: #a0a0a0;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-        #current-env {
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .env-prod { color: #28a745; }
-        .env-dev { color: #d2d209; }
-        
-        .button-group {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        button {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            flex: 1;
-            transition: all 0.2s;
-        }
-        button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        button.active {
-            background: #d2d209;
-            color: #001a33;
-            font-weight: bold;
-            border-color: #d2d209;
-        }
-        
-        .reload-section {
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 16px;
-        }
-        #btn-reload {
-            width: 100%;
-            background: transparent;
-            border: 1px solid #d2d209;
-            color: #d2d209;
-        }
-        #btn-reload:hover {
-            background: rgba(210, 210, 9, 0.1);
-        }
-        .hint {
-            margin-top: 8px;
-            font-size: 11px;
-            color: #8899a6;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <h2>Configuración</h2>
-    
-    <div class="status-container">
-        <div class="status-label">ENTORNO ACTUAL</div>
-        <div id="current-env">Cargando...</div>
-    </div>
+<body class="hemingwai-popup">
+    <div class="hemingwai-popup__shell">
+        <main class="hemingwai-popup__card">
+            <header class="hemingwai-popup__header">
+                <div class="hemingwai-eyebrow">Extension control</div>
+                <h1 class="hemingwai-popup__title">Configuracion</h1>
+                <p class="hemingwai-popup__subtitle">
+                    Ajusta el entorno activo de la extension sin cambiar su funcionamiento.
+                </p>
+            </header>
 
-    <div class="button-group">
-        <button id="btn-prod">PROD</button>
-        <button id="btn-dev">DEV</button>
-    </div>
+            <section class="hemingwai-popup__section" aria-labelledby="current-env">
+                <p class="hemingwai-eyebrow hemingwai-popup__section-label">Entorno actual</p>
+                <div class="hemingwai-popup__env-panel">
+                    <div class="hemingwai-popup__env-copy">
+                        <strong>Contexto de ejecucion</strong>
+                        <span>La extension usara este backend al analizar noticias.</span>
+                    </div>
+                    <div id="current-env" class="hemingwai-popup__env-value">Cargando</div>
+                </div>
+            </section>
 
-    <div id="debug-container" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        <input type="checkbox" id="chk-debug" style="cursor: pointer;">
-        <label for="chk-debug" style="font-size: 13px; color: #ccc; cursor: pointer;">Debug Mode</label>
-    </div>
+            <section class="hemingwai-popup__section">
+                <p class="hemingwai-eyebrow hemingwai-popup__section-label">Seleccion de entorno</p>
+                <div class="hemingwai-popup__button-group">
+                    <button id="btn-prod" type="button">Prod</button>
+                    <button id="btn-dev" type="button">Dev</button>
+                </div>
+            </section>
 
-    <div class="reload-section">
-        <button id="btn-reload">↻ Recargar página</button>
-        <div class="hint">Recarga para aplicar cambios</div>
+            <section id="debug-container" class="hemingwai-popup__section">
+                <p class="hemingwai-eyebrow hemingwai-popup__section-label">Herramientas</p>
+                <div class="hemingwai-popup__toggle-row">
+                    <div class="hemingwai-popup__toggle-copy">
+                        <strong>Debug mode</strong>
+                        <span>Muestra ayudas visuales para validar deteccion y estados.</span>
+                    </div>
+                    <label class="hemingwai-popup__switch" for="chk-debug">
+                        <input type="checkbox" id="chk-debug">
+                        <span class="hemingwai-popup__switch-track" aria-hidden="true"></span>
+                    </label>
+                </div>
+            </section>
+
+            <section class="hemingwai-popup__reload">
+                <button id="btn-reload" type="button">Recargar pagina</button>
+                <p class="hemingwai-popup__hint">Recarga la pestana activa para aplicar cambios.</p>
+            </section>
+        </main>
     </div>
 
     <script src="popup.js"></script>

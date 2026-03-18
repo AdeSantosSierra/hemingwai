@@ -29,18 +29,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Renderizar UI
     function render(settings) {
+        label.className = "hemingwai-popup__env-value";
+
         // Render Env
         if (settings.env === 'dev') {
             label.textContent = "DEV";
-            label.className = "env-dev";
+            label.classList.add('env-dev');
             btnDev.classList.add('active');
             btnProd.classList.remove('active');
             
             // Show Debug option in DEV
-            debugContainer.style.display = 'flex';
+            debugContainer.style.display = 'block';
         } else {
             label.textContent = "PROD";
-            label.className = "env-prod";
+            label.classList.add('env-prod');
             btnProd.classList.add('active');
             btnDev.classList.remove('active');
             

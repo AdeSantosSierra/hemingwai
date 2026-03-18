@@ -129,24 +129,51 @@ function sendMessageAsync(message) {
 function getColorForScore(score) {
     // If undefined/null -> Pending state
     if (score === undefined || score === null || String(score).trim() === '') {
-        return { bgColor: '#001a33', useWhiteLogo: false }; // Dark Navy (Pending) - Blue Logo
+        return {
+            accentColor: '#15d7ff',
+            textColor: '#050505',
+            state: 'pending',
+            useWhiteLogo: false
+        };
     }
 
     const val = Number(score);
-    if (isNaN(val)) return { bgColor: '#001a33', useWhiteLogo: false };
+    if (isNaN(val)) {
+        return {
+            accentColor: '#15d7ff',
+            textColor: '#050505',
+            state: 'pending',
+            useWhiteLogo: false
+        };
+    }
 
     // Semáforo (escala 0–10):
     // < 5: Rojo (Mala)
     // 5-6.9: Amarillo (Regular)
-    // >= 7: Verde (Buena)
-    
+    // >= 7: Lima de marca (Buena)
+
     if (val < 5) {
-        return { bgColor: '#dc3545', useWhiteLogo: true }; // Red
+        return {
+            accentColor: '#f87171',
+            textColor: '#f8fafc',
+            state: 'low',
+            useWhiteLogo: true
+        };
     }
     if (val < 7) {
-        return { bgColor: '#ffc107', useWhiteLogo: false }; // Yellow
+        return {
+            accentColor: '#facc15',
+            textColor: '#050505',
+            state: 'medium',
+            useWhiteLogo: false
+        };
     }
-    return { bgColor: '#28a745', useWhiteLogo: true }; // Green
+    return {
+        accentColor: '#d4e600',
+        textColor: '#050505',
+        state: 'high',
+        useWhiteLogo: false
+    };
 }
 
 // ========================================================
@@ -190,7 +217,7 @@ function showPopoverForBadge(badgeEl, popoverEl) {
 
     const top = rect.bottom + margin;
     let left = rect.left;
-    const popoverWidth = 320; 
+    const popoverWidth = 340;
 
     if (left + popoverWidth + 16 > windowWidth) {
         left = windowWidth - popoverWidth - 16;
@@ -227,14 +254,19 @@ function createPopoverElement(data) {
         console.error("HemingwAI: Error constructing URL", e);
     }
     
-    let contentHtml = '';
-
-    // Color text for global score in popover
     const scoreVal = data.puntuacion;
-    const { bgColor } = getColorForScore(scoreVal);
+    const { accentColor, state } = getColorForScore(scoreVal);
+    const stateLabel = isPending ? 'Pendiente' : 'Analisis listo';
+    const stateChipClass = isPending ? '' : ' hemingwai-chip--accent';
+    let contentHtml = `
+        <div class="hemingwai-popover__header">
+            <span class="hemingwai-chip hemingwai-chip--accent">HemingwAI</span>
+            <span class="hemingwai-chip${stateChipClass}">${stateLabel}</span>
+        </div>
+    `;
 
     if (isPending) {
-        contentHtml = `
+        contentHtml += `
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">ESTADO</span>
@@ -253,11 +285,11 @@ function createPopoverElement(data) {
         const resumen = data.resumen_valoracion || "Sin resumen disponible.";
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
         
-        contentHtml = `
+        contentHtml += `
             <h4>Análisis HemingwAI</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
-                <span class="hemingwai-score" style="color: ${bgColor}">${scoreVal}/10</span>
+                <span class="hemingwai-score" style="color: ${accentColor}">${scoreVal}/10</span>
             </div>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">RESUMEN</span>
@@ -272,7 +304,7 @@ function createPopoverElement(data) {
 
     if (linkUrl && linkUrl !== "#") {
         contentHtml += `
-            <div class="hemingwai-footer" style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+            <div class="hemingwai-footer">
                  <a href="${linkUrl}" target="_blank" class="hemingwai-link">Ver ficha completa &rarr;</a>
                  <a href="#" class="hemingwai-link hemingwai-chat-link">Abrir chat &rarr;</a>
             </div>
@@ -280,7 +312,8 @@ function createPopoverElement(data) {
     }
 
     const popover = document.createElement('div');
-    popover.className = 'hemingwai-popover';
+    popover.className = 'hemingwai-popover hemingwai-glass-panel';
+    popover.dataset.state = state;
     popover.innerHTML = contentHtml;
     
     // Attach listener for chat
@@ -421,14 +454,10 @@ function updateHemingwaiBadge(badge, data) {
         badge.classList.add('hemingwai-badge-pending');
     }
 
-    const { bgColor, useWhiteLogo } = getColorForScore(score);
-    badge.style.backgroundColor = bgColor;
-
-    if (bgColor === '#ffc107') {
-        badge.style.color = '#001a33'; 
-    } else {
-        badge.style.color = '#ffffff'; 
-    }
+    const { accentColor, textColor, state, useWhiteLogo } = getColorForScore(score);
+    badge.dataset.state = state;
+    badge.style.setProperty('--hemingwai-badge-accent', accentColor);
+    badge.style.color = textColor;
 
     img.src = useWhiteLogo ? WHITE_LOGO_URL : BLUE_LOGO_URL;
 }
@@ -580,6 +609,7 @@ class HemingwaiSidebar {
     createToggleButton() {
         const btn = document.createElement('div');
         btn.id = 'hemingwai-sidebar-toggle';
+        btn.setAttribute('aria-label', 'Abrir panel de chat de HemingwAI');
         
         // Styles for the button (inline to ensure visibility)
         Object.assign(btn.style, {
@@ -587,27 +617,31 @@ class HemingwaiSidebar {
             top: '50%',
             right: '0',
             transform: 'translateY(-50%)',
-            width: '40px',
-            height: '100px',
-            backgroundColor: '#001a33',
-            borderTopLeftRadius: '8px',
-            borderBottomLeftRadius: '8px',
-            boxShadow: '-2px 0 8px rgba(0,0,0,0.3)',
-            border: '2px solid #d2d209', // Brand yellow border
+            width: '48px',
+            height: '132px',
+            background: 'linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0) 42%), linear-gradient(180deg, rgba(17,17,17,0.98), rgba(8,8,8,0.94))',
+            borderTopLeftRadius: '18px',
+            borderBottomLeftRadius: '18px',
+            boxShadow: '-18px 0 42px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)',
+            border: '1px solid rgba(212,230,0,0.22)',
             borderRight: 'none',
-            zIndex: '2147483646', // Just below max
+            backdropFilter: 'blur(18px) saturate(135%)',
+            WebkitBackdropFilter: 'blur(18px) saturate(135%)',
+            zIndex: '2147483646',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'right 0.3s ease'
+            overflow: 'hidden',
+            transition: 'right 0.3s ease, box-shadow 0.2s ease, transform 0.2s ease'
         });
 
         // Icon/Logo inside button
         const img = document.createElement('img');
         img.src = WHITE_LOGO_URL;
-        img.style.width = '24px';
+        img.style.width = '22px';
         img.style.height = 'auto';
+        img.style.filter = 'drop-shadow(0 0 12px rgba(212,230,0,0.22))';
         btn.appendChild(img);
         
         btn.addEventListener('click', () => this.toggleSidebar());
@@ -717,9 +751,10 @@ class HemingwaiSidebar {
             width: `${this.sidebarWidth}px`,
             height: '100vh',
             zIndex: '2147483647',
-            backgroundColor: '#001a33', // Fallback
+            background: 'linear-gradient(160deg, #050505 0%, #0a0a0a 42%, #111111 100%)',
             display: 'none',
-            boxShadow: '-4px 0 12px rgba(0,0,0,0.4)'
+            boxShadow: '-20px 0 52px rgba(0,0,0,0.42)',
+            borderLeft: '1px solid rgba(212,230,0,0.18)'
         });
         this.sidebarHost.style.pointerEvents = 'auto';
 
@@ -738,9 +773,20 @@ class HemingwaiSidebar {
         const style = document.createElement('style');
         style.textContent = `
             :host {
-                font-family: system-ui, -apple-system, sans-serif;
-                color: white;
-                background-color: #001a33;
+                --hw-primary: #d4e600;
+                --hw-secondary: #15d7ff;
+                --hw-bg: #050505;
+                --hw-bg-elevated: #111111;
+                --hw-bg-strong: #1b1b1b;
+                --hw-text: #f3f4f6;
+                --hw-text-muted: #9ca3af;
+                --hw-border: rgba(255, 255, 255, 0.12);
+                font-family: Inter, "Segoe UI", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+                color: var(--hw-text);
+                background:
+                    radial-gradient(circle at 22% 0%, rgba(212, 230, 0, 0.13), transparent 30%),
+                    radial-gradient(circle at 100% 18%, rgba(21, 215, 255, 0.12), transparent 36%),
+                    linear-gradient(160deg, #050505 0%, #0a0a0a 42%, #111111 100%);
                 display: flex;
                 flex-direction: column;
                 height: 100%;
@@ -748,132 +794,266 @@ class HemingwaiSidebar {
                 pointer-events: auto;
             }
             * { box-sizing: border-box; }
+            button, input { font: inherit; }
+            ::selection {
+                background: rgba(212, 230, 0, 0.24);
+                color: var(--hw-text);
+            }
             
-            /* Resize Handle */
             .resize-handle {
                 position: absolute;
                 left: 0;
                 top: 0;
                 bottom: 0;
                 width: 6px;
-                background-color: #d2d209;
+                background: linear-gradient(180deg, rgba(212, 230, 0, 0.58), rgba(21, 215, 255, 0.42));
                 cursor: col-resize;
                 z-index: 999;
-                opacity: 0.6;
-                transition: opacity 0.2s;
+                opacity: 0.72;
+                transition: opacity 0.2s, box-shadow 0.2s;
             }
             .resize-handle:hover {
                 opacity: 1;
-                box-shadow: 0 0 4px #d2d209;
+                box-shadow: 0 0 16px rgba(212, 230, 0, 0.32);
             }
 
-            /* Header */
             .header {
-                padding: 16px;
-                border-bottom: 2px solid #d2d209;
+                position: relative;
+                overflow: hidden;
+                padding: 18px 18px 16px;
+                border-bottom: 1px solid var(--hw-border);
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
-                background: #001a33;
+                align-items: flex-start;
+                gap: 16px;
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 44%),
+                    rgba(11, 11, 11, 0.88);
+                backdrop-filter: blur(16px) saturate(135%);
+                -webkit-backdrop-filter: blur(16px) saturate(135%);
                 pointer-events: auto;
+            }
+            .header::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background-image:
+                    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+                background-size: 40px 40px;
+                opacity: 0.14;
+            }
+            .header-copy {
+                position: relative;
+                z-index: 1;
+                min-width: 0;
+            }
+            .header-eyebrow {
+                font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.22em;
+                text-transform: uppercase;
+                color: var(--hw-primary);
             }
             .header h2 {
                 margin: 0;
-                font-size: 18px;
-                color: #d2d209;
-                text-transform: uppercase;
-                letter-spacing: 1px;
+                margin-top: 7px;
+                font-size: 24px;
+                line-height: 1.05;
+                font-weight: 800;
+                letter-spacing: -0.03em;
+                color: var(--hw-text);
+            }
+            .header-copy p {
+                margin: 8px 0 0;
+                font-size: 13px;
+                line-height: 1.5;
+                color: var(--hw-text-muted);
             }
             .close-btn {
-                background: none;
-                border: none;
-                color: rgba(255,255,255,0.7);
-                font-size: 24px;
+                position: relative;
+                z-index: 1;
+                width: 36px;
+                height: 36px;
+                border-radius: 999px;
+                border: 1px solid var(--hw-border);
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--hw-text-muted);
+                font-size: 22px;
                 cursor: pointer;
                 line-height: 1;
+                transition: transform 0.16s ease, border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
             }
-            .close-btn:hover { color: white; }
+            .close-btn:hover {
+                transform: translateY(-1px);
+                color: var(--hw-text);
+                border-color: rgba(212, 230, 0, 0.26);
+                background: rgba(212, 230, 0, 0.08);
+            }
 
-            /* Content Area */
             .content {
                 flex: 1;
                 overflow-y: auto;
-                padding: 16px;
+                padding: 18px;
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
-                background: #0e2f56; /* Slightly lighter blue */
+                gap: 14px;
+                background: transparent;
                 position: relative;
                 pointer-events: auto;
             }
+            .content::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background:
+                    radial-gradient(circle at 15% 15%, rgba(21, 215, 255, 0.08), transparent 26%),
+                    radial-gradient(circle at 82% 78%, rgba(212, 230, 0, 0.1), transparent 30%);
+                opacity: 0.95;
+            }
+            .content > * {
+                position: relative;
+                z-index: 1;
+            }
+            .content::-webkit-scrollbar {
+                width: 10px;
+            }
+            .content::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .content::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.12);
+                border-radius: 999px;
+                border: 2px solid transparent;
+                background-clip: padding-box;
+            }
 
-            /* Messages */
             .message {
                 max-width: 85%;
-                padding: 10px 14px;
-                border-radius: 12px;
+                padding: 12px 14px;
+                border-radius: 18px;
                 font-size: 14px;
-                line-height: 1.4;
+                line-height: 1.55;
                 word-wrap: break-word;
+                border: 1px solid var(--hw-border);
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 10px 24px rgba(0, 0, 0, 0.16);
             }
             .message.user {
                 align-self: flex-end;
-                background-color: #d2d209;
-                color: #001a33;
-                border-bottom-right-radius: 2px;
+                background: linear-gradient(90deg, #d4e600 0%, #c6dd00 100%);
+                color: #050505;
+                border-color: rgba(212, 230, 0, 0.3);
+                border-bottom-right-radius: 6px;
             }
             .message.assistant {
                 align-self: flex-start;
-                background-color: white;
-                color: #001a33;
-                border-bottom-left-radius: 2px;
+                color: var(--hw-text);
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 46%),
+                    rgba(17, 17, 17, 0.84);
+                backdrop-filter: blur(14px) saturate(130%);
+                -webkit-backdrop-filter: blur(14px) saturate(130%);
+                border-bottom-left-radius: 6px;
             }
             
-            /* Markdown basic styles for assistant */
             .message.assistant p { margin: 0 0 8px 0; }
             .message.assistant p:last-child { margin-bottom: 0; }
             .message.assistant strong { font-weight: 700; }
             .message.assistant ul { padding-left: 20px; margin: 4px 0; }
             .message.assistant li { margin-bottom: 4px; }
 
-            /* Input Area */
             .input-area {
-                padding: 16px;
-                border-top: 1px solid rgba(255,255,255,0.1);
-                background: #001a33;
+                position: relative;
                 display: flex;
-                gap: 8px;
+                gap: 10px;
+                padding: 16px 18px 18px;
+                border-top: 1px solid var(--hw-border);
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 44%),
+                    rgba(10, 10, 10, 0.92);
+                backdrop-filter: blur(16px) saturate(135%);
+                -webkit-backdrop-filter: blur(16px) saturate(135%);
                 pointer-events: auto;
+            }
+            .input-area::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background-image:
+                    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+                background-size: 40px 40px;
+                opacity: 0.12;
+            }
+            .input-area > * {
+                position: relative;
+                z-index: 1;
             }
             input {
                 flex: 1;
-                padding: 10px;
-                border-radius: 20px;
-                border: 1px solid #d2d209;
-                background: white;
-                color: #001a33;
+                min-width: 0;
+                min-height: 46px;
+                padding: 0 16px;
+                border-radius: 999px;
+                border: 1px solid var(--hw-border);
+                background: rgba(255, 255, 255, 0.04);
+                color: var(--hw-text);
                 font-size: 14px;
                 outline: none;
+                transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
             }
-            button.send-btn {
-                background: #d2d209;
-                color: #001a33;
-                border: none;
-                border-radius: 20px;
-                padding: 0 16px;
-                font-weight: bold;
-                cursor: pointer;
+            input::placeholder {
+                color: var(--hw-text-muted);
             }
-            button.send-btn:disabled {
-                opacity: 0.5;
+            input:focus {
+                border-color: rgba(212, 230, 0, 0.32);
+                box-shadow: 0 0 0 2px rgba(212, 230, 0, 0.18);
+                background: rgba(255, 255, 255, 0.06);
+            }
+            input:disabled {
+                opacity: 0.6;
                 cursor: not-allowed;
             }
+            button.send-btn {
+                min-width: 110px;
+                min-height: 46px;
+                padding: 0 18px;
+                border: none;
+                border-radius: 999px;
+                background: linear-gradient(90deg, #d4e600 0%, #c6dd00 100%);
+                color: #050505;
+                font-weight: 800;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                cursor: pointer;
+                box-shadow: 0 12px 24px rgba(212, 230, 0, 0.22);
+                transition: transform 0.16s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+            }
+            button.send-btn:hover:not(:disabled) {
+                transform: translateY(-1px);
+                box-shadow: 0 16px 28px rgba(212, 230, 0, 0.28);
+            }
+            button.send-btn:active:not(:disabled) {
+                transform: scale(0.98);
+            }
+            button.send-btn:disabled {
+                opacity: 0.48;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
 
-            /* Lock Screen */
             .lock-overlay {
                 position: absolute;
-                top: 0; left: 0; right: 0; bottom: 0;
-                background: rgba(0, 26, 51, 0.95);
+                inset: 0;
+                background: rgba(5, 5, 5, 0.78);
+                backdrop-filter: blur(14px);
+                -webkit-backdrop-filter: blur(14px);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -882,42 +1062,102 @@ class HemingwaiSidebar {
                 pointer-events: auto;
             }
             .lock-card {
-                background: #0e2f56;
+                width: 100%;
+                max-width: 308px;
                 padding: 24px;
-                border-radius: 16px;
-                border: 1px solid rgba(210, 210, 9, 0.5);
+                border-radius: 22px;
+                border: 1px solid rgba(212, 230, 0, 0.2);
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 44%),
+                    rgba(17, 17, 17, 0.9);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                width: 90%;
-                max-width: 280px;
                 text-align: center;
-                box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 18px 42px rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(18px) saturate(130%);
+                -webkit-backdrop-filter: blur(18px) saturate(130%);
             }
             .lock-card h3 { 
-                color: #d2d209; 
-                margin: 0 0 12px 0;
-                font-size: 18px;
+                color: var(--hw-text);
+                margin: 10px 0 12px 0;
+                font-size: 22px;
+                line-height: 1.1;
+                letter-spacing: -0.03em;
             }
             .lock-card p {
                 font-size: 13px;
                 margin: 0 0 16px 0;
-                color: rgba(255,255,255,0.9);
-                line-height: 1.4;
+                color: var(--hw-text-muted);
+                line-height: 1.5;
             }
             .lock-input { 
-                flex: 0 0 auto; /* Override generic flex:1 */
-                height: 38px;
+                flex: 0 0 auto;
+                height: 44px;
                 width: 100%;
-                max-width: 240px;
                 margin-bottom: 12px; 
-                text-align: center; 
+                text-align: center;
             }
-            .lock-error { color: #ff6b6b; font-size: 12px; margin-top: 8px; }
-
-            /* Utils */
-            .loading { text-align: center; color: #d2d209; font-size: 12px; margin-top: 8px; }
-            .error-msg { color: #ff6b6b; padding: 10px; text-align: center; background: rgba(0,0,0,0.2); border-radius: 8px; }
+            .lock-error {
+                min-height: 16px;
+                color: #fca5a5;
+                font-size: 12px;
+                margin-top: 10px;
+            }
+            .status-card,
+            .error-msg {
+                border-radius: 18px;
+                border: 1px solid var(--hw-border);
+                background:
+                    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 44%),
+                    rgba(17, 17, 17, 0.84);
+                padding: 16px;
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                    0 12px 28px rgba(0, 0, 0, 0.18);
+            }
+            .status-card strong,
+            .error-msg strong {
+                display: block;
+                margin-top: 10px;
+                font-size: 15px;
+                line-height: 1.35;
+                color: var(--hw-text);
+            }
+            .status-card p,
+            .error-msg p {
+                margin: 10px 0 0;
+                font-size: 13px;
+                line-height: 1.55;
+                color: var(--hw-text-muted);
+            }
+            .status-chip {
+                display: inline-flex;
+                align-items: center;
+                min-height: 26px;
+                padding: 0 10px;
+                border-radius: 999px;
+                border: 1px solid rgba(212, 230, 0, 0.24);
+                background: rgba(212, 230, 0, 0.1);
+                color: var(--hw-primary);
+                font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                font-size: 11px;
+                font-weight: 700;
+                letter-spacing: 0.16em;
+                text-transform: uppercase;
+            }
+            .status-chip--error {
+                border-color: rgba(248, 113, 113, 0.24);
+                background: rgba(248, 113, 113, 0.12);
+                color: #fecaca;
+            }
+            .loading {
+                text-align: center;
+                color: var(--hw-text-muted);
+                font-size: 13px;
+            }
         `;
         
         this.shadowRoot.appendChild(style);
@@ -936,8 +1176,7 @@ class HemingwaiSidebar {
         this.container.style.height = '100%';
         this.container.style.display = 'flex';
         this.container.style.flexDirection = 'column';
-        // Add padding left to avoid content overlapping with handle
-        this.container.style.paddingLeft = '6px'; 
+        this.container.style.paddingLeft = '6px';
         this.shadowRoot.appendChild(this.container);
 
         document.body.appendChild(this.sidebarHost);
@@ -1017,8 +1256,12 @@ class HemingwaiSidebar {
         // Header
         const header = `
             <div class="header">
-                <h2>HemingwAI</h2>
-                <button class="close-btn">×</button>
+                <div class="header-copy">
+                    <div class="header-eyebrow">AI newsroom</div>
+                    <h2>HemingwAI</h2>
+                    <p>Chat contextual sobre la noticia activa.</p>
+                </div>
+                <button class="close-btn" aria-label="Cerrar panel">×</button>
             </div>
         `;
 
@@ -1026,7 +1269,13 @@ class HemingwaiSidebar {
         let contentInner = '';
         
         if (!this.newsData && !this.isLoading) {
-             contentInner = `<div class="loading">Cargando contexto...</div>`;
+             contentInner = `
+                <div class="status-card">
+                    <span class="status-chip">Preparando contexto</span>
+                    <strong>Cargando noticia y señales</strong>
+                    <p>Estamos recuperando el analisis para que el chat tenga el mismo contexto que la plataforma principal.</p>
+                </div>
+            `;
         } else if (this.messages.length > 0) {
             contentInner = this.messages.map(m => {
                 // Simple markdown-ish render for assistant
@@ -1041,7 +1290,13 @@ class HemingwaiSidebar {
         }
 
         if (this.isLoading) {
-            contentInner += `<div class="loading">HemingwAI está escribiendo...</div>`;
+            contentInner += `
+                <div class="status-card">
+                    <span class="status-chip">Generando respuesta</span>
+                    <strong>HemingwAI esta escribiendo</strong>
+                    <p>El asistente esta sintetizando senales y contexto antes de responder.</p>
+                </div>
+            `;
         }
 
         const chatArea = `
@@ -1098,8 +1353,9 @@ class HemingwaiSidebar {
         return `
             <div class="lock-overlay">
                 <div class="lock-card">
-                    <h3>🔒 Chat Privado</h3>
-                    <p>Introduce la contraseña para acceder al asistente.</p>
+                    <span class="status-chip">Acceso privado</span>
+                    <h3>Desbloquea el chat</h3>
+                    <p>Introduce la contraseña para acceder al asistente contextual de la extension.</p>
                     <input type="password" id="lock-input" class="lock-input" placeholder="Contraseña...">
                     <button id="lock-btn" class="send-btn">Desbloquear</button>
                     <div id="lock-error" class="lock-error"></div>
@@ -1112,7 +1368,13 @@ class HemingwaiSidebar {
         if (!this.container) return;
         const content = this.shadowRoot.querySelector('.content');
         if (content) {
-            content.innerHTML += `<div class="loading">Cargando...</div>`;
+            content.innerHTML = `
+                <div class="status-card">
+                    <span class="status-chip">Cargando</span>
+                    <strong>Recuperando datos</strong>
+                    <p>Estamos conectando con HemingwAI para montar el contexto del chat.</p>
+                </div>
+            `;
         }
     }
 
@@ -1120,7 +1382,13 @@ class HemingwaiSidebar {
         if (!this.container) return;
         const content = this.shadowRoot.querySelector('.content');
         if (content) {
-            content.innerHTML = `<div class="error-msg">${msg}</div>`;
+            content.innerHTML = `
+                <div class="error-msg">
+                    <span class="status-chip status-chip--error">Error</span>
+                    <strong>No se pudo abrir el contexto</strong>
+                    <p>${msg}</p>
+                </div>
+            `;
         }
     }
 
