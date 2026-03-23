@@ -1,5 +1,25 @@
 import os
+from pathlib import Path
 from typing import Iterable, Optional
+
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover - fallback if python-dotenv is unavailable
+    load_dotenv = None
+
+
+def _load_project_dotenv() -> None:
+    """Carga .env del proyecto sin sobreescribir variables ya exportadas."""
+    if load_dotenv is None:
+        return
+
+    root_dir = Path(__file__).resolve().parent.parent
+    dotenv_path = root_dir / ".env"
+    if dotenv_path.exists():
+        load_dotenv(dotenv_path=dotenv_path, override=False)
+
+
+_load_project_dotenv()
 
 
 def get_env(name: str, default: Optional[str] = None) -> Optional[str]:

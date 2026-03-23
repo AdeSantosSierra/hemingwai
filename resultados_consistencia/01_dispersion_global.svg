@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="500" viewBox="0 0 1180 500" role="img" aria-labelledby="title desc">
+<title>Dispersión global por noticia</title>
+<desc>Dispersión global por noticia</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="1180" height="500" rx="18" fill="#ffffff" />
+<text x="36" y="44" class="title">Dispersión real del score global por noticia</text>
+<text x="36" y="68" class="subtitle">Cada punto representa una ejecución. La banda muestra ±1 desviación estándar y el rombo central señala la media.</text>
+<rect x="740" y="42" width="396" height="42" rx="12" fill="#f9fafb" stroke="#e5e7eb" />
+<line x1="760" y1="64" x2="816" y2="64" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<rect x="836" y="57" width="34" height="14" rx="7" fill="#dce8fd" />
+<polygon points="896,64 902,58 908,64 902,70" fill="#111827" />
+<circle cx="936" cy="64" r="5.5" fill="#276ef1" stroke="white" stroke-width="1.5" />
+<text x="960" y="68" class="small">min-max</text>
+<text x="1004" y="68" class="small">std</text>
+<text x="1036" y="68" class="small">media</text>
+<text x="1082" y="68" class="small">ejecución</text>
+<line x1="320.0" y1="114" x2="320.0" y2="466" class="axis" />
+<text x="320.0" y="488" text-anchor="middle" class="small">4.18</text>
+<line x1="458.0" y1="114" x2="458.0" y2="466" class="axis" />
+<text x="458.0" y="488" text-anchor="middle" class="small">4.86</text>
+<line x1="596.0" y1="114" x2="596.0" y2="466" class="axis" />
+<text x="596.0" y="488" text-anchor="middle" class="small">5.54</text>
+<line x1="734.0" y1="114" x2="734.0" y2="466" class="axis" />
+<text x="734.0" y="488" text-anchor="middle" class="small">6.22</text>
+<line x1="872.0" y1="114" x2="872.0" y2="466" class="axis" />
+<text x="872.0" y="488" text-anchor="middle" class="small">6.90</text>
+<line x1="1010.0" y1="114" x2="1010.0" y2="466" class="axis" />
+<text x="1010.0" y="488" text-anchor="middle" class="small">7.58</text>
+<rect x="20" y="132" width="1140" height="82" rx="16" fill="#eefbf3" stroke="#e5e7eb" />
+<text x="36" y="160" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pese a haber a…</text>
+<text x="36" y="182" class="small">media 4.83 | std 0.20 | rango 0.50</text>
+<rect x="36" y="188" width="122" height="16" rx="8" fill="#d1fae5" />
+<text x="97" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#1f9d68">mayor estabilidad</text>
+<rect x="411.3" y="162.0" width="81.2" height="20" rx="10" fill="#cee9de" />
+<line x1="391.0" y1="172.0" x2="492.5" y2="172.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="451.9,162.0 459.9,172.0 451.9,182.0 443.9,172.0" fill="#111827" />
+<circle cx="431.6" cy="148.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B1_69b32c88c269d89e0a66620d.json: 4.73</title></circle>
+<circle cx="472.2" cy="160.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B2_69b32c88c269d89e0a66620d.json: 4.93</title></circle>
+<circle cx="492.5" cy="172.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B3_69b32c88c269d89e0a66620d.json: 5.03</title></circle>
+<circle cx="391.0" cy="184.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B4_69b32c88c269d89e0a66620d.json: 4.53</title></circle>
+<circle cx="472.2" cy="196.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B5_69b32c88c269d89e0a66620d.json: 4.93</title></circle>
+<rect x="1032" y="152" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+<rect x="20" y="236" width="1140" height="82" rx="16" fill="#fafbfc" stroke="#e5e7eb" />
+<text x="36" y="264" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de países de la UE…</text>
+<text x="36" y="286" class="small">media 7.07 | std 0.19 | rango 0.50</text>
+<rect x="866.4" y="266.0" width="78.6" height="20" rx="10" fill="#cee9de" />
+<line x1="837.5" y1="276.0" x2="939.0" y2="276.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="905.7,266.0 913.7,276.0 905.7,286.0 897.7,276.0" fill="#111827" />
+<circle cx="918.7" cy="252.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E1_69979303c1b938e19e4dcacc.json: 7.13</title></circle>
+<circle cx="918.7" cy="264.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E2_69979303c1b938e19e4dcacc.json: 7.13</title></circle>
+<circle cx="837.5" cy="276.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E3_69979303c1b938e19e4dcacc.json: 6.73</title></circle>
+<circle cx="914.6" cy="288.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E4_69979303c1b938e19e4dcacc.json: 7.11</title></circle>
+<circle cx="939.0" cy="300.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E5_69979303c1b938e19e4dcacc.json: 7.23</title></circle>
+<rect x="1032" y="256" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="269" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+<rect x="20" y="340" width="1140" height="82" rx="16" fill="#fff4f4" stroke="#e5e7eb" />
+<text x="36" y="368" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello molesta a l…</text>
+<text x="36" y="390" class="small">media 6.58 | std 0.23 | rango 0.55</text>
+<rect x="36" y="396" width="122" height="16" rx="8" fill="#fee2e2" />
+<text x="97" y="408" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#d1495b">mayor dispersión</text>
+<rect x="760.8" y="370.0" width="91.7" height="20" rx="10" fill="#f7ebd5" />
+<line x1="746.2" y1="380.0" x2="857.8" y2="380.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="806.7,370.0 814.7,380.0 806.7,390.0 798.7,380.0" fill="#111827" />
+<circle cx="857.8" cy="356.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A1_6943d61c8a3fcd3af7663ee3.json: 6.83</title></circle>
+<circle cx="746.2" cy="368.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A2_6943d61c8a3fcd3af7663ee3.json: 6.28</title></circle>
+<circle cx="841.6" cy="380.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A3_6943d61c8a3fcd3af7663ee3.json: 6.75</title></circle>
+<circle cx="776.6" cy="392.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A4_6943d61c8a3fcd3af7663ee3.json: 6.43</title></circle>
+<circle cx="811.1" cy="404.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A5_6943d61c8a3fcd3af7663ee3.json: 6.60</title></circle>
+<rect x="1032" y="360" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="373" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+</svg>

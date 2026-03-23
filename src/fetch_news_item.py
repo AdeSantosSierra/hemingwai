@@ -8,6 +8,7 @@ import json
 import random
 import sys
 import re
+from urllib.parse import urlparse
 from env_config import get_env_first, get_env_int
 
 load_dotenv()
@@ -15,11 +16,77 @@ load_dotenv()
 # Definir el directorio raíz del proyecto (un nivel arriba de 'src')
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 OUTPUT_FILENAME = os.path.join(ROOT_DIR, "output_temporal", "retrieved_news_item.txt")
-MONGO_SERVER_SELECTION_TIMEOUT_MS = get_env_int("MONGO_SERVER_SELECTION_TIMEOUT_MS", 5000)
+MONGO_SERVER_SELECTION_TIMEOUT_MS = max(
+    get_env_int("MONGO_SERVER_SELECTION_TIMEOUT_MS", 15000),
+    15000,
+)
+MONGO_CONNECT_TIMEOUT_MS = max(
+    get_env_int("MONGO_CONNECT_TIMEOUT_MS", MONGO_SERVER_SELECTION_TIMEOUT_MS),
+    MONGO_SERVER_SELECTION_TIMEOUT_MS,
+)
+MONGO_SOCKET_TIMEOUT_MS = max(
+    get_env_int("MONGO_SOCKET_TIMEOUT_MS", MONGO_SERVER_SELECTION_TIMEOUT_MS),
+    MONGO_SERVER_SELECTION_TIMEOUT_MS,
+)
 
 
 def _read_mongo_uri():
     return get_env_first(("MONGO_WRITE_URI", "NEW_MONGODB_URI", "MONGO_READ_URI", "OLD_MONGODB_URI", "MONGODB_URI"))
+
+
+def _mongo_host_label(mongodb_uri):
+    try:
+        host = urlparse(mongodb_uri).hostname
+    except Exception:
+        host = None
+    return host or "host_desconocido"
+
+
+def _build_mongo_client(mongodb_uri):
+    return MongoClient(
+        mongodb_uri,
+        serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS,
+        connectTimeoutMS=MONGO_CONNECT_TIMEOUT_MS,
+        socketTimeoutMS=MONGO_SOCKET_TIMEOUT_MS,
+    )
+
+
+def _diagnose_mongo_error(err, mongodb_uri):
+    host = _mongo_host_label(mongodb_uri)
+    raw = str(err or "").strip()
+    lowered = raw.lower()
+
+    hints = [
+        "Comprueba que la IP o red actual esté permitida en MongoDB Atlas.",
+        f"Verifica resolución DNS y salida a internet hacia '{host}'.",
+        "Confirma que el cluster esté activo y tenga primary disponible.",
+    ]
+    if "replicasetnoprimary" in lowered or "no replica set members found yet" in lowered:
+        hints.append("El cluster responde como replica set sin primary accesible; suele ser allowlist, DNS o caída parcial del cluster.")
+    if "timeout" in lowered:
+        hints.append("La conexión agotó el tiempo de espera antes de descubrir un nodo válido.")
+
+    message_lines = [
+        "Error al conectar con MongoDB durante fetch_news_item.",
+        f"Host objetivo: {host}",
+        (
+            "Timeouts usados: "
+            f"serverSelection={MONGO_SERVER_SELECTION_TIMEOUT_MS}ms, "
+            f"connect={MONGO_CONNECT_TIMEOUT_MS}ms, "
+            f"socket={MONGO_SOCKET_TIMEOUT_MS}ms"
+        ),
+        f"Detalle técnico: {raw}",
+        "Sugerencias:",
+    ]
+    message_lines.extend(f"- {hint}" for hint in hints)
+    return "\n".join(message_lines)
+
+
+def _ping_mongo(client, mongodb_uri):
+    try:
+        client.admin.command("ping")
+    except pymongo_errors.ServerSelectionTimeoutError as err:
+        raise RuntimeError(_diagnose_mongo_error(err, mongodb_uri)) from err
 
 def safe_filename(s, maxlen=60):
     s = re.sub(r'[^\w\- ]', '', s)
@@ -41,16 +108,24 @@ def fetch_news_item(noticia_id):
     if not mongodb_uri:
         print("Error: MONGO_WRITE_URI/NEW_MONGODB_URI not found in .env file.")
         return None
-    client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
-    db = client[os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")]
-    col = db[os.getenv("MONGO_COLLECTION_NAME", "Noticias")]
-    noticia = col.find_one({'_id': ObjectId(noticia_id)})
-    if noticia:
-        noticia = convert_objectids_to_str(noticia)
-        return noticia
-    else:
+    client = None
+    try:
+        client = _build_mongo_client(mongodb_uri)
+        _ping_mongo(client, mongodb_uri)
+        db = client[os.getenv("MONGO_DB_NAME", "Base_de_datos_noticias")]
+        col = db[os.getenv("MONGO_COLLECTION_NAME", "Noticias")]
+        noticia = col.find_one({'_id': ObjectId(noticia_id)})
+        if noticia:
+            noticia = convert_objectids_to_str(noticia)
+            return noticia
         print("No news item was fetched with the default criteria.")
         return None
+    except RuntimeError as err:
+        print(err)
+        return None
+    finally:
+        if client is not None:
+            client.close()
 
 def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", "Noticias"]):
     """
@@ -68,8 +143,9 @@ def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", 
         print("Error: Mongo URI not found in .env file.")
         return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
-        client.admin.command('ping'); db = client.get_default_database()
+        client = _build_mongo_client(mongodb_uri)
+        _ping_mongo(client, mongodb_uri)
+        db = client.get_default_database()
         news_item = None; target_object_id = ObjectId(article_id_str)
         query = {"_id": target_object_id}; print(f"Attempting to fetch by ID: {article_id_str}")
         for name in collection_names_to_try:
@@ -83,6 +159,7 @@ def get_specific_news_item(article_id_str, collection_names_to_try=["noticias", 
         with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f:
             json.dump(news_item, f, ensure_ascii=False, indent=4)
         print(f"Saved to {OUTPUT_FILENAME}"); return news_item
+    except RuntimeError as e: print(e); return None
     except Exception as e: print(f"Error in get_specific_news_item: {e}"); return None
     finally:
         if 'client' in locals() and client: client.close()
@@ -96,8 +173,9 @@ def get_news_item_by_url(url_str, collection_names_to_try=["noticias", "Noticias
     mongodb_uri = _read_mongo_uri()
     if not mongodb_uri: print("Error: Mongo URI not found."); return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
-        client.admin.command('ping'); db = client.get_default_database()
+        client = _build_mongo_client(mongodb_uri)
+        _ping_mongo(client, mongodb_uri)
+        db = client.get_default_database()
         news_item = None; query = {"url": url_str}
         print(f"Attempting to fetch article with URL: {url_str}")
         for name in collection_names_to_try:
@@ -109,6 +187,7 @@ def get_news_item_by_url(url_str, collection_names_to_try=["noticias", "Noticias
         if '_id' in news_item and isinstance(news_item['_id'], ObjectId): news_item['_id'] = str(news_item['_id'])
         with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f: json.dump(news_item, f, ensure_ascii=False, indent=4)
         print(f"Saved to {OUTPUT_FILENAME}"); return news_item
+    except RuntimeError as e: print(e); return None
     except Exception as e: print(f"Error in get_news_item_by_url: {e}"); return None
     finally:
         if 'client' in locals() and client: client.close()
@@ -122,8 +201,9 @@ def get_news_item_with_score(exclude_ids_str_list=None, collection_names_to_try=
     mongodb_uri = _read_mongo_uri()
     if not mongodb_uri: print("Error: Mongo URI not found."); return None
     try:
-        client = MongoClient(mongodb_uri, serverSelectionTimeoutMS=MONGO_SERVER_SELECTION_TIMEOUT_MS)
-        client.admin.command('ping'); db = client.get_default_database()
+        client = _build_mongo_client(mongodb_uri)
+        _ping_mongo(client, mongodb_uri)
+        db = client.get_default_database()
         news_item = None; collection_to_use = None
 
         query = {"puntuacion": {"$ne": None}}
@@ -155,6 +235,7 @@ def get_news_item_with_score(exclude_ids_str_list=None, collection_names_to_try=
             with open(OUTPUT_FILENAME, "w", encoding="utf-8") as f: json.dump(news_item, f, ensure_ascii=False, indent=4)
             print(f"News item saved to {OUTPUT_FILENAME}"); return news_item
         else: print(f"No news item found matching criteria (Query: {query})."); client.close(); return None
+    except RuntimeError as e: print(e); return None
     except Exception as e: print(f"Error in get_news_item_with_score: {e}"); return None
     finally:
         if 'client' in locals() and client: client.close()

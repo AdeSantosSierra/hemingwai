@@ -104,3 +104,5 @@ newspaper3k
 #cd ~/hemingwai/frontend
 #export PATH=~/hemingwai/node/nodejs/bin:$PATH
 #npm run dev 
+
+#python -m http.server 8000

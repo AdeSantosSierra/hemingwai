@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard de consistencia</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --subtext: #374151;
+      --muted: #6b7280;
+      --ok: #1f9d68;
+      --warn: #d9a441;
+      --bad: #d1495b;
+      --accent: #276ef1;
+      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px;
+    }
+    .hero {
+      margin-bottom: 22px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 34px;
+      line-height: 1.15;
+    }
+    .intro {
+      max-width: 950px;
+      margin: 0;
+      color: var(--subtext);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin: 22px 0 28px;
+    }
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+      min-height: 122px;
+    }
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+    .kpi-meta {
+      color: var(--subtext);
+      font-size: 14px;
+    }
+    .section {
+      margin-bottom: 22px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 18px 18px 10px;
+    }
+    .section h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+    }
+    .section p {
+      margin: 0 0 16px;
+      color: var(--subtext);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .read-box {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .read-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+    }
+    .read-card h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+    .read-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--subtext);
+      line-height: 1.55;
+    }
+    .legend-list {
+      display: grid;
+      gap: 10px;
+    }
+    .legend-item {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 12px;
+      align-items: center;
+      font-size: 14px;
+      color: var(--subtext);
+    }
+    .legend-swatch {
+      height: 14px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .viz-wrap {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding-bottom: 4px;
+    }
+    .viz-wrap svg {
+      min-width: 680px;
+    }
+    .cards-section {
+      margin-top: 24px;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+    }
+    .news-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .card-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .card-badge {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .news-card h3 {
+      margin: 0 0 12px;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+    }
+    .metric-label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .metrics-grid strong {
+      font-size: 16px;
+      color: var(--text);
+    }
+    .conclusions {
+      margin-top: 24px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .conclusions h2 {
+      margin: 0 0 12px;
+      font-size: 22px;
+    }
+    .conclusions ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--subtext);
+      line-height: 1.6;
+    }
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    @media (max-width: 980px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+      .read-box {
+        grid-template-columns: 1fr;
+      }
+      .wrap {
+        padding: 18px;
+      }
+      .viz-wrap svg {
+        min-width: 860px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>Dashboard de reproducibilidad y consistencia</h1>
+      <p class="intro">La reproducibilidad evalúa hasta qué punto varias ejecuciones sobre una misma noticia generan puntuaciones, etiquetas de status y alertas comparables. Cuanto menor sea la dispersión de los scores y mayor la persistencia de las alertas, más consistente será el comportamiento de la herramienta.</p>
+    </header>
+
+    <section class="kpis">
+      <article class="kpi">
+        <div class="kpi-label">Noticia mas estable</div>
+        <div class="kpi-value" title="Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría">Biden indulta a su hijo Hunter pese a haber asegurado que no lo…</div>
+        <div class="kpi-meta">Rango global 0.50</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">Noticia menos estable</div>
+        <div class="kpi-value" title="La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”">La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos h…</div>
+        <div class="kpi-meta">Rango global 0.55</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">Categoria mas estable</div>
+        <div class="kpi-value">Adecuacion</div>
+        <div class="kpi-meta">Rango medio 0.83</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">Categoria menos estable</div>
+        <div class="kpi-value">Fiabilidad</div>
+        <div class="kpi-meta">Rango medio 1.50</div>
+      </article>
+      <article class="kpi">
+        <div class="kpi-label">Estabilidad media de alertas</div>
+        <div class="kpi-value">0.65</div>
+        <div class="kpi-meta">Interpretacion: media</div>
+      </article>
+    </section>
+
+    <section class="read-box">
+      <article class="read-card">
+        <h2>Guía de lectura</h2>
+        <ul>
+          <li>La reproducibilidad se interpreta a partir del rango entre ejecuciones: cuanto menor sea, mayor será la estabilidad del sistema.</li>
+          <li>En la gráfica principal, los puntos son ejecuciones individuales, la línea gris une el mínimo y el máximo, la banda coloreada muestra ±1 desviación estándar y el rombo negro marca la media.</li>
+          <li>En el heatmap, el número principal corresponde al rango y el valor secundario a la desviación estándar de cada categoría para una noticia concreta.</li>
+          <li>En alertas, una similitud Jaccard cercana a 1 indica una persistencia elevada de los mismos códigos entre ejecuciones.</li>
+        </ul>
+      </article>
+      <article class="read-card">
+        <h2>Criterios de interpretación</h2>
+        <div class="legend-list">
+          <div class="legend-item"><span class="legend-swatch" style="background:#609f5a;"></span><span>Muy estable: rango entre 0.00 y 0.25</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#1f9d68;"></span><span>Estable: rango entre 0.26 y 0.50</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#d9a441;"></span><span>Moderadamente estable: rango entre 0.51 y 1.00</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#d1495b;"></span><span>Poco estable: rango superior a 1.00</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:linear-gradient(90deg, #1f9d68, #d9a441, #d1495b);"></span><span>En el heatmap, verde indica mayor estabilidad y rojo mayor variabilidad.</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>1. Gráfica principal: dispersión real por noticia</h2>
+      <p>Esta es la vista principal para evaluar reproducibilidad. Si los puntos están agrupados y la línea min-max es corta, la noticia presenta una respuesta más consistente.</p>
+      <div class="viz-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="1180" height="500" viewBox="0 0 1180 500" role="img" aria-labelledby="title desc">
+<title>Dispersión global por noticia</title>
+<desc>Dispersión global por noticia</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="1180" height="500" rx="18" fill="#ffffff" />
+<text x="36" y="44" class="title">Dispersión real del score global por noticia</text>
+<text x="36" y="68" class="subtitle">Cada punto representa una ejecución. La banda muestra ±1 desviación estándar y el rombo central señala la media.</text>
+<rect x="740" y="42" width="396" height="42" rx="12" fill="#f9fafb" stroke="#e5e7eb" />
+<line x1="760" y1="64" x2="816" y2="64" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<rect x="836" y="57" width="34" height="14" rx="7" fill="#dce8fd" />
+<polygon points="896,64 902,58 908,64 902,70" fill="#111827" />
+<circle cx="936" cy="64" r="5.5" fill="#276ef1" stroke="white" stroke-width="1.5" />
+<text x="960" y="68" class="small">min-max</text>
+<text x="1004" y="68" class="small">std</text>
+<text x="1036" y="68" class="small">media</text>
+<text x="1082" y="68" class="small">ejecución</text>
+<line x1="320.0" y1="114" x2="320.0" y2="466" class="axis" />
+<text x="320.0" y="488" text-anchor="middle" class="small">4.18</text>
+<line x1="458.0" y1="114" x2="458.0" y2="466" class="axis" />
+<text x="458.0" y="488" text-anchor="middle" class="small">4.86</text>
+<line x1="596.0" y1="114" x2="596.0" y2="466" class="axis" />
+<text x="596.0" y="488" text-anchor="middle" class="small">5.54</text>
+<line x1="734.0" y1="114" x2="734.0" y2="466" class="axis" />
+<text x="734.0" y="488" text-anchor="middle" class="small">6.22</text>
+<line x1="872.0" y1="114" x2="872.0" y2="466" class="axis" />
+<text x="872.0" y="488" text-anchor="middle" class="small">6.90</text>
+<line x1="1010.0" y1="114" x2="1010.0" y2="466" class="axis" />
+<text x="1010.0" y="488" text-anchor="middle" class="small">7.58</text>
+<rect x="20" y="132" width="1140" height="82" rx="16" fill="#eefbf3" stroke="#e5e7eb" />
+<text x="36" y="160" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pese a haber a…</text>
+<text x="36" y="182" class="small">media 4.83 | std 0.20 | rango 0.50</text>
+<rect x="36" y="188" width="122" height="16" rx="8" fill="#d1fae5" />
+<text x="97" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#1f9d68">mayor estabilidad</text>
+<rect x="411.3" y="162.0" width="81.2" height="20" rx="10" fill="#cee9de" />
+<line x1="391.0" y1="172.0" x2="492.5" y2="172.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="451.9,162.0 459.9,172.0 451.9,182.0 443.9,172.0" fill="#111827" />
+<circle cx="431.6" cy="148.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B1_69b32c88c269d89e0a66620d.json: 4.73</title></circle>
+<circle cx="472.2" cy="160.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B2_69b32c88c269d89e0a66620d.json: 4.93</title></circle>
+<circle cx="492.5" cy="172.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B3_69b32c88c269d89e0a66620d.json: 5.03</title></circle>
+<circle cx="391.0" cy="184.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B4_69b32c88c269d89e0a66620d.json: 4.53</title></circle>
+<circle cx="472.2" cy="196.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>B5_69b32c88c269d89e0a66620d.json: 4.93</title></circle>
+<rect x="1032" y="152" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+<rect x="20" y="236" width="1140" height="82" rx="16" fill="#fafbfc" stroke="#e5e7eb" />
+<text x="36" y="264" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de países de la UE…</text>
+<text x="36" y="286" class="small">media 7.07 | std 0.19 | rango 0.50</text>
+<rect x="866.4" y="266.0" width="78.6" height="20" rx="10" fill="#cee9de" />
+<line x1="837.5" y1="276.0" x2="939.0" y2="276.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="905.7,266.0 913.7,276.0 905.7,286.0 897.7,276.0" fill="#111827" />
+<circle cx="918.7" cy="252.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E1_69979303c1b938e19e4dcacc.json: 7.13</title></circle>
+<circle cx="918.7" cy="264.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E2_69979303c1b938e19e4dcacc.json: 7.13</title></circle>
+<circle cx="837.5" cy="276.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E3_69979303c1b938e19e4dcacc.json: 6.73</title></circle>
+<circle cx="914.6" cy="288.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E4_69979303c1b938e19e4dcacc.json: 7.11</title></circle>
+<circle cx="939.0" cy="300.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>E5_69979303c1b938e19e4dcacc.json: 7.23</title></circle>
+<rect x="1032" y="256" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="269" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+<rect x="20" y="340" width="1140" height="82" rx="16" fill="#fff4f4" stroke="#e5e7eb" />
+<text x="36" y="368" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello molesta a l…</text>
+<text x="36" y="390" class="small">media 6.58 | std 0.23 | rango 0.55</text>
+<rect x="36" y="396" width="122" height="16" rx="8" fill="#fee2e2" />
+<text x="97" y="408" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="#d1495b">mayor dispersión</text>
+<rect x="760.8" y="370.0" width="91.7" height="20" rx="10" fill="#f7ebd5" />
+<line x1="746.2" y1="380.0" x2="857.8" y2="380.0" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />
+<polygon points="806.7,370.0 814.7,380.0 806.7,390.0 798.7,380.0" fill="#111827" />
+<circle cx="857.8" cy="356.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A1_6943d61c8a3fcd3af7663ee3.json: 6.83</title></circle>
+<circle cx="746.2" cy="368.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A2_6943d61c8a3fcd3af7663ee3.json: 6.28</title></circle>
+<circle cx="841.6" cy="380.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A3_6943d61c8a3fcd3af7663ee3.json: 6.75</title></circle>
+<circle cx="776.6" cy="392.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A4_6943d61c8a3fcd3af7663ee3.json: 6.43</title></circle>
+<circle cx="811.1" cy="404.0" r="6.5" fill="#276ef1" stroke="white" stroke-width="2"><title>A5_6943d61c8a3fcd3af7663ee3.json: 6.60</title></circle>
+<rect x="1032" y="360" width="112" height="18" rx="9" fill="#dcfce7" />
+<text x="1088" y="373" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="#374151">status consistente</text>
+</svg></div>
+    </section>
+
+    <section class="section">
+      <h2>2. Variabilidad por noticia y categoría</h2>
+      <p>El heatmap resume dónde aparece mayor variación entre ejecuciones. Verde indica mayor estabilidad y rojo menor reproducibilidad.</p>
+      <div class="viz-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="1040" height="444" viewBox="0 0 1040 444" role="img" aria-labelledby="title desc">
+<title>Heatmap de categorias</title>
+<desc>Heatmap de categorias</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="1040" height="444" rx="18" fill="#ffffff" />
+<text x="36" y="44" class="title">Heatmap de variabilidad por noticia y categoria</text>
+<text x="36" y="68" class="subtitle">Cada celda muestra rango y desviación estándar. Verde indica mayor estabilidad y rojo menor reproducibilidad.</text>
+<rect x="36.0" y="92" width="11.0" height="12" fill="#1f9d68" />
+<rect x="46.0" y="92" width="11.0" height="12" fill="#2c9d65" />
+<rect x="56.0" y="92" width="11.0" height="12" fill="#399e63" />
+<rect x="66.0" y="92" width="11.0" height="12" fill="#459e60" />
+<rect x="76.0" y="92" width="11.0" height="12" fill="#529f5d" />
+<rect x="86.0" y="92" width="11.0" height="12" fill="#5f9f5b" />
+<rect x="96.0" y="92" width="11.0" height="12" fill="#6ca058" />
+<rect x="106.0" y="92" width="11.0" height="12" fill="#79a055" />
+<rect x="116.0" y="92" width="11.0" height="12" fill="#86a152" />
+<rect x="126.0" y="92" width="11.0" height="12" fill="#92a150" />
+<rect x="136.0" y="92" width="11.0" height="12" fill="#9fa24d" />
+<rect x="146.0" y="92" width="11.0" height="12" fill="#aca24a" />
+<rect x="156.0" y="92" width="11.0" height="12" fill="#b9a348" />
+<rect x="166.0" y="92" width="11.0" height="12" fill="#c6a345" />
+<rect x="176.0" y="92" width="11.0" height="12" fill="#d3a442" />
+<rect x="186.0" y="92" width="11.0" height="12" fill="#d9a142" />
+<rect x="196.0" y="92" width="11.0" height="12" fill="#d89b44" />
+<rect x="206.0" y="92" width="11.0" height="12" fill="#d89445" />
+<rect x="216.0" y="92" width="11.0" height="12" fill="#d78e47" />
+<rect x="226.0" y="92" width="11.0" height="12" fill="#d78849" />
+<rect x="236.0" y="92" width="11.0" height="12" fill="#d6814b" />
+<rect x="246.0" y="92" width="11.0" height="12" fill="#d57b4d" />
+<rect x="256.0" y="92" width="11.0" height="12" fill="#d5754e" />
+<rect x="266.0" y="92" width="11.0" height="12" fill="#d46f50" />
+<rect x="276.0" y="92" width="11.0" height="12" fill="#d46852" />
+<rect x="286.0" y="92" width="11.0" height="12" fill="#d36254" />
+<rect x="296.0" y="92" width="11.0" height="12" fill="#d35c56" />
+<rect x="306.0" y="92" width="11.0" height="12" fill="#d25657" />
+<rect x="316.0" y="92" width="11.0" height="12" fill="#d24f59" />
+<rect x="326.0" y="92" width="11.0" height="12" fill="#d1495b" />
+<text x="36" y="86" class="small">mas estable</text>
+<text x="336" y="86" text-anchor="end" class="small">menos estable</text>
+<text x="36" y="120" class="small">verde ≤ 0.50 | amarillo 0.51-1.00 | rojo > 1.00</text>
+<text x="385.0" y="122" text-anchor="middle" class="label">Fiabilidad</text>
+<text x="515.0" y="122" text-anchor="middle" class="label">Adecuacion</text>
+<text x="645.0" y="122" text-anchor="middle" class="label">Claridad</text>
+<text x="775.0" y="122" text-anchor="middle" class="label">Profundidad</text>
+<text x="905.0" y="122" text-anchor="middle" class="label">Enfoque</text>
+<text x="36" y="170" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pese a…</text>
+<text x="36" y="190" class="small">rango global 0.50</text>
+<rect x="320" y="142" width="120" height="70" rx="12" fill="#1f9d68" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | fiabilidad: rango 0.00 | std 0.00</title></rect>
+<text x="380.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.00</text>
+<text x="380.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.00</text>
+<rect x="450" y="142" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | adecuacion: rango 0.50 | std 0.27</title></rect>
+<text x="510.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
+<text x="510.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
+<rect x="580" y="142" width="120" height="70" rx="12" fill="#1f9d68" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | claridad: rango 0.00 | std 0.00</title></rect>
+<text x="640.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.00</text>
+<text x="640.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.00</text>
+<rect x="710" y="142" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | profundidad: rango 2.50 | std 1.14</title></rect>
+<text x="770.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
+<text x="770.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 1.14</text>
+<rect x="840" y="142" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | enfoque: rango 2.50 | std 0.89</title></rect>
+<text x="900.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
+<text x="900.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.89</text>
+<line x1="24" y1="218" x2="1016" y2="218" stroke="#d7dde5" />
+<text x="36" y="252" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de países d…</text>
+<text x="36" y="272" class="small">rango global 0.50</text>
+<rect x="320" y="224" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | fiabilidad: rango 2.50 | std 1.04</title></rect>
+<text x="380.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
+<text x="380.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 1.04</text>
+<rect x="450" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | adecuacion: rango 1.00 | std 0.45</title></rect>
+<text x="510.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
+<text x="510.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
+<rect x="580" y="224" width="120" height="70" rx="12" fill="#d79246" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | claridad: rango 1.50 | std 0.62</title></rect>
+<text x="640.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.50</text>
+<text x="640.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.62</text>
+<rect x="710" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | profundidad: rango 1.00 | std 0.55</title></rect>
+<text x="770.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
+<text x="770.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.55</text>
+<rect x="840" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | enfoque: rango 1.00 | std 0.51</title></rect>
+<text x="900.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
+<text x="900.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.51</text>
+<line x1="24" y1="300" x2="1016" y2="300" stroke="#d7dde5" />
+<text x="36" y="334" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello mol…</text>
+<text x="36" y="354" class="small">rango global 0.55</text>
+<rect x="320" y="306" width="120" height="70" rx="12" fill="#d46d51" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | fiabilidad: rango 2.00 | std 0.84</title></rect>
+<text x="380.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.00</text>
+<text x="380.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.84</text>
+<rect x="450" y="306" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | adecuacion: rango 1.00 | std 0.45</title></rect>
+<text x="510.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
+<text x="510.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
+<rect x="580" y="306" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | claridad: rango 1.00 | std 0.45</title></rect>
+<text x="640.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
+<text x="640.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
+<rect x="710" y="306" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | profundidad: rango 0.50 | std 0.27</title></rect>
+<text x="770.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
+<text x="770.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
+<rect x="840" y="306" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | enfoque: rango 0.50 | std 0.27</title></rect>
+<text x="900.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
+<text x="900.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
+<line x1="24" y1="382" x2="1016" y2="382" stroke="#d7dde5" />
+</svg></div>
+    </section>
+
+    <section class="two-col">
+      <div class="section">
+        <h2>3. Categoría con mayor variabilidad</h2>
+        <p>Una barra más larga indica que esa dimensión del sistema presenta menor estabilidad en promedio.</p>
+        <div class="viz-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="760" height="402" viewBox="0 0 760 402" role="img" aria-labelledby="title desc">
+<title>Variabilidad por categoria</title>
+<desc>Variabilidad por categoria</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="760" height="402" rx="18" fill="#ffffff" />
+<text x="28" y="40" class="title">Variabilidad promedio por categoria</text>
+<text x="28" y="64" class="subtitle">Resume en qué dimensión el sistema presenta mayor variabilidad promedio.</text>
+<line x1="210.0" y1="82" x2="210.0" y2="374" class="axis" />
+<text x="210.0" y="392" text-anchor="middle" class="small">0.00</text>
+<line x1="317.5" y1="82" x2="317.5" y2="374" class="axis" />
+<text x="317.5" y="392" text-anchor="middle" class="small">0.38</text>
+<line x1="425.0" y1="82" x2="425.0" y2="374" class="axis" />
+<text x="425.0" y="392" text-anchor="middle" class="small">0.75</text>
+<line x1="532.5" y1="82" x2="532.5" y2="374" class="axis" />
+<text x="532.5" y="392" text-anchor="middle" class="small">1.12</text>
+<line x1="640.0" y1="82" x2="640.0" y2="374" class="axis" />
+<text x="640.0" y="392" text-anchor="middle" class="small">1.50</text>
+<text x="28" y="118" class="label">Fiabilidad</text>
+<rect x="210" y="104" width="430" height="18" rx="9" fill="#edf1f5" />
+<rect x="210" y="104" width="430.0" height="18" rx="9" fill="#d1495b" />
+<text x="652" y="118" class="value">1.50</text>
+<text x="28" y="170" class="label">Profundidad</text>
+<rect x="210" y="156" width="430" height="18" rx="9" fill="#edf1f5" />
+<rect x="210" y="156" width="382.2" height="18" rx="9" fill="#d35d55" />
+<text x="652" y="170" class="value">1.33</text>
+<text x="28" y="222" class="label">Enfoque</text>
+<rect x="210" y="208" width="430" height="18" rx="9" fill="#edf1f5" />
+<rect x="210" y="208" width="382.2" height="18" rx="9" fill="#d35d55" />
+<text x="652" y="222" class="value">1.33</text>
+<text x="28" y="274" class="label">Adecuacion</text>
+<rect x="210" y="260" width="430" height="18" rx="9" fill="#edf1f5" />
+<rect x="210" y="260" width="238.9" height="18" rx="9" fill="#d89a44" />
+<text x="652" y="274" class="value">0.83</text>
+<text x="28" y="326" class="label">Claridad</text>
+<rect x="210" y="312" width="430" height="18" rx="9" fill="#edf1f5" />
+<rect x="210" y="312" width="238.9" height="18" rx="9" fill="#d89a44" />
+<text x="652" y="326" class="value">0.83</text>
+</svg></div>
+      </div>
+      <div class="section">
+        <h2>4. Estabilidad de alertas</h2>
+        <p>Cuanto más cerca de 1 se sitúe la barra, mayor será la persistencia de alertas entre ejecuciones.</p>
+        <div class="viz-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="860" height="310" viewBox="0 0 860 310" role="img" aria-labelledby="title desc">
+<title>Estabilidad de alertas</title>
+<desc>Estabilidad de alertas</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="860" height="310" rx="18" fill="#ffffff" />
+<text x="28" y="40" class="title">Estabilidad de alertas por noticia</text>
+<text x="28" y="64" class="subtitle">La similitud Jaccard resume el grado de persistencia de las alertas entre ejecuciones.</text>
+<line x1="280.0" y1="82" x2="280.0" y2="282" class="axis" />
+<text x="280.0" y="300" text-anchor="middle" class="small">0.0</text>
+<line x1="372.0" y1="82" x2="372.0" y2="282" class="axis" />
+<text x="372.0" y="300" text-anchor="middle" class="small">0.2</text>
+<line x1="464.0" y1="82" x2="464.0" y2="282" class="axis" />
+<text x="464.0" y="300" text-anchor="middle" class="small">0.4</text>
+<line x1="556.0" y1="82" x2="556.0" y2="282" class="axis" />
+<text x="556.0" y="300" text-anchor="middle" class="small">0.6</text>
+<line x1="648.0" y1="82" x2="648.0" y2="282" class="axis" />
+<text x="648.0" y="300" text-anchor="middle" class="small">0.8</text>
+<line x1="740.0" y1="82" x2="740.0" y2="282" class="axis" />
+<text x="740.0" y="300" text-anchor="middle" class="small">1.0</text>
+<text x="28" y="118" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de país…</text>
+<text x="28" y="137" class="small">9 alertas distintas</text>
+<rect x="280" y="106" width="460" height="18" rx="9" fill="#edf1f5" />
+<rect x="280" y="106" width="347.6" height="18" rx="9" fill="#d9a441" />
+<text x="752" y="120" class="value">0.76</text>
+<text x="794" y="120" class="small">media</text>
+<text x="28" y="174" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello…</text>
+<text x="28" y="193" class="small">10 alertas distintas</text>
+<rect x="280" y="162" width="460" height="18" rx="9" fill="#edf1f5" />
+<rect x="280" y="162" width="303.6" height="18" rx="9" fill="#d9a441" />
+<text x="752" y="176" class="value">0.66</text>
+<text x="794" y="176" class="small">media</text>
+<text x="28" y="230" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pe…</text>
+<text x="28" y="249" class="small">11 alertas distintas</text>
+<rect x="280" y="218" width="460" height="18" rx="9" fill="#edf1f5" />
+<rect x="280" y="218" width="250.9" height="18" rx="9" fill="#d1495b" />
+<text x="752" y="232" class="value">0.55</text>
+<text x="794" y="232" class="small">baja</text>
+</svg></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>5. Patrones de persistencia de alertas</h2>
+      <p>Esta matriz complementa la similitud Jaccard y permite observar si un código de alerta se mantiene en todas las ejecuciones de una noticia o si aparece de forma intermitente.</p>
+      <div class="viz-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="1376" height="412" viewBox="0 0 1376 412" role="img" aria-labelledby="title desc">
+<title>Matriz de alertas</title>
+<desc>Matriz de alertas</desc>
+
+    <style>
+      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
+      .label { font: 13px Arial, sans-serif; fill: #111827; }
+      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
+      .axis { stroke: #d7dde5; stroke-width: 1; }
+      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+    </style>
+    
+<rect width="1376" height="412" rx="18" fill="#ffffff" />
+<text x="28" y="40" class="title">Matriz de persistencia de alertas</text>
+<text x="28" y="64" class="subtitle">Permite identificar qué códigos persisten en todas las ejecuciones y cuáles aparecen de forma intermitente. Se muestran los códigos más frecuentes.</text>
+<rect x="28.0" y="92" width="9.0" height="12" fill="#eef2f7" />
+<rect x="36.0" y="92" width="9.0" height="12" fill="#e7edf7" />
+<rect x="44.0" y="92" width="9.0" height="12" fill="#e0e9f7" />
+<rect x="52.0" y="92" width="9.0" height="12" fill="#d9e4f6" />
+<rect x="60.0" y="92" width="9.0" height="12" fill="#d3e0f6" />
+<rect x="68.0" y="92" width="9.0" height="12" fill="#ccdbf6" />
+<rect x="76.0" y="92" width="9.0" height="12" fill="#c5d7f6" />
+<rect x="84.0" y="92" width="9.0" height="12" fill="#bed2f6" />
+<rect x="92.0" y="92" width="9.0" height="12" fill="#b7cef5" />
+<rect x="100.0" y="92" width="9.0" height="12" fill="#b0c9f5" />
+<rect x="108.0" y="92" width="9.0" height="12" fill="#a9c4f5" />
+<rect x="116.0" y="92" width="9.0" height="12" fill="#a3c0f5" />
+<rect x="124.0" y="92" width="9.0" height="12" fill="#9cbbf5" />
+<rect x="132.0" y="92" width="9.0" height="12" fill="#95b7f4" />
+<rect x="140.0" y="92" width="9.0" height="12" fill="#8eb2f4" />
+<rect x="148.0" y="92" width="9.0" height="12" fill="#87aef4" />
+<rect x="156.0" y="92" width="9.0" height="12" fill="#80a9f4" />
+<rect x="164.0" y="92" width="9.0" height="12" fill="#79a5f3" />
+<rect x="172.0" y="92" width="9.0" height="12" fill="#72a0f3" />
+<rect x="180.0" y="92" width="9.0" height="12" fill="#6c9cf3" />
+<rect x="188.0" y="92" width="9.0" height="12" fill="#6597f3" />
+<rect x="196.0" y="92" width="9.0" height="12" fill="#5e92f3" />
+<rect x="204.0" y="92" width="9.0" height="12" fill="#578ef2" />
+<rect x="212.0" y="92" width="9.0" height="12" fill="#5089f2" />
+<rect x="220.0" y="92" width="9.0" height="12" fill="#4985f2" />
+<rect x="228.0" y="92" width="9.0" height="12" fill="#4280f2" />
+<rect x="236.0" y="92" width="9.0" height="12" fill="#3c7cf2" />
+<rect x="244.0" y="92" width="9.0" height="12" fill="#3577f1" />
+<rect x="252.0" y="92" width="9.0" height="12" fill="#2e73f1" />
+<rect x="260.0" y="92" width="9.0" height="12" fill="#276ef1" />
+<text x="28" y="86" class="small">aparece a veces</text>
+<text x="268" y="86" text-anchor="end" class="small">aparece siempre</text>
+<text x="333.0" y="116" text-anchor="middle" class="small"><title>MISSING_ATTRIBUTION</title>MISSING_ATTRI…</text>
+<text x="439.0" y="116" text-anchor="middle" class="small"><title>OPINION_AS_FACT</title>OPINION_AS_FA…</text>
+<text x="545.0" y="116" text-anchor="middle" class="small"><title>VAGUE_REFERENCES</title>VAGUE_REFEREN…</text>
+<text x="651.0" y="116" text-anchor="middle" class="small"><title>MISSING_IMPLICATIONS</title>MISSING_IMPLI…</text>
+<text x="757.0" y="116" text-anchor="middle" class="small"><title>NO_CONTEXT_WHEN_NEEDED</title>NO_CONTEXT_WH…</text>
+<text x="863.0" y="116" text-anchor="middle" class="small"><title>SCORE_ALERT_INCONSISTENCY</title>SCORE_ALERT_I…</text>
+<text x="969.0" y="116" text-anchor="middle" class="small"><title>MISPLACED_FOCUS</title>MISPLACED_FOC…</text>
+<text x="1075.0" y="116" text-anchor="middle" class="small"><title>STRUCTURE_BREAK</title>STRUCTURE_BRE…</text>
+<text x="1181.0" y="116" text-anchor="middle" class="small"><title>LOADED_LANGUAGE</title>LOADED_LANGUA…</text>
+<text x="1287.0" y="116" text-anchor="middle" class="small"><title>NUMERIC_CLAIM_NO_SUPPORT</title>NUMERIC_CLAIM…</text>
+<text x="28" y="164" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pe…</text>
+<text x="28" y="185" class="small">Jaccard 0.55</text>
+<rect x="280" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
+<text x="328.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="328.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="386" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | OPINION_AS_FACT: 5/5 ejecuciones (100%)</title></rect>
+<text x="434.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="434.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="492" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | VAGUE_REFERENCES: 5/5 ejecuciones (100%)</title></rect>
+<text x="540.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="540.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="598" y="136" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_IMPLICATIONS: 1/5 ejecuciones (20%)</title></rect>
+<text x="646.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
+<text x="646.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+<rect x="704" y="136" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NO_CONTEXT_WHEN_NEEDED: 3/5 ejecuciones (60%)</title></rect>
+<text x="752.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
+<text x="752.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
+<rect x="810" y="136" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | SCORE_ALERT_INCONSISTENCY: 0/5 ejecuciones (0%)</title></rect>
+<text x="858.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
+<text x="858.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
+<rect x="916" y="136" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISPLACED_FOCUS: 3/5 ejecuciones (60%)</title></rect>
+<text x="964.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
+<text x="964.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
+<rect x="1022" y="136" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | STRUCTURE_BREAK: 2/5 ejecuciones (40%)</title></rect>
+<text x="1070.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
+<text x="1070.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
+<rect x="1128" y="136" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | LOADED_LANGUAGE: 0/5 ejecuciones (0%)</title></rect>
+<text x="1176.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
+<text x="1176.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
+<rect x="1234" y="136" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NUMERIC_CLAIM_NO_SUPPORT: 1/5 ejecuciones (20%)</title></rect>
+<text x="1282.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
+<text x="1282.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+<text x="28" y="238" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de país…</text>
+<text x="28" y="259" class="small">Jaccard 0.76</text>
+<rect x="280" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
+<text x="328.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="328.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="386" y="210" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | OPINION_AS_FACT: 4/5 ejecuciones (80%)</title></rect>
+<text x="434.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
+<text x="434.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
+<rect x="492" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | VAGUE_REFERENCES: 5/5 ejecuciones (100%)</title></rect>
+<text x="540.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="540.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="598" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_IMPLICATIONS: 5/5 ejecuciones (100%)</title></rect>
+<text x="646.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="646.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="704" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NO_CONTEXT_WHEN_NEEDED: 5/5 ejecuciones (100%)</title></rect>
+<text x="752.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="752.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="810" y="210" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | SCORE_ALERT_INCONSISTENCY: 4/5 ejecuciones (80%)</title></rect>
+<text x="858.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
+<text x="858.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
+<rect x="916" y="210" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISPLACED_FOCUS: 1/5 ejecuciones (20%)</title></rect>
+<text x="964.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
+<text x="964.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+<rect x="1022" y="210" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | STRUCTURE_BREAK: 0/5 ejecuciones (0%)</title></rect>
+<text x="1070.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
+<text x="1070.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
+<rect x="1128" y="210" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | LOADED_LANGUAGE: 3/5 ejecuciones (60%)</title></rect>
+<text x="1176.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
+<text x="1176.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
+<rect x="1234" y="210" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NUMERIC_CLAIM_NO_SUPPORT: 2/5 ejecuciones (40%)</title></rect>
+<text x="1282.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
+<text x="1282.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
+<text x="28" y="312" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello…</text>
+<text x="28" y="333" class="small">Jaccard 0.66</text>
+<rect x="280" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
+<text x="328.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="328.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="386" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | OPINION_AS_FACT: 5/5 ejecuciones (100%)</title></rect>
+<text x="434.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="434.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="492" y="284" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | VAGUE_REFERENCES: 4/5 ejecuciones (80%)</title></rect>
+<text x="540.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
+<text x="540.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
+<rect x="598" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_IMPLICATIONS: 5/5 ejecuciones (100%)</title></rect>
+<text x="646.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
+<text x="646.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
+<rect x="704" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NO_CONTEXT_WHEN_NEEDED: 2/5 ejecuciones (40%)</title></rect>
+<text x="752.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
+<text x="752.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
+<rect x="810" y="284" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | SCORE_ALERT_INCONSISTENCY: 4/5 ejecuciones (80%)</title></rect>
+<text x="858.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
+<text x="858.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
+<rect x="916" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISPLACED_FOCUS: 2/5 ejecuciones (40%)</title></rect>
+<text x="964.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
+<text x="964.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
+<rect x="1022" y="284" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | STRUCTURE_BREAK: 3/5 ejecuciones (60%)</title></rect>
+<text x="1070.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
+<text x="1070.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
+<rect x="1128" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | LOADED_LANGUAGE: 2/5 ejecuciones (40%)</title></rect>
+<text x="1176.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
+<text x="1176.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
+<rect x="1234" y="284" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NUMERIC_CLAIM_NO_SUPPORT: 1/5 ejecuciones (20%)</title></rect>
+<text x="1282.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
+<text x="1282.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+</svg></div>
+    </section>
+
+    <section class="cards-section">
+      <h2>Panel por noticia</h2>
+      <div class="news-grid">
+        
+        <article class="news-card">
+          <div class="card-top">
+            <span class="card-badge" style="background:#1f9d68;">Estable</span>
+          </div>
+          <h3 title="Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría">Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</h3>
+          <div class="metrics-grid">
+            <div><span class="metric-label">Ejecuciones</span><strong>5</strong></div>
+            <div><span class="metric-label">Media global</span><strong>4.83</strong></div>
+            <div><span class="metric-label">Score máximo observado</span><strong>5.03</strong></div>
+            <div><span class="metric-label">Score mínimo observado</span><strong>4.53</strong></div>
+            <div><span class="metric-label">Rango global</span><strong>0.50</strong></div>
+            <div><span class="metric-label">Std global</span><strong>0.20</strong></div>
+            <div><span class="metric-label">Categoría con mayor variabilidad</span><strong>Profundidad (2.50)</strong></div>
+            <div><span class="metric-label">Status consistente</span><strong>si</strong></div>
+            <div><span class="metric-label">Alertas distintas</span><strong>11</strong></div>
+          </div>
+        </article>
+        
+
+        <article class="news-card">
+          <div class="card-top">
+            <span class="card-badge" style="background:#1f9d68;">Estable</span>
+          </div>
+          <h3 title="España se sitúa a la cola de países de la UE en accesibilidad a la vivienda">España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</h3>
+          <div class="metrics-grid">
+            <div><span class="metric-label">Ejecuciones</span><strong>5</strong></div>
+            <div><span class="metric-label">Media global</span><strong>7.07</strong></div>
+            <div><span class="metric-label">Score máximo observado</span><strong>7.23</strong></div>
+            <div><span class="metric-label">Score mínimo observado</span><strong>6.73</strong></div>
+            <div><span class="metric-label">Rango global</span><strong>0.50</strong></div>
+            <div><span class="metric-label">Std global</span><strong>0.19</strong></div>
+            <div><span class="metric-label">Categoría con mayor variabilidad</span><strong>Fiabilidad (2.50)</strong></div>
+            <div><span class="metric-label">Status consistente</span><strong>si</strong></div>
+            <div><span class="metric-label">Alertas distintas</span><strong>9</strong></div>
+          </div>
+        </article>
+        
+
+        <article class="news-card">
+          <div class="card-top">
+            <span class="card-badge" style="background:#d9a441;">Moderadamente estable</span>
+          </div>
+          <h3 title="La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”">La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un l…</h3>
+          <div class="metrics-grid">
+            <div><span class="metric-label">Ejecuciones</span><strong>5</strong></div>
+            <div><span class="metric-label">Media global</span><strong>6.58</strong></div>
+            <div><span class="metric-label">Score máximo observado</span><strong>6.83</strong></div>
+            <div><span class="metric-label">Score mínimo observado</span><strong>6.28</strong></div>
+            <div><span class="metric-label">Rango global</span><strong>0.55</strong></div>
+            <div><span class="metric-label">Std global</span><strong>0.23</strong></div>
+            <div><span class="metric-label">Categoría con mayor variabilidad</span><strong>Fiabilidad (2.00)</strong></div>
+            <div><span class="metric-label">Status consistente</span><strong>si</strong></div>
+            <div><span class="metric-label">Alertas distintas</span><strong>10</strong></div>
+          </div>
+        </article>
+        
+      </div>
+    </section>
+
+    <section class="conclusions">
+      <h2>Conclusiones automáticas</h2>
+      <ul>
+        <li>En conjunto, el sistema presenta un nivel de reproducibilidad moderadamente estable: el rango medio entre ejecuciones es 0.52 y el status se mantiene consistente en el 100% de las noticias.</li><li>La noticia con mayor estabilidad global fue &quot;Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría&quot;, mientras que la noticia con mayor dispersión entre ejecuciones fue &quot;La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”&quot;.</li><li>La categoría con mayor variabilidad promedio es fiabilidad, con un rango medio de 1.50; conviene revisar específicamente esa dimensión del sistema.</li><li>La estabilidad media de alertas es media (0.65), lo que sugiere la presencia de un núcleo de alertas persistentes junto con otros códigos de aparición intermitente.</li><li>La dispersión observada puede calificarse como moderada para este conjunto de noticias, con diferencias más visibles en los casos menos estables y en las categorías más sensibles.</li>
+      </ul>
+    </section>
+  </div>
+</body>
+</html>

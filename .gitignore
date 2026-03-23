@@ -28,3 +28,4 @@ frontend/node_modules/
 # Dependencias de Node
 /node_modules
 /node/
+src/validacion_consistencia/json/
