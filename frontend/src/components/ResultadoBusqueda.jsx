@@ -155,15 +155,18 @@ const hexToRgba = (hex, alpha) => {
 const SEVERITY_UI = {
   high: {
     label: 'Alta',
-    badge: 'bg-red-500/20 text-red-200 border border-red-400/40',
+    badge:
+      'border border-red-300 bg-red-50 text-red-900 dark:border-red-400/40 dark:bg-red-500/20 dark:text-red-200',
   },
   medium: {
     label: 'Media',
-    badge: 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/40',
+    badge:
+      'border border-amber-300 bg-amber-50 text-amber-900 dark:border-yellow-400/40 dark:bg-yellow-500/20 dark:text-yellow-200',
   },
   low: {
     label: 'Baja',
-    badge: 'bg-sky-500/20 text-sky-200 border border-sky-400/40',
+    badge:
+      'border border-sky-300 bg-sky-50 text-sky-900 dark:border-sky-400/40 dark:bg-sky-500/20 dark:text-sky-200',
   },
 };
 
@@ -469,13 +472,13 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
                   Alertas detectadas
                 </h4>
                 <div className="flex flex-wrap gap-2 text-xs">
-                  <span className="px-2.5 py-1 rounded-full bg-red-500/20 text-red-200 border border-red-400/30">
+                  <span className="px-2.5 py-1 rounded-full border border-red-300 bg-red-50 text-red-900 dark:border-red-400/30 dark:bg-red-500/20 dark:text-red-200">
                     Altas: {alertCounts.high}
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-yellow-500/20 text-yellow-200 border border-yellow-400/30">
+                  <span className="px-2.5 py-1 rounded-full border border-amber-300 bg-amber-50 text-amber-900 dark:border-yellow-400/30 dark:bg-yellow-500/20 dark:text-yellow-200">
                     Medias: {alertCounts.medium}
                   </span>
-                  <span className="px-2.5 py-1 rounded-full bg-sky-500/20 text-sky-200 border border-sky-400/30">
+                  <span className="px-2.5 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-900 dark:border-sky-400/30 dark:bg-sky-500/20 dark:text-sky-200">
                     Bajas: {alertCounts.low}
                   </span>
                 </div>

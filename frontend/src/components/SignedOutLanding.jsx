@@ -55,16 +55,28 @@ const INITIAL_FEED = LIVE_SIGNALS.slice(0, FEED_SIZE).map((item, index) => ({
   id: `seed-${index}`,
 }));
 
-function signalToneClasses(tone) {
-  if (tone === 'critical') return 'text-red-300 border-red-400/30 bg-red-500/10';
-  if (tone === 'warning') return 'text-amber-200 border-amber-400/30 bg-amber-500/10';
-  return 'text-emerald-200 border-emerald-400/30 bg-emerald-500/10';
+function signalToneClasses(tone, isDarkMode) {
+  if (isDarkMode) {
+    if (tone === 'critical') return 'text-red-300 border-red-400/30 bg-red-500/10';
+    if (tone === 'warning') return 'text-amber-200 border-amber-400/30 bg-amber-500/10';
+    return 'text-emerald-200 border-emerald-400/30 bg-emerald-500/10';
+  }
+
+  if (tone === 'critical') return 'text-red-900 border-red-300/80 bg-red-50/95';
+  if (tone === 'warning') return 'text-amber-900 border-amber-300/80 bg-amber-50/95';
+  return 'text-emerald-900 border-emerald-300/80 bg-emerald-50/95';
 }
 
-function signalAccentStripe(tone) {
-  if (tone === 'critical') return 'before:bg-red-300/70';
-  if (tone === 'warning') return 'before:bg-amber-300/70';
-  return 'before:bg-emerald-300/70';
+function signalAccentStripe(tone, isDarkMode) {
+  if (isDarkMode) {
+    if (tone === 'critical') return 'before:bg-red-300/70';
+    if (tone === 'warning') return 'before:bg-amber-300/70';
+    return 'before:bg-emerald-300/70';
+  }
+
+  if (tone === 'critical') return 'before:bg-red-700/85';
+  if (tone === 'warning') return 'before:bg-amber-700/85';
+  return 'before:bg-emerald-700/85';
 }
 
 function SignedOutLanding({ isDarkMode, onToggleTheme }) {
@@ -276,8 +288,8 @@ function SignedOutLanding({ isDarkMode, onToggleTheme }) {
                       className={[
                         'relative rounded-lg border px-3 py-2 text-xs font-medium',
                         'before:absolute before:left-0 before:top-0 before:h-full before:w-[3px] before:rounded-l-lg',
-                        signalAccentStripe(item.tone),
-                        signalToneClasses(item.tone),
+                        signalAccentStripe(item.tone, isDarkMode),
+                        signalToneClasses(item.tone, isDarkMode),
                       ].join(' ')}
                     >
                       <div className="flex items-center justify-between gap-3">
