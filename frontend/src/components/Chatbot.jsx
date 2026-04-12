@@ -144,6 +144,8 @@ const styles = {
         cursor: 'pointer',
         fontWeight: 'bold',
         boxShadow: '0 10px 24px rgba(212,230,0,0.2)',
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
     },
     buttonDisabled: {
         backgroundColor: 'rgba(212, 230, 0, 0.35)',
@@ -354,9 +356,10 @@ const Chatbot = forwardRef(({ noticiaContexto }, ref) => {
                     // Adding focus class via className prop
                     className="focus:shadow-[0_0_0_2px_rgba(212,230,0,0.2)] transition-shadow duration-200 placeholder-[color:var(--hw-text-muted)]"
                 />
-                <button 
-                    type="submit" 
-                    style={{...styles.button, ...(cargando || !isLoaded || !isSignedIn ? styles.buttonDisabled : {})}} 
+                <button
+                    type="submit"
+                    className="hw-chatbot-submit"
+                    style={{...styles.button, ...(cargando || !isLoaded || !isSignedIn ? styles.buttonDisabled : {})}}
                     disabled={cargando || !isLoaded || !isSignedIn}
                 >
                     Enviar

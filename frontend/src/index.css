@@ -557,3 +557,34 @@
     box-shadow: none !important; /* Remove glow pulse */
   }
 }
+
+/* --- MOBILE-ONLY VISUAL FIXES --- */
+@media (max-width: 639px) {
+  /* Prevent background scroll when focal criterion modal is open */
+  .hw-modal-open {
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  /* Focal modal: tall scrollable rectangle on mobile instead of fixed square */
+  .hw-focal-modal {
+    height: auto !important;
+    max-height: 85vh !important;
+  }
+
+  /* Focal modal content: allow vertical scroll on mobile */
+  .hw-focal-content {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Chatbot submit button: shrink padding on narrow screens so it stays inside the form */
+  .hw-chatbot-submit {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}

@@ -218,6 +218,16 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
     setSelectedCriterion(null);
   }, [resultado?._id, resultado?.url]);
 
+  // Prevent background scroll on mobile when the focal modal is open
+  useEffect(() => {
+    if (selectedCriterion) {
+      document.body.classList.add('hw-modal-open');
+    } else {
+      document.body.classList.remove('hw-modal-open');
+    }
+    return () => document.body.classList.remove('hw-modal-open');
+  }, [selectedCriterion]);
+
   // Estado inicial
   if (estado === 'idle') {
     return (
@@ -763,7 +773,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.96, opacity: 0 }}
               transition={{ duration: 0.28, ease: 'easeOut' }}
-              className="relative z-10 flex items-center justify-center"
+              className="hw-focal-modal relative z-10 flex items-center justify-center"
               style={{
                 width: 'min(92vw, 42rem)',
                 height: 'min(92vw, 42rem)',
@@ -778,7 +788,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
               />
 
               <div
-                className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[2rem] border px-5 py-6 text-center shadow-[0_0_80px_rgba(0,0,0,0.34)] sm:rounded-full sm:px-12 sm:py-12"
+                className="hw-focal-content relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-[2rem] border px-5 py-6 text-center shadow-[0_0_80px_rgba(0,0,0,0.34)] sm:rounded-full sm:px-12 sm:py-12"
                 style={{
                   borderColor: hexToRgba(selectedCriterionMeta.color, 0.42),
                   background: `radial-gradient(circle at 50% 32%, ${hexToRgba(selectedCriterionMeta.color, 0.18)} 0%, ${hexToRgba(selectedCriterionMeta.color, 0.08)} 24%, rgba(5,5,5,0.94) 74%)`,
@@ -838,7 +848,7 @@ const ResultadoBusqueda = ({ estado, resultado, chatbotAccess, query }) => {
                   </span>
                 </div>
 
-                <div className="mt-5 max-h-[24vh] max-w-lg overflow-y-auto px-1 text-sm leading-relaxed text-[color:var(--hw-text)] sm:max-h-[170px] sm:text-base">
+                <div className="mt-5 max-h-[38vh] max-w-lg overflow-y-auto overscroll-contain px-1 text-sm leading-relaxed text-[color:var(--hw-text)] sm:max-h-[170px] sm:text-base">
                   <p>{selectedCriterionSummary}</p>
                   {selectedCriterionAlerts.map((alert) => (
                     <p key={alert.code} className="mt-3 text-sm text-[color:var(--hw-text-muted)]">

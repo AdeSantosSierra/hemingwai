@@ -344,8 +344,11 @@ const NewsScoreDonut = ({
         </div>
       </div>
 
-      <div className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-lime-400/90">
+      <div className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-lime-400/90 hidden sm:block">
         Hover: detalle | clic: capa focal
+      </div>
+      <div className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-lime-400/90 sm:hidden">
+        Toca un criterio para ver el detalle
       </div>
 
       <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-[color:var(--hw-text-muted)]">
