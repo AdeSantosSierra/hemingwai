@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import statistics
 from collections import Counter, defaultdict
 from html import escape
@@ -33,17 +34,17 @@ CATEGORIES = ["fiabilidad", "adecuacion", "claridad", "profundidad", "enfoque"]
 DEFAULT_BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_INPUT_DIR = DEFAULT_BASE_DIR / "json" if (DEFAULT_BASE_DIR / "json").exists() else DEFAULT_BASE_DIR
 CHART_COLORS = {
-    "ok": "#1f9d68",
-    "warn": "#d9a441",
-    "bad": "#d1495b",
-    "accent": "#276ef1",
-    "muted": "#6b7280",
-    "grid": "#d7dde5",
-    "bg": "#f4f7fb",
-    "card": "#ffffff",
-    "border": "#e5e7eb",
-    "text": "#111827",
-    "subtext": "#374151",
+    "ok":      "#22c55e",   # verde luminoso sobre oscuro
+    "warn":    "#f59e0b",   # ámbar del design system
+    "bad":     "#ef4444",   # rojo saturado
+    "accent":  "#f59e0b",   # acento principal = ámbar
+    "muted":   "#6b7280",   # gris medio
+    "grid":    "#1e293b",   # líneas sobre fondo oscuro
+    "bg":      "#0a0a0f",   # fondo oscuro
+    "card":    "#111827",   # cards oscuros
+    "border":  "#1e293b",   # bordes tenues
+    "text":    "#f9fafb",   # texto casi blanco
+    "subtext": "#9ca3af",   # subtexto gris
 }
 
 
@@ -262,37 +263,45 @@ def jaccard_similarity(sets: List[set]) -> Optional[float]:
 
 def consistency_label(range_value: Optional[float]) -> str:
     """
-    Etiqueta interpretativa simple para la consistencia.
-    Puedes ajustar los umbrales si quieres.
+    Etiqueta de variabilidad numérica basada en el rango observado.
+
+    Escala calibrada para scores 0–10 de modelos LLM, donde rangos de hasta
+    1.0–1.5 puntos son habituales y no implican necesariamente un fallo del sistema.
+    Se distingue de la consistencia decisional (cambio de status), que es más grave.
     """
     if range_value is None:
         return "sin_datos"
-    if range_value == 0:
-        return "perfecta"
-    if range_value <= 0.25:
-        return "muy_alta"
     if range_value <= 0.50:
-        return "alta"
+        return "muy_consistente"
     if range_value <= 1.00:
-        return "moderada"
-    return "baja"
+        return "consistente"
+    if range_value <= 1.50:
+        return "variabilidad_apreciable"
+    if range_value <= 2.00:
+        return "variabilidad_elevada"
+    return "variabilidad_alta"
 
 
 def consistency_color(range_value: Optional[float], invert: bool = False) -> str:
-    """Color semántico simple para resaltar estabilidad o variabilidad."""
+    """
+    Color semántico para estabilidad o variabilidad.
+
+    - invert=False (rango, a menor mejor): verde ≤1.0, ámbar ≤1.75, rojo >1.75
+    - invert=True  (Jaccard, a mayor mejor): verde ≥0.65, ámbar ≥0.45, rojo <0.45
+    """
     if range_value is None:
         return CHART_COLORS["muted"]
 
     if invert:
-        if range_value >= 0.85:
+        if range_value >= 0.65:
             return CHART_COLORS["ok"]
-        if range_value >= 0.60:
+        if range_value >= 0.45:
             return CHART_COLORS["warn"]
         return CHART_COLORS["bad"]
 
-    if range_value <= 0.50:
-        return CHART_COLORS["ok"]
     if range_value <= 1.00:
+        return CHART_COLORS["ok"]
+    if range_value <= 1.75:
         return CHART_COLORS["warn"]
     return CHART_COLORS["bad"]
 
@@ -317,11 +326,29 @@ def short_label(text: str, max_len: int = 44) -> str:
     return text[: max_len - 1].rstrip() + "…"
 
 
+def natural_sort_key(text: str) -> List[Any]:
+    parts = re.split(r"(\d+)", str(text))
+    return [int(part) if part.isdigit() else part.lower() for part in parts]
+
+
 def format_num(value: Any, digits: int = 2) -> str:
     number = to_float(value)
     if number is None:
         return "n/d"
     return f"{number:.{digits}f}"
+
+
+def percentile_or_none(values: List[Optional[float]], percentile: float) -> Optional[float]:
+    nums = sorted(v for v in values if v is not None)
+    if not nums:
+        return None
+    if len(nums) == 1:
+        return nums[0]
+    position = clamp((len(nums) - 1) * percentile, 0, len(nums) - 1)
+    lower = int(position)
+    upper = min(lower + 1, len(nums) - 1)
+    weight = position - lower
+    return nums[lower] + (nums[upper] - nums[lower]) * weight
 
 
 def write_text_file(path: Path, content: str) -> None:
@@ -366,7 +393,7 @@ def mix_colors(color_a: str, color_b: str, ratio: float) -> str:
 
 def heat_color(value: Optional[float], max_value: float) -> str:
     if value is None:
-        return "#eef2f7"
+        return "#1e293b"
     ratio = clamp((value / max_value) if max_value else 0.0, 0.0, 1.0)
     if ratio <= 0.5:
         return mix_colors(CHART_COLORS["ok"], CHART_COLORS["warn"], ratio / 0.5)
@@ -374,47 +401,98 @@ def heat_color(value: Optional[float], max_value: float) -> str:
 
 
 def alert_stability_label(value: Optional[float]) -> str:
+    """
+    Clasifica la similitud Jaccard media de alertas entre ejecuciones.
+    Umbral superior rebajado a 0.65 porque Jaccard en conjuntos pequeños
+    suele ser bajo incluso con alertas consistentes.
+    """
     if value is None:
         return "sin datos"
-    if value >= 0.8:
+    if value >= 0.65:
         return "alta"
-    if value >= 0.6:
+    if value >= 0.45:
         return "media"
     return "baja"
 
 
 def dispersion_label(value: Optional[float]) -> str:
+    """
+    Etiqueta descriptiva del rango medio entre ejecuciones.
+    Escala de 5 niveles calibrada para scores 0–10.
+    """
     if value is None:
         return "sin datos"
-    if value <= 0.5:
+    if value <= 0.50:
         return "baja"
-    if value <= 1.0:
+    if value <= 1.00:
         return "moderada"
+    if value <= 1.50:
+        return "apreciable"
+    if value <= 2.00:
+        return "elevada"
     return "alta"
 
 
 def reproducibility_badge(range_value: Optional[float]) -> str:
+    """Badge compacto para cards y visualizaciones."""
     label = consistency_label(range_value)
     mapping = {
-        "perfecta": "Muy estable",
-        "muy_alta": "Muy estable",
-        "alta": "Estable",
-        "moderada": "Moderadamente estable",
-        "baja": "Poco estable",
-        "sin_datos": "sin datos",
+        "muy_consistente":         "Muy consistente",
+        "consistente":             "Consistente",
+        "variabilidad_apreciable": "Var. apreciable",
+        "variabilidad_elevada":    "Var. elevada",
+        "variabilidad_alta":       "Var. alta",
+        "sin_datos":               "sin datos",
     }
     return mapping.get(label, "sin datos")
 
 
 def reproducibility_level_text(range_value: Optional[float]) -> str:
+    """Frase descriptiva para conclusiones automáticas."""
     label = consistency_label(range_value)
     mapping = {
-        "perfecta": "muy estable",
-        "muy_alta": "muy estable",
-        "alta": "estable",
-        "moderada": "moderadamente estable",
-        "baja": "poco estable",
-        "sin_datos": "sin datos",
+        "muy_consistente":         "muy consistente",
+        "consistente":             "consistente",
+        "variabilidad_apreciable": "con variabilidad apreciable",
+        "variabilidad_elevada":    "con variabilidad elevada",
+        "variabilidad_alta":       "con variabilidad alta",
+        "sin_datos":               "sin datos",
+    }
+    return mapping.get(label, "sin datos")
+
+
+def decisional_consistency_label(summary_row: Dict[str, Any]) -> str:
+    """
+    Evalúa la consistencia decisional: si el sistema toma las mismas decisiones
+    relevantes (status, posición relativa en la escala) entre ejecuciones.
+
+    Esta métrica es más importante que la variabilidad numérica pura:
+    un sistema puede oscilar ±1 punto y seguir siendo funcionalmente estable
+    si el status y el cuadrante de score no cambian.
+    """
+    status_consistent = parse_bool(summary_row.get("status_consistente"))
+    global_range = to_float(summary_row.get("global_score_rango")) or 0.0
+
+    if status_consistent and global_range <= 1.50:
+        return "estable"
+    if status_consistent and global_range <= 2.50:
+        return "mayormente_estable"
+    if not status_consistent and global_range > 2.00:
+        return "inestable"
+    if not status_consistent:
+        return "variable"
+    return "dispersión_notable"
+
+
+def decisional_consistency_note(summary_row: Dict[str, Any]) -> str:
+    """Nota breve sobre la consistencia decisional para el panel de noticias."""
+    label = decisional_consistency_label(summary_row)
+    mapping = {
+        "estable":             "Decisión estable",
+        "mayormente_estable":  "Mayormente estable",
+        "inestable":           "Decisión inestable",
+        "variable":            "Status variable",
+        "dispersión_notable":  "Dispersión notable",
     }
     return mapping.get(label, "sin datos")
 
@@ -431,17 +509,17 @@ def get_most_unstable_category(summary_row: Dict[str, Any]) -> tuple[str, Option
 
 
 def alert_presence_color(ratio: float) -> str:
-    return mix_colors("#eef2f7", CHART_COLORS["accent"], ratio)
+    return mix_colors("#1a1f2e", CHART_COLORS["accent"], ratio)
 
 
 def svg_document(width: int, height: int, title: str, body: List[str]) -> str:
     style = f"""
     <style>
-      .title {{ font: 700 24px Arial, sans-serif; fill: {CHART_COLORS["text"]}; }}
-      .subtitle {{ font: 14px Arial, sans-serif; fill: {CHART_COLORS["muted"]}; }}
-      .label {{ font: 13px Arial, sans-serif; fill: {CHART_COLORS["text"]}; }}
-      .small {{ font: 12px Arial, sans-serif; fill: {CHART_COLORS["muted"]}; }}
-      .value {{ font: 700 13px Arial, sans-serif; fill: {CHART_COLORS["text"]}; }}
+      .title {{ font: 700 24px Inter, system-ui, -apple-system, sans-serif; fill: {CHART_COLORS["text"]}; }}
+      .subtitle {{ font: 14px Inter, system-ui, -apple-system, sans-serif; fill: {CHART_COLORS["muted"]}; }}
+      .label {{ font: 13px Inter, system-ui, -apple-system, sans-serif; fill: {CHART_COLORS["text"]}; }}
+      .small {{ font: 12px Inter, system-ui, -apple-system, sans-serif; fill: {CHART_COLORS["muted"]}; }}
+      .value {{ font: 700 13px Inter, system-ui, -apple-system, sans-serif; fill: {CHART_COLORS["text"]}; }}
       .axis {{ stroke: {CHART_COLORS["grid"]}; stroke-width: 1; }}
       .panel {{ fill: {CHART_COLORS["card"]}; stroke: {CHART_COLORS["border"]}; stroke-width: 1; }}
     </style>
@@ -488,129 +566,202 @@ def build_category_summary(summary_rows: List[Dict[str, Any]]) -> List[Dict[str,
 def build_global_dispersion_svg(
     summary_rows: List[Dict[str, Any]],
     detailed_rows: List[Dict[str, Any]],
+    fixed_scale: bool = False,
 ) -> str:
+    """
+    Genera el box plot de dispersión global.
+
+    fixed_scale=False (por defecto): eje dinámico, ampliado al rango de los datos.
+    fixed_scale=True: eje fijo 0–10 para mostrar la variabilidad en su verdadera dimensión.
+    """
     ordered_rows = sort_summary_rows_for_dashboard(summary_rows)
     grouped_runs: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for row in detailed_rows:
         grouped_runs[row["grupo_noticia"]].append(row)
 
-    all_scores = [
-        to_float(row.get("global_score"))
-        for row in detailed_rows
-        if to_float(row.get("global_score")) is not None
-    ]
-    min_score = min(all_scores) if all_scores else 0.0
-    max_score = max(all_scores) if all_scores else 1.0
-    if max_score == min_score:
-        max_score += 1.0
-    pad = max((max_score - min_score) * 0.08, 0.35)
-    axis_min = max(0.0, min_score - pad)
-    axis_max = max_score + pad
+    if fixed_scale:
+        axis_min = 0.0
+        axis_max = 10.0
+    else:
+        all_scores = [
+            to_float(row.get("global_score"))
+            for row in detailed_rows
+            if to_float(row.get("global_score")) is not None
+        ]
+        min_score = min(all_scores) if all_scores else 0.0
+        max_score = max(all_scores) if all_scores else 1.0
+        if max_score == min_score:
+            max_score += 1.0
+        pad = max((max_score - min_score) * 0.08, 0.35)
+        axis_min = max(0.0, min_score - pad)
+        axis_max = max_score + pad
 
-    width = 1180
-    left = 320
-    right = 170
-    top = 132
-    row_h = 104
-    height = top + row_h * len(ordered_rows) + 56
+    width = 1280
+    left = 340
+    right = 190
+    top = 100
+    max_runs = max((len(grouped_runs[row["grupo_noticia"]]) for row in ordered_rows), default=1)
+    row_h = max(72, 58 + max_runs * 5)
+    height = top + row_h * len(ordered_rows) + 60
     plot_width = width - left - right
 
     def scale_x(value: float) -> float:
         return left + ((value - axis_min) / (axis_max - axis_min)) * plot_width
 
+    if fixed_scale:
+        title_text = "La misma distribución sobre la escala completa 0–10"
+        subtitle_text = "Eje fijo 0–10: la variabilidad real suele ser menor de lo que sugiere la vista ampliada anterior."
+    else:
+        title_text = "Distribución del score global por noticia"
+        subtitle_text = "Vista ampliada al rango real de los datos. Consulta la leyenda para identificar cada elemento."
+
     body = [
-        f'<text x="36" y="44" class="title">Dispersión real del score global por noticia</text>',
-        f'<text x="36" y="68" class="subtitle">Cada punto representa una ejecución. La banda muestra ±1 desviación estándar y el rombo central señala la media.</text>',
+        f'<text x="36" y="44" class="title">{escape(title_text)}</text>',
+        f'<text x="36" y="68" class="subtitle">{escape(subtitle_text)}</text>',
     ]
 
-    legend_x = width - 440
-    legend_y = 42
-    body.append(f'<rect x="{legend_x}" y="{legend_y}" width="396" height="42" rx="12" fill="#f9fafb" stroke="{CHART_COLORS["border"]}" />')
-    body.append(f'<line x1="{legend_x + 20}" y1="{legend_y + 22}" x2="{legend_x + 76}" y2="{legend_y + 22}" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />')
-    body.append(f'<rect x="{legend_x + 96}" y="{legend_y + 15}" width="34" height="14" rx="7" fill="{mix_colors("#ffffff", CHART_COLORS["accent"], 0.16)}" />')
-    body.append(f'<polygon points="{legend_x + 156},{legend_y + 22} {legend_x + 162},{legend_y + 16} {legend_x + 168},{legend_y + 22} {legend_x + 162},{legend_y + 28}" fill="{CHART_COLORS["text"]}" />')
-    body.append(f'<circle cx="{legend_x + 196}" cy="{legend_y + 22}" r="5.5" fill="{CHART_COLORS["accent"]}" stroke="white" stroke-width="1.5" />')
-    body.append(f'<text x="{legend_x + 220}" y="{legend_y + 26}" class="small">min-max</text>')
-    body.append(f'<text x="{legend_x + 264}" y="{legend_y + 26}" class="small">std</text>')
-    body.append(f'<text x="{legend_x + 296}" y="{legend_y + 26}" class="small">media</text>')
-    body.append(f'<text x="{legend_x + 342}" y="{legend_y + 26}" class="small">ejecución</text>')
+    # Leyenda: 2 filas, cada símbolo pegado a su etiqueta
+    legend_w = 430
+    legend_h = 58
+    legend_x = width - legend_w - 22
+    legend_y = 32
+    lx = legend_x  # alias corto
 
-    for step in range(6):
-        value = axis_min + (axis_max - axis_min) * step / 5
-        x = left + plot_width * step / 5
-        body.append(f'<line x1="{x:.1f}" y1="{top - 18}" x2="{x:.1f}" y2="{height - 34}" class="axis" />')
-        body.append(f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" class="small">{value:.2f}</text>')
+    body.append(f'<rect x="{lx}" y="{legend_y}" width="{legend_w}" height="{legend_h}" rx="12" fill="#1e293b" stroke="{CHART_COLORS["border"]}" />')
+
+    # ── fila 1 (y+18 línea base, símbolos centrados en y+14) ─────────────
+    ry1s = legend_y + 14   # y centro símbolos fila 1
+    ry1t = legend_y + 19   # y baseline texto fila 1
+
+    # Item 1: línea whisker min-max
+    body.append(f'<line x1="{lx + 12}" y1="{ry1s}" x2="{lx + 38}" y2="{ry1s}" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />')
+    body.append(f'<line x1="{lx + 12}" y1="{ry1s - 7}" x2="{lx + 12}" y2="{ry1s + 7}" stroke="#94a3b8" stroke-width="2" />')
+    body.append(f'<line x1="{lx + 38}" y1="{ry1s - 7}" x2="{lx + 38}" y2="{ry1s + 7}" stroke="#94a3b8" stroke-width="2" />')
+    body.append(f'<text x="{lx + 44}" y="{ry1t}" class="small">min-max</text>')
+
+    # Item 2: caja IQR
+    body.append(f'<rect x="{lx + 126}" y="{ry1s - 8}" width="24" height="16" rx="5" fill="{mix_colors("#ffffff", CHART_COLORS["warn"], 0.18)}" stroke="{CHART_COLORS["warn"]}" stroke-width="1.2" />')
+    body.append(f'<text x="{lx + 156}" y="{ry1t}" class="small">IQR (50% central)</text>')
+
+    # Item 3: línea mediana
+    body.append(f'<line x1="{lx + 308}" y1="{ry1s - 9}" x2="{lx + 308}" y2="{ry1s + 9}" stroke="{CHART_COLORS["text"]}" stroke-width="2.5" />')
+    body.append(f'<text x="{lx + 316}" y="{ry1t}" class="small">mediana</text>')
+
+    # ── fila 2 (y+42 línea base, símbolos centrados en y+38) ─────────────
+    ry2s = legend_y + 39   # y centro símbolos fila 2
+    ry2t = legend_y + 43   # y baseline texto fila 2
+
+    # Item 4: rombo media
+    body.append(f'<polygon points="{lx + 22},{ry2s - 8} {lx + 30},{ry2s} {lx + 22},{ry2s + 8} {lx + 14},{ry2s}" fill="{CHART_COLORS["text"]}" />')
+    body.append(f'<text x="{lx + 36}" y="{ry2t}" class="small">media</text>')
+
+    # Item 5: círculo ejecución individual
+    body.append(f'<circle cx="{lx + 130}" cy="{ry2s}" r="5" fill="{CHART_COLORS["accent"]}" stroke="{CHART_COLORS["card"]}" stroke-width="1.5" opacity="0.9" />')
+    body.append(f'<text x="{lx + 141}" y="{ry2t}" class="small">ejecución individual</text>')
+
+    if fixed_scale:
+        # Marcas en valores enteros pares: 0, 2, 4, 6, 8, 10
+        axis_ticks = [0, 2, 4, 6, 8, 10]
+        for tick in axis_ticks:
+            x = scale_x(float(tick))
+            body.append(f'<line x1="{x:.1f}" y1="{top - 18}" x2="{x:.1f}" y2="{height - 34}" class="axis" />')
+            body.append(f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" class="small">{tick}</text>')
+    else:
+        for step in range(6):
+            value = axis_min + (axis_max - axis_min) * step / 5
+            x = left + plot_width * step / 5
+            body.append(f'<line x1="{x:.1f}" y1="{top - 18}" x2="{x:.1f}" y2="{height - 34}" class="axis" />')
+            body.append(f'<text x="{x:.1f}" y="{height - 12}" text-anchor="middle" class="small">{value:.2f}</text>')
 
     most_stable_key = ordered_rows[0]["grupo_noticia"] if ordered_rows else ""
     least_stable_key = ordered_rows[-1]["grupo_noticia"] if ordered_rows else ""
 
     for idx, summary in enumerate(ordered_rows):
         row_top = top + idx * row_h
-        center_y = row_top + 40
-        row_runs = sorted(grouped_runs[summary["grupo_noticia"]], key=lambda row: row["archivo"])
+        center_y = row_top + row_h / 2 - 4
+        row_runs = sorted(grouped_runs[summary["grupo_noticia"]], key=lambda row: natural_sort_key(row["archivo"]))
         range_value = to_float(summary.get("global_score_rango")) or 0.0
         std_value = to_float(summary.get("global_score_std")) or 0.0
         mean_value = to_float(summary.get("global_score_media")) or 0.0
         min_value = to_float(summary.get("global_score_min")) or mean_value
         max_value = to_float(summary.get("global_score_max")) or mean_value
+        median_value = to_float(summary.get("global_score_mediana")) or mean_value
+        q1_value = to_float(summary.get("global_score_q1")) or mean_value
+        q3_value = to_float(summary.get("global_score_q3")) or mean_value
 
-        row_fill = "#eefbf3" if summary["grupo_noticia"] == most_stable_key else "#fff4f4" if summary["grupo_noticia"] == least_stable_key else "#fafbfc"
-        row_badge = "mayor estabilidad" if summary["grupo_noticia"] == most_stable_key else "mayor dispersión" if summary["grupo_noticia"] == least_stable_key else ""
+        # En escala fija no diferenciamos fondo por ranking, todas neutral
+        if fixed_scale:
+            row_fill = "#0f1117"
+            row_badge = ""
+        else:
+            row_fill = "#0f2a1e" if summary["grupo_noticia"] == most_stable_key else "#2a0f0f" if summary["grupo_noticia"] == least_stable_key else "#0f1117"
+            row_badge = "mayor estabilidad" if summary["grupo_noticia"] == most_stable_key else "mayor dispersión" if summary["grupo_noticia"] == least_stable_key else ""
         row_color = consistency_color(range_value)
 
-        body.append(f'<rect x="20" y="{row_top}" width="{width - 40}" height="82" rx="16" fill="{row_fill}" stroke="{CHART_COLORS["border"]}" />')
+        body.append(f'<rect x="20" y="{row_top}" width="{width - 40}" height="{row_h - 18}" rx="16" fill="{row_fill}" stroke="{CHART_COLORS["border"]}" />')
         body.append(
             f'<text x="36" y="{row_top + 28}" class="label"><title>{escape(summary["titulo"])}</title>{escape(short_label(summary["titulo"], 46))}</text>'
         )
         body.append(
-            f'<text x="36" y="{row_top + 50}" class="small">media {format_num(mean_value)} | std {format_num(std_value)} | rango {format_num(range_value)}</text>'
+            f'<text x="36" y="{row_top + 50}" class="small">n={summary["n_ejecuciones"]} | media {format_num(mean_value)} | mediana {format_num(median_value)} | IQR {format_num(summary.get("global_score_iqr"))} | rango {format_num(range_value)}</text>'
         )
         if row_badge:
-            badge_fill = "#d1fae5" if row_badge == "mayor estabilidad" else "#fee2e2"
+            badge_fill = "#14532d" if row_badge == "mayor estabilidad" else "#7f1d1d"
             badge_text = CHART_COLORS["ok"] if row_badge == "mayor estabilidad" else CHART_COLORS["bad"]
             body.append(f'<rect x="36" y="{row_top + 56}" width="122" height="16" rx="8" fill="{badge_fill}" />')
-            body.append(f'<text x="97" y="{row_top + 68}" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="700" fill="{badge_text}">{row_badge}</text>')
+            body.append(f'<text x="97" y="{row_top + 68}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" font-weight="700" fill="{badge_text}">{row_badge}</text>')
 
         x_min = scale_x(min_value)
         x_max = scale_x(max_value)
         x_mean = scale_x(mean_value)
+        x_median = scale_x(median_value)
+        x_q1 = scale_x(q1_value)
+        x_q3 = scale_x(q3_value)
         x_std_left = scale_x(max(axis_min, mean_value - std_value))
         x_std_right = scale_x(min(axis_max, mean_value + std_value))
+        body.append(f'<line x1="{x_min:.1f}" y1="{center_y:.1f}" x2="{x_max:.1f}" y2="{center_y:.1f}" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />')
+        body.append(f'<line x1="{x_min:.1f}" y1="{center_y - 12:.1f}" x2="{x_min:.1f}" y2="{center_y + 12:.1f}" stroke="#94a3b8" stroke-width="2" />')
+        body.append(f'<line x1="{x_max:.1f}" y1="{center_y - 12:.1f}" x2="{x_max:.1f}" y2="{center_y + 12:.1f}" stroke="#94a3b8" stroke-width="2" />')
+        body.append(
+            f'<rect x="{min(x_q1, x_q3):.1f}" y="{center_y - 13:.1f}" width="{max(abs(x_q3 - x_q1), 2):.1f}" height="26" rx="8" fill="{mix_colors("#ffffff", row_color, 0.18)}" stroke="{row_color}" stroke-width="1.2" />'
+        )
+        body.append(f'<line x1="{x_median:.1f}" y1="{center_y - 15:.1f}" x2="{x_median:.1f}" y2="{center_y + 15:.1f}" stroke="{CHART_COLORS["text"]}" stroke-width="2" />')
         if std_value > 0:
             body.append(
-                f'<rect x="{x_std_left:.1f}" y="{center_y - 10:.1f}" width="{max(x_std_right - x_std_left, 2):.1f}" height="20" rx="10" fill="{mix_colors("#ffffff", row_color, 0.22)}" />'
+                f'<rect x="{x_std_left:.1f}" y="{center_y - 4:.1f}" width="{max(x_std_right - x_std_left, 2):.1f}" height="8" rx="4" fill="{mix_colors("#ffffff", row_color, 0.32)}" />'
             )
-        body.append(f'<line x1="{x_min:.1f}" y1="{center_y:.1f}" x2="{x_max:.1f}" y2="{center_y:.1f}" stroke="#94a3b8" stroke-width="3" stroke-linecap="round" />')
         body.append(
             f'<polygon points="{x_mean:.1f},{center_y - 10:.1f} {x_mean + 8:.1f},{center_y:.1f} {x_mean:.1f},{center_y + 10:.1f} {x_mean - 8:.1f},{center_y:.1f}" fill="{CHART_COLORS["text"]}" />'
         )
 
+        point_spacing = 5
+        point_radius = 4.5
         for point_idx, run in enumerate(row_runs):
             score = to_float(run.get("global_score"))
             if score is None:
                 continue
-            offset = (point_idx - (len(row_runs) - 1) / 2) * 12
-            cx = scale_x(score)
-            cy = center_y + offset
+            jitter_x = (point_idx - (len(row_runs) - 1) / 2) * point_spacing
+            cx = scale_x(score) + jitter_x
+            cy = center_y
             body.append(
-                f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="6.5" fill="{CHART_COLORS["accent"]}" stroke="white" stroke-width="2"><title>{escape(run["archivo"])}: {format_num(score)}</title></circle>'
+                f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{point_radius:.1f}" fill="{CHART_COLORS["accent"]}" stroke="{CHART_COLORS["card"]}" stroke-width="1.5" opacity="0.85"><title>{escape(run["archivo"])}: {format_num(score)}</title></circle>'
             )
 
-        status_fill = "#dcfce7" if parse_bool(summary.get("status_consistente")) else "#fee2e2"
+        status_fill = "#14532d" if parse_bool(summary.get("status_consistente")) else "#7f1d1d"
         status_text = "status consistente" if parse_bool(summary.get("status_consistente")) else "status variable"
-        body.append(f'<rect x="{width - 148}" y="{row_top + 20}" width="112" height="18" rx="9" fill="{status_fill}" />')
-        body.append(f'<text x="{width - 92}" y="{row_top + 33}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="700" fill="{CHART_COLORS["subtext"]}">{status_text}</text>')
+        body.append(f'<rect x="{width - 160}" y="{row_top + 20}" width="124" height="18" rx="9" fill="{status_fill}" />')
+        body.append(f'<text x="{width - 98}" y="{row_top + 33}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="700" fill="{CHART_COLORS["text"]}">{status_text}</text>')
 
     return svg_document(width, height, "Dispersión global por noticia", body)
 
 
 def build_category_heatmap_svg(summary_rows: List[Dict[str, Any]]) -> str:
     ordered_rows = sort_summary_rows_for_dashboard(summary_rows)
-    width = 1040
-    left = 320
+    width = 820
+    left = 280
     top = 142
-    cell_w = 130
-    cell_h = 82
+    cell_w = 96
+    cell_h = 56
     height = top + cell_h * len(ordered_rows) + 56
     max_range = max(
         to_float(row.get(f"{category}_rango")) or 0.0
@@ -654,10 +805,10 @@ def build_category_heatmap_svg(summary_rows: List[Dict[str, Any]]) -> str:
             fill = heat_color(value, max_range)
             body.append(f'<rect x="{x}" y="{y}" width="{cell_w - 10}" height="{cell_h - 12}" rx="12" fill="{fill}" stroke="white" stroke-width="2"><title>{escape(summary["titulo"])} | {category}: rango {format_num(value)} | std {format_num(std_value)}</title></rect>')
             body.append(
-                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 30}" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="{CHART_COLORS["text"]}">{format_num(value)}</text>'
+                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 22}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">{format_num(value)}</text>'
             )
             body.append(
-                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 52}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="{CHART_COLORS["subtext"]}">std {format_num(std_value)}</text>'
+                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 37}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std {format_num(std_value)}</text>'
             )
         body.append(f'<line x1="24" y1="{y + cell_h - 6}" x2="{width - 24}" y2="{y + cell_h - 6}" stroke="{CHART_COLORS["grid"]}" />')
 
@@ -696,7 +847,7 @@ def build_category_summary_svg(summary_rows: List[Dict[str, Any]]) -> str:
         bar_w = (value / max_value) * plot_width if max_value else 0.0
         fill = heat_color(value, max_value)
         body.append(f'<text x="28" y="{y + 20}" class="label">{escape(str(row["categoria"]).title())}</text>')
-        body.append(f'<rect x="{left}" y="{y + 6}" width="{plot_width}" height="18" rx="9" fill="#edf1f5" />')
+        body.append(f'<rect x="{left}" y="{y + 6}" width="{plot_width}" height="18" rx="9" fill="#1e293b" />')
         body.append(f'<rect x="{left}" y="{y + 6}" width="{bar_w:.1f}" height="18" rx="9" fill="{fill}" />')
         body.append(f'<text x="{left + plot_width + 12}" y="{y + 20}" class="value">{format_num(value)}</text>')
 
@@ -740,7 +891,7 @@ def build_alert_stability_svg(summary_rows: List[Dict[str, Any]]) -> str:
             f'<text x="28" y="{y + 20}" class="label"><title>{escape(row["titulo"])}</title>{escape(short_label(row["titulo"], 34))}</text>'
         )
         body.append(f'<text x="28" y="{y + 39}" class="small">{row["alertas_distintas_totales"]} alertas distintas</text>')
-        body.append(f'<rect x="{left}" y="{y + 8}" width="{plot_width}" height="18" rx="9" fill="#edf1f5" />')
+        body.append(f'<rect x="{left}" y="{y + 8}" width="{plot_width}" height="18" rx="9" fill="#1e293b" />')
         body.append(f'<rect x="{left}" y="{y + 8}" width="{bar_w:.1f}" height="18" rx="9" fill="{fill}" />')
         body.append(f'<text x="{left + plot_width + 12}" y="{y + 22}" class="value">{value:.2f}</text>')
         body.append(f'<text x="{left + plot_width + 54}" y="{y + 22}" class="small">{label}</text>')
@@ -821,10 +972,10 @@ def build_alert_presence_matrix_svg(
                 f'<rect x="{x}" y="{y}" width="{cell_w - 10}" height="{cell_h - 12}" rx="12" fill="{fill}" stroke="white" stroke-width="2"><title>{escape(summary["titulo"])} | {code}: {label} ejecuciones ({pct})</title></rect>'
             )
             body.append(
-                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 31}" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="{CHART_COLORS["text"]}">{escape(label)}</text>'
+                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 31}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">{escape(label)}</text>'
             )
             body.append(
-                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 53}" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="{CHART_COLORS["subtext"]}">{pct}</text>'
+                f'<text x="{x + (cell_w - 10) / 2:.1f}" y="{y + 53}" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">{pct}</text>'
             )
 
     return svg_document(width, height, "Matriz de alertas", body)
@@ -846,17 +997,60 @@ def render_news_cards(summary_rows: List[Dict[str, Any]]) -> str:
           <div class="metrics-grid">
             <div><span class="metric-label">Ejecuciones</span><strong>{row['n_ejecuciones']}</strong></div>
             <div><span class="metric-label">Media global</span><strong>{format_num(row['global_score_media'])}</strong></div>
+            <div><span class="metric-label">Mediana global</span><strong>{format_num(row.get('global_score_mediana'))}</strong></div>
+            <div><span class="metric-label">IQR global</span><strong>{format_num(row.get('global_score_iqr'))}</strong></div>
             <div><span class="metric-label">Score máximo observado</span><strong>{format_num(row['global_score_max'])}</strong></div>
             <div><span class="metric-label">Score mínimo observado</span><strong>{format_num(row['global_score_min'])}</strong></div>
             <div><span class="metric-label">Rango global</span><strong>{format_num(row['global_score_rango'])}</strong></div>
             <div><span class="metric-label">Std global</span><strong>{format_num(row['global_score_std'])}</strong></div>
             <div><span class="metric-label">Categoría con mayor variabilidad</span><strong>{escape(unstable_category.title() if unstable_category else "n/d")} {f"({format_num(unstable_value)})" if unstable_value is not None else ""}</strong></div>
-            <div><span class="metric-label">Status consistente</span><strong>{"si" if parse_bool(row['status_consistente']) else "no"}</strong></div>
+            <div><span class="metric-label">Consistencia decisional</span><strong>{decisional_consistency_note(row)}</strong></div>
             <div><span class="metric-label">Alertas distintas</span><strong>{row['alertas_distintas_totales']}</strong></div>
           </div>
         </article>
         """)
     return "\n".join(cards)
+
+
+def render_summary_table(summary_rows: List[Dict[str, Any]]) -> str:
+    ordered_rows = sort_summary_rows_for_dashboard(summary_rows)
+    rows_html = []
+    for row in ordered_rows:
+        rows_html.append(f"""
+        <tr>
+          <td title="{escape(row['titulo'])}">{escape(short_label(row['titulo'], 64))}</td>
+          <td>{row['n_ejecuciones']}</td>
+          <td>{format_num(row['global_score_media'])}</td>
+          <td>{format_num(row.get('global_score_mediana'))}</td>
+          <td>{format_num(row['global_score_rango'])}</td>
+          <td>{format_num(row.get('global_score_iqr'))}</td>
+          <td>{format_num(row['global_score_std'])}</td>
+          <td>{format_num(row.get('alertas_jaccard_media'))}</td>
+          <td>{"sí" if parse_bool(row['status_consistente']) else "no"}</td>
+        </tr>
+        """)
+    return """
+    <div class="table-wrap">
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Noticia</th>
+            <th>n</th>
+            <th>Media</th>
+            <th>Mediana</th>
+            <th>Rango</th>
+            <th>IQR</th>
+            <th>Std</th>
+            <th>Jaccard alertas</th>
+            <th>Status fijo</th>
+          </tr>
+        </thead>
+        <tbody>
+          %s
+        </tbody>
+      </table>
+    </div>
+    """ % "\n".join(rows_html)
 
 
 def build_dashboard_html(
@@ -875,25 +1069,138 @@ def build_dashboard_html(
     status_consistency_rate = sum(1 for row in summary_rows if parse_bool(row.get("status_consistente"))) / len(summary_rows)
 
     dot_plot_svg = build_global_dispersion_svg(summary_rows, detailed_rows)
+    dot_plot_full_svg = build_global_dispersion_svg(summary_rows, detailed_rows, fixed_scale=True)
     heatmap_svg = build_category_heatmap_svg(summary_rows)
     category_svg = build_category_summary_svg(summary_rows)
     alert_svg = build_alert_stability_svg(summary_rows)
     alert_matrix_svg = build_alert_presence_matrix_svg(summary_rows, detailed_rows)
 
-    global_level = reproducibility_level_text(average_global_range)
-    conclusion_lines = [
-        f"En conjunto, el sistema presenta un nivel de reproducibilidad {global_level}: el rango medio entre ejecuciones es {format_num(average_global_range)} y el status se mantiene consistente en el {round(status_consistency_rate * 100):.0f}% de las noticias.",
-        f'La noticia con mayor estabilidad global fue "{most_stable["titulo"]}", mientras que la noticia con mayor dispersión entre ejecuciones fue "{least_stable["titulo"]}".',
-        f'La categoría con mayor variabilidad promedio es {least_stable_category["categoria"]}, con un rango medio de {format_num(least_stable_category["rango_medio"])}; conviene revisar específicamente esa dimensión del sistema.',
-        f'La estabilidad media de alertas es {alert_stability_label(average_alert_stability)} ({format_num(average_alert_stability)}), lo que sugiere la presencia de un núcleo de alertas persistentes junto con otros códigos de aparición intermitente.',
-        f'La dispersión observada puede calificarse como {dispersion_label(average_global_range)} para este conjunto de noticias, con diferencias más visibles en los casos menos estables y en las categorías más sensibles.',
+    # ── Conclusiones: tono descriptivo, no condenatorio ──────────────────────
+    disp_label = dispersion_label(average_global_range)
+    alert_label = alert_stability_label(average_alert_stability)
+    status_pct = round(status_consistency_rate * 100)
+
+    # 1. Visión global: distinguir variabilidad numérica de decisional
+    if status_consistency_rate >= 0.67:
+        decisional_note = (
+            f"El status se ha mantenido constante en el {status_pct}% de las noticias, "
+            f"lo que indica estabilidad en la decisión principal del sistema."
+        )
+    else:
+        decisional_note = (
+            f"El status varía en algunas noticias ({status_pct}% con status estable), "
+            f"lo que puede reflejar casos borderline o sensibilidad al contexto de análisis."
+        )
+    line_overview = (
+        f"La variabilidad numérica media entre ejecuciones es {disp_label} "
+        f"(rango medio {format_num(average_global_range)} sobre escala 0–10). "
+        + decisional_note
+    )
+
+    # 2. Comparativa de noticias: sin sentencia
+    most_stable_range = format_num(most_stable["global_score_rango"])
+    least_stable_range = format_num(least_stable["global_score_rango"])
+    same_news = most_stable["titulo"] == least_stable["titulo"]
+    if same_news:
+        line_comparison = (
+            f'Todas las noticias presentan un nivel de variabilidad similar '
+            f'(rango entre {most_stable_range} y {least_stable_range}).'
+        )
+    else:
+        line_comparison = (
+            f'La menor dispersión se observa en "{short_label(most_stable["titulo"], 60)}" '
+            f'(rango {most_stable_range}). '
+            f'La mayor variabilidad corresponde a "{short_label(least_stable["titulo"], 60)}" '
+            f'(rango {least_stable_range}); un rango en ese nivel es habitual en LLMs '
+            f'y no implica necesariamente una inconsistencia funcional.'
+        )
+
+    # 3. Categoría: descriptiva, no acusatoria
+    unstable_cat = least_stable_category["categoria"]
+    unstable_range = format_num(least_stable_category["rango_medio"])
+    stable_cat = most_stable_category["categoria"]
+    stable_range = format_num(most_stable_category["rango_medio"])
+    line_category = (
+        f'La dimensión con mayor variabilidad promedio es {unstable_cat} '
+        f'(rango medio {unstable_range}), frente a {stable_cat} '
+        f'que es la más consistente (rango medio {stable_range}). '
+        f'Una mayor variabilidad en una categoría puede deberse a su sensibilidad '
+        f'al contexto del análisis o a ambigüedad inherente en esa dimensión.'
+    )
+
+    # 4. Alertas: contextualizar el Jaccard bajo
+    if average_alert_stability < 0.45:
+        alert_context = (
+            "Un Jaccard bajo puede reflejar que el sistema activa alertas adicionales "
+            "dependiendo del enfoque de cada ejecución, más que una inconsistencia grave. "
+            "Conviene revisar qué alertas son persistentes frente a cuáles son intermitentes."
+        )
+    elif average_alert_stability < 0.65:
+        alert_context = (
+            "Existe un núcleo de alertas que se detecta de forma recurrente, "
+            "aunque algunos códigos adicionales aparecen de forma intermitente entre ejecuciones."
+        )
+    else:
+        alert_context = (
+            "Las alertas más relevantes se detectan de forma consistente entre ejecuciones, "
+            "lo que indica robustez en la identificación de los principales problemas."
+        )
+    line_alerts = (
+        f'La similitud Jaccard media de alertas es {format_num(average_alert_stability)} '
+        f'({alert_label}). {alert_context}'
+    )
+
+    # 5. Síntesis: equilibrada
+    if average_global_range <= 1.00 and status_consistency_rate >= 0.67:
+        synthesis = (
+            "En general, el sistema muestra un comportamiento estable y reproducible "
+            "para las noticias analizadas. La variabilidad observada está dentro de "
+            "los márgenes esperables para un sistema basado en LLM."
+        )
+    elif average_global_range <= 1.50 or status_consistency_rate >= 0.67:
+        synthesis = (
+            "En general, el sistema es funcionalmente consistente: la variabilidad numérica "
+            "es apreciable pero no implica cambios en las decisiones principales. "
+            "Se recomienda revisar las categorías con mayor dispersión para identificar "
+            "posibles áreas de mejora en el prompt o en los criterios de evaluación."
+        )
+    else:
+        synthesis = (
+            "La variabilidad observada es elevada y merece atención: tanto la dispersión "
+            "numérica como la inestabilidad decisional sugieren que el sistema puede estar "
+            "respondiendo de forma inconsistente ante el mismo contenido. "
+            "Se recomienda revisar el prompt, los umbrales de evaluación y los casos borderline."
+        )
+    line_synthesis = synthesis
+
+    conclusion_lines = [line_overview, line_comparison, line_category, line_alerts, line_synthesis]
+
+    # Colores de callout alineados con la nueva escala
+    callout_color_category = (
+        CHART_COLORS["bad"] if (to_float(least_stable_category.get("rango_medio")) or 0) > 1.75
+        else CHART_COLORS["warn"]
+    )
+    callout_color_summary = consistency_color(average_global_range)
+    conclusion_callouts = [
+        ("ℹ", CHART_COLORS["warn"],  conclusion_lines[0]),
+        ("◈", CHART_COLORS["muted"], conclusion_lines[1]),
+        ("△", callout_color_category, conclusion_lines[2]),
+        ("⚡", consistency_color(average_alert_stability, invert=True), conclusion_lines[3]),
+        ("◎", callout_color_summary,  conclusion_lines[4]),
     ]
+    callouts_html = "\n".join(
+        f'<div class="callout" style="border-left-color:{color};"><span class="callout-icon">{icono}</span><p class="callout-text">{escape(texto)}</p></div>'
+        for icono, color, texto in conclusion_callouts
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <title>Dashboard de consistencia</title>
   <style>
     :root {{
@@ -907,14 +1214,17 @@ def build_dashboard_html(
       --warn: {CHART_COLORS["warn"]};
       --bad: {CHART_COLORS["bad"]};
       --accent: {CHART_COLORS["accent"]};
-      --shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     }}
     * {{ box-sizing: border-box; }}
     body {{
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text);
+    }}
+    h1, h2, h3 {{
+      font-family: 'Playfair Display', Georgia, serif;
     }}
     .wrap {{
       max-width: 1380px;
@@ -926,8 +1236,9 @@ def build_dashboard_html(
     }}
     h1 {{
       margin: 0 0 8px;
-      font-size: 34px;
-      line-height: 1.15;
+      font-size: 38px;
+      line-height: 1.1;
+      color: var(--text);
     }}
     .intro {{
       max-width: 950px;
@@ -935,38 +1246,53 @@ def build_dashboard_html(
       color: var(--subtext);
       font-size: 16px;
       line-height: 1.5;
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     .kpis {{
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 14px;
       margin: 22px 0 28px;
     }}
     .kpi {{
       background: var(--card);
       border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
       border-radius: 18px;
-      padding: 18px;
+      padding: 20px 22px;
       box-shadow: var(--shadow);
-      min-height: 122px;
+      min-height: 110px;
     }}
     .kpi-label {{
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
       color: var(--muted);
       margin-bottom: 10px;
     }}
     .kpi-value {{
-      font-size: 18px;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+      margin-bottom: 4px;
+      color: var(--text);
+    }}
+    .kpi-value--big {{
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 48px;
       font-weight: 700;
-      line-height: 1.35;
-      margin-bottom: 6px;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+      display: block;
     }}
     .kpi-meta {{
       color: var(--subtext);
-      font-size: 14px;
+      font-size: 13px;
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     .section {{
       margin-bottom: 22px;
@@ -985,6 +1311,7 @@ def build_dashboard_html(
       color: var(--subtext);
       font-size: 15px;
       line-height: 1.45;
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     .two-col {{
       display: grid;
@@ -1013,6 +1340,8 @@ def build_dashboard_html(
       padding-left: 18px;
       color: var(--subtext);
       line-height: 1.55;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
     }}
     .legend-list {{
       display: grid;
@@ -1025,6 +1354,7 @@ def build_dashboard_html(
       align-items: center;
       font-size: 14px;
       color: var(--subtext);
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     .legend-swatch {{
       height: 14px;
@@ -1039,8 +1369,46 @@ def build_dashboard_html(
     .viz-wrap svg {{
       min-width: 680px;
     }}
+    .table-wrap {{
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--card);
+    }}
+    .summary-table {{
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+      font-family: 'Inter', system-ui, sans-serif;
+    }}
+    .summary-table th,
+    .summary-table td {{
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px;
+      vertical-align: top;
+    }}
+    .summary-table th {{
+      position: sticky;
+      top: 0;
+      background: #0f1117;
+      z-index: 1;
+      color: var(--muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+    }}
+    .summary-table tbody tr:hover {{
+      background: #1a1f2e;
+    }}
     .cards-section {{
       margin-top: 24px;
+    }}
+    .cards-section h2 {{
+      margin: 0 0 14px;
+      font-size: 26px;
     }}
     .news-grid {{
       display: grid;
@@ -1067,11 +1435,14 @@ def build_dashboard_html(
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     .news-card h3 {{
       margin: 0 0 12px;
-      font-size: 17px;
+      font-size: 16px;
       line-height: 1.35;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 600;
     }}
     .metrics-grid {{
       display: grid;
@@ -1080,12 +1451,14 @@ def build_dashboard_html(
     }}
     .metric-label {{
       display: block;
-      font-size: 12px;
+      font-size: 11px;
       color: var(--muted);
       margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
     }}
     .metrics-grid strong {{
-      font-size: 16px;
+      font-size: 15px;
       color: var(--text);
     }}
     .conclusions {{
@@ -1097,19 +1470,51 @@ def build_dashboard_html(
       box-shadow: var(--shadow);
     }}
     .conclusions h2 {{
-      margin: 0 0 12px;
+      margin: 0 0 16px;
       font-size: 22px;
     }}
-    .conclusions ul {{
+    .callout {{
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      background: rgba(255, 255, 255, 0.03);
+      margin-bottom: 10px;
+    }}
+    .callout-icon {{
+      font-size: 18px;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }}
+    .callout-text {{
       margin: 0;
-      padding-left: 20px;
       color: var(--subtext);
-      line-height: 1.6;
+      font-size: 15px;
+      line-height: 1.55;
+      font-family: 'Inter', system-ui, sans-serif;
     }}
     svg {{
       width: 100%;
       height: auto;
       display: block;
+    }}
+    #tt {{
+      position: fixed;
+      background: #1e293b;
+      color: #f9fafb;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-family: 'Inter', system-ui, sans-serif;
+      pointer-events: none;
+      max-width: 280px;
+      line-height: 1.4;
+      z-index: 9999;
+      display: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
     }}
     @media (max-width: 980px) {{
       .two-col {{
@@ -1128,37 +1533,38 @@ def build_dashboard_html(
   </style>
 </head>
 <body>
+  <div id="tt" role="tooltip" aria-hidden="true"></div>
   <div class="wrap">
     <header class="hero">
       <h1>Dashboard de reproducibilidad y consistencia</h1>
-      <p class="intro">La reproducibilidad evalúa hasta qué punto varias ejecuciones sobre una misma noticia generan puntuaciones, etiquetas de status y alertas comparables. Cuanto menor sea la dispersión de los scores y mayor la persistencia de las alertas, más consistente será el comportamiento de la herramienta.</p>
+      <p class="intro">Analiza hasta qué punto varias ejecuciones sobre una misma noticia producen puntuaciones, etiquetas de status y alertas comparables. Se distinguen dos dimensiones: la <strong>consistencia numérica</strong> (dispersión de scores) y la <strong>consistencia decisional</strong> (estabilidad del status y de las alertas más relevantes). La segunda es más importante para evaluar el comportamiento real del sistema.</p>
     </header>
 
     <section class="kpis">
       <article class="kpi">
-        <div class="kpi-label">Noticia mas estable</div>
+        <div class="kpi-label">Menor variabilidad numérica</div>
         <div class="kpi-value" title="{escape(most_stable['titulo'])}">{escape(short_label(most_stable['titulo'], 64))}</div>
-        <div class="kpi-meta">Rango global {format_num(most_stable['global_score_rango'])}</div>
+        <div class="kpi-meta">Rango {format_num(most_stable['global_score_rango'])} · {reproducibility_badge(to_float(most_stable['global_score_rango']))}</div>
       </article>
       <article class="kpi">
-        <div class="kpi-label">Noticia menos estable</div>
+        <div class="kpi-label">Mayor variabilidad numérica</div>
         <div class="kpi-value" title="{escape(least_stable['titulo'])}">{escape(short_label(least_stable['titulo'], 64))}</div>
-        <div class="kpi-meta">Rango global {format_num(least_stable['global_score_rango'])}</div>
+        <div class="kpi-meta">Rango {format_num(least_stable['global_score_rango'])} · {reproducibility_badge(to_float(least_stable['global_score_rango']))}</div>
       </article>
       <article class="kpi">
-        <div class="kpi-label">Categoria mas estable</div>
+        <div class="kpi-label">Categoría más consistente</div>
         <div class="kpi-value">{escape(str(most_stable_category['categoria']).title())}</div>
         <div class="kpi-meta">Rango medio {format_num(most_stable_category['rango_medio'])}</div>
       </article>
       <article class="kpi">
-        <div class="kpi-label">Categoria menos estable</div>
+        <div class="kpi-label">Categoría con más variabilidad</div>
         <div class="kpi-value">{escape(str(least_stable_category['categoria']).title())}</div>
         <div class="kpi-meta">Rango medio {format_num(least_stable_category['rango_medio'])}</div>
       </article>
       <article class="kpi">
-        <div class="kpi-label">Estabilidad media de alertas</div>
-        <div class="kpi-value">{format_num(average_alert_stability)}</div>
-        <div class="kpi-meta">Interpretacion: {alert_stability_label(average_alert_stability)}</div>
+        <div class="kpi-label">Persistencia de alertas (Jaccard)</div>
+        <span class="kpi-value--big">{format_num(average_alert_stability)}</span>
+        <div class="kpi-meta">{alert_stability_label(average_alert_stability)} · escala 0–1</div>
       </article>
     </section>
 
@@ -1166,52 +1572,65 @@ def build_dashboard_html(
       <article class="read-card">
         <h2>Guía de lectura</h2>
         <ul>
-          <li>La reproducibilidad se interpreta a partir del rango entre ejecuciones: cuanto menor sea, mayor será la estabilidad del sistema.</li>
-          <li>En la gráfica principal, los puntos son ejecuciones individuales, la línea gris une el mínimo y el máximo, la banda coloreada muestra ±1 desviación estándar y el rombo negro marca la media.</li>
-          <li>En el heatmap, el número principal corresponde al rango y el valor secundario a la desviación estándar de cada categoría para una noticia concreta.</li>
-          <li>En alertas, una similitud Jaccard cercana a 1 indica una persistencia elevada de los mismos códigos entre ejecuciones.</li>
+          <li><strong>Rango e IQR</strong>: el rango mide la distancia entre la ejecución con score más alto y la más baja. El IQR (caja coloreada) describe el 50% central, que es más robusto ante valores extremos. Un rango de ±1 punto en escala 0–10 es habitual en sistemas LLM.</li>
+          <li><strong>Consistencia numérica vs. decisional</strong>: puede existir cierta dispersión de scores sin que el status cambie. Esto no es lo mismo que inconsistencia grave. El status estable es el indicador más importante de comportamiento coherente.</li>
+          <li>En el heatmap, el número principal es el rango y el secundario la desviación estándar. Verde indica menor variabilidad; rojo, mayor.</li>
+          <li>La similitud Jaccard de alertas mide cuántas alertas se repiten entre ejecuciones (1.0 = idénticas). Un Jaccard bajo puede reflejar alertas contextuales, no necesariamente inconsistencia.</li>
         </ul>
       </article>
       <article class="read-card">
-        <h2>Criterios de interpretación</h2>
+        <h2>Escala de variabilidad numérica</h2>
         <div class="legend-list">
-          <div class="legend-item"><span class="legend-swatch" style="background:{mix_colors(CHART_COLORS["ok"], CHART_COLORS["warn"], 0.35)};"></span><span>Muy estable: rango entre 0.00 y 0.25</span></div>
-          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["ok"]};"></span><span>Estable: rango entre 0.26 y 0.50</span></div>
-          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["warn"]};"></span><span>Moderadamente estable: rango entre 0.51 y 1.00</span></div>
-          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["bad"]};"></span><span>Poco estable: rango superior a 1.00</span></div>
-          <div class="legend-item"><span class="legend-swatch" style="background:linear-gradient(90deg, {CHART_COLORS["ok"]}, {CHART_COLORS["warn"]}, {CHART_COLORS["bad"]});"></span><span>En el heatmap, verde indica mayor estabilidad y rojo mayor variabilidad.</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["ok"]};"></span><span>Muy consistente: rango ≤ 0.50</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:{mix_colors(CHART_COLORS["ok"], CHART_COLORS["warn"], 0.5)};"></span><span>Consistente: rango 0.51 – 1.00</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["warn"]};"></span><span>Variabilidad apreciable: rango 1.01 – 1.50</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:{mix_colors(CHART_COLORS["warn"], CHART_COLORS["bad"], 0.5)};"></span><span>Variabilidad elevada: rango 1.51 – 2.00</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:{CHART_COLORS["bad"]};"></span><span>Variabilidad alta: rango > 2.00</span></div>
+          <div class="legend-item"><span class="legend-swatch" style="background:linear-gradient(90deg, {CHART_COLORS["ok"]}, {CHART_COLORS["warn"]}, {CHART_COLORS["bad"]});"></span><span>En el heatmap, verde = más estable · rojo = más variable.</span></div>
         </div>
       </article>
     </section>
 
     <section class="section">
-      <h2>1. Gráfica principal: dispersión real por noticia</h2>
-      <p>Esta es la vista principal para evaluar reproducibilidad. Si los puntos están agrupados y la línea min-max es corta, la noticia presenta una respuesta más consistente.</p>
+      <h2>1. Distribución de scores por noticia</h2>
+      <p>Vista ampliada al rango real de los datos para apreciar la estructura interna de cada distribución. La caja coloreada es el IQR (50% central), más robusto que el rango mínimo-máximo ante valores atípicos. Los puntos individuales muestran cada ejecución.</p>
       <div class="viz-wrap">{dot_plot_svg}</div>
     </section>
 
     <section class="section">
-      <h2>2. Variabilidad por noticia y categoría</h2>
-      <p>El heatmap resume dónde aparece mayor variación entre ejecuciones. Verde indica mayor estabilidad y rojo menor reproducibilidad.</p>
+      <h2>1b. La misma distribución en escala completa 0–10</h2>
+      <p>Mismo gráfico con eje fijo de 0 a 10 para contextualizar la magnitud real de la variabilidad. Lo que en la vista ampliada parece una dispersión grande puede ser, en la escala completa, un margen moderado y esperado para un sistema LLM.</p>
+      <div class="viz-wrap">{dot_plot_full_svg}</div>
+    </section>
+
+    <section class="section">
+      <h2>2. Resumen comparativo por noticia</h2>
+      <p>Tabla con las métricas clave. El IQR y la desviación estándar (Std) son estimadores más robustos de la variabilidad habitual que el rango, que puede estar inflado por una única ejecución atípica.</p>
+      {render_summary_table(ordered_rows)}
+    </section>
+
+    <section class="section">
+      <h2>3. Variabilidad por categoría y noticia</h2>
+      <p>El heatmap muestra el rango de cada categoría para cada noticia. Identifica qué dimensiones son más sensibles al contexto. Una categoría con rango elevado no indica necesariamente un error del sistema: puede reflejar que esa dimensión es inherentemente más sensible al análisis.</p>
       <div class="viz-wrap">{heatmap_svg}</div>
     </section>
 
     <section class="two-col">
       <div class="section">
-        <h2>3. Categoría con mayor variabilidad</h2>
-        <p>Una barra más larga indica que esa dimensión del sistema presenta menor estabilidad en promedio.</p>
+        <h2>4. Variabilidad media por categoría</h2>
+        <p>Resume en qué dimensiones el sistema presenta mayor dispersión promedio entre noticias. Útil para identificar áreas donde revisar el prompt o los criterios de evaluación.</p>
         <div class="viz-wrap">{category_svg}</div>
       </div>
       <div class="section">
-        <h2>4. Estabilidad de alertas</h2>
-        <p>Cuanto más cerca de 1 se sitúe la barra, mayor será la persistencia de alertas entre ejecuciones.</p>
+        <h2>5. Persistencia de alertas (Jaccard)</h2>
+        <p>Mide qué fracción de alertas se repite entre ejecuciones. Un Jaccard bajo puede reflejar alertas contextuales, no necesariamente inconsistencia grave. Analizar junto con la matriz de la sección 6.</p>
         <div class="viz-wrap">{alert_svg}</div>
       </div>
     </section>
 
     <section class="section">
-      <h2>5. Patrones de persistencia de alertas</h2>
-      <p>Esta matriz complementa la similitud Jaccard y permite observar si un código de alerta se mantiene en todas las ejecuciones de una noticia o si aparece de forma intermitente.</p>
+      <h2>6. Matriz de presencia de alertas</h2>
+      <p>Muestra en cuántas ejecuciones aparece cada código de alerta. Distingue alertas estructurales (presentes en casi todas las ejecuciones) de alertas contextuales o intermitentes. Las primeras son las más fiables para el diagnóstico.</p>
       <div class="viz-wrap">{alert_matrix_svg}</div>
     </section>
 
@@ -1223,18 +1642,42 @@ def build_dashboard_html(
     </section>
 
     <section class="conclusions">
-      <h2>Conclusiones automáticas</h2>
-      <ul>
-        {"".join(f"<li>{escape(line)}</li>" for line in conclusion_lines)}
-      </ul>
+      <h2>Lectura integrada</h2>
+      {callouts_html}
     </section>
   </div>
+  <script>
+    (function() {{
+      var tt = document.getElementById('tt');
+      document.addEventListener('mouseover', function(e) {{
+        var target = e.target;
+        if (!target || !target.closest) {{ tt.style.display = 'none'; return; }}
+        var el = target.closest('circle, rect, text, line, polygon');
+        if (!el) {{ tt.style.display = 'none'; return; }}
+        var titleEl = el.querySelector(':scope > title');
+        if (!titleEl || !titleEl.textContent.trim()) {{ tt.style.display = 'none'; return; }}
+        tt.textContent = titleEl.textContent;
+        tt.style.display = 'block';
+      }});
+      document.addEventListener('mousemove', function(e) {{
+        tt.style.left = (e.clientX + 14) + 'px';
+        tt.style.top = (e.clientY - 8) + 'px';
+      }});
+      document.addEventListener('mouseout', function(e) {{
+        var rel = e.relatedTarget;
+        if (!rel || !rel.closest || !rel.closest('circle, rect, text, line, polygon')) {{
+          tt.style.display = 'none';
+        }}
+      }});
+    }})();
+  </script>
 </body>
 </html>
 """
 
     svgs = {
         "01_dispersion_global.svg": dot_plot_svg,
+        "01b_dispersion_escala_completa.svg": dot_plot_full_svg,
         "02_heatmap_categorias.svg": heatmap_svg,
         "03_variabilidad_por_categoria.svg": category_svg,
         "04_estabilidad_alertas.svg": alert_svg,
@@ -1247,6 +1690,7 @@ def cleanup_visual_outputs(output_dir: Path) -> None:
     for name in [
         "dashboard_consistencia.html",
         "01_dispersion_global.svg",
+        "01b_dispersion_escala_completa.svg",
         "02_heatmap_categorias.svg",
         "03_variabilidad_por_categoria.svg",
         "04_estabilidad_alertas.svg",
@@ -1279,7 +1723,7 @@ def generate_visual_reports(
         write_text_file(output_dir / filename, content)
 
 
-def is_supported_news_json(data: Dict[str, Any]) -> bool:
+def is_supported_news_json(data: Any) -> bool:
     """Filtra JSON genéricos que no tienen la estructura esperada de noticia evaluada."""
     if not isinstance(data, dict):
         return False
@@ -1357,6 +1801,14 @@ def summarize_group(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
         summary[f"{metric}_max"] = max_or_none(values)
         summary[f"{metric}_rango"] = range_or_none(values)
         summary[f"{metric}_consistencia"] = consistency_label(summary[f"{metric}_rango"])
+
+    global_values = [to_float(r.get("global_score")) for r in rows]
+    q1 = percentile_or_none(global_values, 0.25)
+    q3 = percentile_or_none(global_values, 0.75)
+    summary["global_score_mediana"] = percentile_or_none(global_values, 0.50)
+    summary["global_score_q1"] = q1
+    summary["global_score_q3"] = q3
+    summary["global_score_iqr"] = (q3 - q1) if (q1 is not None and q3 is not None) else None
 
     # Alertas
     code_sets = []

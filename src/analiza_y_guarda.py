@@ -184,7 +184,7 @@ else:
     print(f"PDF generado: {pdfs[0]}")
 
 # 4. Buscar y mostrar el enlace de Mega si está disponible
-match_link = re.search(r"Link: (https://mega\\.nz/\\S+)", out3)
+match_link = re.search(r"(https://mega\.nz/\S+)", out3)
 if match_link:
     print(f"Enlace de Mega: {match_link.group(1)}")
 else:

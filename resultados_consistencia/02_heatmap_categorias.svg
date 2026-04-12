@@ -1,110 +1,110 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="444" viewBox="0 0 1040 444" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="366" viewBox="0 0 820 366" role="img" aria-labelledby="title desc">
 <title>Heatmap de categorias</title>
 <desc>Heatmap de categorias</desc>
 
     <style>
-      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
-      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
-      .label { font: 13px Arial, sans-serif; fill: #111827; }
-      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
-      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
-      .axis { stroke: #d7dde5; stroke-width: 1; }
-      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+      .title { font: 700 24px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .subtitle { font: 14px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .label { font: 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .small { font: 12px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .axis { stroke: #1e293b; stroke-width: 1; }
+      .panel { fill: #111827; stroke: #1e293b; stroke-width: 1; }
     </style>
     
-<rect width="1040" height="444" rx="18" fill="#ffffff" />
+<rect width="820" height="366" rx="18" fill="#111827" />
 <text x="36" y="44" class="title">Heatmap de variabilidad por noticia y categoria</text>
 <text x="36" y="68" class="subtitle">Cada celda muestra rango y desviación estándar. Verde indica mayor estabilidad y rojo menor reproducibilidad.</text>
-<rect x="36.0" y="92" width="11.0" height="12" fill="#1f9d68" />
-<rect x="46.0" y="92" width="11.0" height="12" fill="#2c9d65" />
-<rect x="56.0" y="92" width="11.0" height="12" fill="#399e63" />
-<rect x="66.0" y="92" width="11.0" height="12" fill="#459e60" />
-<rect x="76.0" y="92" width="11.0" height="12" fill="#529f5d" />
-<rect x="86.0" y="92" width="11.0" height="12" fill="#5f9f5b" />
-<rect x="96.0" y="92" width="11.0" height="12" fill="#6ca058" />
-<rect x="106.0" y="92" width="11.0" height="12" fill="#79a055" />
-<rect x="116.0" y="92" width="11.0" height="12" fill="#86a152" />
-<rect x="126.0" y="92" width="11.0" height="12" fill="#92a150" />
-<rect x="136.0" y="92" width="11.0" height="12" fill="#9fa24d" />
-<rect x="146.0" y="92" width="11.0" height="12" fill="#aca24a" />
-<rect x="156.0" y="92" width="11.0" height="12" fill="#b9a348" />
-<rect x="166.0" y="92" width="11.0" height="12" fill="#c6a345" />
-<rect x="176.0" y="92" width="11.0" height="12" fill="#d3a442" />
-<rect x="186.0" y="92" width="11.0" height="12" fill="#d9a142" />
-<rect x="196.0" y="92" width="11.0" height="12" fill="#d89b44" />
-<rect x="206.0" y="92" width="11.0" height="12" fill="#d89445" />
-<rect x="216.0" y="92" width="11.0" height="12" fill="#d78e47" />
-<rect x="226.0" y="92" width="11.0" height="12" fill="#d78849" />
-<rect x="236.0" y="92" width="11.0" height="12" fill="#d6814b" />
-<rect x="246.0" y="92" width="11.0" height="12" fill="#d57b4d" />
-<rect x="256.0" y="92" width="11.0" height="12" fill="#d5754e" />
-<rect x="266.0" y="92" width="11.0" height="12" fill="#d46f50" />
-<rect x="276.0" y="92" width="11.0" height="12" fill="#d46852" />
-<rect x="286.0" y="92" width="11.0" height="12" fill="#d36254" />
-<rect x="296.0" y="92" width="11.0" height="12" fill="#d35c56" />
-<rect x="306.0" y="92" width="11.0" height="12" fill="#d25657" />
-<rect x="316.0" y="92" width="11.0" height="12" fill="#d24f59" />
-<rect x="326.0" y="92" width="11.0" height="12" fill="#d1495b" />
+<rect x="36.0" y="92" width="11.0" height="12" fill="#22c55e" />
+<rect x="46.0" y="92" width="11.0" height="12" fill="#31c258" />
+<rect x="56.0" y="92" width="11.0" height="12" fill="#3fc053" />
+<rect x="66.0" y="92" width="11.0" height="12" fill="#4ebd4d" />
+<rect x="76.0" y="92" width="11.0" height="12" fill="#5cba47" />
+<rect x="86.0" y="92" width="11.0" height="12" fill="#6bb841" />
+<rect x="96.0" y="92" width="11.0" height="12" fill="#79b53c" />
+<rect x="106.0" y="92" width="11.0" height="12" fill="#88b236" />
+<rect x="116.0" y="92" width="11.0" height="12" fill="#96af30" />
+<rect x="126.0" y="92" width="11.0" height="12" fill="#a5ad2a" />
+<rect x="136.0" y="92" width="11.0" height="12" fill="#b4aa25" />
+<rect x="146.0" y="92" width="11.0" height="12" fill="#c2a71f" />
+<rect x="156.0" y="92" width="11.0" height="12" fill="#d1a519" />
+<rect x="166.0" y="92" width="11.0" height="12" fill="#dfa214" />
+<rect x="176.0" y="92" width="11.0" height="12" fill="#ee9f0e" />
+<rect x="186.0" y="92" width="11.0" height="12" fill="#f59b0d" />
+<rect x="196.0" y="92" width="11.0" height="12" fill="#f49511" />
+<rect x="206.0" y="92" width="11.0" height="12" fill="#f48e15" />
+<rect x="216.0" y="92" width="11.0" height="12" fill="#f48819" />
+<rect x="226.0" y="92" width="11.0" height="12" fill="#f3821d" />
+<rect x="236.0" y="92" width="11.0" height="12" fill="#f37c21" />
+<rect x="246.0" y="92" width="11.0" height="12" fill="#f27625" />
+<rect x="256.0" y="92" width="11.0" height="12" fill="#f26f28" />
+<rect x="266.0" y="92" width="11.0" height="12" fill="#f1692c" />
+<rect x="276.0" y="92" width="11.0" height="12" fill="#f16330" />
+<rect x="286.0" y="92" width="11.0" height="12" fill="#f15d34" />
+<rect x="296.0" y="92" width="11.0" height="12" fill="#f05738" />
+<rect x="306.0" y="92" width="11.0" height="12" fill="#f0503c" />
+<rect x="316.0" y="92" width="11.0" height="12" fill="#ef4a40" />
+<rect x="326.0" y="92" width="11.0" height="12" fill="#ef4444" />
 <text x="36" y="86" class="small">mas estable</text>
 <text x="336" y="86" text-anchor="end" class="small">menos estable</text>
 <text x="36" y="120" class="small">verde ≤ 0.50 | amarillo 0.51-1.00 | rojo > 1.00</text>
-<text x="385.0" y="122" text-anchor="middle" class="label">Fiabilidad</text>
-<text x="515.0" y="122" text-anchor="middle" class="label">Adecuacion</text>
-<text x="645.0" y="122" text-anchor="middle" class="label">Claridad</text>
-<text x="775.0" y="122" text-anchor="middle" class="label">Profundidad</text>
-<text x="905.0" y="122" text-anchor="middle" class="label">Enfoque</text>
-<text x="36" y="170" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pese a…</text>
-<text x="36" y="190" class="small">rango global 0.50</text>
-<rect x="320" y="142" width="120" height="70" rx="12" fill="#1f9d68" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | fiabilidad: rango 0.00 | std 0.00</title></rect>
-<text x="380.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.00</text>
-<text x="380.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.00</text>
-<rect x="450" y="142" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | adecuacion: rango 0.50 | std 0.27</title></rect>
-<text x="510.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
-<text x="510.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
-<rect x="580" y="142" width="120" height="70" rx="12" fill="#1f9d68" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | claridad: rango 0.00 | std 0.00</title></rect>
-<text x="640.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.00</text>
-<text x="640.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.00</text>
-<rect x="710" y="142" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | profundidad: rango 2.50 | std 1.14</title></rect>
-<text x="770.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
-<text x="770.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 1.14</text>
-<rect x="840" y="142" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | enfoque: rango 2.50 | std 0.89</title></rect>
-<text x="900.0" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
-<text x="900.0" y="194" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.89</text>
-<line x1="24" y1="218" x2="1016" y2="218" stroke="#d7dde5" />
-<text x="36" y="252" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de países d…</text>
-<text x="36" y="272" class="small">rango global 0.50</text>
-<rect x="320" y="224" width="120" height="70" rx="12" fill="#d1495b" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | fiabilidad: rango 2.50 | std 1.04</title></rect>
-<text x="380.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.50</text>
-<text x="380.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 1.04</text>
-<rect x="450" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | adecuacion: rango 1.00 | std 0.45</title></rect>
-<text x="510.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
-<text x="510.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
-<rect x="580" y="224" width="120" height="70" rx="12" fill="#d79246" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | claridad: rango 1.50 | std 0.62</title></rect>
-<text x="640.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.50</text>
-<text x="640.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.62</text>
-<rect x="710" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | profundidad: rango 1.00 | std 0.55</title></rect>
-<text x="770.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
-<text x="770.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.55</text>
-<rect x="840" y="224" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | enfoque: rango 1.00 | std 0.51</title></rect>
-<text x="900.0" y="254" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
-<text x="900.0" y="276" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.51</text>
-<line x1="24" y1="300" x2="1016" y2="300" stroke="#d7dde5" />
-<text x="36" y="334" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello mol…</text>
-<text x="36" y="354" class="small">rango global 0.55</text>
-<rect x="320" y="306" width="120" height="70" rx="12" fill="#d46d51" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | fiabilidad: rango 2.00 | std 0.84</title></rect>
-<text x="380.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">2.00</text>
-<text x="380.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.84</text>
-<rect x="450" y="306" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | adecuacion: rango 1.00 | std 0.45</title></rect>
-<text x="510.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
-<text x="510.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
-<rect x="580" y="306" width="120" height="70" rx="12" fill="#b4a349" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | claridad: rango 1.00 | std 0.45</title></rect>
-<text x="640.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">1.00</text>
-<text x="640.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.45</text>
-<rect x="710" y="306" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | profundidad: rango 0.50 | std 0.27</title></rect>
-<text x="770.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
-<text x="770.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
-<rect x="840" y="306" width="120" height="70" rx="12" fill="#69a058" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | enfoque: rango 0.50 | std 0.27</title></rect>
-<text x="900.0" y="336" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="700" fill="#111827">0.50</text>
-<text x="900.0" y="358" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">std 0.27</text>
-<line x1="24" y1="382" x2="1016" y2="382" stroke="#d7dde5" />
+<text x="328.0" y="122" text-anchor="middle" class="label">Fiabilidad</text>
+<text x="424.0" y="122" text-anchor="middle" class="label">Adecuacion</text>
+<text x="520.0" y="122" text-anchor="middle" class="label">Claridad</text>
+<text x="616.0" y="122" text-anchor="middle" class="label">Profundidad</text>
+<text x="712.0" y="122" text-anchor="middle" class="label">Enfoque</text>
+<text x="36" y="170" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello mol…</text>
+<text x="36" y="190" class="small">rango global 1.00</text>
+<rect x="280" y="142" width="86" height="44" rx="12" fill="#f05837" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | fiabilidad: rango 4.00 | std 0.94</title></rect>
+<text x="323.0" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">4.00</text>
+<text x="323.0" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.94</text>
+<rect x="376" y="142" width="86" height="44" rx="12" fill="#f49411" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | adecuacion: rango 2.50 | std 0.59</title></rect>
+<text x="419.0" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.50</text>
+<text x="419.0" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.59</text>
+<rect x="472" y="142" width="86" height="44" rx="12" fill="#dea214" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | claridad: rango 2.00 | std 0.56</title></rect>
+<text x="515.0" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.00</text>
+<text x="515.0" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.56</text>
+<rect x="568" y="142" width="86" height="44" rx="12" fill="#afab27" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | profundidad: rango 1.50 | std 0.44</title></rect>
+<text x="611.0" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">1.50</text>
+<text x="611.0" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.44</text>
+<rect x="664" y="142" width="86" height="44" rx="12" fill="#afab27" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | enfoque: rango 1.50 | std 0.39</title></rect>
+<text x="707.0" y="164" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">1.50</text>
+<text x="707.0" y="179" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.39</text>
+<line x1="24" y1="192" x2="796" y2="192" stroke="#1e293b" />
+<text x="36" y="226" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de países d…</text>
+<text x="36" y="246" class="small">rango global 1.32</text>
+<rect x="280" y="198" width="86" height="44" rx="12" fill="#ef4444" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | fiabilidad: rango 4.50 | std 1.08</title></rect>
+<text x="323.0" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">4.50</text>
+<text x="323.0" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 1.08</text>
+<rect x="376" y="198" width="86" height="44" rx="12" fill="#afab27" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | adecuacion: rango 1.50 | std 0.52</title></rect>
+<text x="419.0" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">1.50</text>
+<text x="419.0" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.52</text>
+<rect x="472" y="198" width="86" height="44" rx="12" fill="#dea214" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | claridad: rango 2.00 | std 0.56</title></rect>
+<text x="515.0" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.00</text>
+<text x="515.0" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.56</text>
+<rect x="568" y="198" width="86" height="44" rx="12" fill="#dea214" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | profundidad: rango 2.00 | std 0.54</title></rect>
+<text x="611.0" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.00</text>
+<text x="611.0" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.54</text>
+<rect x="664" y="198" width="86" height="44" rx="12" fill="#f49411" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | enfoque: rango 2.50 | std 0.64</title></rect>
+<text x="707.0" y="220" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.50</text>
+<text x="707.0" y="235" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.64</text>
+<line x1="24" y1="248" x2="796" y2="248" stroke="#1e293b" />
+<text x="36" y="282" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pese a…</text>
+<text x="36" y="302" class="small">rango global 1.90</text>
+<rect x="280" y="254" width="86" height="44" rx="12" fill="#f27624" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | fiabilidad: rango 3.25 | std 0.83</title></rect>
+<text x="323.0" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">3.25</text>
+<text x="323.0" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.83</text>
+<rect x="376" y="254" width="86" height="44" rx="12" fill="#f26c2b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | adecuacion: rango 3.50 | std 0.80</title></rect>
+<text x="419.0" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">3.50</text>
+<text x="419.0" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.80</text>
+<rect x="472" y="254" width="86" height="44" rx="12" fill="#f26c2b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | claridad: rango 3.50 | std 0.92</title></rect>
+<text x="515.0" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">3.50</text>
+<text x="515.0" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.92</text>
+<rect x="568" y="254" width="86" height="44" rx="12" fill="#f05837" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | profundidad: rango 4.00 | std 1.28</title></rect>
+<text x="611.0" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">4.00</text>
+<text x="611.0" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 1.28</text>
+<rect x="664" y="254" width="86" height="44" rx="12" fill="#f49411" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | enfoque: rango 2.50 | std 0.89</title></rect>
+<text x="707.0" y="276" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#ffffff">2.50</text>
+<text x="707.0" y="291" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="10" fill="rgba(255,255,255,0.75)">std 0.89</text>
+<line x1="24" y1="304" x2="796" y2="304" stroke="#1e293b" />
 </svg>

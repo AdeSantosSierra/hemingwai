@@ -131,6 +131,7 @@ CORE_TEX_SPECIAL_CHARS_NO_BS = {
     "&": r"\&", "%": r"\%", "$": r"\$", "#": r"\#", "_": r"\_",
     "{": r"\{", "}": r"\}", "~": r"\textasciitilde{}", "^": r"\textasciicircum{}",
     "|": r"\textbar{}",
+    '"': r"{\char34}", "'": r"{\char39}",
     "à": r"\`{a}", "á": r"\'{a}", "â": r"\^{a}", "ä": r"\"{a}",
     "è": r"\`{e}", "é": r"\'{e}", "ê": r"\^{e}", "ë": r"\"{e}",
     "ì": r"\`{i}", "í": r"\'{i}", "î": r"\^{i}", "ï": r"\"{i}",
@@ -201,9 +202,6 @@ def escape_tex_inline(text_content):
     if not isinstance(text_content, str):
         text_content = str(text_content)
     text_content = strip_or_replace_problematic_unicode(text_content)
-    def replace_double_quotes_latex(s):
-        return re.sub(r'"([^"]+)"', r"``\1''", s)
-    text_content = replace_double_quotes_latex(text_content)
     processed_content = re.sub(r"\s*\n\s*", " ", text_content).strip()
     return escape_tex_chars_in_plain_text_segment(processed_content)
 

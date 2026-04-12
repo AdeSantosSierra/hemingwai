@@ -1,31 +1,47 @@
 ﻿grupo_noticia,titulo,codigo_alerta,presente_en_ejecuciones,total_ejecuciones,porcentaje_presencia
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,AMBIGUOUS_SUBJECT,1,5,20.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISPLACED_FOCUS,3,5,60.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISSING_ATTRIBUTION,5,5,100.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISSING_IMPLICATIONS,1,5,20.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,NO_CONTEXT_WHEN_NEEDED,3,5,60.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,NUMERIC_CLAIM_NO_SUPPORT,1,5,20.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,OPINION_AS_FACT,5,5,100.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,STRUCTURE_BREAK,2,5,40.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,UNVERIFIED_CLAIM,1,5,20.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,VAGUE_REFERENCES,5,5,100.0
-id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,WEAK_SOURCE,3,5,60.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,LOADED_LANGUAGE,3,5,60.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISPLACED_FOCUS,1,5,20.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISSING_ATTRIBUTION,5,5,100.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISSING_IMPLICATIONS,5,5,100.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,NO_CONTEXT_WHEN_NEEDED,5,5,100.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,NUMERIC_CLAIM_NO_SUPPORT,2,5,40.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,OPINION_AS_FACT,4,5,80.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,SCORE_ALERT_INCONSISTENCY,4,5,80.0
-id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,VAGUE_REFERENCES,5,5,100.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,LOADED_LANGUAGE,2,5,40.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISPLACED_FOCUS,2,5,40.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISSING_ATTRIBUTION,5,5,100.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISSING_IMPLICATIONS,5,5,100.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,NO_CONTEXT_WHEN_NEEDED,2,5,40.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,NUMERIC_CLAIM_NO_SUPPORT,1,5,20.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,OPINION_AS_FACT,5,5,100.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,SCORE_ALERT_INCONSISTENCY,4,5,80.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,STRUCTURE_BREAK,3,5,60.0
-id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,VAGUE_REFERENCES,4,5,80.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,AMBIGUOUS_SUBJECT,1,20,5.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,IMPLIED_CAUSALITY,1,20,5.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,LOADED_LANGUAGE,3,20,15.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISPLACED_FOCUS,11,20,55.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISSING_ATTRIBUTION,19,20,95.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,MISSING_IMPLICATIONS,11,20,55.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,NO_CONTEXT_WHEN_NEEDED,8,20,40.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,NUMERIC_CLAIM_NO_SUPPORT,3,20,15.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,OPINION_AS_FACT,20,20,100.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,RESERVA_EPISTEMICA_FA,3,20,15.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,SCORE_ALERT_INCONSISTENCY,1,20,5.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,SENSATIONALISM,5,20,25.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,STRUCTURE_BREAK,5,20,25.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,UNVERIFIED_CLAIM,7,20,35.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,VAGUE_REFERENCES,19,20,95.0
+id::7fc3f62ecbe23c644883ee6ce61e45ca5a17d566505a8bbc6eb968110844ceb5,Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría,WEAK_SOURCE,8,20,40.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,IMPLIED_CAUSALITY,1,20,5.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,LOADED_LANGUAGE,8,20,40.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISPLACED_FOCUS,5,20,25.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISSING_ATTRIBUTION,20,20,100.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,MISSING_IMPLICATIONS,17,20,85.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,NO_CONTEXT_WHEN_NEEDED,17,20,85.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,NUMERIC_CLAIM_NO_SUPPORT,11,20,55.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,OPINION_AS_FACT,18,20,90.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,SCORE_ALERT_INCONSISTENCY,16,20,80.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,SENSATIONALISM,1,20,5.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,STRUCTURE_BREAK,1,20,5.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,UNVERIFIED_CLAIM,3,20,15.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,VAGUE_REFERENCES,15,20,75.0
+id::58a53982f667939f954fcc9e18d6d38e31042a5c0213195269071fc45b68ca5c,España se sitúa a la cola de países de la UE en accesibilidad a la vivienda,WEAK_SOURCE,2,20,10.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,AMBIGUOUS_SUBJECT,3,20,15.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,IMPLIED_CAUSALITY,3,20,15.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,LOADED_LANGUAGE,4,20,20.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISPLACED_FOCUS,5,20,25.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISSING_ATTRIBUTION,19,20,95.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,MISSING_IMPLICATIONS,15,20,75.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,NO_CONTEXT_WHEN_NEEDED,12,20,60.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,NUMERIC_CLAIM_NO_SUPPORT,5,20,25.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,OPINION_AS_FACT,20,20,100.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,RESERVA_EPISTEMICA_FA,2,20,10.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,SCORE_ALERT_INCONSISTENCY,13,20,65.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,SENSATIONALISM,4,20,20.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,STRUCTURE_BREAK,9,20,45.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,UNVERIFIED_CLAIM,2,20,10.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,VAGUE_REFERENCES,16,20,80.0
+id::10318bcdede5d3a6e493846e6df4a17658bfcfaa545ee562a4974e7215831f89,La 'campaña' política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”,WEAK_SOURCE,8,20,40.0

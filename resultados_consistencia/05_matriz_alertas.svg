@@ -3,154 +3,154 @@
 <desc>Matriz de alertas</desc>
 
     <style>
-      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
-      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
-      .label { font: 13px Arial, sans-serif; fill: #111827; }
-      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
-      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
-      .axis { stroke: #d7dde5; stroke-width: 1; }
-      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+      .title { font: 700 24px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .subtitle { font: 14px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .label { font: 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .small { font: 12px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .axis { stroke: #1e293b; stroke-width: 1; }
+      .panel { fill: #111827; stroke: #1e293b; stroke-width: 1; }
     </style>
     
-<rect width="1376" height="412" rx="18" fill="#ffffff" />
+<rect width="1376" height="412" rx="18" fill="#111827" />
 <text x="28" y="40" class="title">Matriz de persistencia de alertas</text>
 <text x="28" y="64" class="subtitle">Permite identificar qué códigos persisten en todas las ejecuciones y cuáles aparecen de forma intermitente. Se muestran los códigos más frecuentes.</text>
-<rect x="28.0" y="92" width="9.0" height="12" fill="#eef2f7" />
-<rect x="36.0" y="92" width="9.0" height="12" fill="#e7edf7" />
-<rect x="44.0" y="92" width="9.0" height="12" fill="#e0e9f7" />
-<rect x="52.0" y="92" width="9.0" height="12" fill="#d9e4f6" />
-<rect x="60.0" y="92" width="9.0" height="12" fill="#d3e0f6" />
-<rect x="68.0" y="92" width="9.0" height="12" fill="#ccdbf6" />
-<rect x="76.0" y="92" width="9.0" height="12" fill="#c5d7f6" />
-<rect x="84.0" y="92" width="9.0" height="12" fill="#bed2f6" />
-<rect x="92.0" y="92" width="9.0" height="12" fill="#b7cef5" />
-<rect x="100.0" y="92" width="9.0" height="12" fill="#b0c9f5" />
-<rect x="108.0" y="92" width="9.0" height="12" fill="#a9c4f5" />
-<rect x="116.0" y="92" width="9.0" height="12" fill="#a3c0f5" />
-<rect x="124.0" y="92" width="9.0" height="12" fill="#9cbbf5" />
-<rect x="132.0" y="92" width="9.0" height="12" fill="#95b7f4" />
-<rect x="140.0" y="92" width="9.0" height="12" fill="#8eb2f4" />
-<rect x="148.0" y="92" width="9.0" height="12" fill="#87aef4" />
-<rect x="156.0" y="92" width="9.0" height="12" fill="#80a9f4" />
-<rect x="164.0" y="92" width="9.0" height="12" fill="#79a5f3" />
-<rect x="172.0" y="92" width="9.0" height="12" fill="#72a0f3" />
-<rect x="180.0" y="92" width="9.0" height="12" fill="#6c9cf3" />
-<rect x="188.0" y="92" width="9.0" height="12" fill="#6597f3" />
-<rect x="196.0" y="92" width="9.0" height="12" fill="#5e92f3" />
-<rect x="204.0" y="92" width="9.0" height="12" fill="#578ef2" />
-<rect x="212.0" y="92" width="9.0" height="12" fill="#5089f2" />
-<rect x="220.0" y="92" width="9.0" height="12" fill="#4985f2" />
-<rect x="228.0" y="92" width="9.0" height="12" fill="#4280f2" />
-<rect x="236.0" y="92" width="9.0" height="12" fill="#3c7cf2" />
-<rect x="244.0" y="92" width="9.0" height="12" fill="#3577f1" />
-<rect x="252.0" y="92" width="9.0" height="12" fill="#2e73f1" />
-<rect x="260.0" y="92" width="9.0" height="12" fill="#276ef1" />
+<rect x="28.0" y="92" width="9.0" height="12" fill="#1a1f2e" />
+<rect x="36.0" y="92" width="9.0" height="12" fill="#22232d" />
+<rect x="44.0" y="92" width="9.0" height="12" fill="#29282c" />
+<rect x="52.0" y="92" width="9.0" height="12" fill="#312c2a" />
+<rect x="60.0" y="92" width="9.0" height="12" fill="#383129" />
+<rect x="68.0" y="92" width="9.0" height="12" fill="#403528" />
+<rect x="76.0" y="92" width="9.0" height="12" fill="#473927" />
+<rect x="84.0" y="92" width="9.0" height="12" fill="#4f3e26" />
+<rect x="92.0" y="92" width="9.0" height="12" fill="#564224" />
+<rect x="100.0" y="92" width="9.0" height="12" fill="#5e4623" />
+<rect x="108.0" y="92" width="9.0" height="12" fill="#664b22" />
+<rect x="116.0" y="92" width="9.0" height="12" fill="#6d4f21" />
+<rect x="124.0" y="92" width="9.0" height="12" fill="#755420" />
+<rect x="132.0" y="92" width="9.0" height="12" fill="#7c581e" />
+<rect x="140.0" y="92" width="9.0" height="12" fill="#845c1d" />
+<rect x="148.0" y="92" width="9.0" height="12" fill="#8b611c" />
+<rect x="156.0" y="92" width="9.0" height="12" fill="#93651b" />
+<rect x="164.0" y="92" width="9.0" height="12" fill="#9a6919" />
+<rect x="172.0" y="92" width="9.0" height="12" fill="#a26e18" />
+<rect x="180.0" y="92" width="9.0" height="12" fill="#a97217" />
+<rect x="188.0" y="92" width="9.0" height="12" fill="#b17716" />
+<rect x="196.0" y="92" width="9.0" height="12" fill="#b97b15" />
+<rect x="204.0" y="92" width="9.0" height="12" fill="#c07f13" />
+<rect x="212.0" y="92" width="9.0" height="12" fill="#c88412" />
+<rect x="220.0" y="92" width="9.0" height="12" fill="#cf8811" />
+<rect x="228.0" y="92" width="9.0" height="12" fill="#d78c10" />
+<rect x="236.0" y="92" width="9.0" height="12" fill="#de910f" />
+<rect x="244.0" y="92" width="9.0" height="12" fill="#e6950d" />
+<rect x="252.0" y="92" width="9.0" height="12" fill="#ed9a0c" />
+<rect x="260.0" y="92" width="9.0" height="12" fill="#f59e0b" />
 <text x="28" y="86" class="small">aparece a veces</text>
 <text x="268" y="86" text-anchor="end" class="small">aparece siempre</text>
-<text x="333.0" y="116" text-anchor="middle" class="small"><title>MISSING_ATTRIBUTION</title>MISSING_ATTRI…</text>
-<text x="439.0" y="116" text-anchor="middle" class="small"><title>OPINION_AS_FACT</title>OPINION_AS_FA…</text>
+<text x="333.0" y="116" text-anchor="middle" class="small"><title>OPINION_AS_FACT</title>OPINION_AS_FA…</text>
+<text x="439.0" y="116" text-anchor="middle" class="small"><title>MISSING_ATTRIBUTION</title>MISSING_ATTRI…</text>
 <text x="545.0" y="116" text-anchor="middle" class="small"><title>VAGUE_REFERENCES</title>VAGUE_REFEREN…</text>
 <text x="651.0" y="116" text-anchor="middle" class="small"><title>MISSING_IMPLICATIONS</title>MISSING_IMPLI…</text>
 <text x="757.0" y="116" text-anchor="middle" class="small"><title>NO_CONTEXT_WHEN_NEEDED</title>NO_CONTEXT_WH…</text>
 <text x="863.0" y="116" text-anchor="middle" class="small"><title>SCORE_ALERT_INCONSISTENCY</title>SCORE_ALERT_I…</text>
 <text x="969.0" y="116" text-anchor="middle" class="small"><title>MISPLACED_FOCUS</title>MISPLACED_FOC…</text>
-<text x="1075.0" y="116" text-anchor="middle" class="small"><title>STRUCTURE_BREAK</title>STRUCTURE_BRE…</text>
-<text x="1181.0" y="116" text-anchor="middle" class="small"><title>LOADED_LANGUAGE</title>LOADED_LANGUA…</text>
-<text x="1287.0" y="116" text-anchor="middle" class="small"><title>NUMERIC_CLAIM_NO_SUPPORT</title>NUMERIC_CLAIM…</text>
-<text x="28" y="164" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pe…</text>
-<text x="28" y="185" class="small">Jaccard 0.55</text>
-<rect x="280" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
-<text x="328.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="328.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="386" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | OPINION_AS_FACT: 5/5 ejecuciones (100%)</title></rect>
-<text x="434.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="434.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="492" y="136" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | VAGUE_REFERENCES: 5/5 ejecuciones (100%)</title></rect>
-<text x="540.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="540.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="598" y="136" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_IMPLICATIONS: 1/5 ejecuciones (20%)</title></rect>
-<text x="646.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
-<text x="646.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
-<rect x="704" y="136" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NO_CONTEXT_WHEN_NEEDED: 3/5 ejecuciones (60%)</title></rect>
-<text x="752.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
-<text x="752.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
-<rect x="810" y="136" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | SCORE_ALERT_INCONSISTENCY: 0/5 ejecuciones (0%)</title></rect>
-<text x="858.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
-<text x="858.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
-<rect x="916" y="136" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISPLACED_FOCUS: 3/5 ejecuciones (60%)</title></rect>
-<text x="964.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
-<text x="964.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
-<rect x="1022" y="136" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | STRUCTURE_BREAK: 2/5 ejecuciones (40%)</title></rect>
-<text x="1070.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
-<text x="1070.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
-<rect x="1128" y="136" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | LOADED_LANGUAGE: 0/5 ejecuciones (0%)</title></rect>
-<text x="1176.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
-<text x="1176.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
-<rect x="1234" y="136" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NUMERIC_CLAIM_NO_SUPPORT: 1/5 ejecuciones (20%)</title></rect>
-<text x="1282.0" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
-<text x="1282.0" y="189" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+<text x="1075.0" y="116" text-anchor="middle" class="small"><title>NUMERIC_CLAIM_NO_SUPPORT</title>NUMERIC_CLAIM…</text>
+<text x="1181.0" y="116" text-anchor="middle" class="small"><title>WEAK_SOURCE</title>WEAK_SOURCE</text>
+<text x="1287.0" y="116" text-anchor="middle" class="small"><title>STRUCTURE_BREAK</title>STRUCTURE_BRE…</text>
+<text x="28" y="164" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello…</text>
+<text x="28" y="185" class="small">Jaccard 0.44</text>
+<rect x="280" y="136" width="96" height="62" rx="12" fill="#f59e0b" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | OPINION_AS_FACT: 20/20 ejecuciones (100%)</title></rect>
+<text x="328.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">20/20</text>
+<text x="328.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">100%</text>
+<rect x="386" y="136" width="96" height="62" rx="12" fill="#ea980d" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_ATTRIBUTION: 19/20 ejecuciones (95%)</title></rect>
+<text x="434.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">19/20</text>
+<text x="434.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">95%</text>
+<rect x="492" y="136" width="96" height="62" rx="12" fill="#c98512" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | VAGUE_REFERENCES: 16/20 ejecuciones (80%)</title></rect>
+<text x="540.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">16/20</text>
+<text x="540.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">80%</text>
+<rect x="598" y="136" width="96" height="62" rx="12" fill="#be7e14" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_IMPLICATIONS: 15/20 ejecuciones (75%)</title></rect>
+<text x="646.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">15/20</text>
+<text x="646.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">75%</text>
+<rect x="704" y="136" width="96" height="62" rx="12" fill="#9d6b19" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NO_CONTEXT_WHEN_NEEDED: 12/20 ejecuciones (60%)</title></rect>
+<text x="752.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">12/20</text>
+<text x="752.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">60%</text>
+<rect x="810" y="136" width="96" height="62" rx="12" fill="#a87217" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | SCORE_ALERT_INCONSISTENCY: 13/20 ejecuciones (65%)</title></rect>
+<text x="858.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">13/20</text>
+<text x="858.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">65%</text>
+<rect x="916" y="136" width="96" height="62" rx="12" fill="#513f25" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISPLACED_FOCUS: 5/20 ejecuciones (25%)</title></rect>
+<text x="964.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">5/20</text>
+<text x="964.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">25%</text>
+<rect x="1022" y="136" width="96" height="62" rx="12" fill="#513f25" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NUMERIC_CLAIM_NO_SUPPORT: 5/20 ejecuciones (25%)</title></rect>
+<text x="1070.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">5/20</text>
+<text x="1070.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">25%</text>
+<rect x="1128" y="136" width="96" height="62" rx="12" fill="#725220" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | WEAK_SOURCE: 8/20 ejecuciones (40%)</title></rect>
+<text x="1176.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">8/20</text>
+<text x="1176.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">40%</text>
+<rect x="1234" y="136" width="96" height="62" rx="12" fill="#7d581e" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | STRUCTURE_BREAK: 9/20 ejecuciones (45%)</title></rect>
+<text x="1282.0" y="167" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">9/20</text>
+<text x="1282.0" y="189" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">45%</text>
 <text x="28" y="238" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de país…</text>
-<text x="28" y="259" class="small">Jaccard 0.76</text>
-<rect x="280" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
-<text x="328.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="328.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="386" y="210" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | OPINION_AS_FACT: 4/5 ejecuciones (80%)</title></rect>
-<text x="434.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
-<text x="434.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
-<rect x="492" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | VAGUE_REFERENCES: 5/5 ejecuciones (100%)</title></rect>
-<text x="540.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="540.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="598" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_IMPLICATIONS: 5/5 ejecuciones (100%)</title></rect>
-<text x="646.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="646.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="704" y="210" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NO_CONTEXT_WHEN_NEEDED: 5/5 ejecuciones (100%)</title></rect>
-<text x="752.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="752.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="810" y="210" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | SCORE_ALERT_INCONSISTENCY: 4/5 ejecuciones (80%)</title></rect>
-<text x="858.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
-<text x="858.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
-<rect x="916" y="210" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISPLACED_FOCUS: 1/5 ejecuciones (20%)</title></rect>
-<text x="964.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
-<text x="964.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
-<rect x="1022" y="210" width="96" height="62" rx="12" fill="#eef2f7" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | STRUCTURE_BREAK: 0/5 ejecuciones (0%)</title></rect>
-<text x="1070.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">0/5</text>
-<text x="1070.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">0%</text>
-<rect x="1128" y="210" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | LOADED_LANGUAGE: 3/5 ejecuciones (60%)</title></rect>
-<text x="1176.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
-<text x="1176.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
-<rect x="1234" y="210" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NUMERIC_CLAIM_NO_SUPPORT: 2/5 ejecuciones (40%)</title></rect>
-<text x="1282.0" y="241" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
-<text x="1282.0" y="263" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
-<text x="28" y="312" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello…</text>
-<text x="28" y="333" class="small">Jaccard 0.66</text>
-<rect x="280" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_ATTRIBUTION: 5/5 ejecuciones (100%)</title></rect>
-<text x="328.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="328.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="386" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | OPINION_AS_FACT: 5/5 ejecuciones (100%)</title></rect>
-<text x="434.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="434.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="492" y="284" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | VAGUE_REFERENCES: 4/5 ejecuciones (80%)</title></rect>
-<text x="540.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
-<text x="540.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
-<rect x="598" y="284" width="96" height="62" rx="12" fill="#276ef1" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISSING_IMPLICATIONS: 5/5 ejecuciones (100%)</title></rect>
-<text x="646.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">5/5</text>
-<text x="646.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">100%</text>
-<rect x="704" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NO_CONTEXT_WHEN_NEEDED: 2/5 ejecuciones (40%)</title></rect>
-<text x="752.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
-<text x="752.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
-<rect x="810" y="284" width="96" height="62" rx="12" fill="#4f88f2" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | SCORE_ALERT_INCONSISTENCY: 4/5 ejecuciones (80%)</title></rect>
-<text x="858.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">4/5</text>
-<text x="858.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">80%</text>
-<rect x="916" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | MISPLACED_FOCUS: 2/5 ejecuciones (40%)</title></rect>
-<text x="964.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
-<text x="964.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
-<rect x="1022" y="284" width="96" height="62" rx="12" fill="#77a3f3" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | STRUCTURE_BREAK: 3/5 ejecuciones (60%)</title></rect>
-<text x="1070.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">3/5</text>
-<text x="1070.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">60%</text>
-<rect x="1128" y="284" width="96" height="62" rx="12" fill="#9ebdf5" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | LOADED_LANGUAGE: 2/5 ejecuciones (40%)</title></rect>
-<text x="1176.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">2/5</text>
-<text x="1176.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">40%</text>
-<rect x="1234" y="284" width="96" height="62" rx="12" fill="#c6d8f6" stroke="white" stroke-width="2"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío” | NUMERIC_CLAIM_NO_SUPPORT: 1/5 ejecuciones (20%)</title></rect>
-<text x="1282.0" y="315" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#111827">1/5</text>
-<text x="1282.0" y="337" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#374151">20%</text>
+<text x="28" y="259" class="small">Jaccard 0.48</text>
+<rect x="280" y="210" width="96" height="62" rx="12" fill="#df910e" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | OPINION_AS_FACT: 18/20 ejecuciones (90%)</title></rect>
+<text x="328.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">18/20</text>
+<text x="328.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">90%</text>
+<rect x="386" y="210" width="96" height="62" rx="12" fill="#f59e0b" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_ATTRIBUTION: 20/20 ejecuciones (100%)</title></rect>
+<text x="434.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">20/20</text>
+<text x="434.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">100%</text>
+<rect x="492" y="210" width="96" height="62" rx="12" fill="#be7e14" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | VAGUE_REFERENCES: 15/20 ejecuciones (75%)</title></rect>
+<text x="540.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">15/20</text>
+<text x="540.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">75%</text>
+<rect x="598" y="210" width="96" height="62" rx="12" fill="#d48b10" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISSING_IMPLICATIONS: 17/20 ejecuciones (85%)</title></rect>
+<text x="646.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">17/20</text>
+<text x="646.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">85%</text>
+<rect x="704" y="210" width="96" height="62" rx="12" fill="#d48b10" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NO_CONTEXT_WHEN_NEEDED: 17/20 ejecuciones (85%)</title></rect>
+<text x="752.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">17/20</text>
+<text x="752.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">85%</text>
+<rect x="810" y="210" width="96" height="62" rx="12" fill="#c98512" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | SCORE_ALERT_INCONSISTENCY: 16/20 ejecuciones (80%)</title></rect>
+<text x="858.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">16/20</text>
+<text x="858.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">80%</text>
+<rect x="916" y="210" width="96" height="62" rx="12" fill="#513f25" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | MISPLACED_FOCUS: 5/20 ejecuciones (25%)</title></rect>
+<text x="964.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">5/20</text>
+<text x="964.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">25%</text>
+<rect x="1022" y="210" width="96" height="62" rx="12" fill="#92651b" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | NUMERIC_CLAIM_NO_SUPPORT: 11/20 ejecuciones (55%)</title></rect>
+<text x="1070.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">11/20</text>
+<text x="1070.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">55%</text>
+<rect x="1128" y="210" width="96" height="62" rx="12" fill="#302c2a" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | WEAK_SOURCE: 2/20 ejecuciones (10%)</title></rect>
+<text x="1176.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">2/20</text>
+<text x="1176.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">10%</text>
+<rect x="1234" y="210" width="96" height="62" rx="12" fill="#25252c" stroke="white" stroke-width="2"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda | STRUCTURE_BREAK: 1/20 ejecuciones (5%)</title></rect>
+<text x="1282.0" y="241" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">1/20</text>
+<text x="1282.0" y="263" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">5%</text>
+<text x="28" y="312" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pe…</text>
+<text x="28" y="333" class="small">Jaccard 0.39</text>
+<rect x="280" y="284" width="96" height="62" rx="12" fill="#f59e0b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | OPINION_AS_FACT: 20/20 ejecuciones (100%)</title></rect>
+<text x="328.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">20/20</text>
+<text x="328.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">100%</text>
+<rect x="386" y="284" width="96" height="62" rx="12" fill="#ea980d" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_ATTRIBUTION: 19/20 ejecuciones (95%)</title></rect>
+<text x="434.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">19/20</text>
+<text x="434.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">95%</text>
+<rect x="492" y="284" width="96" height="62" rx="12" fill="#ea980d" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | VAGUE_REFERENCES: 19/20 ejecuciones (95%)</title></rect>
+<text x="540.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">19/20</text>
+<text x="540.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">95%</text>
+<rect x="598" y="284" width="96" height="62" rx="12" fill="#92651b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISSING_IMPLICATIONS: 11/20 ejecuciones (55%)</title></rect>
+<text x="646.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">11/20</text>
+<text x="646.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">55%</text>
+<rect x="704" y="284" width="96" height="62" rx="12" fill="#725220" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NO_CONTEXT_WHEN_NEEDED: 8/20 ejecuciones (40%)</title></rect>
+<text x="752.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">8/20</text>
+<text x="752.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">40%</text>
+<rect x="810" y="284" width="96" height="62" rx="12" fill="#25252c" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | SCORE_ALERT_INCONSISTENCY: 1/20 ejecuciones (5%)</title></rect>
+<text x="858.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">1/20</text>
+<text x="858.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">5%</text>
+<rect x="916" y="284" width="96" height="62" rx="12" fill="#92651b" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | MISPLACED_FOCUS: 11/20 ejecuciones (55%)</title></rect>
+<text x="964.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">11/20</text>
+<text x="964.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">55%</text>
+<rect x="1022" y="284" width="96" height="62" rx="12" fill="#3b3229" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | NUMERIC_CLAIM_NO_SUPPORT: 3/20 ejecuciones (15%)</title></rect>
+<text x="1070.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">3/20</text>
+<text x="1070.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">15%</text>
+<rect x="1128" y="284" width="96" height="62" rx="12" fill="#725220" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | WEAK_SOURCE: 8/20 ejecuciones (40%)</title></rect>
+<text x="1176.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">8/20</text>
+<text x="1176.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">40%</text>
+<rect x="1234" y="284" width="96" height="62" rx="12" fill="#513f25" stroke="white" stroke-width="2"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría | STRUCTURE_BREAK: 5/20 ejecuciones (25%)</title></rect>
+<text x="1282.0" y="315" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#ffffff">5/20</text>
+<text x="1282.0" y="337" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="11" fill="rgba(255,255,255,0.75)">25%</text>
 </svg>

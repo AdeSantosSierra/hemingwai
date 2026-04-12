@@ -3,16 +3,16 @@
 <desc>Estabilidad de alertas</desc>
 
     <style>
-      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
-      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
-      .label { font: 13px Arial, sans-serif; fill: #111827; }
-      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
-      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
-      .axis { stroke: #d7dde5; stroke-width: 1; }
-      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+      .title { font: 700 24px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .subtitle { font: 14px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .label { font: 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .small { font: 12px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .axis { stroke: #1e293b; stroke-width: 1; }
+      .panel { fill: #111827; stroke: #1e293b; stroke-width: 1; }
     </style>
     
-<rect width="860" height="310" rx="18" fill="#ffffff" />
+<rect width="860" height="310" rx="18" fill="#111827" />
 <text x="28" y="40" class="title">Estabilidad de alertas por noticia</text>
 <text x="28" y="64" class="subtitle">La similitud Jaccard resume el grado de persistencia de las alertas entre ejecuciones.</text>
 <line x1="280.0" y1="82" x2="280.0" y2="282" class="axis" />
@@ -28,21 +28,21 @@
 <line x1="740.0" y1="82" x2="740.0" y2="282" class="axis" />
 <text x="740.0" y="300" text-anchor="middle" class="small">1.0</text>
 <text x="28" y="118" class="label"><title>España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</title>España se sitúa a la cola de país…</text>
-<text x="28" y="137" class="small">9 alertas distintas</text>
-<rect x="280" y="106" width="460" height="18" rx="9" fill="#edf1f5" />
-<rect x="280" y="106" width="347.6" height="18" rx="9" fill="#d9a441" />
-<text x="752" y="120" class="value">0.76</text>
+<text x="28" y="137" class="small">14 alertas distintas</text>
+<rect x="280" y="106" width="460" height="18" rx="9" fill="#1e293b" />
+<rect x="280" y="106" width="221.8" height="18" rx="9" fill="#f59e0b" />
+<text x="752" y="120" class="value">0.48</text>
 <text x="794" y="120" class="small">media</text>
 <text x="28" y="174" class="label"><title>La &#x27;campaña&#x27; política de Argüello molesta a los obispos: “Nos ha vuelto a meter en un lío”</title>La &#x27;campaña&#x27; política de Argüello…</text>
-<text x="28" y="193" class="small">10 alertas distintas</text>
-<rect x="280" y="162" width="460" height="18" rx="9" fill="#edf1f5" />
-<rect x="280" y="162" width="303.6" height="18" rx="9" fill="#d9a441" />
-<text x="752" y="176" class="value">0.66</text>
-<text x="794" y="176" class="small">media</text>
+<text x="28" y="193" class="small">16 alertas distintas</text>
+<rect x="280" y="162" width="460" height="18" rx="9" fill="#1e293b" />
+<rect x="280" y="162" width="201.2" height="18" rx="9" fill="#ef4444" />
+<text x="752" y="176" class="value">0.44</text>
+<text x="794" y="176" class="small">baja</text>
 <text x="28" y="230" class="label"><title>Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</title>Biden indulta a su hijo Hunter pe…</text>
-<text x="28" y="249" class="small">11 alertas distintas</text>
-<rect x="280" y="218" width="460" height="18" rx="9" fill="#edf1f5" />
-<rect x="280" y="218" width="250.9" height="18" rx="9" fill="#d1495b" />
-<text x="752" y="232" class="value">0.55</text>
+<text x="28" y="249" class="small">16 alertas distintas</text>
+<rect x="280" y="218" width="460" height="18" rx="9" fill="#1e293b" />
+<rect x="280" y="218" width="179.7" height="18" rx="9" fill="#ef4444" />
+<text x="752" y="232" class="value">0.39</text>
 <text x="794" y="232" class="small">baja</text>
 </svg>

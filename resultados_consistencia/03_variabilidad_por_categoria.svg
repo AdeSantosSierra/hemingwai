@@ -3,46 +3,46 @@
 <desc>Variabilidad por categoria</desc>
 
     <style>
-      .title { font: 700 24px Arial, sans-serif; fill: #111827; }
-      .subtitle { font: 14px Arial, sans-serif; fill: #6b7280; }
-      .label { font: 13px Arial, sans-serif; fill: #111827; }
-      .small { font: 12px Arial, sans-serif; fill: #6b7280; }
-      .value { font: 700 13px Arial, sans-serif; fill: #111827; }
-      .axis { stroke: #d7dde5; stroke-width: 1; }
-      .panel { fill: #ffffff; stroke: #e5e7eb; stroke-width: 1; }
+      .title { font: 700 24px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .subtitle { font: 14px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .label { font: 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .small { font: 12px Inter, system-ui, -apple-system, sans-serif; fill: #6b7280; }
+      .value { font: 700 13px Inter, system-ui, -apple-system, sans-serif; fill: #f9fafb; }
+      .axis { stroke: #1e293b; stroke-width: 1; }
+      .panel { fill: #111827; stroke: #1e293b; stroke-width: 1; }
     </style>
     
-<rect width="760" height="402" rx="18" fill="#ffffff" />
+<rect width="760" height="402" rx="18" fill="#111827" />
 <text x="28" y="40" class="title">Variabilidad promedio por categoria</text>
 <text x="28" y="64" class="subtitle">Resume en qué dimensión el sistema presenta mayor variabilidad promedio.</text>
 <line x1="210.0" y1="82" x2="210.0" y2="374" class="axis" />
 <text x="210.0" y="392" text-anchor="middle" class="small">0.00</text>
 <line x1="317.5" y1="82" x2="317.5" y2="374" class="axis" />
-<text x="317.5" y="392" text-anchor="middle" class="small">0.38</text>
+<text x="317.5" y="392" text-anchor="middle" class="small">0.98</text>
 <line x1="425.0" y1="82" x2="425.0" y2="374" class="axis" />
-<text x="425.0" y="392" text-anchor="middle" class="small">0.75</text>
+<text x="425.0" y="392" text-anchor="middle" class="small">1.96</text>
 <line x1="532.5" y1="82" x2="532.5" y2="374" class="axis" />
-<text x="532.5" y="392" text-anchor="middle" class="small">1.12</text>
+<text x="532.5" y="392" text-anchor="middle" class="small">2.94</text>
 <line x1="640.0" y1="82" x2="640.0" y2="374" class="axis" />
-<text x="640.0" y="392" text-anchor="middle" class="small">1.50</text>
+<text x="640.0" y="392" text-anchor="middle" class="small">3.92</text>
 <text x="28" y="118" class="label">Fiabilidad</text>
-<rect x="210" y="104" width="430" height="18" rx="9" fill="#edf1f5" />
-<rect x="210" y="104" width="430.0" height="18" rx="9" fill="#d1495b" />
-<text x="652" y="118" class="value">1.50</text>
-<text x="28" y="170" class="label">Profundidad</text>
-<rect x="210" y="156" width="430" height="18" rx="9" fill="#edf1f5" />
-<rect x="210" y="156" width="382.2" height="18" rx="9" fill="#d35d55" />
-<text x="652" y="170" class="value">1.33</text>
-<text x="28" y="222" class="label">Enfoque</text>
-<rect x="210" y="208" width="430" height="18" rx="9" fill="#edf1f5" />
-<rect x="210" y="208" width="382.2" height="18" rx="9" fill="#d35d55" />
-<text x="652" y="222" class="value">1.33</text>
-<text x="28" y="274" class="label">Adecuacion</text>
-<rect x="210" y="260" width="430" height="18" rx="9" fill="#edf1f5" />
-<rect x="210" y="260" width="238.9" height="18" rx="9" fill="#d89a44" />
-<text x="652" y="274" class="value">0.83</text>
-<text x="28" y="326" class="label">Claridad</text>
-<rect x="210" y="312" width="430" height="18" rx="9" fill="#edf1f5" />
-<rect x="210" y="312" width="238.9" height="18" rx="9" fill="#d89a44" />
-<text x="652" y="326" class="value">0.83</text>
+<rect x="210" y="104" width="430" height="18" rx="9" fill="#1e293b" />
+<rect x="210" y="104" width="430.0" height="18" rx="9" fill="#ef4444" />
+<text x="652" y="118" class="value">3.92</text>
+<text x="28" y="170" class="label">Adecuacion</text>
+<rect x="210" y="156" width="430" height="18" rx="9" fill="#1e293b" />
+<rect x="210" y="156" width="274.5" height="18" rx="9" fill="#f3851b" />
+<text x="652" y="170" class="value">2.50</text>
+<text x="28" y="222" class="label">Claridad</text>
+<rect x="210" y="208" width="430" height="18" rx="9" fill="#1e293b" />
+<rect x="210" y="208" width="274.5" height="18" rx="9" fill="#f3851b" />
+<text x="652" y="222" class="value">2.50</text>
+<text x="28" y="274" class="label">Profundidad</text>
+<rect x="210" y="260" width="430" height="18" rx="9" fill="#1e293b" />
+<rect x="210" y="260" width="274.5" height="18" rx="9" fill="#f3851b" />
+<text x="652" y="274" class="value">2.50</text>
+<text x="28" y="326" class="label">Enfoque</text>
+<rect x="210" y="312" width="430" height="18" rx="9" fill="#1e293b" />
+<rect x="210" y="312" width="237.9" height="18" rx="9" fill="#f49411" />
+<text x="652" y="326" class="value">2.17</text>
 </svg>
