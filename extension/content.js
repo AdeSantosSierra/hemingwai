@@ -291,18 +291,18 @@ function createPopoverElement(data) {
     const stateChipClass = isPending ? '' : ' hemingwai-chip--accent';
     let contentHtml = `
         <div class="hemingwai-popover__header">
-            <span class="hemingwai-chip hemingwai-chip--accent">HemingwAI</span>
+            <span class="hemingwai-chip hemingwai-chip--accent">Newscore</span>
             <span class="hemingwai-chip${stateChipClass}">${stateLabel}</span>
         </div>
     `;
 
     if (isPending) {
         contentHtml += `
-            <h4>Análisis HemingwAI</h4>
+            <h4>Análisis Newscore</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">ESTADO</span>
                 <div class="hemingwai-text">
-                    Noticia registrada en la base de datos de HemingwAI, pero aún no ha sido analizada automáticamente.
+                    Noticia registrada en la base de datos de Newscore, pero aún no ha sido analizada automáticamente.
                 </div>
             </div>
             <div class="hemingwai-section">
@@ -317,7 +317,7 @@ function createPopoverElement(data) {
         const resumenTitular = data.resumen_valoracion_titular || "Sin análisis específico.";
         
         contentHtml += `
-            <h4>Análisis HemingwAI</h4>
+            <h4>Análisis Newscore</h4>
             <div class="hemingwai-section">
                 <span class="hemingwai-label">PUNTUACIÓN GLOBAL</span>
                 <span class="hemingwai-score" style="color: ${accentColor}">${scoreVal}/10</span>
@@ -476,12 +476,12 @@ function updateHemingwaiBadge(badge, data) {
     if (hasScore) {
         scoreSpan.textContent = String(score);
         scoreSpan.style.display = 'inline-block';
-        badge.title = `Puntuación HemingwAI: ${score}/10`;
+        badge.title = `Puntuación Newscore: ${score}/10`;
         badge.classList.remove('hemingwai-badge-pending');
     } else {
         scoreSpan.textContent = '';
         scoreSpan.style.display = 'none';
-        badge.title = "HemingwAI: Pendiente de análisis";
+        badge.title = "Newscore: Pendiente de análisis";
         badge.classList.add('hemingwai-badge-pending');
     }
 
@@ -499,7 +499,7 @@ function createHemingwaiBadge(data) {
 
     const img = document.createElement('img');
     img.className = 'hemingwai-badge-logo';
-    img.alt = 'HemingwAI';
+    img.alt = 'Newscore';
     badge.appendChild(img);
 
     const scoreSpan = document.createElement('span');
@@ -640,7 +640,7 @@ class HemingwaiSidebar {
     createToggleButton() {
         const btn = document.createElement('div');
         btn.id = 'hemingwai-sidebar-toggle';
-        btn.setAttribute('aria-label', 'Abrir panel de chat de HemingwAI');
+        btn.setAttribute('aria-label', 'Abrir panel de chat de Newscore');
         
         // Styles for the button (inline to ensure visibility)
         Object.assign(btn.style, {
@@ -1289,7 +1289,7 @@ class HemingwaiSidebar {
             <div class="header">
                 <div class="header-copy">
                     <div class="header-eyebrow">AI newsroom</div>
-                    <h2>HemingwAI</h2>
+                    <h2>Newscore</h2>
                     <p>Chat contextual sobre la noticia activa.</p>
                 </div>
                 <button class="close-btn" aria-label="Cerrar panel">×</button>
@@ -1324,7 +1324,7 @@ class HemingwaiSidebar {
             contentInner += `
                 <div class="status-card">
                     <span class="status-chip">Generando respuesta</span>
-                    <strong>HemingwAI esta escribiendo</strong>
+                    <strong>Newscore esta escribiendo</strong>
                     <p>El asistente esta sintetizando senales y contexto antes de responder.</p>
                 </div>
             `;
@@ -1403,7 +1403,7 @@ class HemingwaiSidebar {
                 <div class="status-card">
                     <span class="status-chip">Cargando</span>
                     <strong>Recuperando datos</strong>
-                    <p>Estamos conectando con HemingwAI para montar el contexto del chat.</p>
+                    <p>Estamos conectando con Newscore para montar el contexto del chat.</p>
                 </div>
             `;
         }
@@ -1460,7 +1460,7 @@ class HemingwaiSidebar {
         } else {
             const error = response.error === "AUTH_REQUIRED" 
                 ? "Sesión expirada. Por favor desbloquea de nuevo." 
-                : "Error al conectar con HemingwAI.";
+                : "Error al conectar con Newscore.";
             
             this.messages.push({ role: 'assistant', content: `⚠️ ${error}` });
             

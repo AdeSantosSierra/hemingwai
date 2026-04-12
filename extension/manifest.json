@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "HemingwAI - Analizador de Noticias",
+  "name": "Newscore - Analizador de Noticias",
   "version": "2.1",
   "description": "Verifica la calidad de las noticias que lees con inteligencia artificial.",
   "permissions": ["scripting", "storage", "activeTab"],
