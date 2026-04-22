@@ -4,8 +4,8 @@ This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (prel
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.tex
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -173,53 +173,52 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-No file España_se_sitúa_a_la_cola_de_países_de_la_UE_en_accesibilida.aux.
+No file Unión_Berlin_defiende_a_su_nueva_entrenadora_contra_el_sexis.aux.
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
- / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (210.5321pt too wide) in paragraph at lines 74--76
+[][]$\OT1/pcr/m/n/10 https : / / www . marca . com / futbol / 2026 / 04 / 13 / 
+union-[]berlin-[]defiende-[]nueva-[]entrenadora-[]sexismo-[]indignante-[]vergon
+zoso .
 
 [2]
-[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+[3]
 [4]
-[5]
-[6]
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux)
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.aux)
 
-Package rerunfilecheck Warning: File `España_se_sitúa_a_la_cola_de_países_de
-_la_UE_en_accesibilida.out' has changed.
+Package rerunfilecheck Warning: File `Unión_Berlin_defiende_a_su_nueva_entrena
+dora_contra_el_sexis.out' has changed.
 (rerunfilecheck)                Rerun to get outlines right
 (rerunfilecheck)                or use package `bookmark'.
 
  )
 (see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
-a_cola_de_países_de_la_UE_en_accesibilida.pdf (6 pages, 92869 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
-_a_la_cola_de_países_de_la_UE_en_accesibilida.log.
+ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Unión_Berlin_defiend
+e_a_su_nueva_entrenadora_contra_el_sexis.pdf (4 pages, 70330 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Unión_Berlin_def
+iende_a_su_nueva_entrenadora_contra_el_sexis.log.
 
 --- pdflatex pass 2 ---
 This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex)
  restricted \write18 enabled.
 entering extended mode
 
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.tex
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -387,40 +386,39 @@ LaTeX Warning: Command \underline  has changed.
 ) (/usr/share/texlive/texmf-dist/tex/latex/ragged2e/ragged2e.sty)
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1ptm.fd)
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.out)
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.out)
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.aux)
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.out)
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.out)
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg))
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}]
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd)
-Overfull \hbox (192.0321pt too wide) in paragraph at lines 80--82
-[][]$\OT1/pcr/m/n/10 https : / / www . lavanguardia . com / economia / 20250203
- / 10344874 / espana-[]situa-[]cola-[]paises-[]ue-[]accesibilidad-[]vivienda .
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd)
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd)
+Overfull \hbox (210.5321pt too wide) in paragraph at lines 74--76
+[][]$\OT1/pcr/m/n/10 https : / / www . marca . com / futbol / 2026 / 04 / 13 / 
+union-[]berlin-[]defiende-[]nueva-[]entrenadora-[]sexismo-[]indignante-[]vergon
+zoso .
 
 [2]
-[3] (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd)
+[3]
 [4]
-[5]
-[6]
-(/home/roberto/hemingwai/output_temporal/España_se_sitúa_a_la_cola_de_países
-_de_la_UE_en_accesibilida.aux) )
+(/home/roberto/hemingwai/output_temporal/Unión_Berlin_defiende_a_su_nueva_entr
+enadora_contra_el_sexis.aux) )
 (see the transcript file for additional information)</usr/share/texlive/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fo
-nts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw
-/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.p
-fb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on /home/roberto/hemingwai/output_temporal/España_se_sitúa_a_l
-a_cola_de_países_de_la_UE_en_accesibilida.pdf (6 pages, 92869 bytes).
-Transcript written on /home/roberto/hemingwai/output_temporal/España_se_sitúa
-_a_la_cola_de_países_de_la_UE_en_accesibilida.log.
+ist/fonts/type1/urw/courier/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
+e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
+mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on /home/roberto/hemingwai/output_temporal/Unión_Berlin_defiend
+e_a_su_nueva_entrenadora_contra_el_sexis.pdf (4 pages, 70330 bytes).
+Transcript written on /home/roberto/hemingwai/output_temporal/Unión_Berlin_def
+iende_a_su_nueva_entrenadora_contra_el_sexis.log.

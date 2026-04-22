@@ -30,3 +30,22 @@ frontend/node_modules/
 /node/
 src/validacion_consistencia/json/
 CLAUDE.md
+.claude/
+validacion_usuarios/
+validacion_profesionales/
+
+# Salidas temporales y artefactos locales
+output_temporal/
+*.aux
+*.log
+*.out
+*.pdf
+*.tex
+
+# Validaciones: guardar scripts, ignorar outputs regenerables
+validacion_profesionales/__pycache__/
+validacion_profesionales/output_validacion_profesionales/
+
+validacion_profesionales/validacion con profesionales.csv
+
+validacion_profesionales/output_validacion_profesionales/*.md

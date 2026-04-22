@@ -1,0 +1,915 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Herramienta vs Profesionales — Newscore</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --card: #111827;
+      --card2: #0f172a;
+      --border: #1e293b;
+      --text: #f9fafb;
+      --subtext: #9ca3af;
+      --muted: #6b7280;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --accent: #f59e0b;
+      --ns: #f59e0b;       /* ámbar = Newscore */
+      --pro: #38bdf8;      /* azul cielo = Profesionales */
+      --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+    .wrap { max-width: 1300px; margin: 0 auto; padding: 32px 28px 60px; }
+
+    /* HERO */
+    .hero-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 10px; }
+    h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.5vw, 2.8rem); font-weight: 700; margin: 0 0 12px; line-height: 1.1; }
+    .hero-intro { color: var(--subtext); font-size: 15px; line-height: 1.6; max-width: 800px; margin: 0 0 22px; }
+    .legend-strip { display: flex; gap: 24px; align-items: center; margin-bottom: 24px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--subtext); }
+    .legend-dot { width: 12px; height: 12px; border-radius: 999px; }
+
+    /* CHIPS */
+    .chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 22px; }
+    .chip { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }
+    .chip-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .chip-val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--accent); line-height: 1; }
+    .chip-sub { font-size: 11px; color: var(--subtext); margin-top: 3px; }
+
+    /* DIVERGENCE CARDS */
+    .div-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 22px; }
+    .div-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 18px 20px; box-shadow: var(--shadow); }
+    .div-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 4px; }
+    .div-article { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--text); margin: 0 0 12px; line-height: 1.3; }
+    .div-scores { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 10px; }
+    .div-score-ns, .div-score-pro { text-align: center; }
+    .div-score-ns .val { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--ns); line-height: 1; }
+    .div-score-pro .val { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 700; color: var(--pro); line-height: 1; }
+    .div-score-ns .lbl, .div-score-pro .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 3px; }
+    .div-vs { font-size: 11px; color: var(--muted); padding-bottom: 8px; }
+    .div-delta { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .div-delta.neg { background: rgba(239,68,68,0.12); color: var(--bad); border: 1px solid rgba(239,68,68,0.2); }
+    .div-delta.pos { background: rgba(245,158,11,0.12); color: var(--warn); border: 1px solid rgba(245,158,11,0.2); }
+    .div-delta.match { background: rgba(34,197,94,0.12); color: var(--ok); border: 1px solid rgba(34,197,94,0.2); }
+    .div-verdict { font-size: 12px; color: var(--subtext); margin-top: 8px; line-height: 1.4; }
+
+    /* SECTION */
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px 22px 18px; margin-bottom: 18px; box-shadow: var(--shadow); }
+    .section h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; margin: 0 0 6px; }
+    .section .lead { font-size: 14px; color: var(--subtext); margin: 0 0 18px; line-height: 1.6; max-width: 900px; }
+
+    /* CALLOUT */
+    .callout { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; background: rgba(255,255,255,0.03); margin-bottom: 10px; font-size: 13px; color: var(--subtext); line-height: 1.55; }
+    .callout-icon { font-size: 15px; flex-shrink: 0; margin-top: 2px; }
+    .callout p { margin: 0; }
+
+    /* SVG CHART WRAPPER */
+    .svg-wrap { overflow-x: auto; padding-bottom: 4px; }
+    .svg-wrap svg { min-width: 540px; }
+
+    /* DIM BARS (horizontal, HTML-based) */
+    .dim-table { width: 100%; }
+    .dim-row { display: grid; grid-template-columns: 90px 1fr; align-items: center; gap: 12px; padding: 7px 0; border-bottom: 1px solid #1a2235; }
+    .dim-row:last-child { border-bottom: none; }
+    .dim-label { font-size: 12px; font-weight: 600; color: var(--subtext); text-align: right; }
+    .dim-bars { display: flex; flex-direction: column; gap: 4px; }
+    .dim-bar-row { display: flex; align-items: center; gap: 8px; }
+    .dim-bar-track { flex: 1; height: 9px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+    .dim-bar-fill { height: 100%; border-radius: 999px; }
+    .dim-bar-val { font-size: 12px; font-weight: 700; width: 32px; text-align: right; }
+    .dim-bar-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); width: 28px; }
+
+    /* ARTICLE SECTION */
+    .article-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    .article-meta { flex: 1; }
+    .article-id { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+    .article-title { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--text); line-height: 1.3; margin: 0; }
+    .article-source { font-size: 11px; color: var(--muted); margin-top: 4px; }
+    .score-pair { display: flex; gap: 10px; flex-shrink: 0; }
+    .score-box { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; text-align: center; min-width: 80px; }
+    .score-box .sb-val { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; line-height: 1; }
+    .score-box .sb-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-top: 3px; }
+    .score-box .sb-std { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* STATUS PILLS */
+    .status-group { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .spill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+
+    /* VARIABILITY */
+    .var-row { display: grid; grid-template-columns: 80px 1fr; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .var-label { font-size: 12px; font-weight: 600; color: var(--subtext); text-align: right; }
+    .var-bars { display: flex; flex-direction: column; gap: 4px; }
+    .var-bar-row { display: flex; align-items: center; gap: 8px; }
+    .var-bar-track { width: 280px; height: 9px; background: #1e293b; border-radius: 999px; overflow: hidden; flex-shrink: 0; }
+    .var-bar-fill { height: 100%; border-radius: 999px; }
+    .var-bar-val { font-size: 12px; font-weight: 700; }
+    .var-bar-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); width: 28px; }
+
+    /* TWO COL */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .inner-card { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+    .inner-card h3 { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; margin: 0 0 12px; color: var(--text); }
+
+    /* CONCLUSIONS */
+    .conc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .conc-card { background: var(--card2); border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; }
+    .conc-icon { font-size: 20px; margin-bottom: 8px; }
+    .conc-card h4 { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; margin: 0 0 6px; color: var(--text); }
+    .conc-card p { font-size: 13px; color: var(--subtext); margin: 0; line-height: 1.55; }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+
+    /* FOOTER */
+    .footer { margin-top: 28px; font-size: 12px; color: var(--muted); text-align: center; border-top: 1px solid var(--border); padding-top: 20px; }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px) {
+      .two-col, .three-col, .div-grid, .conc-grid { grid-template-columns: 1fr; }
+      .wrap { padding: 18px 16px 40px; }
+      .var-bar-track { width: 160px; }
+    }
+    @media (max-width: 600px) {
+      .chips { grid-template-columns: 1fr 1fr; }
+      .score-pair { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero-label">Newscore · Análisis Comparativo</div>
+  <h1>Herramienta vs Profesionales</h1>
+  <p class="hero-intro">Comparación directa entre las puntuaciones automáticas de Newscore (20 ejecuciones por noticia) y las evaluaciones de periodistas profesionales (5 por noticia), usando los mismos 5 criterios y la misma escala 0-10.</p>
+
+  <div class="legend-strip">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--ns)"></div> Newscore (herramienta automática)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--pro)"></div> Profesionales (periodistas)</div>
+  </div>
+
+  <div class="chips">
+    <div class="chip"><div class="chip-label">Noticias analizadas</div><div class="chip-val">3</div><div class="chip-sub">Biden · España · Argüello</div></div>
+    <div class="chip"><div class="chip-label">Ejecuciones Newscore</div><div class="chip-val">60</div><div class="chip-sub">20 por noticia</div></div>
+    <div class="chip"><div class="chip-label">Evaluaciones humanas</div><div class="chip-val">15</div><div class="chip-sub">5 periodistas por noticia</div></div>
+    <div class="chip"><div class="chip-label">Criterios comparados</div><div class="chip-val">5</div><div class="chip-sub">Fiab · Adeq · Clar · Prof · Enf</div></div>
+  </div>
+
+  <!-- DIVERGENCE OVERVIEW CARDS -->
+  <div class="div-grid">
+    <!-- Biden -->
+    <div class="div-card" style="border-top: 3px solid var(--bad)">
+      <div class="div-title">ID 6992 · El País</div>
+      <p class="div-article">Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</p>
+      <div class="div-scores">
+        <div class="div-score-ns"><div class="val">5.02</div><div class="lbl">Newscore</div></div>
+        <div class="div-vs">vs</div>
+        <div class="div-score-pro"><div class="val">8.80</div><div class="lbl">Profesionales</div></div>
+      </div>
+      <div><span class="div-delta neg">▼ −3.78 pts</span></div>
+      <p class="div-verdict">Mayor divergencia del estudio. Newscore clasifica como <em>Desinformativa</em> (80% de ejecuciones). Los profesionales la consideran <em>Excelente</em> (80%).</p>
+    </div>
+    <!-- España -->
+    <div class="div-card" style="border-top: 3px solid var(--ok)">
+      <div class="div-title">ID 2424 · La Vanguardia</div>
+      <p class="div-article">España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</p>
+      <div class="div-scores">
+        <div class="div-score-ns"><div class="val">6.99</div><div class="lbl">Newscore</div></div>
+        <div class="div-vs">vs</div>
+        <div class="div-score-pro"><div class="val">7.08</div><div class="lbl">Profesionales</div></div>
+      </div>
+      <div><span class="div-delta match">≈ −0.09 pts</span></div>
+      <p class="div-verdict">Máximo acuerdo: diferencia de apenas 0.09 puntos. Ambas fuentes convergen en <em>Valiosa</em>. La herramienta supera la prueba en esta noticia.</p>
+    </div>
+    <!-- Argüello -->
+    <div class="div-card" style="border-top: 3px solid var(--warn)">
+      <div class="div-title">ID 7282 · El Diario</div>
+      <p class="div-article">La 'campaña' política de Argüello molesta a los obispos: "Nos ha vuelto a meter en un lío"</p>
+      <div class="div-scores">
+        <div class="div-score-ns"><div class="val">6.45</div><div class="lbl">Newscore</div></div>
+        <div class="div-vs">vs</div>
+        <div class="div-score-pro"><div class="val">4.28</div><div class="lbl">Profesionales</div></div>
+      </div>
+      <div><span class="div-delta pos">▲ +2.17 pts</span></div>
+      <p class="div-verdict">Newscore sobrevalora respecto a los profesionales. La herramienta la clasifica como <em>Valiosa</em>, los periodistas como <em>Confusa</em> mayoritariamente.</p>
+    </div>
+  </div>
+
+  <!-- GLOBAL COMPARISON CHART -->
+  <div class="section">
+    <h2>Puntuación global comparada</h2>
+    <p class="lead">Cada barra muestra la media de las 20 ejecuciones (Newscore) o las 5 evaluaciones (Profesionales). Las líneas de error representan ±1 desviación estándar.</p>
+    <div class="svg-wrap">
+      <svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:720px;display:block">
+        <!-- Grid lines y labels -->
+        <line x1="50" y1="230" x2="690" y2="230" stroke="#1e293b" stroke-width="1"/>
+        <line x1="50" y1="188" x2="690" y2="188" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="50" y1="146" x2="690" y2="146" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="50" y1="104" x2="690" y2="104" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="50" y1="62" x2="690" y2="62" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <line x1="50" y1="20" x2="690" y2="20" stroke="#1e293b" stroke-width="0.5" stroke-dasharray="4,3"/>
+        <!-- Y axis labels -->
+        <text x="42" y="234" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">0</text>
+        <text x="42" y="192" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">2</text>
+        <text x="42" y="150" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">4</text>
+        <text x="42" y="108" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">6</text>
+        <text x="42" y="66" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">8</text>
+        <text x="42" y="24" text-anchor="end" font-size="11" fill="#6b7280" font-family="Inter,sans-serif">10</text>
+
+        <!-- === GRUPO 1: BIDEN (6992) === -->
+        <!-- Newscore bar: 5.02 → height=100.4, y=129.6 -->
+        <rect x="107" y="130" width="52" height="100" rx="4" fill="#f59e0b" opacity="0.9"/>
+        <!-- Prof bar: 8.80 → height=176, y=54 -->
+        <rect x="169" y="54" width="52" height="176" rx="4" fill="#38bdf8" opacity="0.9"/>
+        <!-- Error bars NS: std=0.46 → ±9.2px -->
+        <line x1="133" y1="121" x2="133" y2="139" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="127" y1="121" x2="139" y2="121" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="127" y1="139" x2="139" y2="139" stroke="#f59e0b" stroke-width="2"/>
+        <!-- Error bars Prof: std=0.40 → ±8px -->
+        <line x1="195" y1="46" x2="195" y2="62" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="189" y1="46" x2="201" y2="46" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="189" y1="62" x2="201" y2="62" stroke="#38bdf8" stroke-width="2"/>
+        <!-- Values -->
+        <text x="133" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#f59e0b" font-family="Inter,sans-serif">5.02</text>
+        <text x="195" y="48" text-anchor="middle" font-size="12" font-weight="700" fill="#38bdf8" font-family="Inter,sans-serif">8.80</text>
+        <!-- Group label -->
+        <text x="163" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" font-family="Inter,sans-serif">Biden · ID 6992</text>
+        <text x="163" y="270" text-anchor="middle" font-size="9" fill="#6b7280" font-family="Inter,sans-serif">Δ = −3.78</text>
+        <!-- Delta line -->
+        <line x1="133" y1="130" x2="195" y2="54" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+
+        <!-- === GRUPO 2: ESPAÑA (2424) === -->
+        <!-- Newscore: 6.99 → height=139.8, y=90.2 -->
+        <rect x="320" y="90" width="52" height="140" rx="4" fill="#f59e0b" opacity="0.9"/>
+        <!-- Prof: 7.08 → height=141.6, y=88.4 -->
+        <rect x="382" y="88" width="52" height="142" rx="4" fill="#38bdf8" opacity="0.9"/>
+        <!-- Error NS: std=0.33 → ±6.6px -->
+        <line x1="346" y1="83" x2="346" y2="97" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="340" y1="83" x2="352" y2="83" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="340" y1="97" x2="352" y2="97" stroke="#f59e0b" stroke-width="2"/>
+        <!-- Error Prof: std=1.79 → ±35.8px -->
+        <line x1="408" y1="52" x2="408" y2="124" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="402" y1="52" x2="414" y2="52" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="402" y1="124" x2="414" y2="124" stroke="#38bdf8" stroke-width="2"/>
+        <!-- Values -->
+        <text x="346" y="84" text-anchor="middle" font-size="12" font-weight="700" fill="#f59e0b" font-family="Inter,sans-serif">6.99</text>
+        <text x="408" y="82" text-anchor="middle" font-size="12" font-weight="700" fill="#38bdf8" font-family="Inter,sans-serif">7.08</text>
+        <!-- Group label -->
+        <text x="376" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" font-family="Inter,sans-serif">España · ID 2424</text>
+        <text x="376" y="270" text-anchor="middle" font-size="9" fill="#22c55e" font-family="Inter,sans-serif">Δ = −0.09 ✓</text>
+
+        <!-- === GRUPO 3: ARGÜELLO (7282) === -->
+        <!-- Newscore: 6.45 → height=129, y=101 -->
+        <rect x="533" y="101" width="52" height="129" rx="4" fill="#f59e0b" opacity="0.9"/>
+        <!-- Prof: 4.28 → height=85.6, y=144.4 -->
+        <rect x="595" y="144" width="52" height="86" rx="4" fill="#38bdf8" opacity="0.9"/>
+        <!-- Error NS: std=0.27 → ±5.4px -->
+        <line x1="559" y1="96" x2="559" y2="107" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="553" y1="96" x2="565" y2="96" stroke="#f59e0b" stroke-width="2"/>
+        <line x1="553" y1="107" x2="565" y2="107" stroke="#f59e0b" stroke-width="2"/>
+        <!-- Error Prof: std=1.40 → ±28px -->
+        <line x1="621" y1="116" x2="621" y2="172" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="615" y1="116" x2="627" y2="116" stroke="#38bdf8" stroke-width="2"/>
+        <line x1="615" y1="172" x2="627" y2="172" stroke="#38bdf8" stroke-width="2"/>
+        <!-- Values -->
+        <text x="559" y="95" text-anchor="middle" font-size="12" font-weight="700" fill="#f59e0b" font-family="Inter,sans-serif">6.45</text>
+        <text x="621" y="138" text-anchor="middle" font-size="12" font-weight="700" fill="#38bdf8" font-family="Inter,sans-serif">4.28</text>
+        <!-- Group label -->
+        <text x="589" y="256" text-anchor="middle" font-size="11" font-weight="600" fill="#9ca3af" font-family="Inter,sans-serif">Argüello · ID 7282</text>
+        <text x="589" y="270" text-anchor="middle" font-size="9" fill="#f59e0b" font-family="Inter,sans-serif">Δ = +2.17</text>
+        <!-- Delta line -->
+        <line x1="559" y1="101" x2="621" y2="144" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" opacity="0.7"/>
+
+        <!-- Legend -->
+        <rect x="130" y="286" width="12" height="8" rx="2" fill="#f59e0b"/>
+        <text x="148" y="294" font-size="11" fill="#9ca3af" font-family="Inter,sans-serif">Newscore (20 ejec.)</text>
+        <rect x="285" y="286" width="12" height="8" rx="2" fill="#38bdf8"/>
+        <text x="303" y="294" font-size="11" fill="#9ca3af" font-family="Inter,sans-serif">Profesionales (5 eval.) · barra de error = ±1σ</text>
+      </svg>
+    </div>
+    <div class="callout" style="margin-top:14px;border-left-color:var(--bad)">
+      <span class="callout-icon">▲</span>
+      <p><strong style="color:var(--bad)">La barra de error de los profesionales en España y Argüello es muy ancha</strong> (σ=1.79 y σ=1.40 respectivamente), lo que indica desacuerdo notable entre periodistas. En Biden, en cambio, los profesionales son muy consistentes (σ=0.40), igual que Newscore (σ=0.46). El desacuerdo profesional es información relevante por sí misma.</p>
+    </div>
+  </div>
+
+  <!-- VARIABILIDAD -->
+  <div class="section">
+    <h2>¿Quién es más consistente?</h2>
+    <p class="lead">Desviación estándar (σ) interna de cada fuente. A menor σ, mayor consistencia: los mismos evaluadores (IA o humanos) darían puntuaciones muy similares entre sí.</p>
+    <div class="two-col">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:12px">Desviación estándar del Global Score</div>
+        <!-- Biden -->
+        <div class="var-row">
+          <div class="var-label">Biden<br><span style="font-size:10px;color:var(--muted)">ID 6992</span></div>
+          <div class="var-bars">
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--ns)">NS</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:25.8%;background:var(--ns)"></div></div>
+              <!-- 0.46/1.79*100 ≈ 25.7% of max 1.79 -->
+              <div class="var-bar-val" style="color:var(--ns)">0.46</div>
+            </div>
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--pro)">PRO</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:22.3%;background:var(--pro)"></div></div>
+              <!-- 0.40/1.79*100 ≈ 22.3% -->
+              <div class="var-bar-val" style="color:var(--pro)">0.40</div>
+            </div>
+          </div>
+        </div>
+        <!-- España -->
+        <div class="var-row">
+          <div class="var-label">España<br><span style="font-size:10px;color:var(--muted)">ID 2424</span></div>
+          <div class="var-bars">
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--ns)">NS</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:18.4%;background:var(--ns)"></div></div>
+              <!-- 0.33/1.79*100 ≈ 18.4% -->
+              <div class="var-bar-val" style="color:var(--ns)">0.33</div>
+            </div>
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--pro)">PRO</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:100%;background:var(--pro)"></div></div>
+              <div class="var-bar-val" style="color:var(--pro)">1.79</div>
+            </div>
+          </div>
+        </div>
+        <!-- Argüello -->
+        <div class="var-row">
+          <div class="var-label">Argüello<br><span style="font-size:10px;color:var(--muted)">ID 7282</span></div>
+          <div class="var-bars">
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--ns)">NS</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:15.1%;background:var(--ns)"></div></div>
+              <!-- 0.27/1.79 ≈ 15.1% -->
+              <div class="var-bar-val" style="color:var(--ns)">0.27</div>
+            </div>
+            <div class="var-bar-row">
+              <div class="var-bar-lbl" style="color:var(--pro)">PRO</div>
+              <div class="var-bar-track"><div class="var-bar-fill" style="width:78.2%;background:var(--pro)"></div></div>
+              <!-- 1.40/1.79 ≈ 78.2% -->
+              <div class="var-bar-val" style="color:var(--pro)">1.40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="callout" style="border-left-color:var(--ns)">
+          <span class="callout-icon">◈</span>
+          <p><strong style="color:var(--ns)">Newscore es más consistente que los profesionales</strong> en 2 de las 3 noticias. Sus σ oscilan entre 0.27 y 0.46, frente a los 0.40-1.79 de los profesionales. Esto no es sorprendente: un modelo determínistico tenderá a repetir el mismo razonamiento; los humanos traen perspectivas distintas.</p>
+        </div>
+        <div class="callout" style="border-left-color:var(--pro);margin-top:0">
+          <span class="callout-icon">ℹ</span>
+          <p>La alta variabilidad profesional en España (σ=1.79) y Argüello (σ=1.40) sugiere que estas noticias son genuinamente ambiguas en calidad. Un evaluador vio la noticia de España como Confusa (4.0/10) y otro como Excelente (8.6/10). Este desacuerdo es información valiosa: hay espacio para una herramienta que aporte perspectiva adicional.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== DEEP DIVE: BIDEN ========== -->
+  <div class="section">
+    <div class="article-header">
+      <div class="article-meta">
+        <div class="article-id">Noticia 1 · ID 6992 · El País · 2024-12-02</div>
+        <h3 class="article-title">Biden indulta a su hijo Hunter pese a haber asegurado que no lo haría</h3>
+        <div class="article-source">elpais.com · Política internacional</div>
+      </div>
+      <div class="score-pair">
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--ns)">5.02</div>
+          <div class="sb-lbl">Newscore</div>
+          <div class="sb-std">σ = 0.46</div>
+        </div>
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--pro)">8.80</div>
+          <div class="sb-lbl">Profesionales</div>
+          <div class="sb-std">σ = 0.40</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:12px">Puntuación por dimensión</div>
+        <div class="dim-table">
+          <!-- Fiabilidad: NS=3.59, Pro=8.8 -->
+          <div class="dim-row">
+            <div class="dim-label">Fiabilidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:35.9%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">3.59</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:88%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">8.80</div>
+              </div>
+            </div>
+          </div>
+          <!-- Adecuación: NS=4.65, Pro=8.8 -->
+          <div class="dim-row">
+            <div class="dim-label">Adecuación</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:46.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">4.65</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:88%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">8.80</div>
+              </div>
+            </div>
+          </div>
+          <!-- Claridad: NS=5.55, Pro=9.2 -->
+          <div class="dim-row">
+            <div class="dim-label">Claridad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:55.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">5.55</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:92%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">9.20</div>
+              </div>
+            </div>
+          </div>
+          <!-- Profundidad: NS=6.05, Pro=8.4 -->
+          <div class="dim-row">
+            <div class="dim-label">Profundidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:60.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.05</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:84%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">8.40</div>
+              </div>
+            </div>
+          </div>
+          <!-- Enfoque: NS=5.75, Pro=8.8 -->
+          <div class="dim-row">
+            <div class="dim-label">Enfoque</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:57.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">5.75</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:88%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">8.80</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="inner-card">
+          <h3>Clasificación final (status)</h3>
+          <div style="margin-bottom:10px">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ns);margin-bottom:5px">Newscore (20 ejec.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(239,68,68,0.12);color:var(--bad);border:1px solid rgba(239,68,68,0.2)">● Desinformativa 80%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Irrelevante 15%</span>
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 5%</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--pro);margin-bottom:5px">Profesionales (5 eval.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(56,189,248,0.12);color:var(--pro);border:1px solid rgba(56,189,248,0.2)">★ Excelente 80%</span>
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 20%</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="border-left-color:var(--bad);margin-bottom:0">
+          <span class="callout-icon">⚡</span>
+          <p><strong style="color:var(--bad)">Hipótesis de la divergencia:</strong> El indulto de Biden es una noticia factualmente correcta sobre un hecho de gobierno. Los profesionales lo ven como excelente periodismo político. Newscore puede estar penalizando el <em>contenido</em> (declaración contradictoria pública de un político) en lugar de la <em>calidad periodística</em> de la cobertura. Posible bug semántico de la herramienta.</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Newscore:</strong> 125 high + 74 medium en 20 ejecuciones (OPINION_AS_FACT, MISSING_ATTRIBUTION frecuentes)</div>
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Profesionales:</strong> 0 en todas las evaluaciones</div>
+    </div>
+  </div>
+
+  <!-- ========== DEEP DIVE: ESPAÑA ========== -->
+  <div class="section">
+    <div class="article-header">
+      <div class="article-meta">
+        <div class="article-id">Noticia 2 · ID 2424 · La Vanguardia · 2025-02-03</div>
+        <h3 class="article-title">España se sitúa a la cola de países de la UE en accesibilidad a la vivienda</h3>
+        <div class="article-source">lavanguardia.com · Economía</div>
+      </div>
+      <div class="score-pair">
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--ns)">6.99</div>
+          <div class="sb-lbl">Newscore</div>
+          <div class="sb-std">σ = 0.33</div>
+        </div>
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--pro)">7.08</div>
+          <div class="sb-lbl">Profesionales</div>
+          <div class="sb-std">σ = 1.79</div>
+        </div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:12px">Puntuación por dimensión</div>
+        <div class="dim-table">
+          <!-- Fiabilidad: NS=7.05, Pro=7.6 -->
+          <div class="dim-row">
+            <div class="dim-label">Fiabilidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:70.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">7.05</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:76%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">7.60</div>
+              </div>
+            </div>
+          </div>
+          <!-- Adecuación: NS=6.0, Pro=7.4 -->
+          <div class="dim-row">
+            <div class="dim-label">Adecuación</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:60%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.00</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:74%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">7.40</div>
+              </div>
+            </div>
+          </div>
+          <!-- Claridad: NS=7.21, Pro=7.8 -->
+          <div class="dim-row">
+            <div class="dim-label">Claridad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:72.1%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">7.21</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:78%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">7.80</div>
+              </div>
+            </div>
+          </div>
+          <!-- Profundidad: NS=7.41, Pro=6.4 → NS > Pro! -->
+          <div class="dim-row">
+            <div class="dim-label">Profundidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:74.1%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">7.41 ↑</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:64%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">6.40</div>
+              </div>
+            </div>
+          </div>
+          <!-- Enfoque: NS=7.05, Pro=6.2 → NS > Pro! -->
+          <div class="dim-row">
+            <div class="dim-label">Enfoque</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:70.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">7.05 ↑</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:62%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">6.20</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="inner-card">
+          <h3>Clasificación final (status)</h3>
+          <div style="margin-bottom:10px">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ns);margin-bottom:5px">Newscore (20 ejec.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 95%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Vacío 5%</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--pro);margin-bottom:5px">Profesionales (5 eval.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 60%</span>
+              <span class="spill" style="background:rgba(56,189,248,0.12);color:var(--pro);border:1px solid rgba(56,189,248,0.2)">★ Excelente 20%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Confusa 20%</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="border-left-color:var(--ok);margin-bottom:0">
+          <span class="callout-icon">✓</span>
+          <p><strong style="color:var(--ok)">Mejor caso del estudio.</strong> Diferencia de solo 0.09 puntos entre herramienta y profesionales. Newscore también es más generosa en Profundidad y Enfoque (+1.01 y +0.85 respectivamente), mientras que los profesionales puntúan más alto Fiabilidad, Adecuación y Claridad. Los rangos de las dimensiones se solapan ampliamente. Validación positiva para este tipo de noticia de datos.</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Newscore:</strong> 41 high + 98 medium (MISSING_ATTRIBUTION, OPINION_AS_FACT más frecuentes)</div>
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Profesionales:</strong> 1 alerta de sesgo/framing en 1 de 5 evaluaciones (20%)</div>
+    </div>
+  </div>
+
+  <!-- ========== DEEP DIVE: ARGÜELLO ========== -->
+  <div class="section">
+    <div class="article-header">
+      <div class="article-meta">
+        <div class="article-id">Noticia 3 · ID 7282 · El Diario · 2025-12-15</div>
+        <h3 class="article-title">La 'campaña' política de Argüello molesta a los obispos: "Nos ha vuelto a meter en un lío"</h3>
+        <div class="article-source">eldiario.es · Sociedad / Política</div>
+      </div>
+      <div class="score-pair">
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--ns)">6.45</div>
+          <div class="sb-lbl">Newscore</div>
+          <div class="sb-std">σ = 0.27</div>
+        </div>
+        <div class="score-box">
+          <div class="sb-val" style="color:var(--pro)">4.28</div>
+          <div class="sb-lbl">Profesionales</div>
+          <div class="sb-std">σ = 1.40</div>
+        </div>
+      </div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted);margin-bottom:12px">Puntuación por dimensión</div>
+        <div class="dim-table">
+          <!-- Fiabilidad: NS=6.35, Pro=4.6 -->
+          <div class="dim-row">
+            <div class="dim-label">Fiabilidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:63.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.35</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:46%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">4.60</div>
+              </div>
+            </div>
+          </div>
+          <!-- Adecuación: NS=5.83, Pro=4.4 -->
+          <div class="dim-row">
+            <div class="dim-label">Adecuación</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:58.3%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">5.83</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:44%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">4.40</div>
+              </div>
+            </div>
+          </div>
+          <!-- Claridad: NS=6.75, Pro=5.2 -->
+          <div class="dim-row">
+            <div class="dim-label">Claridad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:67.5%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.75</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:52%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">5.20</div>
+              </div>
+            </div>
+          </div>
+          <!-- Profundidad: NS=6.83, Pro=4.0 -->
+          <div class="dim-row">
+            <div class="dim-label">Profundidad</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:68.3%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.83</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:40%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">4.00</div>
+              </div>
+            </div>
+          </div>
+          <!-- Enfoque: NS=6.72, Pro=3.2 → mayor gap en esta noticia -->
+          <div class="dim-row">
+            <div class="dim-label">Enfoque</div>
+            <div class="dim-bars">
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--ns)">NS</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:67.2%;background:var(--ns)"></div></div>
+                <div class="dim-bar-val" style="color:var(--ns)">6.72</div>
+              </div>
+              <div class="dim-bar-row">
+                <div class="dim-bar-lbl" style="color:var(--pro)">PRO</div>
+                <div class="dim-bar-track"><div class="dim-bar-fill" style="width:32%;background:var(--pro)"></div></div>
+                <div class="dim-bar-val" style="color:var(--pro)">3.20</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="inner-card">
+          <h3>Clasificación final (status)</h3>
+          <div style="margin-bottom:10px">
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--ns);margin-bottom:5px">Newscore (20 ejec.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 85%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Irrelevante 10%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Vacío 5%</span>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.07em;color:var(--pro);margin-bottom:5px">Profesionales (5 eval.)</div>
+            <div class="status-group">
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Confusa 40%</span>
+              <span class="spill" style="background:rgba(34,197,94,0.1);color:var(--ok);border:1px solid rgba(34,197,94,0.2)">● Valiosa 20%</span>
+              <span class="spill" style="background:rgba(107,114,128,0.1);color:var(--muted);border:1px solid var(--border)">● Irrelevante 20%</span>
+              <span class="spill" style="background:rgba(239,68,68,0.1);color:var(--bad);border:1px solid rgba(239,68,68,0.2)">● Desinformativa 20%</span>
+            </div>
+          </div>
+        </div>
+        <div class="callout" style="border-left-color:var(--warn);margin-bottom:0">
+          <span class="callout-icon">△</span>
+          <p><strong style="color:var(--warn)">Newscore sobrevalora el Enfoque (+3.52 pts):</strong> los profesionales ven la noticia como una pieza de declaraciones sin contexto suficiente (titular clickbait en 4/5 evaluaciones). Newscore puede estar puntuando la estructura formal en lugar del valor editorial real. La alta variabilidad profesional (σ=1.40) también sugiere que esta noticia es genuinamente difícil de clasificar.</p>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Newscore:</strong> 43 high + 100 medium (OPINION_AS_FACT, MISSING_ATTRIBUTION más frecuentes)</div>
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Alertas Profesionales:</strong> Sesgo/Framing (4/5) · Falta de fuentes (3/5) · Falta de contexto (2/5) · 5 alertas high + 4 medium</div>
+      <div style="font-size:12px;color:var(--subtext)"><strong style="color:var(--text)">Titular:</strong> Profesionales: clickbait 4/5 · calidad media 3.6/10 · fidelidad 4.4/10</div>
+    </div>
+  </div>
+
+  <!-- RESUMEN POR CRITERIO (heatmap tipo tabla) -->
+  <div class="section">
+    <h2>Mapa de diferencias por dimensión</h2>
+    <p class="lead">Diferencia Newscore − Profesionales por cada criterio y noticia. Verde: la herramienta es más baja que los profesionales (subestima). Ámbar: la herramienta es más alta (sobreestima). Blanco: acuerdo.</p>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px;font-family:Inter,sans-serif;min-width:540px">
+        <thead>
+          <tr>
+            <th style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;text-align:left">Dimensión</th>
+            <th style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;text-align:center">Biden (6992)</th>
+            <th style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;text-align:center">España (2424)</th>
+            <th style="padding:10px 12px;border-bottom:1px solid var(--border);color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:0.07em;text-align:center">Argüello (7282)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;color:var(--text);font-weight:600">Global Score</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(239,68,68,0.15);color:var(--bad);font-weight:700">−3.78</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(34,197,94,0.1);color:var(--ok);font-weight:700">−0.09</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.15);color:var(--warn);font-weight:700">+2.17</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;color:var(--subtext)">Fiabilidad</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(239,68,68,0.15);color:var(--bad);font-weight:600">−5.21</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(107,114,128,0.1);color:var(--subtext);font-weight:600">−0.55</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.12);color:var(--warn);font-weight:600">+1.75</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;color:var(--subtext)">Adecuación</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(239,68,68,0.15);color:var(--bad);font-weight:600">−4.15</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(107,114,128,0.1);color:var(--subtext);font-weight:600">−1.40</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.12);color:var(--warn);font-weight:600">+1.43</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;color:var(--subtext)">Claridad</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(239,68,68,0.15);color:var(--bad);font-weight:600">−3.65</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(107,114,128,0.1);color:var(--subtext);font-weight:600">−0.59</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.12);color:var(--warn);font-weight:600">+1.55</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;color:var(--subtext)">Profundidad</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(239,68,68,0.12);color:var(--bad);font-weight:600">−2.35</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.12);color:var(--warn);font-weight:600">+1.01</td>
+            <td style="padding:10px 12px;border-bottom:1px solid #1a2235;text-align:center;background:rgba(245,158,11,0.15);color:var(--warn);font-weight:600">+2.83</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 12px;color:var(--subtext)">Enfoque</td>
+            <td style="padding:10px 12px;text-align:center;background:rgba(239,68,68,0.12);color:var(--bad);font-weight:600">−3.05</td>
+            <td style="padding:10px 12px;text-align:center;background:rgba(245,158,11,0.12);color:var(--warn);font-weight:600">+0.85</td>
+            <td style="padding:10px 12px;text-align:center;background:rgba(239,68,68,0.15);color:var(--bad);font-weight:600">+3.52</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout" style="margin-top:14px;border-left-color:var(--muted)">
+      <span class="callout-icon">◈</span>
+      <p>El patrón es claro: en Biden, Newscore está sistemáticamente por debajo de los profesionales en <em>todas</em> las dimensiones (columna completamente en rojo). En Argüello, ocurre lo contrario: Newscore sobreestima todas las dimensiones. En España, las diferencias son pequeñas y no siguen un patrón consistente.</p>
+    </div>
+  </div>
+
+  <!-- CONCLUSIONES -->
+  <div class="section">
+    <h2>Conclusiones y recomendaciones</h2>
+    <p class="lead">Tres noticias no permiten generalizar, pero sí identificar patrones a investigar en iteraciones futuras.</p>
+    <div class="conc-grid">
+      <div class="conc-card">
+        <div class="conc-icon" style="color:var(--ok)">✓</div>
+        <h4>Newscore valida bien en noticias de datos</h4>
+        <p>La noticia de España (datos económicos de la UE) muestra acuerdo casi perfecto (Δ=0.09) con los profesionales. Newscore parece calibrado correctamente para este tipo de periodismo informativo basado en hechos cuantificables.</p>
+      </div>
+      <div class="conc-card">
+        <div class="conc-icon" style="color:var(--bad)">⚡</div>
+        <h4>Posible bug semántico en noticias políticas de alto perfil</h4>
+        <p>En Biden, Newscore parece confundir el <em>contenido polémico</em> (indulto presidencial controvertido) con <em>mala calidad periodística</em>. La alerta OPINION_AS_FACT aparece 20/20 veces pero los profesionales no detectan ningún problema. Requiere investigación prioritaria.</p>
+      </div>
+      <div class="conc-card">
+        <div class="conc-icon" style="color:var(--warn)">△</div>
+        <h4>Newscore es demasiado generoso con noticias de declaraciones</h4>
+        <p>En Argüello (noticia de declaraciones sin contexto), Newscore puntúa 2.17 puntos por encima de los profesionales. El Enfoque tiene la mayor brecha (+3.52 pts). Los periodistas penalizan la ausencia de contexto y el titular clickbait; Newscore puede no detectarlos igual.</p>
+      </div>
+      <div class="conc-card">
+        <div class="conc-icon">◎</div>
+        <h4>Newscore es más consistente, no necesariamente más correcto</h4>
+        <p>La herramienta tiene σ 3-5x menor que los profesionales. Eso es útil como referencia estable, pero no implica que acierte más. La consistencia sin calibración puede amplificar sesgos sistemáticos. El objetivo debería ser alta consistencia <em>y</em> alta alineación con expertos.</p>
+      </div>
+    </div>
+    <hr>
+    <div class="callout" style="border-left-color:var(--warn)">
+      <span class="callout-icon">ℹ</span>
+      <p><strong style="color:var(--warn)">Limitación del estudio:</strong> Solo 3 noticias y 5 profesionales por noticia. Los resultados son indicios, no conclusiones definitivas. Para confirmar estos patrones se necesitarían al menos 20 noticias de distintos géneros periodísticos (informativa, opinión, datos, declaraciones, investigación) con 3-5 evaluaciones profesionales cada una.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Análisis comparativo generado el 2026-04-22 · Newscore 20 ejecuciones × 3 noticias · 5 evaluaciones profesionales × 3 noticias · Mismos 5 criterios, misma escala 0-10
+  </div>
+
+</div>
+<div id="tt" style="position:fixed;background:#1e293b;color:#f9fafb;border:1px solid #334155;border-radius:8px;padding:6px 10px;font-size:12px;font-family:Inter,sans-serif;max-width:240px;z-index:9999;display:none;box-shadow:0 4px 16px rgba(0,0,0,0.5)"></div>
+<script>
+(function(){
+  var tt=document.getElementById('tt');
+  document.addEventListener('mouseover',function(e){
+    var el=e.target.closest && e.target.closest('[title]');
+    if(!el){tt.style.display='none';return;}
+    tt.textContent=el.getAttribute('title');
+    tt.style.display='block';
+  });
+  document.addEventListener('mousemove',function(e){
+    tt.style.left=(e.clientX+14)+'px';
+    tt.style.top=(e.clientY-8)+'px';
+  });
+  document.addEventListener('mouseout',function(){tt.style.display='none';});
+})();
+</script>
+</body>
+</html>
