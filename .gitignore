@@ -49,3 +49,4 @@ validacion_profesionales/output_validacion_profesionales/
 validacion_profesionales/validacion con profesionales.csv
 
 validacion_profesionales/output_validacion_profesionales/*.md
+docs/*
